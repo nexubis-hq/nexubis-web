@@ -42,3 +42,6 @@ next-env.d.ts
 
 # ShipStudio metadata
 .shipstudio/
+
+# Local Webflow export reference. Rebuild from this into components; do not deploy wholesale.
+/webflow-export/

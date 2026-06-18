@@ -30,7 +30,8 @@ export default function Home() {
                   Start a conversation
                 </h3>
                 <p className="text-[var(--muted)]">
-                  Just type what you want to build. A landing page, a web app, a portfolio — anything.
+                  Just type what you want to build. A landing page, a web app, a
+                  portfolio — anything.
                 </p>
               </div>
             </div>
@@ -43,7 +44,8 @@ export default function Home() {
                   AI builds it
                 </h3>
                 <p className="text-[var(--muted)]">
-                  Your AI handles the code. Watch your project come together in real-time.
+                  Your AI handles the code. Watch your project come together in
+                  real-time.
                 </p>
               </div>
             </div>
@@ -56,7 +58,8 @@ export default function Home() {
                   Refine together
                 </h3>
                 <p className="text-[var(--muted)]">
-                  Ask for changes, add pages, tweak colors. Keep iterating until it&apos;s perfect.
+                  Ask for changes, add pages, tweak colors. Keep iterating until
+                  it&apos;s perfect.
                 </p>
               </div>
             </div>
@@ -70,21 +73,30 @@ export default function Home() {
           </h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-[var(--foreground)]/10 p-4">
-              <code className="text-sm font-semibold text-[var(--accent)]">/onboarding</code>
+              <code className="text-sm font-semibold text-[var(--accent)]">
+                /onboarding
+              </code>
               <p className="mt-1 text-[var(--muted)]">
-                Set up a new project. I&apos;ll ask about your business and create a personalized build plan.
+                Set up a new project. I&apos;ll ask about your business and
+                create a personalized build plan.
               </p>
             </div>
             <div className="rounded-lg border border-[var(--foreground)]/10 p-4">
-              <code className="text-sm font-semibold text-[var(--accent)]">/page-remake</code>
+              <code className="text-sm font-semibold text-[var(--accent)]">
+                /page-remake
+              </code>
               <p className="mt-1 text-[var(--muted)]">
-                Rebuild from an example. Share a URL you like, and I&apos;ll create something similar but better.
+                Rebuild from an example. Share a URL you like, and I&apos;ll
+                create something similar but better.
               </p>
             </div>
             <div className="rounded-lg border border-[var(--foreground)]/10 p-4">
-              <code className="text-sm font-semibold text-[var(--accent)]">/sanity-cms</code>
+              <code className="text-sm font-semibold text-[var(--accent)]">
+                /sanity-cms
+              </code>
               <p className="mt-1 text-[var(--muted)]">
-                Add editable content. When you want to update text yourself without touching code.
+                Add editable content. When you want to update text yourself
+                without touching code.
               </p>
             </div>
           </div>

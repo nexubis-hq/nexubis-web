@@ -1,0 +1,10 @@
+.next
+node_modules
+out
+build
+coverage
+.vercel
+.shipstudio
+.claude
+webflow-export
+package-lock.json
