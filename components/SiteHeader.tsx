@@ -2,10 +2,9 @@ import Link from "next/link";
 import { NexubisLogo } from "@/components/NexubisLogo";
 
 const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "Case Studies", href: "/work" },
-  { label: "Packages", href: "/packages" },
-  { label: "Dreamlab", href: "/blog" },
+  { label: "Case Studies", href: "/work", icon: "grid" },
+  { label: "Packages", href: "/packages", icon: "wallet" },
+  { label: "Dreamlab", href: "/blog", icon: "flask" },
 ];
 
 export function SiteHeader() {
@@ -19,6 +18,7 @@ export function SiteHeader() {
         <nav className="nav-menu" aria-label="Main navigation">
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href} className="nav-link">
+              <NavIcon type={link.icon} />
               {link.label}
             </Link>
           ))}
@@ -40,6 +40,35 @@ export function SiteHeader() {
         </button>
       </div>
     </header>
+  );
+}
+
+function NavIcon({ type }: { type: string }) {
+  if (type === "grid") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3" y="3" width="6" height="6" rx="1.5" />
+        <rect x="15" y="3" width="6" height="6" rx="1.5" />
+        <rect x="3" y="15" width="6" height="6" rx="1.5" />
+        <rect x="15" y="15" width="6" height="6" rx="1.5" />
+      </svg>
+    );
+  }
+
+  if (type === "wallet") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 9.5h15.5A2.5 2.5 0 0 1 21 12v7H6a3 3 0 0 1-3-3V7.5A3.5 3.5 0 0 1 6.5 4H16v5.5" />
+        <path d="M17 13h4v4h-4a2 2 0 0 1 0-4Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 3h6M10 3v5l-5 9a2.7 2.7 0 0 0 2.4 4h9.2a2.7 2.7 0 0 0 2.4-4l-5-9V3" />
+      <path d="M7.5 15h9" />
+    </svg>
   );
 }
 
