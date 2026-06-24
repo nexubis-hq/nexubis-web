@@ -244,9 +244,9 @@ function Hero() {
           </div>
         </div>
 
-        <div className="hero-row hero-reel-row">
-          <div className="hero-col">
-            <div className="hero-reel">
+        <div className="hero-reel-row">
+          <div className="hero-reel">
+            <div className="hero-reel-wrap">
               <div className="hero-reel-video">
                 <video
                   muted
@@ -291,16 +291,20 @@ function Hero() {
         </div>
       </div>
 
-      <div className="hero-logos" aria-label="Client logos">
-        <div className="hero-logos-track">
-          {logos.map(([image, label, href]) => (
-            <a key={label} href={href} target="_blank" rel="noreferrer">
-              <img src={`/assets/images/${image}`} alt={label} />
-            </a>
-          ))}
+      <div className="hero-logos-space">
+        <div className="hero-logos" aria-label="Client logos">
+          <div className="hero-logos-track">
+            {logos.map(([image, label, href]) => (
+              <a key={label} href={href} target="_blank" rel="noreferrer">
+                <img src={`/assets/images/${image}`} alt={label} />
+              </a>
+            ))}
+          </div>
         </div>
       </div>
-      <img className="hero-bg" src="/assets/images/nx-hero-bg.webp" alt="" />
+      <div className="hero-bg-wrap" aria-hidden="true">
+        <img className="hero-bg" src="/assets/images/nx-hero-bg.webp" alt="" />
+      </div>
     </section>
   );
 }
