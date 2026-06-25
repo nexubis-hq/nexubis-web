@@ -87,6 +87,14 @@ export function WorkSection() {
           alt={`${activeWork.name} project preview`}
         />
       </a>
+      <a
+        href={activeWork.href}
+        target="_blank"
+        rel="noreferrer"
+        className="work-see-more"
+      >
+        See More
+      </a>
     </div>
   );
 }
