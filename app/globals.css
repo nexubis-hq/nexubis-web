@@ -873,7 +873,9 @@ ul {
 .work-see-more-group {
   position: absolute;
   top: -208px;
-  right: -61.359375px;
+  left: 580px;
+  right: auto;
+  bottom: auto;
   display: flex;
   gap: 1rem;
   margin-top: 3rem;
@@ -882,6 +884,7 @@ ul {
 
 .work-see-more {
   display: flex;
+  position: static;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
@@ -895,6 +898,7 @@ ul {
   font-weight: 500;
   line-height: 1.5em;
   letter-spacing: 0;
+  max-width: 100%;
   white-space: nowrap;
 }
 
