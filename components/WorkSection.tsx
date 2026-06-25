@@ -60,6 +60,17 @@ export function WorkSection() {
                   <li key={tag}>{tag}</li>
                 ))}
               </ul>
+              {active ? (
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="work-mobile-see-more"
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  See More
+                </a>
+              ) : null}
               <a
                 href={item.href}
                 target="_blank"
