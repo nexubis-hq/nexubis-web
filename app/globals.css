@@ -870,10 +870,17 @@ ul {
   object-fit: cover;
 }
 
-.work-see-more {
+.work-see-more-group {
   position: absolute;
-  top: -144px;
+  top: -208px;
   right: -61.359375px;
+  display: flex;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+}
+
+.work-see-more {
   display: flex;
   align-items: center;
   justify-content: center;
