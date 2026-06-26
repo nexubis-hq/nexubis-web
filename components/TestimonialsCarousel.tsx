@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Review = {
   name: string;
@@ -16,18 +16,66 @@ type TestimonialsCarouselProps = {
   reviews: readonly Review[];
 };
 
-const CARD_STEP = "calc(25.1455rem + 1.875rem)";
+const DRAG_THRESHOLD = 48;
 
 export function TestimonialsCarousel({ reviews }: TestimonialsCarouselProps) {
   const [activeGroup, setActiveGroup] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [cardStep, setCardStep] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const dragStartX = useRef(0);
+
+  useEffect(() => {
+    const updateCardStep = () => {
+      const track = trackRef.current;
+      const firstCard = track?.querySelector<HTMLElement>(".review-card");
+      if (!track || !firstCard) return;
+
+      const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
+      setCardStep(firstCard.getBoundingClientRect().width + gap);
+    };
+
+    updateCardStep();
+    window.addEventListener("resize", updateCardStep);
+    return () => window.removeEventListener("resize", updateCardStep);
+  }, []);
+
+  const endDrag = () => {
+    if (!isDragging) return;
+
+    if (dragOffset <= -DRAG_THRESHOLD) {
+      setActiveGroup(1);
+    } else if (dragOffset >= DRAG_THRESHOLD) {
+      setActiveGroup(0);
+    }
+
+    setIsDragging(false);
+    setDragOffset(0);
+  };
 
   return (
     <>
-      <div className="reviews-rail">
+      <div
+        className="reviews-rail"
+        onPointerDown={(event) => {
+          event.currentTarget.setPointerCapture(event.pointerId);
+          dragStartX.current = event.clientX;
+          setIsDragging(true);
+        }}
+        onPointerMove={(event) => {
+          if (!isDragging) return;
+          setDragOffset(event.clientX - dragStartX.current);
+        }}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onLostPointerCapture={endDrag}
+      >
         <div
-          className="reviews-track"
+          ref={trackRef}
+          className={`reviews-track${isDragging ? " is-dragging" : ""}`}
           style={{
-            transform: `translate3d(calc(${activeGroup} * -1 * ${CARD_STEP}), 0, 0)`,
+            transform: `translate3d(${activeGroup * -cardStep + dragOffset}px, 0, 0)`,
           }}
         >
           {reviews.map((review) => (
@@ -40,6 +88,7 @@ export function TestimonialsCarousel({ reviews }: TestimonialsCarouselProps) {
                 <img
                   src={`/assets/images/${review.avatar}`}
                   alt={review.name}
+                  draggable={false}
                 />
                 <div>
                   <h3>{review.name}</h3>

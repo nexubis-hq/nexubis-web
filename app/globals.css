@@ -1185,6 +1185,7 @@ ul {
   height: 3rem;
   flex: 0 0 3rem;
   border-radius: 999px;
+  background-color: var(--primary);
   object-fit: cover;
 }
 
@@ -1291,11 +1292,14 @@ ul {
 
   .reviews-rail {
     display: block;
-    width: calc((25.1455rem * 3) + (1.875rem * 2));
+    width: 100%;
     max-width: 100%;
     height: 32rem;
     margin-top: 5.574rem;
+    cursor: grab;
     overflow: hidden;
+    touch-action: pan-y;
+    user-select: none;
   }
 
   .reviews-track {
@@ -1308,9 +1312,13 @@ ul {
     transition: transform 0.3s ease;
   }
 
+  .reviews-track.is-dragging {
+    transition: none;
+  }
+
   .review-card {
-    width: 25.1455rem;
-    flex: 0 0 25.1455rem;
+    width: calc((100% - 3.75rem) / 3);
+    flex: 0 0 calc((100% - 3.75rem) / 3);
   }
 
   .review-card-name {
