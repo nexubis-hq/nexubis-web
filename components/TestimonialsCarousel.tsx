@@ -33,8 +33,11 @@ export function TestimonialsCarousel({ reviews }: TestimonialsCarouselProps) {
       const firstCard = track?.querySelector<HTMLElement>(".review-card");
       if (!track || !firstCard) return;
 
-      const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
-      setCardStep(firstCard.getBoundingClientRect().width + gap);
+      const trackStyles = getComputedStyle(track);
+      const cardStyles = getComputedStyle(firstCard);
+      const gap = Number.parseFloat(trackStyles.columnGap) || 0;
+      const marginRight = Number.parseFloat(cardStyles.marginRight) || 0;
+      setCardStep(firstCard.getBoundingClientRect().width + gap + marginRight);
 
       const mobileGroups = window.matchMedia("(max-width: 479px)").matches;
       const nextGroupCount = mobileGroups
