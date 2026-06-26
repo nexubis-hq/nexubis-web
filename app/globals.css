@@ -1504,9 +1504,16 @@ ul {
 }
 
 .steps-grid {
+  counter-reset: steps;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 2rem;
+}
+
+.steps-section .section-heading {
+  width: calc((100% + 2rem) * 2 / 3 - 2rem);
+  max-width: none;
+  margin-bottom: 7rem;
 }
 
 .step-card {
@@ -1518,34 +1525,45 @@ ul {
 
 .step-card-header {
   position: relative;
-  min-height: 9.5rem;
+  min-height: 0;
   border-radius: 6px;
   background: var(--surface);
   padding: 1.25rem 0.88rem;
 }
 
+.step-card-header::before {
+  position: absolute;
+  z-index: 0;
+  top: 15%;
+  right: 5%;
+  color: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--primary), white 80%),
+    transparent 20%
+  );
+  content: "0" counter(steps);
+  counter-increment: steps;
+  font-size: calc(4.5rem * 0.45);
+  font-weight: 600;
+}
+
 .step-card-header h3 {
   position: relative;
   z-index: 1;
-  max-width: 13rem;
+  max-width: 90%;
   color: var(--black);
   font-size: var(--p-lg);
-  line-height: 1.15;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .step-card-header span {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  color: color-mix(in srgb, var(--primary), transparent 68%);
-  font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-size: clamp(2.25rem, 4vw, 3.5rem);
-  font-weight: 600;
+  display: none;
 }
 
 .step-card-body {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   min-height: 16.88rem;
   margin-top: 0.5rem;
   border-radius: 6px;
@@ -1562,8 +1580,16 @@ ul {
 }
 
 .step-img {
-  object-fit: contain;
+  position: static;
+  display: inline-block;
+  height: auto;
+  object-fit: fill;
   padding: 0;
+}
+
+.step-bg {
+  opacity: 0.05;
+  pointer-events: none;
 }
 
 .faq-section {
@@ -2056,6 +2082,16 @@ ul {
 
   .usp-section .comparison-card {
     padding: 24.369px;
+  }
+
+  .usp-section .comparison-row {
+    flex-direction: column;
+  }
+
+  .usp-section .comparison-column {
+    width: 100%;
+    max-width: 100%;
+    flex: 1 1 100%;
   }
 
   .usp-section .check-list {
