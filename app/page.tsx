@@ -519,12 +519,24 @@ function Reviews() {
                 <div>
                   <h3>{review.name}</h3>
                   <p>
-                    {review.role} at {review.company}
+                    {review.role} at of {review.company}
                   </p>
                 </div>
               </div>
             </article>
           ))}
+        </div>
+        <div className="reviews-pagination" aria-hidden="true">
+          <span className="review-bullet" />
+          <span className="review-bullet review-bullet-active" />
+        </div>
+        <div className="reviews-slider-arrows" aria-hidden="true">
+          <button type="button" tabIndex={-1}>
+            Previous
+          </button>
+          <button type="button" tabIndex={-1}>
+            Next
+          </button>
         </div>
       </div>
     </section>
