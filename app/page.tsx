@@ -505,30 +505,32 @@ function Reviews() {
         </div>
 
         <div className="reviews-rail">
-          {reviews.map((review) => (
-            <article className="review-card" key={review.name}>
-              <p className="review-card-name">{review.name}</p>
-              <p className="review-message">{review.first}</p>
-              <p className="review-message">{review.second}</p>
-              <p className="review-message reply">{review.reply}</p>
-              <div className="review-profile">
-                <img
-                  src={`/assets/images/${review.avatar}`}
-                  alt={review.name}
-                />
-                <div>
-                  <h3>{review.name}</h3>
-                  <p>
-                    {review.role} at of {review.company}
-                  </p>
+          <div className="reviews-track">
+            {reviews.map((review) => (
+              <article className="review-card" key={review.name}>
+                <p className="review-card-name">{review.name}</p>
+                <p className="review-message">{review.first}</p>
+                <p className="review-message">{review.second}</p>
+                <p className="review-message reply">{review.reply}</p>
+                <div className="review-profile">
+                  <img
+                    src={`/assets/images/${review.avatar}`}
+                    alt={review.name}
+                  />
+                  <div>
+                    <h3>{review.name}</h3>
+                    <p>
+                      {review.role} at of {review.company}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))}
+          </div>
         </div>
         <div className="reviews-pagination" aria-hidden="true">
-          <span className="review-bullet" />
           <span className="review-bullet review-bullet-active" />
+          <span className="review-bullet" />
         </div>
         <div className="reviews-slider-arrows" aria-hidden="true">
           <button type="button" tabIndex={-1}>

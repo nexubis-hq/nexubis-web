@@ -1201,6 +1201,10 @@ ul {
   line-height: 1.4;
 }
 
+.reviews-section {
+  background: var(--surface);
+}
+
 .reviews-pagination,
 .reviews-slider-arrows {
   display: none;
@@ -1286,13 +1290,26 @@ ul {
   }
 
   .reviews-rail {
-    gap: 1.5rem;
+    display: block;
+    width: calc((25.1455rem * 3) + (1.875rem * 2));
+    max-width: 100%;
+    height: 32rem;
     margin-top: 4rem;
+    overflow: hidden;
+  }
+
+  .reviews-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    gap: 1.875rem;
+    overflow: visible;
+    transform: translate3d(0, 0, 0);
   }
 
   .review-card {
     width: 25.1455rem;
-    flex-basis: 25.1455rem;
+    flex: 0 0 25.1455rem;
   }
 
   .review-card-name {
