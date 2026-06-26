@@ -1516,6 +1516,11 @@ ul {
   margin-bottom: 7rem;
 }
 
+.steps-section .section-heading h2 {
+  margin-top: 0;
+  text-wrap: balance;
+}
+
 .step-card {
   overflow: visible;
   border-radius: 0;
@@ -2059,6 +2064,25 @@ ul {
 
   .cloud-cta h2 {
     font-size: clamp(4.4rem, 22vw, 8rem);
+  }
+
+  .steps-section .section-heading {
+    margin-bottom: 5rem;
+  }
+
+  .steps-section .section-heading h2 {
+    margin-top: 1rem;
+    text-wrap: normal;
+    font-size: 1.5rem;
+    line-height: 1.15;
+  }
+
+  .steps-section .mobile-break {
+    display: inline;
+  }
+
+  .step-card-header {
+    min-height: 0;
   }
 }
 

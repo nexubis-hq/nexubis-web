@@ -610,7 +610,13 @@ function Steps() {
       <div className="site-container">
         <div className="section-heading centered">
           <Eyebrow icon="process">Process</Eyebrow>
-          <h2>Our 4 step plan to a project you’re proud of</h2>
+          <h2>
+            Our 4 step plan to a
+            <span className="mobile-break">
+              <br />
+            </span>
+            project&nbsp;&nbsp;you’re proud of
+          </h2>
         </div>
 
         <div className="steps-grid">
