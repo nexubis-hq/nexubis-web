@@ -3,6 +3,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, RocketIcon } from "@/components/SiteHeader";
 import { NexubisLogo } from "@/components/NexubisLogo";
 import { WorkSection } from "@/components/WorkSection";
+import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 
 const logos = [
   ["altify.svg", "Altify", "https://altify.app/"],
@@ -504,34 +505,7 @@ function Reviews() {
           <h2>Every company should have the right website partner</h2>
         </div>
 
-        <div className="reviews-rail">
-          <div className="reviews-track">
-            {reviews.map((review) => (
-              <article className="review-card" key={review.name}>
-                <p className="review-card-name">{review.name}</p>
-                <p className="review-message">{review.first}</p>
-                <p className="review-message">{review.second}</p>
-                <p className="review-message reply">{review.reply}</p>
-                <div className="review-profile">
-                  <img
-                    src={`/assets/images/${review.avatar}`}
-                    alt={review.name}
-                  />
-                  <div>
-                    <h3>{review.name}</h3>
-                    <p>
-                      {review.role} at of {review.company}
-                    </p>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-        <div className="reviews-pagination" aria-hidden="true">
-          <span className="review-bullet review-bullet-active" />
-          <span className="review-bullet" />
-        </div>
+        <TestimonialsCarousel reviews={reviews} />
         <div className="reviews-slider-arrows" aria-hidden="true">
           <button type="button" tabIndex={-1}>
             Previous
