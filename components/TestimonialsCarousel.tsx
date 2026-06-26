@@ -23,31 +23,40 @@ export function TestimonialsCarousel({ reviews }: TestimonialsCarouselProps) {
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [cardStep, setCardStep] = useState(0);
+  const [groupCount, setGroupCount] = useState(2);
   const trackRef = useRef<HTMLDivElement>(null);
   const dragStartX = useRef(0);
 
   useEffect(() => {
-    const updateCardStep = () => {
+    const updateCarouselMetrics = () => {
       const track = trackRef.current;
       const firstCard = track?.querySelector<HTMLElement>(".review-card");
       if (!track || !firstCard) return;
 
       const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
       setCardStep(firstCard.getBoundingClientRect().width + gap);
+
+      const mobileGroups = window.matchMedia("(max-width: 479px)").matches;
+      const nextGroupCount = mobileGroups
+        ? reviews.length
+        : Math.max(1, reviews.length - 2);
+
+      setGroupCount(nextGroupCount);
+      setActiveGroup((group) => Math.min(group, nextGroupCount - 1));
     };
 
-    updateCardStep();
-    window.addEventListener("resize", updateCardStep);
-    return () => window.removeEventListener("resize", updateCardStep);
-  }, []);
+    updateCarouselMetrics();
+    window.addEventListener("resize", updateCarouselMetrics);
+    return () => window.removeEventListener("resize", updateCarouselMetrics);
+  }, [reviews.length]);
 
   const endDrag = () => {
     if (!isDragging) return;
 
     if (dragOffset <= -DRAG_THRESHOLD) {
-      setActiveGroup(1);
+      setActiveGroup((group) => Math.min(groupCount - 1, group + 1));
     } else if (dragOffset >= DRAG_THRESHOLD) {
-      setActiveGroup(0);
+      setActiveGroup((group) => Math.max(0, group - 1));
     }
 
     setIsDragging(false);
@@ -102,7 +111,7 @@ export function TestimonialsCarousel({ reviews }: TestimonialsCarouselProps) {
         </div>
       </div>
       <div className="reviews-pagination" aria-label="Testimonials slides">
-        {[0, 1].map((group) => (
+        {Array.from({ length: groupCount }, (_, group) => (
           <button
             className={
               group === activeGroup

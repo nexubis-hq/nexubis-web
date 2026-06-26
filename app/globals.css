@@ -1986,6 +1986,104 @@ ul {
     font-size: clamp(1.75rem, 8.5vw, 2rem);
   }
 
+  .reviews-section .site-container {
+    width: 88%;
+    max-width: var(--container);
+  }
+
+  .reviews-heading {
+    width: 100%;
+    max-width: none;
+    margin-top: 4rem;
+    margin-bottom: 0;
+  }
+
+  .reviews-heading h2 {
+    width: 100%;
+    margin-top: 1rem;
+    font-size: 2rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    overflow-wrap: normal;
+  }
+
+  .reviews-rail {
+    display: block;
+    width: 100%;
+    height: 32rem;
+    margin-top: 4rem;
+    cursor: grab;
+    overflow: hidden;
+    touch-action: pan-y;
+    user-select: none;
+  }
+
+  .reviews-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    gap: 1.875rem;
+    overflow: visible;
+    transform: translate3d(0, 0, 0);
+    transition: transform 0.3s ease;
+  }
+
+  .reviews-track.is-dragging {
+    transition: none;
+  }
+
+  .review-card {
+    width: 100%;
+    flex: 0 0 100%;
+  }
+
+  .review-card-name {
+    margin-bottom: 1rem;
+  }
+
+  .review-profile img {
+    width: 1.8076rem;
+    height: 1.8076rem;
+    flex: 0 0 1.8076rem;
+  }
+
+  .review-profile h3 {
+    color: var(--black);
+    font-family: var(--font-inter);
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  .review-profile p {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+
+  .reviews-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-top: 4rem;
+  }
+
+  .review-bullet {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 999vw;
+    background-color: var(--mid);
+    cursor: pointer;
+  }
+
+  .review-bullet-active {
+    background-color: var(--primary);
+  }
+
   .review-copy p {
     font-size: 1.25rem;
   }
