@@ -551,30 +551,40 @@ function Comparison() {
   return (
     <section className="section usp-section">
       <div className="site-container">
-        <div className="section-heading centered">
-          <div className="avatar-stack">
-            {[
-              "avatar-1.png",
-              "avatar-2.png",
-              "avatar-4.png",
-              "avatar-3.png",
-            ].map((avatar) => (
-              <img key={avatar} src={`/assets/images/${avatar}`} alt="" />
-            ))}
+        <div className="usp-layout-row usp-layout-row-center">
+          <div className="usp-layout-col usp-layout-col-lg-8">
+            <div className="section-heading centered">
+              <div className="avatar-stack">
+                {[
+                  "avatar-1.png",
+                  "avatar-2.png",
+                  "avatar-4.png",
+                  "avatar-3.png",
+                ].map((avatar) => (
+                  <span className="avatar-wrap" key={avatar}>
+                    <img src={`/assets/images/${avatar}`} alt="" />
+                  </span>
+                ))}
+              </div>
+              <h2>Limitless Creativity, Powered by a Dedicated Team</h2>
+            </div>
           </div>
-          <h2>Limitless Creativity, Powered by a Dedicated Team</h2>
         </div>
 
         <div className="comparison-card-wrap">
-          <div className="comparison-card">
-            <div className="comparison-row">
-              <div className="comparison-column">
-                <NexubisLogo className="comparison-logo" />
-                <CheckList items={nexubis} red />
-              </div>
-              <div className="comparison-column">
-                <h3>Other agencies</h3>
-                <CheckList items={others} />
+          <div className="usp-layout-row usp-layout-row-center">
+            <div className="usp-layout-col usp-layout-col-lg-8">
+              <div className="comparison-card">
+                <div className="comparison-row">
+                  <div className="comparison-column">
+                    <NexubisLogo className="comparison-logo" />
+                    <CheckList items={nexubis} red />
+                  </div>
+                  <div className="comparison-column">
+                    <h3>Other agencies</h3>
+                    <CheckList items={others} />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
