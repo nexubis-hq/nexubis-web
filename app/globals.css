@@ -1382,30 +1382,65 @@ ul {
   margin-left: 0;
 }
 
+.usp-section {
+  background: var(--surface);
+}
+
+.usp-section .section-heading {
+  width: calc((100% + 2rem) * 2 / 3 - 2rem);
+  max-width: none;
+  margin-bottom: 0;
+}
+
+.usp-section .section-heading h2 {
+  margin-top: 0;
+  margin-bottom: 0.42em;
+}
+
+.comparison-card-wrap {
+  width: 100%;
+  margin-top: 3rem;
+}
+
 .comparison-card {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  overflow: hidden;
-  width: min(100%, 58.333rem);
+  width: calc((100% + 2rem) * 2 / 3 - 2rem);
   margin-inline: auto;
+  padding: 2rem;
   border-radius: 1rem;
   background: var(--white);
 }
 
+.comparison-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -1rem;
+  margin-bottom: -2rem;
+  margin-left: -1rem;
+}
+
 .comparison-column {
-  padding: 2rem;
+  width: 50%;
+  max-width: 50%;
+  flex: 0 0 50%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-bottom: 2rem;
 }
 
 .comparison-logo {
   width: auto;
   height: 2.25rem;
-  margin-bottom: 2rem;
 }
 
 .comparison-column h3 {
-  margin-bottom: 2rem;
+  margin: 0;
   font-size: var(--h4);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.check-list {
+  margin-top: 2rem;
 }
 
 .check-list li {
@@ -1424,9 +1459,9 @@ ul {
 
 .check-list li::before {
   content: "";
-  width: 1.35rem;
-  height: 1.35rem;
-  flex: 0 0 1.35rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 1.5rem;
   background: url("/assets/images/check-grey.svg") center / contain no-repeat;
 }
 

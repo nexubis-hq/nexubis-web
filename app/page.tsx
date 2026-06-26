@@ -565,14 +565,18 @@ function Comparison() {
           <h2>Limitless Creativity, Powered by a Dedicated Team</h2>
         </div>
 
-        <div className="comparison-card">
-          <div className="comparison-column">
-            <NexubisLogo className="comparison-logo" />
-            <CheckList items={nexubis} red />
-          </div>
-          <div className="comparison-column">
-            <h3>Other agencies</h3>
-            <CheckList items={others} />
+        <div className="comparison-card-wrap">
+          <div className="comparison-card">
+            <div className="comparison-row">
+              <div className="comparison-column">
+                <NexubisLogo className="comparison-logo" />
+                <CheckList items={nexubis} red />
+              </div>
+              <div className="comparison-column">
+                <h3>Other agencies</h3>
+                <CheckList items={others} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
