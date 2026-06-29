@@ -1606,15 +1606,23 @@ ul {
 .faq-layout {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: var(--s-5);
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -1rem;
+  margin-bottom: -2rem;
+  margin-left: -1rem;
+  gap: 0;
+  justify-content: space-between;
   align-items: start;
 }
 
 .faq-intro {
   position: sticky;
   top: 7rem;
+  flex: 0 0 41.6667%;
+  max-width: 41.6667%;
+  margin-bottom: 2rem;
+  padding-inline: 1rem;
 }
 
 .faq-intro h2 {
@@ -1632,6 +1640,10 @@ ul {
 
 .faq-list {
   display: block;
+  flex: 0 0 50%;
+  max-width: 50%;
+  margin-bottom: 2rem;
+  padding-inline: 1rem;
 }
 
 .faq-list details {
@@ -1639,7 +1651,7 @@ ul {
   border-radius: 0.5rem;
   background: var(--white);
   margin-bottom: 1rem;
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem clamp(1.125rem, 0.9618rem + 0.68vw, 1.5rem);
 }
 
 .faq-list details:last-child {
@@ -1677,9 +1689,8 @@ ul {
 }
 
 .chevron {
-  width: 1.5rem;
-  height: 1.5rem;
-  flex: 0 0 1.5rem;
+  width: clamp(1.125rem, 0.9618rem + 0.68vw, 1.5rem);
+  height: clamp(1.125rem, 0.9618rem + 0.68vw, 1.5rem);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
@@ -1694,34 +1705,6 @@ ul {
   bottom: -5%;
   width: 33vw;
   opacity: 1;
-}
-
-@media (min-width: 992px) {
-  .faq-layout {
-    display: flex;
-    width: auto;
-    margin-right: -1rem;
-    margin-bottom: -2rem;
-    margin-left: -1rem;
-    gap: 0;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-
-  .faq-intro {
-    flex: 0 0 41.6667%;
-    max-width: 41.6667%;
-    margin-bottom: 2rem;
-    padding-inline: 1rem;
-    top: var(--s-8);
-  }
-
-  .faq-list {
-    flex: 0 0 50%;
-    max-width: 50%;
-    margin-bottom: 2rem;
-    padding-inline: 1rem;
-  }
 }
 
 .cloud-cta {
@@ -1948,8 +1931,7 @@ ul {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .featured-review,
-  .faq-layout {
+  .featured-review {
     grid-template-columns: 1fr;
   }
 
@@ -1986,8 +1968,19 @@ ul {
     object-fit: cover;
   }
 
+  .faq-section {
+    padding-block: var(--s-5);
+  }
+
+  .faq-intro,
+  .faq-list {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+
   .faq-intro {
-    position: static;
+    position: relative;
+    top: 0;
   }
 
   .footer-bottom {
@@ -2000,6 +1993,20 @@ ul {
 }
 
 @media (max-width: 767px) {
+  .faq-section {
+    padding-block: var(--s-4);
+  }
+
+  .faq-section > .site-container {
+    width: 88%;
+    max-width: var(--container);
+  }
+
+  .faq-intro p,
+  .faq-list summary {
+    font-size: 1.1rem;
+  }
+
   .solutions-section {
     padding-block: var(--s-4);
   }
@@ -2127,6 +2134,12 @@ ul {
 }
 
 @media (max-width: 479px) {
+  .faq-intro h2 {
+    font-size: 2rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
   .steps-section {
     padding-block: var(--s-4);
   }
