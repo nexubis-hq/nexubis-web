@@ -649,27 +649,40 @@ function Steps() {
 function Faq() {
   return (
     <section className="section faq-section">
-      <div className="site-container faq-layout">
-        <div className="faq-intro">
-          <h2>What would you like to know about Nexubis?</h2>
-          <p>
-            We&apos;re here to help! Explore our FAQs to learn more about our
-            services, process, and how we can bring your vision to life.
-          </p>
-        </div>
+      <div className="site-container">
+        <div className="faq-layout">
+          <div className="faq-intro">
+            <h2>What would you like to know about Nexubis?</h2>
+            <p>
+              We&apos;re here to help! Explore our FAQs to learn more about our
+              services, process, and how we can bring your vision to life.
+            </p>
+          </div>
 
-        <div className="faq-list">
-          {faqs.map(([question, answer]) => (
-            <details key={question}>
-              <summary>
-                <span>{question}</span>
-                <svg className="chevron" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                </svg>
-              </summary>
-              <p>{answer}</p>
-            </details>
-          ))}
+          <div className="faq-list">
+            {faqs.map(([question, answer]) => (
+              <details key={question} name="homepage-faq">
+                <summary>
+                  <span>{question}</span>
+                  <svg
+                    className="chevron"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M19.5 8.25L12 15.75L4.5 8.25"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </summary>
+                <p>{answer}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </div>
       <img className="faq-bg" src="/assets/images/bg-mark.svg" alt="" />
