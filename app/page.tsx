@@ -615,7 +615,7 @@ function Steps() {
             <span className="mobile-break">
               <br />
             </span>
-            project&nbsp;&nbsp;you’re proud of
+            {" "}project&nbsp;&nbsp;you’re proud of
           </h2>
         </div>
 
