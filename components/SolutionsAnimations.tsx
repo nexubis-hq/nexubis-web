@@ -24,7 +24,7 @@ export function SolutionsAnimations() {
               y: 0,
               duration: 1,
               delay: (index + 1) * 0.1,
-              ease: "power4.out",
+              ease: "power3.out",
               scrollTrigger: {
                 trigger: card,
                 start: "top 95%",
