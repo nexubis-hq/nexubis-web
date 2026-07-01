@@ -1,13 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import { NexubisLogo } from "@/components/NexubisLogo";
 
 const navLinks = [
-  { label: "Case Studies", href: "/work", icon: "grid" },
-  { label: "Packages", href: "/packages", icon: "wallet" },
-  { label: "Dreamlab", href: "/blog", icon: "flask" },
+  { label: "Case Studies", href: "https://www.nexubis.io/work", icon: "grid" },
+  { label: "Packages", href: "https://www.nexubis.io/packages", icon: "wallet" },
+  { label: "Dreamlab", href: "https://www.nexubis.io/blog", icon: "flask" },
 ];
 
 export function SiteHeader() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <header className="site-header">
       <div className="site-container nav-container">
@@ -15,10 +20,19 @@ export function SiteHeader() {
           <NexubisLogo className="nav-logo" />
         </Link>
 
-        <nav className="nav-menu" aria-label="Main navigation">
+        <nav
+          id="main-navigation"
+          className={menuOpen ? "nav-menu nav-menu-open" : "nav-menu"}
+          aria-label="Main navigation"
+        >
           <div className="nav-menu-links">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="nav-link">
+              <Link
+                key={link.href}
+                href={link.href}
+                className="nav-link"
+                onClick={() => setMenuOpen(false)}
+              >
                 <NavIcon type={link.icon} />
                 <span>{link.label}</span>
                 {link.icon === "grid" && <NavArrow />}
@@ -26,7 +40,11 @@ export function SiteHeader() {
             ))}
           </div>
 
-          <Link href="/contact" className="btn btn-primary nav-cta">
+          <Link
+            href="https://www.nexubis.io/contact"
+            className="btn btn-primary nav-cta"
+            onClick={() => setMenuOpen(false)}
+          >
             <span className="nav-cta-icon">
               <RocketIcon />
             </span>
@@ -37,7 +55,10 @@ export function SiteHeader() {
         <button
           className="mobile-menu-button"
           type="button"
-          aria-label="Open menu"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-controls="main-navigation"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
         >
           <span />
           <span />

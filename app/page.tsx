@@ -234,11 +234,17 @@ function Hero() {
               Partner for startups and established businesses
             </p>
             <div className="btn-group hero-buttons">
-              <Link href="/contact" className="btn btn-primary hero-primary">
+              <Link
+                href="https://www.nexubis.io/contact"
+                className="btn btn-primary hero-primary"
+              >
                 <RocketIcon />
                 <span>Get Started</span>
               </Link>
-              <Link href="/packages" className="btn btn-secondary">
+              <Link
+                href="https://www.nexubis.io/packages"
+                className="btn btn-secondary"
+              >
                 Our Packages
               </Link>
             </div>
@@ -250,6 +256,7 @@ function Hero() {
             <div className="hero-reel-wrap">
               <div className="hero-reel-video">
                 <video
+                  autoPlay
                   muted
                   loop
                   playsInline

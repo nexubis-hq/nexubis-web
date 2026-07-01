@@ -3,8 +3,8 @@ import { NexubisLogo } from "@/components/NexubisLogo";
 
 const footerLinks = [
   { label: "Work", href: "/#work" },
-  { label: "Contact", href: "/contact" },
-  { label: "Packages", href: "/packages" },
+  { label: "Contact", href: "https://www.nexubis.io/contact" },
+  { label: "Packages", href: "https://www.nexubis.io/packages" },
 ];
 
 const socialLinks = [
