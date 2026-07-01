@@ -105,7 +105,7 @@ export function TestimonialsCarousel({ reviews }: TestimonialsCarouselProps) {
                 <div>
                   <h3>{review.name}</h3>
                   <p>
-                    {review.role} at of {review.company}
+                    {review.role} of {review.company}
                   </p>
                 </div>
               </div>

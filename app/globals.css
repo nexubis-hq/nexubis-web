@@ -1465,6 +1465,31 @@ button.nav-link {
     letter-spacing: 0;
   }
 
+  @media (max-width: 1199px) {
+    .review-card {
+      padding: 1.25rem;
+    }
+
+    .review-profile {
+      gap: 0.625rem;
+    }
+
+    .review-profile img {
+      width: 2.5rem;
+      height: 2.5rem;
+      flex-basis: 2.5rem;
+    }
+
+    .review-profile h3 {
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    .review-profile p {
+      line-height: 1.4;
+    }
+  }
+
   .reviews-pagination {
     display: flex;
     justify-content: center;
