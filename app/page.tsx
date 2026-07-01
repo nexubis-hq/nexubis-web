@@ -4,6 +4,7 @@ import { SiteHeader, RocketIcon } from "@/components/SiteHeader";
 import { NexubisLogo } from "@/components/NexubisLogo";
 import { WorkSection } from "@/components/WorkSection";
 import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
+import { HeroAnimations } from "@/components/HeroAnimations";
 
 const logos = [
   ["altify.svg", "Altify", "https://altify.app/"],
@@ -218,6 +219,7 @@ export default function Home() {
 function Hero() {
   return (
     <section className="hero-section section">
+      <HeroAnimations />
       <div className="site-container hero-inner">
         <div className="hero-row">
           <div className="hero-col hero-title-wrap">
@@ -236,10 +238,12 @@ function Hero() {
             <div className="btn-group hero-buttons">
               <Link
                 href="https://www.nexubis.io/contact"
-                className="btn btn-primary hero-primary"
+                className="btn btn-primary hero-primary rocket-button"
               >
-                <RocketIcon />
-                <span>Get Started</span>
+                <span className="rocket-button-icon">
+                  <RocketIcon />
+                </span>
+                <span className="rocket-button-text">Get Started</span>
               </Link>
               <Link
                 href="https://www.nexubis.io/packages"
@@ -260,6 +264,7 @@ function Hero() {
                   muted
                   loop
                   playsInline
+                  preload="metadata"
                   poster="/assets/images/reel_draft.jpg"
                 >
                   <source

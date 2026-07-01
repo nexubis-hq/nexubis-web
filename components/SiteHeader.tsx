@@ -117,13 +117,13 @@ export function SiteHeader() {
 
           <Link
             href="https://www.nexubis.io/contact"
-            className="btn btn-primary nav-cta"
+            className="btn btn-primary nav-cta rocket-button"
             onClick={closeMenus}
           >
-            <span className="nav-cta-icon">
+            <span className="nav-cta-icon rocket-button-icon">
               <RocketIcon />
             </span>
-            <span className="nav-cta-text">Get Started</span>
+            <span className="nav-cta-text rocket-button-text">Get Started</span>
           </Link>
 
           <button

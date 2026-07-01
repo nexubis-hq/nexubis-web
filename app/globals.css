@@ -373,13 +373,13 @@ button.nav-link {
   transition: left 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.nav-cta:hover .nav-cta-icon,
-.nav-cta:focus-visible .nav-cta-icon {
+.rocket-button:hover .rocket-button-icon,
+.rocket-button:focus-visible .rocket-button-icon {
   transform: scale(1);
 }
 
-.nav-cta:hover .nav-cta-text,
-.nav-cta:focus-visible .nav-cta-text {
+.rocket-button:hover .rocket-button-text,
+.rocket-button:focus-visible .rocket-button-text {
   left: 0;
 }
 
@@ -502,17 +502,26 @@ button.nav-link {
   max-width: 100%;
 }
 
-.hero-primary svg {
+.hero-primary .rocket-button-icon {
+  display: block;
   width: 1.4375rem;
   max-width: 1.5rem;
   height: 1.4375rem;
   overflow: visible;
   transform: scale(0);
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.hero-primary span {
+.hero-primary .rocket-button-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-primary .rocket-button-text {
   position: relative;
   left: -15px;
+  transition: left 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .hero-reel-row {
@@ -574,7 +583,7 @@ button.nav-link {
 
 .hero-logos {
   display: flex;
-  overflow: visible;
+  overflow: hidden;
   width: 100%;
   max-width: 100%;
 }
@@ -587,6 +596,7 @@ button.nav-link {
   display: flex;
   width: max-content;
   flex: none;
+  will-change: transform;
 }
 
 .hero-logos a {
@@ -2568,11 +2578,11 @@ button.nav-link {
     padding-block: 4rem;
   }
 
-  .hero-primary svg {
+  .hero-primary .rocket-button-icon {
     display: none;
   }
 
-  .hero-primary span {
+  .hero-primary .rocket-button-text {
     position: static;
   }
 
