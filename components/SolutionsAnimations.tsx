@@ -34,7 +34,26 @@ export function SolutionsAnimations() {
           ),
         );
 
-        return () => tweens.forEach((tween) => tween.kill());
+        const upstreamLayout = document.querySelector<HTMLElement>(".hero-section");
+        let refreshFrame: number | undefined;
+        const scheduleRefresh = () => {
+          if (refreshFrame !== undefined) return;
+          refreshFrame = requestAnimationFrame(() => {
+            refreshFrame = undefined;
+            ScrollTrigger.refresh();
+          });
+        };
+        const resizeObserver = upstreamLayout ? new ResizeObserver(scheduleRefresh) : null;
+
+        if (upstreamLayout) resizeObserver?.observe(upstreamLayout);
+        window.addEventListener("load", scheduleRefresh);
+
+        return () => {
+          if (refreshFrame !== undefined) cancelAnimationFrame(refreshFrame);
+          resizeObserver?.disconnect();
+          window.removeEventListener("load", scheduleRefresh);
+          tweens.forEach((tween) => tween.kill());
+        };
       });
 
       media.add("(prefers-reduced-motion: reduce)", () => {
