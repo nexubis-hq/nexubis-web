@@ -5,6 +5,7 @@ import { NexubisLogo } from "@/components/NexubisLogo";
 import { WorkSection } from "@/components/WorkSection";
 import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { HeroAnimations } from "@/components/HeroAnimations";
+import { SolutionsAnimations } from "@/components/SolutionsAnimations";
 
 const logos = [
   ["altify.svg", "Altify", "https://altify.app/"],
@@ -451,6 +452,7 @@ function SectionIcon({
 function Solutions() {
   return (
     <section className="section solutions-section">
+      <SolutionsAnimations />
       <div className="site-container">
         <div className="solutions-heading-row">
           <div className="solutions-heading-column">

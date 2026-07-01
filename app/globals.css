@@ -840,6 +840,13 @@ button.nav-link {
   margin-bottom: 0.3em;
   color: var(--black);
   font-size: 0.875rem;
+  transition: border-color 0.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .solution-card-body li:hover {
+    border-color: var(--primary);
+  }
 }
 
 @media (min-width: 992px) {
