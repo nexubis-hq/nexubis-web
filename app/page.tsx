@@ -219,13 +219,20 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="hero-section section">
+    <section className="hero-section section hero-intro-pending">
       <HeroAnimations />
       <div className="site-container hero-inner">
         <div className="hero-row">
           <div className="hero-col hero-title-wrap">
-            <h1>
-              <span>Design, Development </span>— and Growth Powerhouse
+            <h1 aria-label="Design, Development — and Growth Powerhouse">
+              <span className="hero-title-muted">
+                <span className="hero-title-word">Design,</span>{" "}
+                <span className="hero-title-word">Development</span>{" "}
+              </span>
+              <span className="hero-title-word">—</span>{" "}
+              <span className="hero-title-word">and</span>{" "}
+              <span className="hero-title-word">Growth</span>{" "}
+              <span className="hero-title-word">Powerhouse</span>
             </h1>
           </div>
         </div>

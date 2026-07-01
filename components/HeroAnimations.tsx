@@ -9,6 +9,9 @@ gsap.registerPlugin(ScrollTrigger);
 export function HeroAnimations() {
   useLayoutEffect(() => {
     const hero = document.querySelector<HTMLElement>(".hero-section");
+    const background = hero?.querySelector<HTMLElement>(".hero-bg-wrap");
+    const titleWords = hero?.querySelectorAll<HTMLElement>(".hero-title-word");
+    const content = hero?.querySelector<HTMLElement>(".hero-copy");
     const reelRow = hero?.querySelector<HTMLElement>(".hero-reel-row");
     const reel = hero?.querySelector<HTMLElement>(".hero-reel");
     const reelWrap = hero?.querySelector<HTMLElement>(".hero-reel-wrap");
@@ -19,6 +22,9 @@ export function HeroAnimations() {
 
     if (
       !hero ||
+      !background ||
+      !titleWords?.length ||
+      !content ||
       !reelRow ||
       !reel ||
       !reelWrap ||
@@ -61,46 +67,51 @@ export function HeroAnimations() {
           return container ? container.clientWidth / initialReelWidth : 1;
         };
 
-        gsap.set(reel, { transformOrigin: "top left", willChange: "transform" });
-        gsap.set(reelControl, { transformOrigin: "bottom left", willChange: "transform" });
         gsap.set(reelRow, { height: reel.offsetHeight });
 
-        const reelTimeline = gsap.timeline({
-          onUpdate: () => {
-            const reelScale = Number(gsap.getProperty(reel, "scaleX")) || 1;
-            gsap.set(reelControl, { scale: 1 / reelScale });
-          },
-          scrollTrigger: {
-            trigger: reel,
-            start: "top 40%",
-            end: "+=300",
-            scrub: 0.3,
-            invalidateOnRefresh: true,
-          },
-        });
+        let reelTimeline: gsap.core.Timeline | undefined;
+        const createReelTimeline = () => {
+          if (reelTimeline) return;
+          gsap.set(reel, { transformOrigin: "top left", willChange: "transform" });
+          gsap.set(reelControl, { transformOrigin: "bottom left", willChange: "transform" });
 
-        reelTimeline
-          .to(reel, { scale: finalScale, ease: "power1.inOut" }, 0)
-          .to(
-            reelWrap,
-            {
-              padding: 0,
-              borderWidth: () => `${1 / finalScale()}px`,
-              ease: "power1.inOut",
+          reelTimeline = gsap.timeline({
+            onUpdate: () => {
+              const reelScale = Number(gsap.getProperty(reel, "scaleX")) || 1;
+              gsap.set(reelControl, { scale: 1 / reelScale });
             },
-            0,
-          )
-          .to(
-            reelRow,
-            {
-              height: () => {
-                const container = hero.querySelector<HTMLElement>(".hero-inner");
-                return container ? container.clientWidth * (9 / 16) + 2 : reel.offsetHeight;
+            scrollTrigger: {
+              trigger: reel,
+              start: "top 40%",
+              end: "+=300",
+              scrub: 0.3,
+              invalidateOnRefresh: true,
+            },
+          });
+
+          reelTimeline
+            .to(reel, { scale: finalScale, ease: "power1.inOut" }, 0)
+            .to(
+              reelWrap,
+              {
+                padding: 0,
+                borderWidth: () => `${1 / finalScale()}px`,
+                ease: "power1.inOut",
               },
-              ease: "power1.inOut",
-            },
-            0,
-          );
+              0,
+            )
+            .to(
+              reelRow,
+              {
+                height: () => {
+                  const container = hero.querySelector<HTMLElement>(".hero-inner");
+                  return container ? container.clientWidth * (9 / 16) + 2 : reel.offsetHeight;
+                },
+                ease: "power1.inOut",
+              },
+              0,
+            );
+        };
 
         let marqueeTween: gsap.core.Tween;
         const playMarquee = () => {
@@ -118,15 +129,67 @@ export function HeroAnimations() {
         const resizeObserver = new ResizeObserver(playMarquee);
         resizeObserver.observe(logoTrack);
 
+        gsap.set(background, { rotation: 45, scale: 0.01, opacity: 0.075 });
+        gsap.set(titleWords, { filter: "blur(10px)", opacity: 0, x: 20, y: 10 });
+        gsap.set(content, { y: 100, opacity: 0 });
+        gsap.set(reel, { y: 60, opacity: 0 });
+        gsap.set(marquee, { y: 30, opacity: 0 });
+        hero.classList.remove("hero-intro-pending");
+
+        const introTimeline = gsap.timeline({ onComplete: createReelTimeline });
+        introTimeline
+          .to(
+            background,
+            {
+              rotation: 0,
+              scale: 1,
+              opacity: 0.015,
+              duration: 1.2,
+              ease: "power2.inOut",
+              clearProps: "opacity",
+            },
+            0.5,
+          )
+          .to(
+            titleWords,
+            {
+              filter: "blur(0px)",
+              opacity: 1,
+              x: 0,
+              y: 0,
+              duration: 0.8,
+              stagger: 0.1,
+              ease: "power2.out",
+              clearProps: "filter,opacity,transform",
+            },
+            1.8,
+          )
+          .to(
+            content,
+            { y: 0, opacity: 1, duration: 1, ease: "power2.out", clearProps: "opacity,transform" },
+            2.5,
+          )
+          .to(
+            reel,
+            { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", clearProps: "opacity,transform" },
+            2.8,
+          )
+          .to(marquee, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, 3.2);
+
         return () => {
           resizeObserver.disconnect();
           marqueeTween?.kill();
-          reelTimeline.kill();
+          introTimeline.kill();
+          reelTimeline?.kill();
         };
       });
 
       media.add("(prefers-reduced-motion: reduce)", () => {
-        gsap.set([logoTrack, clone, reel, reelRow, reelWrap], { clearProps: "all" });
+        gsap.set(
+          [background, ...titleWords, content, logoTrack, clone, reel, reelRow, reelWrap, marquee],
+          { clearProps: "all" },
+        );
+        hero.classList.remove("hero-intro-pending");
       });
     }, hero);
 
