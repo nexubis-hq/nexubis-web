@@ -1,20 +1,59 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { NexubisLogo } from "@/components/NexubisLogo";
 
-const navLinks = [
-  { label: "Case Studies", href: "https://www.nexubis.io/work", icon: "grid" },
+const caseStudies = [
+  { label: "Circuit", href: "https://www.nexubis.io/work/circuit" },
+  { label: "Oxipack", href: "https://www.nexubis.io/work/oxipack" },
+  { label: "Altify", href: "https://www.nexubis.io/work/altify" },
+];
+
+const desktopLinks = [
   { label: "Packages", href: "https://www.nexubis.io/packages", icon: "wallet" },
   { label: "Dreamlab", href: "https://www.nexubis.io/blog", icon: "flask" },
 ];
 
+const mobileLinks = [
+  { label: "Home", href: "/", icon: "home" },
+  { label: "Dreamlab", href: "https://www.nexubis.io/blog", icon: "flask" },
+  { label: "Pricing", href: "https://www.nexubis.io/packages", icon: "wallet" },
+];
+
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
+  const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+
+  const closeMenus = () => {
+    setMenuOpen(false);
+    setDesktopDropdownOpen(false);
+    setMobileSubmenuOpen(false);
+  };
+
+  useEffect(() => {
+    const onPointerDown = (event: PointerEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) closeMenus();
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeMenus();
+    };
+    const onResize = () => closeMenus();
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", onResize);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
 
   return (
-    <header className="site-header">
+    <header className="site-header" ref={headerRef}>
       <div className="site-container nav-container">
         <Link href="/" className="nav-brand" aria-label="Nexubis home">
           <NexubisLogo className="nav-logo" />
@@ -22,20 +61,56 @@ export function SiteHeader() {
 
         <nav
           id="main-navigation"
-          className={menuOpen ? "nav-menu nav-menu-open" : "nav-menu"}
+          className="nav-menu"
           aria-label="Main navigation"
         >
           <div className="nav-menu-links">
-            {navLinks.map((link) => (
+            <div
+              className="desktop-case-studies"
+              onMouseEnter={() => setDesktopDropdownOpen(true)}
+              onMouseLeave={() => setDesktopDropdownOpen(false)}
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget)) {
+                  setDesktopDropdownOpen(false);
+                }
+              }}
+            >
+              <button
+                className="nav-link desktop-dropdown-toggle"
+                type="button"
+                aria-expanded={desktopDropdownOpen}
+                aria-controls="desktop-case-studies-menu"
+                onClick={() => setDesktopDropdownOpen((open) => !open)}
+              >
+                <NavIcon type="grid" />
+                <span>Case Studies</span>
+                <NavArrow />
+              </button>
+              <div
+                className={
+                  desktopDropdownOpen
+                    ? "desktop-dropdown desktop-dropdown-open"
+                    : "desktop-dropdown"
+                }
+                id="desktop-case-studies-menu"
+              >
+                {caseStudies.map((item) => (
+                  <Link key={item.href} href={item.href} onClick={closeMenus}>
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {desktopLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className="nav-link"
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenus}
               >
                 <NavIcon type={link.icon} />
                 <span>{link.label}</span>
-                {link.icon === "grid" && <NavArrow />}
               </Link>
             ))}
           </div>
@@ -43,33 +118,91 @@ export function SiteHeader() {
           <Link
             href="https://www.nexubis.io/contact"
             className="btn btn-primary nav-cta"
-            onClick={() => setMenuOpen(false)}
+            onClick={closeMenus}
           >
             <span className="nav-cta-icon">
               <RocketIcon />
             </span>
             <span className="nav-cta-text">Get Started</span>
           </Link>
-        </nav>
 
-        <button
-          className="mobile-menu-button"
-          type="button"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-controls="main-navigation"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
+          <button
+            className="mobile-menu-button"
+            type="button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-controls="mobile-navigation"
+            aria-expanded={menuOpen}
+            onClick={() => {
+              setMenuOpen((open) => !open);
+              setMobileSubmenuOpen(false);
+            }}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </nav>
       </div>
+
+      <nav
+        id="mobile-navigation"
+        className={menuOpen ? "mobile-nav-panel mobile-nav-panel-open" : "mobile-nav-panel"}
+        aria-label="Mobile navigation"
+        aria-hidden={!menuOpen}
+      >
+        <div className="mobile-nav-list">
+          {mobileLinks.map((link) => (
+            <Fragment key={link.href}>
+              <Link href={link.href} className="mobile-nav-link" onClick={closeMenus}>
+                <NavIcon type={link.icon} />
+                <span>{link.label}</span>
+              </Link>
+              <span className="mobile-nav-divider" aria-hidden="true" />
+            </Fragment>
+          ))}
+          <div className="mobile-case-studies">
+            <button
+              className="mobile-nav-link mobile-submenu-toggle"
+              type="button"
+              aria-expanded={mobileSubmenuOpen}
+              aria-controls="mobile-case-studies-menu"
+              onClick={() => setMobileSubmenuOpen((open) => !open)}
+            >
+              <NavIcon type="grid" />
+              <span>Case Studies</span>
+              <NavArrow />
+            </button>
+            <div
+              className={
+                mobileSubmenuOpen
+                  ? "mobile-submenu mobile-submenu-open"
+                  : "mobile-submenu"
+              }
+              id="mobile-case-studies-menu"
+            >
+              {[caseStudies[2], caseStudies[0], caseStudies[1]].map((item) => (
+                <Link key={item.href} href={item.href} onClick={closeMenus}>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </nav>
     </header>
   );
 }
 
 function NavIcon({ type }: { type: string }) {
+  if (type === "home") {
+    return (
+      <svg className="nav-link-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 18V15" />
+        <path d="M10.0732 2.81985L3.14319 8.36985C2.36319 8.98985 1.86319 10.2998 2.03319 11.2798L3.36319 19.2398C3.60319 20.6598 4.96319 21.8098 6.40319 21.8098H17.6032C19.0332 21.8098 20.4032 20.6498 20.6432 19.2398L21.9732 11.2798C22.1332 10.2998 21.6332 8.98985 20.8632 8.36985L13.9332 2.82985C12.8632 1.96985 11.1332 1.96985 10.0732 2.81985Z" />
+      </svg>
+    );
+  }
+
   if (type === "grid") {
     return (
       <svg className="nav-link-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
