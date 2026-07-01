@@ -273,7 +273,12 @@ function Hero() {
                     type="video/mp4"
                   />
                 </video>
-                <div className="hero-reel-control" aria-hidden="true">
+                <button
+                  className="hero-reel-control"
+                  type="button"
+                  aria-label="Unmute showreel"
+                  aria-pressed="false"
+                >
                   <svg
                     viewBox="0 0 24 24"
                     className="hero-reel-unmute"
@@ -298,7 +303,7 @@ function Hero() {
                       fill="currentColor"
                     />
                   </svg>
-                </div>
+                </button>
               </div>
             </div>
           </div>
