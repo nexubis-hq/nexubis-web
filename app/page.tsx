@@ -7,6 +7,7 @@ import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { HeroAnimations } from "@/components/HeroAnimations";
 import { SolutionsAnimations } from "@/components/SolutionsAnimations";
 import { WorkAnimations } from "@/components/WorkAnimations";
+import { SectionScrollAnimations } from "@/components/SectionScrollAnimations";
 
 const logos = [
   ["altify.svg", "Altify", "https://altify.app/"],
@@ -522,6 +523,7 @@ function Work() {
 function Reviews() {
   return (
     <section className="section reviews-section">
+      <SectionScrollAnimations />
       <div className="site-container">
         <div className="featured-review">
           <div className="review-copy">
