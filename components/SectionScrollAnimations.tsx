@@ -2,13 +2,10 @@
 
 import { useLayoutEffect } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 type RevealOptions = {
   delay?: number;
-  start: string;
+  viewportOffset: 5 | 10 | 20;
   trigger?: HTMLElement;
 };
 
@@ -57,9 +54,10 @@ export function SectionScrollAnimations() {
     const context = gsap.context(() => {
       media.add("(prefers-reduced-motion: no-preference)", () => {
         const tweens: gsap.core.Tween[] = [];
+        const observers: IntersectionObserver[] = [];
         const reveal = (
           target: HTMLElement | HTMLElement[],
-          { delay = 0, start, trigger }: RevealOptions,
+          { delay = 0, viewportOffset, trigger }: RevealOptions,
         ) => {
           const tween = gsap.fromTo(
             target,
@@ -71,40 +69,50 @@ export function SectionScrollAnimations() {
               delay,
               ease: "power4.out",
               clearProps: "opacity,transform",
-              scrollTrigger: {
-                trigger: trigger ?? (Array.isArray(target) ? target[0] : target),
-                start,
-                once: true,
-              },
+              paused: true,
             },
           );
+          const triggerElement = trigger ?? (Array.isArray(target) ? target[0] : target);
+          const observer = new IntersectionObserver(
+            (entries) => {
+              if (!entries.some((entry) => entry.isIntersecting)) return;
+              tween.play();
+              observer.disconnect();
+            },
+            { rootMargin: `0px 0px -${viewportOffset}% 0px`, threshold: 0 },
+          );
+          observer.observe(triggerElement);
           tweens.push(tween);
+          observers.push(observer);
         };
 
-        if (featuredReview) reveal(featuredReview, { start: "top 90%" });
-        if (reviewsHeading) reveal(reviewsHeading, { start: "top 95%" });
+        if (featuredReview) reveal(featuredReview, { viewportOffset: 10 });
+        if (reviewsHeading) reveal(reviewsHeading, { viewportOffset: 5 });
         if (reviewsRail) {
           reveal(
             [reviewsRail, reviewsPagination, reviewsArrows].filter(
               (target): target is HTMLElement => Boolean(target),
             ),
-            { start: "top 95%", delay: 0.1, trigger: reviewsRail },
+            { viewportOffset: 5, delay: 0.1, trigger: reviewsRail },
           );
         }
 
-        if (uspHeading) reveal(uspHeading, { start: "top 90%" });
-        if (comparison) reveal(comparison, { start: "top 95%", delay: 0.1 });
+        if (uspHeading) reveal(uspHeading, { viewportOffset: 10 });
+        if (comparison) reveal(comparison, { viewportOffset: 5, delay: 0.1 });
 
-        if (stepsHeading) reveal(stepsHeading, { start: "top 90%" });
-        if (stepsGrid) reveal(stepsGrid, { start: "top 95%", delay: 0.1 });
+        if (stepsHeading) reveal(stepsHeading, { viewportOffset: 10 });
+        if (stepsGrid) reveal(stepsGrid, { viewportOffset: 5, delay: 0.1 });
         stepCards.forEach((card, index) => {
-          reveal(card, { start: "top 95%", delay: (index + 1) * 0.1 });
+          reveal(card, { viewportOffset: 5, delay: (index + 1) * 0.1 });
         });
 
-        if (faqIntro) reveal(faqIntro, { start: "top 80%" });
-        if (faqList) reveal(faqList, { start: "top 80%", delay: 0.1 });
+        if (faqIntro) reveal(faqIntro, { viewportOffset: 20 });
+        if (faqList) reveal(faqList, { viewportOffset: 20, delay: 0.1 });
 
-        return () => tweens.forEach((tween) => tween.kill());
+        return () => {
+          observers.forEach((observer) => observer.disconnect());
+          tweens.forEach((tween) => tween.kill());
+        };
       });
 
       media.add("(prefers-reduced-motion: reduce)", () => {
