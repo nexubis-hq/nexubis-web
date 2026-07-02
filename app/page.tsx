@@ -6,6 +6,7 @@ import { WorkSection } from "@/components/WorkSection";
 import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { HeroAnimations } from "@/components/HeroAnimations";
 import { SolutionsAnimations } from "@/components/SolutionsAnimations";
+import { WorkAnimations } from "@/components/WorkAnimations";
 
 const logos = [
   ["altify.svg", "Altify", "https://altify.app/"],
@@ -504,6 +505,7 @@ function Solutions() {
 function Work() {
   return (
     <section id="work" className="section work-section">
+      <WorkAnimations />
       <div className="site-container">
         <div className="section-heading">
           <Eyebrow dark icon="work">
