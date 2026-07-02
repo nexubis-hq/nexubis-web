@@ -39,10 +39,12 @@ export function TestimonialsCarousel({ reviews }: TestimonialsCarouselProps) {
       const marginRight = Number.parseFloat(cardStyles.marginRight) || 0;
       setCardStep(firstCard.getBoundingClientRect().width + gap + marginRight);
 
-      const mobileGroups = window.matchMedia("(max-width: 479px)").matches;
-      const nextGroupCount = mobileGroups
-        ? reviews.length
-        : Math.max(1, reviews.length - 2);
+      const visibleSlides = window.matchMedia("(max-width: 479px)").matches
+        ? 1
+        : window.matchMedia("(max-width: 991px)").matches
+          ? 2
+          : 3;
+      const nextGroupCount = Math.max(1, reviews.length - visibleSlides + 1);
 
       setGroupCount(nextGroupCount);
       setActiveGroup((group) => Math.min(group, nextGroupCount - 1));
