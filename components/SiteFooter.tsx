@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NexubisLogo } from "@/components/NexubisLogo";
+import { FooterAnimations } from "@/components/FooterAnimations";
 
 const footerLinks = [
   { label: "Work", href: "/#work" },
@@ -59,6 +60,7 @@ function FooterWordmark() {
 export function SiteFooter() {
   return (
     <footer className="site-footer">
+      <FooterAnimations />
       <div className="site-container footer-inner">
         <div className="footer-top">
           <FooterWordmark />
