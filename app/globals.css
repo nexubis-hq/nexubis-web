@@ -2909,6 +2909,10 @@ button.nav-link {
     font-size: 1.1rem;
   }
 
+  .hero-reel {
+    width: 58.333333%;
+  }
+
   .cloud-cta {
     height: 25rem;
     min-height: 25rem;
