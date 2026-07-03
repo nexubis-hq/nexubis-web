@@ -541,7 +541,12 @@ function Reviews() {
             </div>
           </div>
           <div className="review-media">
-            <img src="/assets/images/sean-review.png" alt="Sean Sanders" />
+            <img
+              src="/assets/images/sean-review.png"
+              srcSet="/assets/images/sean-review-p-500.png 500w, /assets/images/sean-review-p-800.png 800w, /assets/images/sean-review.png 1024w"
+              sizes="100vw"
+              alt="Sean Sanders"
+            />
           </div>
         </div>
 
