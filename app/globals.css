@@ -616,7 +616,7 @@ button.nav-link {
 }
 
 .hero-logos-space {
-  margin-top: 5rem;
+  margin-top: var(--s-5);
 }
 
 .hero-logos-track {
@@ -2533,7 +2533,7 @@ button.nav-link {
   }
 
   .hero-section {
-    padding-block: 5rem;
+    padding-block: var(--s-5);
   }
 
   .hero-copy {
@@ -2703,7 +2703,7 @@ button.nav-link {
   }
 
   .hero-section {
-    padding-block: 4rem;
+    padding-block: var(--s-4);
   }
 
   .section-heading,
@@ -2890,10 +2890,11 @@ button.nav-link {
 
   .hero-buttons .btn {
     width: 100%;
+    padding: 0.5rem 1rem;
   }
 
   .hero-section {
-    padding-block: 4rem;
+    padding-block: var(--s-4);
   }
 
   .hero-primary .rocket-button-icon {
@@ -2905,7 +2906,7 @@ button.nav-link {
   }
 
   .hero-copy p {
-    font-size: var(--p-lg);
+    font-size: 1.1rem;
   }
 
   .cloud-cta {
