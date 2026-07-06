@@ -37,7 +37,7 @@ export function PackagesPricing() {
       <div className="site-container packages-container">
         <div className="packages-heading">
           <a className="google-rating" href="https://www.google.com/search?q=Nexubis+Reviews" target="_blank" rel="noreferrer" aria-label="Nexubis Google reviews">
-            <span className="google-word">Google</span><span className="google-stars">★★★★★</span>
+            <img src="/assets/images/google-rating.svg" alt="Google five-star rating" />
           </a>
           <h1>All-in-One Creative Packages<br/><span>For a Flat Monthly Fee</span></h1>
           <p>No surprises and no strings attached</p>

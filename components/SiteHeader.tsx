@@ -21,7 +21,7 @@ const mobileLinks = [
   { label: "Pricing", href: "/packages", icon: "wallet" },
 ];
 
-export function SiteHeader() {
+export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
@@ -106,7 +106,11 @@ export function SiteHeader() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="nav-link"
+                className={
+                  activePage === "packages" && link.href === "/packages"
+                    ? "nav-link nav-link-active"
+                    : "nav-link"
+                }
                 onClick={closeMenus}
               >
                 <NavIcon type={link.icon} />

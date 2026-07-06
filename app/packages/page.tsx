@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function PackagesPage() {
-  return <><SiteHeader /><main><PackagesPricing /><PackagesServices /></main></>;
+  return <><SiteHeader activePage="packages" /><main><PackagesPricing /><PackagesServices /></main></>;
 }
