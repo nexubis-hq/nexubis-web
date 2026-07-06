@@ -295,9 +295,16 @@ ul {
 .why-nexubis-heading h2 { display:flex; flex-flow:column nowrap; align-items:center; justify-content:flex-start; margin:0; color:var(--black); font-size:3.75rem; font-weight:500; line-height:1.2; letter-spacing:-.02em; }
 .why-nexubis-heading h2 span { display:block; color:var(--mid); }
 .why-nexubis-comparison { display:flex; align-items:center; justify-content:center; margin-bottom:2rem; padding-inline:1rem; }
-.why-nexubis-lottie-wrapper { width:80%; height:23.2236rem; }
-.why-nexubis-desktop-graphic { width:100%; height:100%; object-fit:contain; object-position:top center; }
-.why-nexubis-mobile-graphic { display:none; }
+.why-nexubis-lottie-wrapper { width:80%; container-type:inline-size; }
+.competitor-lottie { position:relative; width:100%; height:calc(36.83575cqw + 7.59375px); }
+.competitor-lottie-mobile { height:calc(207.58017cqw + 7.59375px); }
+.competitor-lottie-canvas { position:absolute; inset:0 0 7.59375px; overflow:hidden; }
+.competitor-lottie-canvas svg { display:block; width:100%; height:100%; }
+.competitor-lottie-fallback { position:absolute; inset:0 0 7.59375px; width:100%; height:calc(100% - 7.59375px); object-fit:contain; object-position:top center; }
+
+@media (max-width:991px) {
+  .why-nexubis-lottie-wrapper { width:100%; }
+}
 
 /* Packages page — trial CTA section */
 .trial-cta-section { position:relative; padding-block:7rem; background:var(--surface); }
@@ -3248,4 +3255,18 @@ button.nav-link {
   .footer-media {
     display: none;
   }
+}
+
+/* Packages comparison responsive placement (kept after global mobile rules). */
+@media (min-width:480px) and (max-width:991px) {
+  .why-nexubis-section { padding-block:67.4364px; }
+  .why-nexubis-heading { height:auto; margin-bottom:67.4364px; }
+  .why-nexubis-heading h2 { font-size:51.2419px; line-height:1.2; }
+}
+
+@media (max-width:479px) {
+  .why-nexubis-section { padding-block:calc(3.62vw + 18.0992px); }
+  .why-nexubis-container { width:88%; max-width:87.5rem; }
+  .why-nexubis-heading { height:auto; margin-bottom:calc(4.52vw + 22.6432px); }
+  .why-nexubis-heading h2 { font-size:2rem; line-height:1.2; }
 }

@@ -1,3 +1,5 @@
+import { CompetitorComparisonLottie } from "@/components/CompetitorComparisonLottie";
+
 export function PackagesComparison() {
   return (
     <section className="why-nexubis-section section">
@@ -11,12 +13,7 @@ export function PackagesComparison() {
 
         <div className="why-nexubis-comparison">
           <div className="why-nexubis-lottie-wrapper">
-            <img
-              className="why-nexubis-desktop-graphic"
-              src="/assets/images/competitor-comparison-static.png"
-              alt="Cost and team comparison between an in-house team and Nexubis"
-            />
-            <div className="why-nexubis-mobile-graphic" aria-hidden="true" />
+            <CompetitorComparisonLottie />
           </div>
         </div>
       </div>
