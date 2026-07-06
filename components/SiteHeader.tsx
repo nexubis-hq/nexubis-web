@@ -11,14 +11,14 @@ const caseStudies = [
 ];
 
 const desktopLinks = [
-  { label: "Packages", href: "https://www.nexubis.io/packages", icon: "wallet" },
+  { label: "Packages", href: "/packages", icon: "wallet" },
   { label: "Dreamlab", href: "https://www.nexubis.io/blog", icon: "flask" },
 ];
 
 const mobileLinks = [
   { label: "Home", href: "/", icon: "home" },
   { label: "Dreamlab", href: "https://www.nexubis.io/blog", icon: "flask" },
-  { label: "Pricing", href: "https://www.nexubis.io/packages", icon: "wallet" },
+  { label: "Pricing", href: "/packages", icon: "wallet" },
 ];
 
 export function SiteHeader() {

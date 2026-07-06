@@ -216,6 +216,58 @@ ul {
   box-shadow: 0 2px 5px rgb(0 0 0 / 5%);
 }
 
+/* Packages page — first Webflow section */
+.packages-section { background:#fff; padding-top:5rem; padding-bottom:7rem; color:var(--body); overflow:hidden; }
+.packages-container { max-width:87.5rem; }
+.packages-heading { text-align:center; }
+.packages-heading h1 { font-size:4.5rem; line-height:1.1; letter-spacing:-.02em; margin:0 0 .375em; }
+.packages-heading h1 span { color:var(--mid); }
+.packages-heading p { font-size:.875rem; line-height:1.6; margin:0 0 1rem; }
+.google-rating { height:2rem; display:inline-flex; align-items:center; gap:.75rem; margin-bottom:2rem; color:#6f6f6f; }
+.google-word { font-size:1.25rem; font-weight:500; letter-spacing:-.04em; }
+.google-stars { color:var(--primary); font-size:1.15rem; letter-spacing:.12em; }
+.billing-selector { display:flex; justify-content:center; align-items:stretch; gap:.75rem; margin:0 0 3rem; }
+.billing-option { position:relative; display:flex; align-items:center; justify-content:center; gap:.375rem; border:0; border-radius:.5rem; padding:.375rem; background:#fff; color:var(--body); font:400 1rem/1.6 "Inter",Arial,sans-serif; cursor:pointer; }
+.billing-option.selected { background:var(--primary); color:#fff; }
+.billing-option b { position:relative; z-index:1; border-radius:.25rem; background:#f7f7f7; color:var(--body); padding:.3125rem .625rem; font-size:1rem; line-height:1.6; font-weight:400; }
+.packages-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+.package-card { min-width:0; min-height:31rem; padding:1.5rem; border:1px solid var(--light); border-radius:.5rem; display:flex; flex-direction:column; align-items:flex-start; color:var(--body); }
+.package-grey { background:#f7f7f7; }
+.package-red { background:#fff; border-color:var(--primary); }
+.package-flex { background:#fff2f2; }
+.package-card h4 { font-size:1.5rem; line-height:1.4; letter-spacing:-.01em; margin:0 0 .6em; }
+.package-name-row { display:flex; align-self:stretch; justify-content:space-between; }
+.popular-pill { height:36px; padding:0 10px; border:1px solid var(--primary); border-radius:999px; display:flex; align-items:center; color:var(--primary); background:rgb(255 65 65 / 15%); }
+.package-price { display:flex; align-items:flex-end; gap:.375rem; }
+.package-price h2 { color:var(--primary); font-size:3.75rem; line-height:1.2; letter-spacing:-.02em; margin:0 0 .5rem; }
+.package-price strong { color:var(--black); font-size:1.5rem; line-height:1.4; font-weight:600; margin-bottom:.5rem; }
+.saving { width:auto; border:1px solid #13c783; border-radius:.5rem; padding:2px 10px; background:rgb(19 199 131 / 15%); color:#13c783; font-weight:600; margin-bottom:1rem; }
+.saving-neutral { border-color:var(--light); background:transparent; color:var(--mid); }
+.saving-placeholder { opacity:0; }
+.package-audience { font-weight:600; margin-bottom:2rem; }
+.package-benefits { display:flex; flex-direction:column; gap:1rem; }
+.package-benefits li { display:flex; align-items:flex-start; gap:.5rem; }
+.package-benefits svg { flex:none; width:24px; height:24px; fill:none; stroke:var(--primary); stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.benefit-emphasis { color:var(--primary); font-weight:600; }
+.flex-copy { color:var(--black); margin:0; }
+.packages-learn-more { width:100%; margin-top:auto; padding:.65em 1.25em; border:1px solid var(--black); border-radius:.25rem; text-align:center; color:var(--black); font-weight:500; line-height:1.5; }
+.trusted-logos { margin-top:5rem; }
+.trusted-logos>p { margin:0 0 2rem; text-align:center; color:var(--mid); font-weight:600; }
+.trusted-logo-row { width:max-content; display:flex; align-items:center; }
+.trusted-logo { height:2rem; margin-right:4rem; opacity:.8; flex:none; }
+.trusted-logo img { width:auto; height:100%; max-width:10rem; }
+
+@media (max-width: 991px) {
+  .packages-heading h1 { font-size:clamp(2.75rem,8vw,4.5rem); }
+  .packages-cards { grid-template-columns:1fr; }
+}
+
+@media (max-width: 767px) {
+  .packages-section { padding-top:2rem; padding-bottom:4rem; }
+  .billing-selector { flex-wrap:wrap; justify-content:flex-start; }
+  .package-card { min-height:auto; }
+}
+
 .nav-container {
   display: flex;
   align-items: center;
