@@ -288,6 +288,70 @@ ul {
 .services-tag { display:flex; align-items:center; justify-content:center; gap:.5rem; margin:0 .625rem .625rem 0; padding:.375rem .9375rem; border:1px solid #2e2e2e; border-radius:999px; background:#262626; color:var(--primary); font:400 1rem/1.6 "Inter",Arial,sans-serif; letter-spacing:-.01em; }
 .services-tag span { color:rgb(255 255 255 / 80%); }
 
+/* Packages page — comparison section */
+.why-nexubis-section { position:relative; padding-block:7rem; background:#fff; }
+.why-nexubis-container { max-width:87.5rem; }
+.why-nexubis-heading { height:9rem; margin-bottom:5rem; padding-inline:2rem; text-align:center; }
+.why-nexubis-heading h2 { display:flex; flex-flow:column nowrap; align-items:center; justify-content:flex-start; margin:0; color:var(--black); font-size:3.75rem; font-weight:500; line-height:1.2; letter-spacing:-.02em; }
+.why-nexubis-heading h2 span { display:block; color:var(--mid); }
+.why-nexubis-comparison { display:flex; align-items:center; justify-content:center; margin-bottom:2rem; padding-inline:1rem; }
+.why-nexubis-lottie-wrapper { width:80%; height:23.2236rem; }
+.why-nexubis-desktop-graphic { width:100%; height:100%; object-fit:contain; object-position:top center; }
+.why-nexubis-mobile-graphic { display:none; }
+
+/* Packages page — trial CTA section */
+.trial-cta-section { position:relative; padding-block:7rem; background:var(--surface); }
+.trial-cta-wrapper { position:relative; z-index:10; max-width:87.5rem; height:24.4668rem; padding:3.1875rem 2rem; border-radius:.5rem; background:var(--black); overflow:hidden; }
+.trial-content { position:relative; z-index:9; }
+.trial-content h2 { margin:0 0 .125em; color:#fff; font-size:3.75rem; font-weight:500; line-height:1.2; letter-spacing:-.02em; }
+.trial-content>p { margin:0 0 2rem; color:rgb(255 255 255 / 80%); font-size:1.25rem; line-height:1.6; letter-spacing:-.01em; }
+.trial-benefits-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); margin-inline:-1rem; }
+.trial-benefits-list { padding-inline:1rem; }
+.trial-benefit { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; color:#fff; }
+.trial-benefit svg { width:1.5rem; height:1.5rem; flex:none; fill:none; stroke:#fff; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.trial-button-group { display:flex; gap:1rem; height:3.9238rem; padding-top:1rem; }
+.trial-button-group a { display:flex; align-items:center; justify-content:center; width:8.0947rem; height:2.9238rem; padding:.65em 1.25em; border:1px solid #e7e7e7; border-radius:.25rem; color:#e7e7e7; font-size:1rem; font-weight:500; line-height:1.5; }
+.trial-background { position:absolute; z-index:8; inset:0 auto auto 0; width:100%; height:31.25rem; opacity:.2; overflow:hidden; }
+.trial-background img { width:100%; height:100%; max-width:none; object-fit:cover; }
+.trial-background-blur { position:absolute; z-index:9; inset:0; filter:blur(20px); }
+
+/* Packages page — FAQ section */
+.packages-faq-section { position:relative; padding-block:7rem; background:var(--surface); }
+.packages-faq-container { max-width:87.5rem; }
+.packages-faq-row { display:flex; flex-flow:row wrap; align-items:flex-start; justify-content:space-between; height:83rem; margin:0 -1rem -2rem; }
+.packages-faq-sidebar { position:sticky; top:7rem; flex:0 0 41.6667%; max-width:41.6667%; margin-bottom:2rem; padding-inline:1rem; }
+.packages-faq-sidebar h2 { margin:0 0 .42em; color:var(--black); font-size:3.75rem; font-weight:500; line-height:1.2; letter-spacing:-.02em; }
+.packages-faq-column { flex:0 0 50%; max-width:50%; height:81rem; margin-bottom:2rem; padding-inline:1rem; }
+.packages-faq-group { width:100%; }
+.packages-faq-item { margin-bottom:1rem; padding:.5rem 1.5rem; border-radius:.5rem; background:#fff; }
+.packages-faq-header { display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding-block:1rem; color:var(--black); cursor:pointer; list-style:none; font-family:"Helvetica Now Display",Arial,sans-serif; font-size:1.25rem; font-weight:500; line-height:1.6; letter-spacing:-.01em; }
+.packages-faq-header::-webkit-details-marker { display:none; }
+.packages-faq-header::marker { content:""; }
+.packages-faq-header span { flex:1; }
+.packages-faq-header svg { width:1.5rem; height:1.5rem; flex:none; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.packages-faq-content { overflow:hidden; }
+.packages-faq-content p { margin:0 0 1rem; color:var(--body); }
+.packages-faq-item:not([open]) .packages-faq-content { display:none; }
+.packages-faq-mark { position:absolute; inset:auto auto -5% 0; width:33vw; pointer-events:none; }
+.packages-faq-mark img { width:100%; }
+
+/* Packages page — cloud CTA */
+.packages-cloud-cta { position:relative; height:48rem; padding-top:5rem; color:#fff; background:linear-gradient(180deg,var(--primary),#fff 77%); overflow:visible; }
+.packages-cloud-container { position:relative; z-index:2; max-width:87.5rem; }
+.packages-cloud-row { display:flex; flex-flow:row wrap; height:12.7998rem; margin:0 -1rem -2rem; }
+.packages-cloud-row-end { justify-content:flex-end; margin-top:-4rem; }
+.packages-cloud-column { flex:0 0 50%; max-width:50%; margin-bottom:2rem; padding-inline:1rem; }
+.packages-cloud-column h2 { margin:0 0 2rem; color:#fff; font-size:8rem; font-weight:500; line-height:1.1; letter-spacing:-.02em; }
+.packages-cloud-row-end h2 { text-align:right; }
+.packages-clouds { position:relative; z-index:1; inset:-15.625rem 0 auto; width:100%; max-width:100%; height:auto; min-height:18.75rem; transform:scale(1.5); }
+.packages-cloud-image { position:absolute; width:90%; height:auto; opacity:.7; filter:blur(1px); }
+.packages-cloud-image:nth-child(1) { left:-124.77%; top:5%; }
+.packages-cloud-image:nth-child(2) { left:91.2%; top:20%; }
+.packages-cloud-image:nth-child(3) { left:-37.64%; top:8%; }
+.packages-cloud-image:nth-child(4) { left:4.07%; top:32%; }
+.packages-cloud-image:nth-child(5) { left:49.49%; top:2%; }
+.packages-cloud-image:nth-child(6) { left:-83.06%; top:15%; }
+
 .nav-container {
   display: flex;
   align-items: center;
