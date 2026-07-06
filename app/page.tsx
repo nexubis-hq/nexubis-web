@@ -256,7 +256,7 @@ function Hero() {
                 <span className="rocket-button-text">Get Started</span>
               </Link>
               <Link
-                href="https://www.nexubis.io/packages"
+                href="/packages"
                 className="btn btn-secondary"
               >
                 Our Packages

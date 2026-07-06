@@ -56,7 +56,7 @@ export function PackagesPricing() {
         <div className="packages-cards">
           {plans.map((plan) => (
             <article className={`package-card package-${plan.tone}`} key={plan.name}>
-              <div className="package-name-row"><h4>{plan.name}</h4>{plan.name === "Scale" && <span className="popular-pill">Popular</span>}</div>
+              <div className="package-name-row"><h4>{plan.name}</h4>{plan.name === "Scale" && <span className="popular-pill"><svg className="popular-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 2.5c.4 3.1-1.3 4.5-2.7 5.8-1.2 1.1-2.2 2.1-2.2 3.8 0 1.2.7 2.2 1.7 2.8-.1-1.7.8-3 2.1-4.2.1 2 1.8 2.9 2.5 4.5.8 1.8.1 4-1.5 5.1 3.9-.7 6.3-3.5 6.3-7.2 0-4.4-3.2-8.1-6.2-10.6Z"/><path opacity=".4" d="M7.8 7.8C5.6 9.7 4.2 12 4.2 15a6.8 6.8 0 0 0 6.8 6.8c.9 0 1.8-.2 2.5-.5-3.5-.2-6.1-2.8-6.1-6.2 0-2.5 1.8-4.2.4-7.3Z"/></svg><span>Popular</span></span>}</div>
               <div className="package-price"><h2>{plan.prices[cycle]}</h2><strong>/month</strong></div>
               <div className={cycle === "monthly" ? "saving saving-neutral" : "saving"}>{plan.savings[cycle]}</div>
               <div className="package-audience">{plan.audience}</div>
@@ -80,6 +80,38 @@ export function PackagesPricing() {
         <p>The trusted design partner for...</p>
         <div className="trusted-logo-row">
           {logos.map((logo) => <div className="trusted-logo" key={logo}><img src={`/assets/images/${logo}`} alt="" /></div>)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const services = [
+  "Website Design", "Webflow", "Framer", "Bespoke Development",
+  "Custom Integrations", "Pitchdecks", "UI/UX Design", "SEO Optimization",
+  "E-Commerce", "Website Maintenance", "2D/3D Animation", "Social Media",
+  "Video Production", "Web 3.0", "Brand Strategy & Identity",
+  "Creative Direction", "Print Design", "Design Systems", "Copywriting",
+];
+
+export function PackagesServices() {
+  return (
+    <section id="services" className="services-section">
+      <div className="services-media" aria-hidden="true">
+        <img
+          src="/assets/images/Website-Packages-video-poster-00001.jpg"
+          alt=""
+        />
+        <div className="services-media-overlay" />
+      </div>
+      <div className="site-container services-container">
+        <h2>Our Services</h2>
+        <div className="services-tags">
+          {services.map((service) => (
+            <div className="services-tag" key={service}>
+              <span>{service}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

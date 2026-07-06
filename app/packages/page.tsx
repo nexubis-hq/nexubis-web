@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PackagesPricing } from "@/components/PackagesPricing";
+import { PackagesPricing, PackagesServices } from "@/components/PackagesPricing";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function PackagesPage() {
-  return <><SiteHeader /><main><PackagesPricing /></main></>;
+  return <><SiteHeader /><main><PackagesPricing /><PackagesServices /></main></>;
 }

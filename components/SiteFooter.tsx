@@ -5,7 +5,7 @@ import { FooterAnimations } from "@/components/FooterAnimations";
 const footerLinks = [
   { label: "Work", href: "/#work" },
   { label: "Contact", href: "https://www.nexubis.io/contact" },
-  { label: "Packages", href: "https://www.nexubis.io/packages" },
+  { label: "Packages", href: "/packages" },
 ];
 
 const socialLinks = [
