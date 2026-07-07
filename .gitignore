@@ -48,3 +48,7 @@ next-env.d.ts
 
 # local tooling artifacts
 /.playwright-mcp/
+/qa/
+
+# Local reference material (contains the LekkeWeb audit-tool snapshot with live API keys). Never commit.
+/reference/
