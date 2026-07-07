@@ -307,3 +307,200 @@ export function firstImpressionSignal(v: FirstImpressionRead | null): string {
   ].filter(Boolean);
   return bits.length ? `\n[page signal] Vision check of the rendered homepage confirms: ${bits.join("; ")}.` : "";
 }
+
+// ── Rubric scorer: 25 checks for one company ─────────────────────────────────
+// The identical rubric runs on the prospect and every resolved competitor.
+// The model scores 0 to 4 per check with one evidence sentence citing what was
+// actually seen. Checks it cannot assess come back score:null,
+// assessable:false with the reason in the evidence sentence. The PageSpeed
+// check is ALWAYS overridden deterministically in code (scoring.ts); the model
+// is told to return null for it.
+import type { CompanyEvidence } from "./evidence";
+import type { RawCheck } from "./scoring";
+import { RUBRIC } from "./rubric";
+import { RUBRIC_SCORES_OUTPUT, rubricScoresSchema, DECK_COPY_OUTPUT, deckCopySchema, type DeckCopyReply } from "./output-schemas";
+
+const SITE_TEXT_BUDGET = 8000;
+
+function rubricBlock(): string {
+  return RUBRIC.map((cat) => {
+    const checks = cat.checks
+      .map((ch) => `- key "${ch.key}": ${ch.guidance}`)
+      .join("\n");
+    return `## ${cat.label}\n${checks}`;
+  }).join("\n\n");
+}
+
+function evidenceBlock(e: CompanyEvidence): string {
+  const parts: string[] = [];
+  if (e.siteText) parts.push(`## SITE CONTENT (crawled)\n${e.siteText.slice(0, SITE_TEXT_BUDGET)}`);
+  else parts.push(`## SITE CONTENT\nThe site could not be fetched (${e.fetchReason ?? "unreachable"}). Only score checks the remaining evidence supports.`);
+  if (e.firstImpression) {
+    parts.push(`## FIRST-IMPRESSION READ (from the first-load homepage screenshots)\n${JSON.stringify(e.firstImpression)}`);
+  }
+  if (e.pageSpeed) {
+    parts.push(
+      `## MEASURED PAGESPEED (context only; the pagespeed check itself is filled in by the pipeline)\nmobile performance: ${e.pageSpeed.mobile?.performance ?? "not measured"}, desktop performance: ${e.pageSpeed.desktop?.performance ?? "not measured"}, LCP: ${e.pageSpeed.lcp ?? "n/a"}`,
+    );
+  }
+  if (e.offsiteFacts.length) {
+    const lines = e.offsiteFacts.map((f) => `- ${f.key}: ${f.present ? "PRESENT" : "not found"}. ${f.evidence}`);
+    parts.push(`## VERIFIED BY WEB SEARCH\n${lines.join("\n")}`);
+  }
+  if (e.searchBlock) parts.push(`## RAW SEARCH EVIDENCE\n${e.searchBlock.slice(0, 2500)}`);
+  return parts.join("\n\n");
+}
+
+// Compact cross-company context so relative checks (design next to
+// competitors, visuals at competitor level) are assessable inside a
+// per-company call.
+export function competitorContextBlock(others: CompanyEvidence[]): string {
+  const lines = others.map((o) => {
+    const fi = o.firstImpression;
+    if (!fi) return `- ${o.company}: no first-impression read available.`;
+    return `- ${o.company}: design reads ${fi.designEra}, feel ${fi.premiumFeel}, imagery ${fi.imageryQuality}, 3D/CGI ${fi.threeDOrCgi ? "yes" : "not seen"}, video ${fi.videoPresent ? "yes" : "not seen"}. Apparent offer: ${fi.apparentOffer}.`;
+  });
+  return lines.length ? `## THE OTHER COMPANIES IN THIS COMPARISON (first-impression reads)\n${lines.join("\n")}` : "";
+}
+
+export async function scoreCompanyRubric(args: {
+  evidence: CompanyEvidence;
+  productOneLiner: string;
+  competitorContext: string;
+}): Promise<WrapperResult<{ checks: RawCheck[] }>> {
+  const e = args.evidence;
+  if (isMockMode()) {
+    const checks: RawCheck[] = RUBRIC.flatMap((cat) =>
+      cat.checks.map((ch) => {
+        if (ch.key === "pagespeed") return { key: ch.key, score: null, assessable: false, evidence: "Filled by the pipeline." };
+        const roll = mockInt(`score:${e.company}:${ch.key}`, 24);
+        if (roll === 0) {
+          return { key: ch.key, score: null, assessable: false, evidence: `Mock: ${ch.label} could not be assessed for ${e.company}.` };
+        }
+        return {
+          key: ch.key,
+          score: roll % 5,
+          assessable: true,
+          evidence: `Mock evidence sentence for ${ch.label} at ${e.company}.`,
+        };
+      }),
+    );
+    return { ok: true, data: { checks }, usage: zeroUsage("mock") };
+  }
+
+  const user = `Score "${e.company}" on the Industrial Brand Credibility Scorecard rubric below. They make: ${args.productOneLiner || "(not stated)"}.
+
+${rubricBlock()}
+
+SCORING RULES:
+- Score each check 0 to 4 (integers). 4 is genuinely strong against the wider industrial market, 2 is unremarkable, 0 is a real liability.
+- ONE evidence sentence per check, citing what was actually seen: a screenshot observation, a crawled page, a PageSpeed number, a web finding. Maximum 25 words.
+- If a check cannot be assessed from the evidence, set score null and assessable false, and say why in the evidence sentence. Do NOT guess and do NOT punish missing evidence with a low score. Exception: for "brochures-findable", nothing found in the verified web evidence IS the finding; score it 0 with that evidence, not null.
+- For the "pagespeed" check: always return score null, assessable false, evidence "Filled by the pipeline." The pipeline supplies it from measured numbers.
+- Relative checks ("design-quality", "competitor-level") are judged against the other companies listed below; if no other company has a first-impression read, mark those checks not assessable.
+
+${NO_FALSE_NEGATIVE}
+
+${COPY_DIET}
+
+${args.competitorContext || "## THE OTHER COMPANIES IN THIS COMPARISON\n(none available)"}
+
+${evidenceBlock(e)}
+
+Return ONLY: { "checks": [ { "key": "...", "score": 0-4 or null, "assessable": true|false, "evidence": "..." }, ... ] } with exactly one entry per rubric check key.`;
+
+  return runJson<{ checks: RawCheck[] }>({
+    label: `rubric:${e.company.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24)}`,
+    model: MODEL_SONNET,
+    user,
+    maxTokens: 3000,
+    outputFormat: RUBRIC_SCORES_OUTPUT,
+    schema: rubricScoresSchema,
+  });
+}
+
+// ── Report copy pass ─────────────────────────────────────────────────────────
+// A second Claude pass writes the report copy blocks in the house tone: calm,
+// plain, short sentences, helped then concerned then clear. Findings must
+// reference the prospect's and competitors' real evidence. No selling: the
+// fixed closing pages carry the CTA.
+export interface DeckCopyInput {
+  company: string;
+  productOneLiner: string;
+  verdictBand: "narrow" | "visible" | "wide";
+  stance: "ahead" | "level" | "behind" | "no-benchmark";
+  overall: number;
+  bestRival: { company: string; overall: number } | null;
+  aheadRivals: Array<{ company: string; overall: number; leadCategory: string | null }>;
+  firstFixCategory: string;
+  firstFixLabel: string;
+  /** Compact per-category summary lines: totals plus notable check evidence. */
+  scoreSummary: string;
+}
+
+export async function writeDeckCopy(input: DeckCopyInput): Promise<WrapperResult<DeckCopyReply>> {
+  if (isMockMode()) {
+    const data: DeckCopyReply = {
+      verdictParagraph: `Mock verdict for ${input.company}: the overall score is ${input.overall} and the gap is ${input.verdictBand}. The benchmark stance is ${input.stance}.`,
+      categories: RUBRIC.map((c) => ({
+        key: c.key,
+        findings: [
+          `Mock finding one for ${c.label} at ${input.company}.`,
+          `Mock finding two for ${c.label}, citing real evidence in production.`,
+        ],
+        competitorNote: `Mock competitor note for ${c.label}.`,
+      })),
+      firstFix: {
+        why: `Mock reasoning: ${input.firstFixLabel} scored lowest, and it is where buyers look first.`,
+        inPractice: `Mock practice paragraph for fixing ${input.firstFixLabel}.`,
+      },
+    };
+    return { ok: true, data, usage: zeroUsage("mock") };
+  }
+
+  const stanceRule =
+    input.stance === "ahead"
+      ? `They lead all named competitors. Open the verdict with the lead, then the sharpening notes.`
+      : input.stance === "level"
+        ? `They are level with the best competitor (${input.bestRival?.company ?? "the best rival"}). Say the credibility tie-breaker is even right now, and small gains tip it their way.`
+        : input.stance === "behind"
+          ? `They trail ${input.aheadRivals.map((r) => `${r.company} (${r.overall}/100${r.leadCategory ? `, pulls ahead on ${r.leadCategory}` : ""})`).join(" and ")}. Name the strongest rival as the live reason to act and point to the category where they pull ahead. The verdict stays where the score put it; never inflate or soften the band because of the comparison.`
+          : `No competitor could be benchmarked. Say the comparison could not be made, plainly, and keep the verdict on their own score.`;
+
+  const bandTone =
+    input.verdictBand === "wide"
+      ? "Tone: direct but kind. Never mocking. The findings speak."
+      : input.verdictBand === "visible"
+        ? "Tone: encouraging. They are closer than most. The fixes are specific and contained."
+        : "Tone: respectful. Acknowledge the work done. The notes show where to sharpen.";
+
+  const user = `Write the report copy blocks for the Industrial Brand Credibility Scorecard of "${input.company}" (they make: ${input.productOneLiner}).
+
+THE NUMBERS (already computed, never change them):
+- Overall Credibility Score: ${input.overall}/100. Verdict: ${input.verdictBand} gap.
+- Benchmark stance: ${input.stance}. ${stanceRule}
+- First place to fix: ${input.firstFixLabel}.
+
+PER-CATEGORY SCORES AND EVIDENCE:
+${input.scoreSummary}
+
+WRITE THESE BLOCKS:
+1. verdictParagraph: one paragraph, maximum 85 words. State the verdict plainly, weave the benchmark stance per the rule above, end on the first place to fix. ${bandTone}
+2. categories: for EVERY category key, exactly 2 or 3 findings (each maximum 26 words) stating specifically what is working and what is costing them, referencing the real evidence above (name competitors where the evidence does), plus one competitorNote (maximum 22 words) on where the named competitors stand on this category. If a category's checks were mostly not assessable, one finding must say plainly what could not be assessed and why that matters.
+3. firstFix: "why" (maximum 75 words): why this category comes first, tied to where buyers look. "inPractice" (maximum 85 words): what fixing it looks like in practice, concrete and specific to their evidence. Describe the work, do not sell anything and do not mention any company that would do it.
+
+HARD RULES: The reader should feel helped, then concerned, then clear on what to do, in that order. Findings are facts, never sneering, about the prospect or the competitors. No hype words, no jargon, no em dashes, no selling anywhere in these blocks. Never mention Nexubis or any agency. Never invent anything not present in the evidence.
+
+${COPY_DIET}
+
+Return ONLY: { "verdictParagraph": "...", "categories": [ { "key": "...", "findings": ["..."], "competitorNote": "..." } ], "firstFix": { "why": "...", "inPractice": "..." } }`;
+
+  return runJson<DeckCopyReply>({
+    label: "deck-copy",
+    model: MODEL_SONNET,
+    user,
+    maxTokens: 2500,
+    outputFormat: DECK_COPY_OUTPUT,
+    schema: deckCopySchema,
+  });
+}
