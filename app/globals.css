@@ -6977,3 +6977,279 @@ button.nav-link {
     opacity: 0.35;
   }
 }
+
+/* ── Scorecard admin (internal, noindex) ──────────────────── */
+
+.sc-admin {
+  background: var(--white);
+  color: var(--black);
+  min-height: 100vh;
+}
+
+.sc-admin-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.sc-admin-nav a,
+.sc-admin-linkbtn {
+  color: var(--mid);
+  font-size: 0.95rem;
+  text-decoration: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.sc-admin-nav a:hover,
+.sc-admin-linkbtn:hover {
+  color: var(--white);
+}
+
+.sc-admin-login {
+  max-width: 24rem;
+  display: grid;
+  gap: var(--s-3);
+}
+
+.sc-admin-login-form {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+}
+
+.sc-admin-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: var(--s-4);
+}
+
+.sc-admin-head h1 {
+  font-size: var(--h3);
+}
+
+.sc-admin-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.7rem;
+  font-size: 0.88rem;
+  color: var(--mid);
+}
+
+.sc-admin-filters a {
+  color: var(--body);
+  text-decoration: none;
+  border: 1px solid var(--light);
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+}
+
+.sc-admin-filters a.is-active {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.sc-admin-empty {
+  color: var(--body);
+}
+
+.sc-admin-tablewrap {
+  overflow-x: auto;
+}
+
+.sc-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.sc-admin-table th,
+.sc-admin-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.55rem 0.7rem 0.55rem 0;
+  border-bottom: 1px solid var(--light);
+}
+
+.sc-admin-table thead th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mid);
+}
+
+.sc-admin-table a {
+  color: var(--black);
+  font-weight: 500;
+}
+
+.sc-admin-dim {
+  color: var(--mid);
+  font-weight: 400;
+}
+
+.sc-admin-warn {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sc-admin-score {
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-weight: 500;
+}
+
+.sc-admin-band {
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.78rem;
+  border: 1px solid var(--light);
+}
+
+.sc-admin-band-wide {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.sc-admin-band-visible {
+  border-color: var(--mid);
+  color: var(--body);
+}
+
+.sc-admin-band-narrow {
+  color: var(--mid);
+}
+
+.sc-row-hot td {
+  background: color-mix(in srgb, var(--primary), transparent 94%);
+}
+
+.sc-admin-notedot {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+.sc-admin-inlineform {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.sc-admin-inlineform select {
+  font: inherit;
+  font-size: 0.85rem;
+  border: 1px solid var(--light);
+  border-radius: 0.3rem;
+  padding: 0.2rem 0.3rem;
+}
+
+.sc-admin-inlineform button {
+  font: inherit;
+  font-size: 0.8rem;
+  border: 1px solid var(--light);
+  background: var(--surface);
+  border-radius: 0.3rem;
+  padding: 0.2rem 0.55rem;
+  cursor: pointer;
+}
+
+.sc-admin-ops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.sc-admin-grid {
+  display: grid;
+  gap: var(--grid-gap);
+  margin-bottom: var(--s-5);
+}
+
+@media (min-width: 960px) {
+  .sc-admin-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.sc-admin-card {
+  background: var(--surface);
+  border-radius: 0.5rem;
+  padding: 1.3rem 1.4rem;
+}
+
+.sc-admin-card h2 {
+  font-size: 1.05rem;
+  margin-bottom: 0.8rem;
+}
+
+.sc-admin-facts {
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.92rem;
+}
+
+.sc-admin-facts span {
+  display: inline-block;
+  min-width: 7.5rem;
+  color: var(--mid);
+}
+
+.sc-admin-form {
+  display: grid;
+  gap: 0.8rem;
+  justify-items: start;
+  margin-bottom: 1rem;
+}
+
+.sc-admin-form textarea {
+  width: 100%;
+  border: 1px solid var(--light);
+  border-radius: 0.35rem;
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+}
+
+.sc-admin-form input[type="url"] {
+  width: 100%;
+}
+
+.sc-admin-rawtitle {
+  font-size: var(--h4);
+  margin-bottom: var(--s-3);
+}
+
+.sc-admin-company {
+  border: 1px solid var(--light);
+  border-radius: 0.5rem;
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.sc-admin-company summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.sc-admin-cat {
+  margin-top: 1rem;
+}
+
+.sc-admin-cat h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+}
+
+.sc-admin-checks .sc-admin-score {
+  width: 2.2rem;
+}
