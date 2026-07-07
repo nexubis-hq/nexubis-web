@@ -45,3 +45,6 @@ next-env.d.ts
 
 # Local Webflow export reference. Rebuild from this into components; do not deploy wholesale.
 /webflow-export/
+
+# local tooling artifacts
+/.playwright-mcp/

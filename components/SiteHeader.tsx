@@ -3,22 +3,25 @@
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { NexubisLogo } from "@/components/NexubisLogo";
+import { BOOKING_URL, PACKAGES_URL } from "@/lib/site-config";
 
+// Case studies featured in the nav. Oxipack is intentionally omitted here: it is
+// the single featured case in the homepage Proof section, so it is named once,
+// there, and never in nav link text.
 const caseStudies = [
   { label: "Circuit", href: "https://www.nexubis.io/work/circuit" },
-  { label: "Oxipack", href: "https://www.nexubis.io/work/oxipack" },
   { label: "Altify", href: "https://www.nexubis.io/work/altify" },
 ];
 
 const desktopLinks = [
-  { label: "Packages", href: "/packages", icon: "wallet" },
+  { label: "Packages", href: PACKAGES_URL, icon: "wallet" },
   { label: "Dreamlab", href: "https://www.nexubis.io/blog", icon: "flask" },
 ];
 
 const mobileLinks = [
   { label: "Home", href: "/", icon: "home" },
   { label: "Dreamlab", href: "https://www.nexubis.io/blog", icon: "flask" },
-  { label: "Pricing", href: "/packages", icon: "wallet" },
+  { label: "Pricing", href: PACKAGES_URL, icon: "wallet" },
 ];
 
 export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
@@ -107,7 +110,7 @@ export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
                 key={link.href}
                 href={link.href}
                 className={
-                  activePage === "packages" && link.href === "/packages"
+                  activePage === "packages" && link.href === PACKAGES_URL
                     ? "nav-link nav-link-active"
                     : "nav-link"
                 }
@@ -120,14 +123,16 @@ export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
           </div>
 
           <Link
-            href="https://www.nexubis.io/contact"
+            href={BOOKING_URL}
             className="btn btn-primary nav-cta rocket-button"
             onClick={closeMenus}
           >
             <span className="nav-cta-icon rocket-button-icon">
               <RocketIcon />
             </span>
-            <span className="nav-cta-text rocket-button-text">Get Started</span>
+            <span className="nav-cta-text rocket-button-text">
+              Book an application call
+            </span>
           </Link>
 
           <button
@@ -184,7 +189,7 @@ export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
               }
               id="mobile-case-studies-menu"
             >
-              {[caseStudies[2], caseStudies[0], caseStudies[1]].map((item) => (
+              {caseStudies.map((item) => (
                 <Link key={item.href} href={item.href} onClick={closeMenus}>
                   {item.label}
                 </Link>

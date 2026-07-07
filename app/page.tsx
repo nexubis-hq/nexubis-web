@@ -2,17 +2,43 @@ import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, RocketIcon } from "@/components/SiteHeader";
 import { NexubisLogo } from "@/components/NexubisLogo";
-import { WorkSection } from "@/components/WorkSection";
-import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { HeroAnimations } from "@/components/HeroAnimations";
-import { SolutionsAnimations } from "@/components/SolutionsAnimations";
-import { WorkAnimations } from "@/components/WorkAnimations";
-import { SectionScrollAnimations } from "@/components/SectionScrollAnimations";
+import { RevealOnScroll } from "@/components/RevealOnScroll";
+import {
+  PlanCallVignette,
+  PlanPreviewVignette,
+  PlanSlackVignette,
+} from "@/components/vignettes/PlanVignettes";
+import {
+  SolBrandVignette,
+  SolWebsiteVignette,
+  Sol3DVignette,
+  SolVideoVignette,
+  SolTradeshowVignette,
+} from "@/components/vignettes/SolutionsVignettes";
+import {
+  ValueWorthVignette,
+  ValueOutputVignette,
+  ValueLaunchVignette,
+} from "@/components/vignettes/ValueVignettes";
+import {
+  GuideTeamVignette,
+  GuideScopeVignette,
+  GuideIndustrialVignette,
+} from "@/components/vignettes/GuideVignettes";
+import {
+  BOOKING_URL,
+  SCORECARD_URL,
+  OXIPACK_CASE_URL,
+  LEARN_MORE_URL,
+  SHOW_SCORECARD,
+} from "@/lib/site-config";
 
+// Oxipack is intentionally not in this strip: it is named once, in the Proof
+// section case line, and never in link/logo text (proof-rule discipline).
 const logos = [
   ["altify.svg", "Altify", "https://altify.app/"],
   ["sataya.svg", "Sataya", "https://sataya.io/"],
-  ["oxipack.svg", "Oxipack", "https://www.oxipack.com/"],
   ["ciruit.svg", "Circuit", "https://circuitprotect.com/"],
   ["blueknight.svg", "Blue Knight", "https://www.blueknight.io/"],
   ["usably.svg", "Usably", "https://www.usably.studio/"],
@@ -22,181 +48,142 @@ const logos = [
   ["emprise-digital.svg", "Emprise Digital", "https://www.emprise.co.za/"],
 ] as const;
 
+const HERO_SUB =
+  "For European industrial manufacturers whose product is better than their brand shows, so buyers finally see why you're worth more than the cheaper alternative.";
+const HERO_SCORECARD_LINK = "Check your brand's credibility";
+const HERO_SUPPORT =
+  "Not ready to book? Run the instant check and see where you're being undersold, on the spot.";
+
+const BOOK_CTA_LABEL = "Book an application call";
+
+const valueTiles = [
+  "Buyers see your worth",
+  "More output, faster turnaround",
+  "Brand ready for every launch",
+];
+
+const stakesLead = "A great product with a weak brand pays for it every day.";
+const stakesBody = [
+  "Online, in brochures, and at trade shows, your product looks the same as the cheaper alternatives. So buyers pick on price.",
+  "And somewhere in the back of your mind, the question sits: is our branding quietly costing us sales without us even knowing?",
+  "You built world-class engineering. Losing to a copycat that simply looks better at first glance is not how this should work.",
+];
+
+const guideEmpathy =
+  "We know how it feels when your product is the best in the room and your brand doesn't show it. You've done nothing wrong, it just hasn't been anyone's full-time job to own the whole picture.";
+const guideAuthority =
+  "We've become the in-house creative team that multiple European industrial manufacturers never had.";
+const guideBullets = [
+  "One team across brand, website, 3D, motion, and production, end to end. Not five suppliers to manage.",
+  "Long-term partnerships. Our partners expand scope over time, not the other way around.",
+  "From packaging machinery to bulk-solids handling, we speak industrial.",
+];
+
 const solutions = [
   {
-    title: (
-      <>
-        Brand <br />
-        Development
-      </>
-    ),
-    text: "We craft brands that resonate and endure. From logos to full brand stories, we combine strategy and creativity to position your business at the forefront.",
-    items: [
-      "Brand Strategy",
-      "Positioning",
-      "Logo Design",
-      "Visual Identity",
-      "Brand Guidelines",
-      "Style Guides",
-      "Brand Messaging",
-      "Brand Collateral",
-    ],
+    title: "Brand identity",
+    text: "We make you look like the market leader you already are.",
   },
   {
-    title: (
-      <>
-        Product &amp; <br />
-        Web Design
-      </>
-    ),
-    text: "We create intuitive, engaging designs that drives conversions. Our approach balances aesthetics with functionality to help your products stand out.",
-    items: [
-      "UX Research",
-      "UI Design",
-      "Prototyping",
-      "Website Design",
-      "Design Systems",
-      "Usability Testing",
-      "Usability Optimisation",
-    ],
+    title: "Website",
+    text: "We build you a website that sells your product as well as your engineers built it.",
   },
   {
-    title: (
-      <>
-        Web &amp; App <br />
-        Development
-      </>
-    ),
-    text: "We build scalable digital solutions that perform flawlessly across all devices. Our expertise brings your design vision to life with cutting-edge technology.",
-    items: [
-      "Website Development",
-      "E-commerce",
-      "Headless Shopify Solutions",
-      "Framer Development",
-      "Technical SEO",
-      "UI Design",
-      "Pitchdecks",
-    ],
+    title: "3D & CGI",
+    text: "We show what your machines do, inside and out, without a film crew on site.",
+  },
+  {
+    title: "Video & motion",
+    text: "We produce product films and launch videos that match the engineering.",
+  },
+  {
+    title: "Trade show & print",
+    text: "We design brochures and stands that make people stop and look twice.",
   },
 ];
 
-const steps = [
+const planSteps = [
   {
-    title: (
-      <>
-        Connect with Our <br />
-        Sales Team
-      </>
-    ),
-    image: "book-cal.png",
+    title: "Book an application call",
+    text: "We only take on about two new partners a month, so the first step is a short application call, not a generic sales pitch. Tell us about your product and where the brand is lagging, and we'll show you what we'd do.",
   },
   {
-    title: "Collaborate on Your Custom Project Plan",
-    image: "process_card-2.webp",
+    title: "See it before you commit",
+    text: "If it's a fit, we show you live what your brand could look like. A real piece of work, so you judge the quality before you pay anything.",
   },
   {
-    title: (
-      <>
-        Elevate development <br />
-        through partnership
-      </>
-    ),
-    image: "process_card-3.webp",
-  },
-  {
-    title: (
-      <>
-        Launch with <br />
-        Confidence
-      </>
-    ),
-    image: "process_card-4.webp",
+    title: "Our team becomes your team",
+    text: "We take on your website, brand, 3D, video, and print-ready design, all under one flat monthly retainer.",
   },
 ];
 
-const reviews = [
-  {
-    name: "Brian Carter",
-    first: "Amazing to work with!",
-    second:
-      "They always deliver quality work within the agreed-upon timeframes. I wholeheartedly recommend their services.",
-    reply: "We appreciate your recommendation, Brian!",
-    avatar: "review-brian.webp",
-    role: "Founder",
-    company: "Usably Studio",
-  },
-  {
-    name: "Alex Marais",
-    first: "Seamless collaboration!",
-    second:
-      "Nexubis delivers high-quality work with swift turnarounds, excellence in any project scope.",
-    reply: "Thank you, Alex! We value our partnership.",
-    avatar: "review-alex.webp",
-    role: "Founder",
-    company: "Design Focus",
-  },
-  {
-    name: "Llewellyn Hattingh",
-    first: "Nexubis is a hidden gem.",
-    second:
-      "Their ability to understand and surpass my expectations is exceptional. An incredible team to work with.",
-    reply: "We appreciate your feedback, Llewellyn!",
-    avatar: "review-llewellyn.webp",
-    role: "Co-Founder",
-    company: "Drenlin Commerce",
-  },
-  {
-    name: "Simónn du Plooy",
-    first: "Impressive speed and quality!",
-    second:
-      "Nexubis accelerated our branding with a fully developed website in just a week.",
-    reply: "Thanks for the kind words, Simonn!",
-    avatar: "review-simonn.webp",
-    role: "Recruitement Specialist",
-    company: "Sataya",
-  },
+const planOneLiner =
+  "Your product is better than your brand shows, so buyers pick the cheaper option. Nexubis becomes your in-house creative team: brand, website, 3D, video, and print on one flat retainer. Your brand finally matches your engineering, and buyers see why you're worth more.";
+
+const scorecardBullets = [
+  "Your Credibility Score across the five places buyers look",
+  "A side-by-side benchmark against two or three competitors you choose",
+  "The first place to fix, explained in a short personal video",
+];
+const scorecardSub =
+  "Run the Industrial Brand Credibility Scorecard, powered by Nexubis AI. Enter your website and see, on the spot, how well your brand represents your product, how you benchmark against competitors you name, and the first place to fix.";
+const scorecardExpectation =
+  "You see your result on the spot. Unlock the full report by email, no waiting.";
+const scorecardMicroProof =
+  "Free, no obligations. We take on two new partners a month; the Scorecard is where most start.";
+
+const proofPlaceholderQuote = "[DMN quote to collect: Before Nexubis, X. Now Y.]";
+const proofCaseLine =
+  "One year with Oxipack: 35% more output at a 33% lower effective rate, with scope that kept expanding without a single re-quote.";
+
+// Build-time guard: the Proof quote is a to-collect placeholder that must not ship.
+// This module runs during static generation, so the warning surfaces in build logs.
+if (
+  process.env.NODE_ENV === "production" &&
+  proofPlaceholderQuote.includes("quote to collect")
+) {
+  console.warn(
+    `\n⚠️  Nexubis build warning: placeholder proof content is present in a production build.\n   Replace the DMN quote before shipping: ${proofPlaceholderQuote}\n`,
+  );
+}
+
+const successBody =
+  "Picture the next trade show. Your stand, your brochures, your website, all finally looking like the company you actually are. Buyers stop comparing you on price. Distributors lead with your name. And when the next product launches, the brand is ready on day one. You're never the one holding things up.";
+
+const proofBarLines = [
+  "Multi-year partnerships. Not one-off projects.",
+  "One team, one invoice. Brand, website, 3D, video, print.",
+  "Limited spots, two new partners a month max. We stay hands-on.",
 ];
 
 const faqs = [
   [
-    "What makes Nexubis different from other design agencies?",
-    "We don't just focus on aesthetics - our approach combines strategic thinking, technical expertise, and creative innovation to deliver solutions that not only look great but also drive results.",
+    "We already work with an agency and a few freelancers. Why switch?",
+    "You don't have to switch on day one. Most of our partners started with one project alongside their existing setup, saw the difference, and grew from there. No rip-and-replace.",
   ],
   [
-    "What services does Nexubis offer?",
-    "Nexubis specializes in web design, Webflow development, 3D design, animation, and systems implementation. We create seamless digital experiences tailored to your unique needs, whether for corporate or personal projects.",
+    "How does pricing work?",
+    "One flat monthly retainer, one invoice. No quotes per project, no surprise costs. You apply with a short form first, then we agree the right level on the call.",
   ],
   [
-    "Does Nexubis provide UI/UX design for apps and software?",
-    "Yes! Our UI/UX design services focus on intuitive, user-friendly interfaces for web and mobile applications, ensuring a smooth and engaging experience for users.",
+    "What if we don't have enough work every month?",
+    "Then a retainer isn't right for you yet, and we'll tell you. Our model works for companies with a steady stream of brand, website, video, and print needs.",
   ],
   [
-    "Can Nexubis create custom animations and 3D designs?",
-    "Absolutely! Our team crafts high-quality animations and 3D designs for product visualizations, brand storytelling, and interactive digital experiences that captivate audiences.",
+    "Our products are technical. Will you actually understand them?",
+    "It's all we do. Packaging machinery, leak detection, bulk-solids handling, valves, process equipment. Your engineers won't have to explain things twice.",
   ],
   [
-    "Can Nexubis integrate third-party tools and systems?",
-    "Yes! We specialize in seamless integrations with platforms like CRM systems, payment gateways, analytics tools, and more to enhance functionality and streamline your business processes.",
+    "Are we locked into a long contract?",
+    "No. Cancel anytime. We keep partners by being good, not by locking the door.",
   ],
   [
-    "How does Nexubis approach system implementation?",
-    "We analyze your business needs and implement custom systems and integrations that improve workflow, efficiency, and scalability. Whether automating processes or connecting multiple platforms, we ensure smooth operations.",
+    "Why an application call instead of a generic sales call?",
+    "We take on about two new partners a month, so we check fit first, and the call is where we look at your brand and show you real work, not a pitch. It saves your time as much as ours.",
   ],
   [
-    "How does Nexubis ensure websites are optimized for performance?",
-    "We prioritize speed, SEO, and user experience by optimizing images, code, and structure. Our websites are built to load fast, rank well on search engines, and provide seamless navigation. As part of our process, we conduct a website audit at the start and end of the project to identify areas for improvement and measure performance gains, ensuring your site is fully optimized and delivering the best possible results.",
-  ],
-  [
-    "How will a Nexubis design improve my customers' online experience?",
-    "We focus on user-centric design, ensuring your website is visually engaging, easy to navigate, and optimized for conversions—turning visitors into loyal customers.",
-  ],
-  [
-    "How does Nexubis help businesses stay ahead of the competition?",
-    "We combine cutting-edge design, innovative technology, and strategic thinking to create solutions that set you apart. Whether through stunning visuals, engaging animations, or seamless integrations, we help your brand stand out and grow.",
-  ],
-  [
-    "Does Nexubis offer support after a project goes live?",
-    "Absolutely! We provide ongoing support, maintenance, and updates to ensure your website or system remains secure, optimized, and performing at its best.",
+    "How do we know the quality before paying?",
+    "You see it first. If the application is a fit, we create a real piece of work for your brand, live, before you commit to anything.",
   ],
 ];
 
@@ -206,16 +193,48 @@ export default function Home() {
       <SiteHeader />
       <main>
         <Hero />
+        <ValueStack />
+        <Stakes />
+        <Guide />
         <Solutions />
-        <Work />
-        <Reviews />
-        <Comparison />
-        <Steps />
+        <Plan />
+        {SHOW_SCORECARD ? <ScorecardBlock /> : null}
+        <Proof />
+        <Success />
+        <ProofBar />
         <Faq />
-        <CloudCta />
       </main>
       <SiteFooter />
+      <RevealOnScroll />
     </>
+  );
+}
+
+function ArrowIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="cta-arrow">
+      <path
+        d="M5 12h14M13 6l6 6-6 6"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function BookCallButton({ className = "" }: { className?: string }) {
+  return (
+    <Link
+      href={BOOKING_URL}
+      className={`btn btn-primary rocket-button ${className}`.trim()}
+    >
+      <span className="rocket-button-icon">
+        <RocketIcon />
+      </span>
+      <span className="rocket-button-text">{BOOK_CTA_LABEL}</span>
+    </Link>
   );
 }
 
@@ -226,42 +245,37 @@ function Hero() {
       <div className="site-container hero-inner">
         <div className="hero-row">
           <div className="hero-col hero-title-wrap">
-            <h1 aria-label="Design, Development — and Growth Powerhouse">
+            <h1 aria-label="Look as credible as your engineering, with one in-house creative team.">
               <span className="hero-title-muted">
-                <span className="hero-title-word">Design,</span>{" "}
-                <span className="hero-title-word">Development</span>{" "}
+                <span className="hero-title-word">Look</span>{" "}
+                <span className="hero-title-word">as</span>{" "}
+                <span className="hero-title-word">credible</span>{" "}
+                <span className="hero-title-word">as</span>{" "}
+                <span className="hero-title-word">your</span>{" "}
+                <span className="hero-title-word">engineering,</span>{" "}
               </span>
-              <span className="hero-title-word">—</span>{" "}
-              <span className="hero-title-word">and</span>{" "}
-              <span className="hero-title-word">Growth</span>{" "}
-              <span className="hero-title-word">Powerhouse</span>
+              <span className="hero-title-word">with</span>{" "}
+              <span className="hero-title-word">one</span>{" "}
+              <span className="hero-title-word">in-house</span>{" "}
+              <span className="hero-title-word">creative</span>{" "}
+              <span className="hero-title-word">team.</span>
             </h1>
           </div>
         </div>
 
         <div className="hero-row hero-copy-row">
           <div className="hero-col hero-copy">
-            <p>
-              We&apos;re a Cape Town based B2B Design, Development and Growth
-              Partner for startups and established businesses
-            </p>
+            <p>{HERO_SUB}</p>
             <div className="btn-group hero-buttons">
-              <Link
-                href="https://www.nexubis.io/contact"
-                className="btn btn-primary hero-primary rocket-button"
-              >
-                <span className="rocket-button-icon">
-                  <RocketIcon />
-                </span>
-                <span className="rocket-button-text">Get Started</span>
-              </Link>
-              <Link
-                href="/packages"
-                className="btn btn-secondary"
-              >
-                Our Packages
-              </Link>
+              <BookCallButton className="hero-primary" />
+              {SHOW_SCORECARD ? (
+                <Link href={SCORECARD_URL} className="hero-scorecard-link">
+                  <span>{HERO_SCORECARD_LINK}</span>
+                  <ArrowIcon />
+                </Link>
+              ) : null}
             </div>
+            {SHOW_SCORECARD ? <p className="hero-support">{HERO_SUPPORT}</p> : null}
           </div>
         </div>
 
@@ -274,7 +288,7 @@ function Hero() {
                   muted
                   loop
                   playsInline
-                  preload="metadata"
+                  preload="none"
                   poster="/assets/images/reel_draft.jpg"
                 >
                   <source
@@ -320,7 +334,7 @@ function Hero() {
       </div>
 
       <div className="hero-logos-space">
-        <div className="hero-logos" aria-label="Client logos">
+        <div className="hero-logos" aria-label="Partner logos">
           <div className="hero-logos-track">
             {logos.map(([image, label, href]) => (
               <a key={label} href={href} target="_blank" rel="noreferrer">
@@ -333,347 +347,90 @@ function Hero() {
       <div className="hero-bg-wrap" aria-hidden="true">
         <img className="hero-bg" src="/assets/images/nx-hero-bg.webp" alt="" />
       </div>
-    </section>
-  );
-}
-
-function Eyebrow({
-  children,
-  dark = false,
-  icon = "solutions",
-}: {
-  children: string;
-  dark?: boolean;
-  icon?: "solutions" | "work" | "testimonials" | "process";
-}) {
-  return (
-    <div className={dark ? "eyebrow eyebrow-dark" : "eyebrow"}>
-      <SectionIcon type={icon} />
-      <p>{children}</p>
-    </div>
-  );
-}
-
-function SectionIcon({
-  type,
-}: {
-  type: "solutions" | "work" | "testimonials" | "process";
-}) {
-  if (type === "work") {
-    return (
-      <article className="eyebrow-icon">
-        <svg
-          viewBox="0 0 24 24"
-          width="100%"
-          color="currentColor"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            opacity="0.4"
-            d="M12 2.25C12.4142 2.25 12.75 2.58579 12.75 3C12.75 5.00608 13.7606 7.07493 15.3428 8.65717C16.9251 10.2394 18.9939 11.25 21 11.25C21.4142 11.25 21.75 11.5858 21.75 12C21.75 12.4142 21.4142 12.75 21 12.75C18.9939 12.75 16.9251 13.7606 15.3428 15.3428C13.7606 16.9251 12.75 18.9939 12.75 21C12.75 21.4142 12.4142 21.75 12 21.75C11.5858 21.75 11.25 21.4142 11.25 21C11.25 18.9939 10.2394 16.9251 8.65717 15.3428C7.07493 13.7606 5.00608 12.75 3 12.75C2.58579 12.75 2.25 12.4142 2.25 12C2.25 11.5858 2.58579 11.25 3 11.25C5.00608 11.25 7.07493 10.2394 8.65717 8.65717C10.2394 7.07493 11.25 5.00608 11.25 3C11.25 2.58579 11.5858 2.25 12 2.25Z"
-            fill="currentColor"
-          />
-          <path
-            d="M19.25 1.25C19.4635 1.25 19.6484 1.39794 19.6954 1.6062L19.9296 2.64601C20.0895 3.35601 20.644 3.91047 21.354 4.07041L22.3938 4.30464C22.6021 4.35155 22.75 4.53652 22.75 4.75C22.75 4.96348 22.6021 5.14845 22.3938 5.19536L21.354 5.42959C20.644 5.58953 20.0895 6.14398 19.9296 6.85398L19.6954 7.8938C19.6484 8.10206 19.4635 8.25 19.25 8.25C19.0365 8.25 18.8516 8.10206 18.8046 7.8938L18.5704 6.85398C18.4105 6.14398 17.856 5.58953 17.146 5.42959L16.1062 5.19536C15.8979 5.14845 15.75 4.96348 15.75 4.75C15.75 4.53652 15.8979 4.35155 16.1062 4.30464L17.146 4.07041C17.856 3.91047 18.4105 3.35602 18.5704 2.64601L18.8046 1.6062C18.8516 1.39794 19.0365 1.25 19.25 1.25Z"
-            fill="currentColor"
-          />
-          <path
-            d="M4.75 15.75C4.96348 15.75 5.14845 15.8979 5.19536 16.1062L5.42959 17.146C5.58953 17.856 6.14398 18.4105 6.85398 18.5704L7.8938 18.8046C8.10206 18.8516 8.25 19.0365 8.25 19.25C8.25 19.4635 8.10206 19.6484 7.8938 19.6954L6.85398 19.9296C6.14398 20.0895 5.58953 20.644 5.42959 21.354L5.19536 22.3938C5.14845 22.6021 4.96348 22.75 4.75 22.75C4.53652 22.75 4.35155 22.6021 4.30464 22.3938L4.07041 21.354C3.91047 20.644 3.35602 20.0895 2.64601 19.9296L1.6062 19.6954C1.39794 19.6484 1.25 19.4635 1.25 19.25C1.25 19.0365 1.39794 18.8516 1.6062 18.8046L2.64601 18.5704C3.35602 18.4105 3.91047 17.856 4.07041 17.146L4.30464 16.1062C4.35155 15.8979 4.53652 15.75 4.75 15.75Z"
-            fill="currentColor"
-          />
-        </svg>
-      </article>
-    );
-  }
-
-  if (type === "testimonials") {
-    return (
-      <article className="eyebrow-icon">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="100%"
-          color="currentColor"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            opacity="0.4"
-            d="M13.8045 1.39514C13.2173 1.29967 12.6144 1.25 12 1.25C6.09523 1.25 1.25 5.83838 1.25 11.5667C1.25 14.3144 2.36972 16.8065 4.18451 18.6494C4.45227 18.9213 4.53937 19.2 4.50088 19.4052C4.35863 20.1513 4.03697 20.8445 3.56917 21.4199C3.40224 21.6252 3.35586 21.9033 3.44713 22.1517C3.5384 22.4 3.75381 22.5819 4.01396 22.6303C5.62504 22.93 7.29542 22.66 8.72714 21.8986C8.96068 21.7744 9.11322 21.6935 9.22775 21.6391C9.25931 21.6219 9.34334 21.5907 9.42696 21.6036C9.53909 21.6189 9.68979 21.647 9.92698 21.6916C10.6103 21.8199 11.3041 21.8843 12 21.8834C17.9048 21.8834 22.75 17.295 22.75 11.5667C22.75 10.891 22.6826 10.2311 22.5539 9.59279C22.2139 10.0054 21.8449 10.3514 21.4838 10.6351C20.8893 11.1023 20.3041 11.4146 19.8699 11.611C19.7542 11.6634 19.5584 11.7477 19.3518 11.8213C19.2088 11.8723 18.8499 11.9994 18.4982 11.9992C18.1465 11.9994 17.7875 11.8723 17.6445 11.8213C17.4379 11.7477 17.2421 11.6634 17.1264 11.611C16.6922 11.4146 16.1071 11.1023 15.5125 10.6351C14.2993 9.68193 12.9982 8.02653 12.9982 5.5V3C12.9982 2.34285 13.3151 1.75972 13.8045 1.39514Z"
-            fill="currentColor"
-          />
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M7 12C7 11.4477 7.44772 11 8 11H8.00897C8.56126 11 9.00897 11.4477 9.00897 12C9.00897 12.5523 8.56126 13 8.00897 13H8C7.44772 13 7 12.5523 7 12ZM10.9955 12C10.9955 11.4477 11.4432 11 11.9955 11H12.0045C12.5568 11 13.0045 11.4477 13.0045 12C13.0045 12.5523 12.5568 13 12.0045 13H11.9955C11.4432 13 10.9955 12.5523 10.9955 12Z"
-            fill="currentColor"
-          />
-          <path
-            d="M18.4982 1.25C18.6292 1.25738 18.8003 1.30031 18.9132 1.37528C19.0631 1.45704 19.4958 1.69129 19.7767 1.80364C20.342 2.02975 21.1204 2.25 21.9982 2.25C22.4124 2.25 22.7482 2.58579 22.7482 3V5.5C22.7482 7.54083 21.7137 8.86481 20.7115 9.65224C20.215 10.0423 19.7221 10.306 19.3542 10.4724C19.1611 10.5599 18.7071 10.75 18.4982 10.7492C18.2892 10.75 17.8353 10.5599 17.6422 10.4724C17.2742 10.306 16.7813 10.0423 16.2848 9.65224C15.2826 8.86481 14.2482 7.54083 14.2482 5.5V3C14.2482 2.58579 14.584 2.25 14.9982 2.25C15.876 2.25 16.6544 2.02975 17.2196 1.80364C17.5005 1.69129 17.934 1.45655 18.0839 1.37479C18.1968 1.29982 18.3671 1.25738 18.4982 1.25Z"
-            fill="currentColor"
-          />
-        </svg>
-      </article>
-    );
-  }
-
-  if (type === "process") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" className="eyebrow-icon">
-        <path
-          opacity="0.4"
-          d="M11.8 1.25h-1.1c-3.68 0-5.53 0-6.31 1.39C2 4.34 2 6.65 2 9.94v4.12c0 3.67 0 5.53 1.39 7.3.75.75 1.7 1.08 2.87 1.24 1.14.15 2.6.15 4.43.15h.71a2 2 0 0 1-.15-.75v-1.3c0-.3 0-.87.23-1.44.23-.56.64-.96.86-1.18l4.99-5c.19-.19.55-.54 1-.77.68-.33 1.45-.4 2.17-.19V9.94c0-3.67 0-5.53-1.39-7.3-.75-.75-1.7-1.08-2.87-1.24-1.14-.15-2.6-.15-4.44-.15Z"
-          fill="currentColor"
-        />
-        <path
-          d="M6.25 7a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2h-8a1 1 0 0 1-1-1Zm0 5a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2h-6a1 1 0 0 1-1-1Zm12.63 1.43a1.75 1.75 0 0 1 1.56 0c.26.13.6.47.81.68.21.22.44.44.57.7a1.75 1.75 0 0 1 0 1.56c-.13.26-.36.48-.57.69L16.31 22c-.23.23-.47.48-.8.62-.33.13-.68.13-1.01.13h-1.25a.75.75 0 0 1-.75-.75v-1.25c0-.33 0-.68.13-1.01.14-.32.39-.57.62-.8L18.19 14c.21-.21.43-.44.69-.57Z"
-          fill="currentColor"
-        />
-      </svg>
-    );
-  }
-
-  return (
-    <article className="eyebrow-icon">
-      <svg
-        viewBox="0 0 14 14"
-        width="100%"
-        color="red"
+      <img
+        className="hero-mark"
+        src="/assets/images/bg-mark.svg"
+        alt=""
         aria-hidden="true"
-      >
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M6.71609 5.50909C6.41842 5.36155 6.06888 5.36155 5.77117 5.50909C5.61212 5.5879 5.44205 5.75868 5.30769 5.89363C5.17274 6.02797 5.00196 6.19807 4.92315 6.35709C4.77562 6.65482 4.77562 7.00436 4.92315 7.30203C5.00196 7.46111 5.13807 7.59661 5.27303 7.73096L5.30769 7.76555L10.355 12.8129C10.4893 12.9479 10.6248 13.084 10.7839 13.1628C11.0816 13.3103 11.4311 13.3103 11.7289 13.1628C11.8879 13.084 12.058 12.9132 12.1923 12.7782C12.3273 12.6439 12.498 12.4738 12.5768 12.3148C12.7244 12.0171 12.7244 11.6675 12.5768 11.3698C12.498 11.2108 12.3619 11.0753 12.227 10.9409L7.17961 5.89363L7.14502 5.85898C7.01068 5.72401 6.87517 5.5879 6.71609 5.50909ZM5.92632 6.51255C6.01528 6.42365 6.06923 6.36992 6.11205 6.33166C6.15493 6.28686 6.26757 6.22415 6.37508 6.33166C6.41795 6.36992 6.47191 6.42365 6.56081 6.51255L7.50464 7.45638L6.87015 8.09087L5.92632 7.14704C5.83742 7.05814 5.7837 7.00418 5.74545 6.96131C5.63895 6.85479 5.70108 6.74156 5.74545 6.69828C5.7837 6.65546 5.83742 6.60145 5.92632 6.51255Z"
-          fill="currentColor"
-        />
-        <path
-          opacity="0.4"
-          d="M9.91536 0.730469C10.0984 0.730469 10.2622 0.844452 10.3257 1.01614L10.4976 1.48083C10.737 2.12769 10.8184 2.32083 10.9571 2.45954C11.0959 2.59824 11.289 2.67968 11.9359 2.91904L12.4005 3.09099C12.5722 3.15452 12.6862 3.31823 12.6862 3.5013C12.6862 3.68437 12.5722 3.84808 12.4005 3.91161L11.9359 4.08356C11.289 4.32293 11.0959 4.40437 10.9571 4.54307C10.8184 4.68177 10.737 4.87491 10.4976 5.52178L10.3257 5.98648C10.2622 6.15815 10.0984 6.27214 9.91536 6.27214C9.73231 6.27214 9.56857 6.15815 9.50505 5.98648L9.33308 5.52178C9.09374 4.87491 9.01231 4.68177 8.87359 4.54307C8.73487 4.40437 8.54173 4.32293 7.89487 4.08356L7.43019 3.91161C7.25851 3.84808 7.14453 3.68437 7.14453 3.5013C7.14453 3.31823 7.25851 3.15452 7.43019 3.09099L7.89487 2.91904C8.54173 2.67968 8.73487 2.59824 8.87359 2.45954C9.01231 2.32083 9.09374 2.12769 9.33308 1.48083L9.50505 1.01614C9.56857 0.844452 9.73231 0.730469 9.91536 0.730469Z"
-          fill="currentColor"
-        />
-        <path
-          opacity="0.4"
-          d="M3.5 1.89844C3.68307 1.89844 3.84678 2.01242 3.91031 2.18411L4.03927 2.53262C4.22227 3.02716 4.27552 3.14413 4.35867 3.22728C4.4418 3.31041 4.55878 3.36367 5.05332 3.54666L5.40183 3.67563C5.57352 3.73916 5.6875 3.90287 5.6875 4.08594C5.6875 4.269 5.57352 4.43272 5.40183 4.49625L5.05331 4.62521C4.55878 4.8082 4.4418 4.86146 4.35866 4.9446C4.27552 5.02774 4.22227 5.14472 4.03927 5.63926L3.91031 5.98778C3.84678 6.15945 3.68307 6.27344 3.5 6.27344C3.31693 6.27344 3.15322 6.15945 3.08969 5.98778L2.96073 5.63926C2.77773 5.14472 2.72448 5.02774 2.64133 4.9446C2.5582 4.86146 2.44122 4.8082 1.94668 4.62521L1.59817 4.49625C1.42648 4.43272 1.3125 4.269 1.3125 4.08594C1.3125 3.90287 1.42648 3.73916 1.59817 3.67563L1.94668 3.54666C2.44122 3.36367 2.5582 3.31041 2.64133 3.22727C2.72448 3.14413 2.77773 3.02716 2.96073 2.53262L3.08969 2.18411C3.15322 2.01242 3.31693 1.89844 3.5 1.89844Z"
-          fill="currentColor"
-        />
-      </svg>
-    </article>
-  );
-}
-
-function Solutions() {
-  return (
-    <section className="section solutions-section">
-      <SolutionsAnimations />
-      <div className="site-container">
-        <div className="solutions-heading-row">
-          <div className="solutions-heading-column">
-            <div className="section-heading centered">
-              <Eyebrow>Our Solutions</Eyebrow>
-              <h2>Innovate, Build, and Grow with Confidence</h2>
-            </div>
-          </div>
-        </div>
-
-        <div className="solutions-list-wrap">
-          <ul className="solutions-grid">
-            {solutions.map((solution, index) => (
-              <li className="solution-column" key={index}>
-                <article className="solution-card">
-                  <div className="solution-card-header">
-                    <h3>{solution.title}</h3>
-                  </div>
-                  <div className="solution-card-body">
-                    <p>{solution.text}</p>
-                    <ul>
-                      {solution.items.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </article>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      />
+      <span className="hero-glow" aria-hidden="true" />
     </section>
   );
 }
 
-function Work() {
+const valueVignettes = [
+  ValueWorthVignette,
+  ValueOutputVignette,
+  ValueLaunchVignette,
+];
+
+function ValueStack() {
   return (
-    <section id="work" className="section work-section">
-      <WorkAnimations />
+    <section className="section value-section">
       <div className="site-container">
-        <div className="section-heading">
-          <Eyebrow dark icon="work">
-            featured Work
-          </Eyebrow>
-          <h2>Bringing Ideas to Life</h2>
-        </div>
-        <WorkSection />
-      </div>
-    </section>
-  );
-}
-
-function Reviews() {
-  return (
-    <section className="section reviews-section">
-      <SectionScrollAnimations />
-      <div className="site-container">
-        <div className="featured-review">
-          <div className="review-copy">
-            <svg viewBox="0 0 51 42" aria-hidden="true" className="quote-mark">
-              <path d="M4.327 6.373C7.903 2.476 13.315.5 20.41.5h2.549v7.224l-2.05.412c-3.492.702-5.921 2.083-7.221 4.11a7.1 7.1 0 0 0-1.117 3.629h7.839a2.56 2.56 0 0 1 2.549 2.563v17.937c0 2.826-2.287 5.125-5.099 5.125H2.565a2.56 2.56 0 0 1-2.549-2.563V26.125l.008-7.48c-.023-.284-.508-7.024 4.303-12.272ZM45.902 41.5H30.606a2.56 2.56 0 0 1-2.549-2.563V26.125l.008-7.48c-.023-.284-.507-7.024 4.303-12.272C35.944 2.476 41.356.5 48.451.5H51v7.224l-2.05.412c-3.492.702-5.921 2.083-7.221 4.11a7.1 7.1 0 0 0-1.117 3.629h7.839A2.56 2.56 0 0 1 51 18.438v17.937c0 2.826-2.287 5.125-5.098 5.125Z" />
-            </svg>
-            <p>
-              Absolutely thrilled with the website Nexubis crafted for us! Their
-              team turned our vision into a stunning reality. Highly
-              recommended!
-            </p>
-            <div>
-              <h3>Sean Sanders</h3>
-              <span>CEO — Altify</span>
-            </div>
-          </div>
-          <div className="review-media">
-            <img
-              src="/assets/images/sean-review.png"
-              srcSet="/assets/images/sean-review-p-500.png 500w, /assets/images/sean-review-p-800.png 800w, /assets/images/sean-review.png 1024w"
-              sizes="100vw"
-              alt="Sean Sanders"
-            />
-          </div>
-        </div>
-
-        <div className="section-heading reviews-heading">
-          <Eyebrow icon="testimonials">testimonials</Eyebrow>
-          <h2>Every company should have the right website partner</h2>
-        </div>
-
-        <TestimonialsCarousel reviews={reviews} />
-        <div className="reviews-slider-arrows" aria-hidden="true">
-          <button type="button" tabIndex={-1}>
-            Previous
-          </button>
-          <button type="button" tabIndex={-1}>
-            Next
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Comparison() {
-  const nexubis = [
-    "Direct access to multiple specialised skill sets",
-    "Dedicated project manager",
-    "Dynamic retainers based on client requirements",
-    "Daily updates via private client slack channels",
-  ];
-  const others = [
-    "Junior or secretly offshoring work",
-    'Tedious "Requests" or Lengthy briefs',
-    "Never-ending subscription or long contracts",
-    "Slow progress or rushed results",
-  ];
-
-  return (
-    <section className="section usp-section">
-      <div className="site-container">
-        <div className="usp-layout-row usp-layout-row-center">
-          <div className="usp-layout-col usp-layout-col-lg-8">
-            <div className="section-heading centered">
-              <div className="avatar-stack">
-                {[
-                  "avatar-1.png",
-                  "avatar-2.png",
-                  "avatar-4.png",
-                  "avatar-3.png",
-                ].map((avatar) => (
-                  <span className="avatar-wrap" key={avatar}>
-                    <img src={`/assets/images/${avatar}`} alt="" />
-                  </span>
-                ))}
-              </div>
-              <h2>Limitless Creativity, Powered by a Dedicated Team</h2>
-            </div>
-          </div>
-        </div>
-
-        <div className="comparison-card-wrap">
-          <div className="usp-layout-row usp-layout-row-center">
-            <div className="usp-layout-col usp-layout-col-lg-8">
-              <div className="comparison-card">
-                <div className="comparison-row">
-                  <div className="comparison-column">
-                    <NexubisLogo className="comparison-logo" />
-                    <CheckList items={nexubis} red />
-                  </div>
-                  <div className="comparison-column">
-                    <h3>Other agencies</h3>
-                    <CheckList items={others} />
-                  </div>
+        <ul className="value-grid">
+          {valueTiles.map((tile, index) => {
+            const Vignette = valueVignettes[index];
+            return (
+              <li
+                className="value-tile"
+                key={tile}
+                data-reveal
+                data-reveal-delay={(index + 1) * 0.1}
+              >
+                <div className="value-vignette">
+                  <Vignette />
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                <div className="value-tile-label">
+                  <span className="value-tile-index">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h2>{tile}</h2>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );
 }
 
-function CheckList({ items, red = false }: { items: string[]; red?: boolean }) {
+function Stakes() {
   return (
-    <ul className={red ? "check-list red" : "check-list"}>
-      {items.map((item) => (
-        <li key={item}>{item}</li>
-      ))}
-    </ul>
-  );
-}
-
-function Steps() {
-  return (
-    <section className="section steps-section">
+    <section className="section stakes-section">
       <div className="site-container">
-        <div className="section-heading centered">
-          <Eyebrow icon="process">Process</Eyebrow>
-          <h2>
-            Our 4 step plan to a
-            <span className="mobile-break">
-              <br />
-            </span>
-            {" "}project&nbsp;&nbsp;you’re proud of
-          </h2>
+        <div className="stakes-inner">
+          <p className="stakes-lead" data-reveal>
+            {stakesLead}
+          </p>
+          <div className="stakes-body" data-reveal data-reveal-delay={0.1}>
+            {stakesBody.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
         </div>
-
-        <div className="steps-grid">
-          {steps.map((step, index) => (
-            <article className="step-card" key={index}>
-              <div className="step-card-header">
-                <h3>{step.title}</h3>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-              </div>
-              <div className="step-card-body">
-                <img
-                  className="step-bg"
-                  src="/assets/images/card-bg-mark.webp"
-                  alt=""
-                />
-                <img
-                  className="step-img"
-                  src={`/assets/images/${step.image}`}
-                  alt=""
-                />
-              </div>
-            </article>
+        <div className="stakes-lineup" data-reveal data-reveal-delay={0.2} aria-hidden="true">
+          {[0, 1, 2, 3].map((i) => (
+            <div
+              className={i === 1 ? "sl-item sl-item-picked" : "sl-item"}
+              key={i}
+            >
+              <span className="sl-thumb" />
+              <span className="sl-bar" />
+              <span className="sl-tag" />
+              {i === 1 ? (
+                <>
+                  <span className="sl-ring" />
+                  <span className="sl-flag">Picked on price</span>
+                  <span className="vg-cursor sl-cursor">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M5 3l6.5 15.5 2-6 6-2L5 3z" />
+                    </svg>
+                  </span>
+                </>
+              ) : null}
+            </div>
           ))}
         </div>
       </div>
@@ -681,24 +438,75 @@ function Steps() {
   );
 }
 
-function Faq() {
+function Guide() {
   return (
-    <section className="section faq-section">
+    <section className="section guide-section">
       <div className="site-container">
-        <div className="faq-layout">
-          <div className="faq-intro">
-            <h2>What would you like to know about Nexubis?</h2>
-            <p>
-              We&apos;re here to help! Explore our FAQs to learn more about our
-              services, process, and how we can bring your vision to life.
-            </p>
+        <div className="guide-grid">
+          <div className="guide-lead" data-reveal>
+            <p className="guide-empathy">{guideEmpathy}</p>
+            <div className="guide-authority">
+              <NexubisLogo className="guide-logo" />
+              <p>{guideAuthority}</p>
+            </div>
           </div>
+          <ul className="guide-proof-cards" data-reveal data-reveal-delay={0.1}>
+            {guideBullets.map((bullet, i) => {
+              const GVignette = guideVignettes[i];
+              return (
+                <li className="guide-proof-card" key={bullet}>
+                  <div className="guide-proof-vignette">
+                    <GVignette />
+                  </div>
+                  <p>{bullet}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-          <div className="faq-list">
-            {faqs.map(([question, answer]) => (
-              <details key={question} name="homepage-faq">
+const guideVignettes = [
+  GuideTeamVignette,
+  GuideScopeVignette,
+  GuideIndustrialVignette,
+];
+
+const solutionVignettes = [
+  SolBrandVignette,
+  SolWebsiteVignette,
+  Sol3DVignette,
+  SolVideoVignette,
+  SolTradeshowVignette,
+];
+
+function Solutions() {
+  return (
+    <section id="what-we-do" className="section solutions-accordion-section">
+      <div className="site-container">
+        <div className="solutions-accordion-head" data-reveal>
+          <h2>What we take off your plate</h2>
+        </div>
+        <div className="solutions-accordion">
+          {solutions.map((solution, index) => {
+            const Vignette = solutionVignettes[index];
+            return (
+              <details
+                className="solution-row"
+                name="solutions"
+                key={solution.title}
+                open={index === 0}
+                data-reveal
+                data-reveal-delay={0.05 * (index + 1)}
+              >
                 <summary>
-                  <span>{question}</span>
+                  <span className="solution-row-index">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="solution-row-title">{solution.title}</span>
                   <svg
                     className="chevron"
                     viewBox="0 0 24 24"
@@ -714,29 +522,286 @@ function Faq() {
                     />
                   </svg>
                 </summary>
-                <p>{answer}</p>
+                <div className="solution-row-body">
+                  <div className="solution-row-copy">
+                    <p>{solution.text}</p>
+                    <Link href={LEARN_MORE_URL} className="text-cta">
+                      <span>Learn more</span>
+                      <ArrowIcon />
+                    </Link>
+                  </div>
+                  {Vignette ? (
+                    <div className="solution-row-vignette">
+                      <Vignette />
+                    </div>
+                  ) : null}
+                </div>
               </details>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
-      <img className="faq-bg" src="/assets/images/bg-mark.svg" alt="" />
     </section>
   );
 }
 
-function CloudCta() {
+const planVignettes = [
+  PlanCallVignette,
+  PlanPreviewVignette,
+  PlanSlackVignette,
+];
+
+function Plan() {
   return (
-    <section className="cloud-cta">
+    <section className="section plan-section">
       <div className="site-container">
-        <h2>Empowering</h2>
-        <h2>Dreams.</h2>
+        <div className="plan-head" data-reveal>
+          <h2>How it works</h2>
+        </div>
+        <ol className="plan-grid">
+          {planSteps.map((step, index) => {
+            const Vignette = planVignettes[index];
+            return (
+              <li
+                className="plan-card"
+                key={step.title}
+                data-reveal
+                data-reveal-delay={(index + 1) * 0.1}
+              >
+                <div className="plan-card-head">
+                  <span className="plan-card-index">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h3>{step.title}</h3>
+                </div>
+                <p>{step.text}</p>
+                {Vignette ? (
+                  <div className="plan-vignette">
+                    <Vignette />
+                  </div>
+                ) : null}
+              </li>
+            );
+          })}
+        </ol>
+        <div className="plan-footer" data-reveal data-reveal-delay={0.1}>
+          <p className="plan-oneliner">{planOneLiner}</p>
+          <div className="btn-group">
+            <BookCallButton />
+          </div>
+        </div>
       </div>
-      <div className="clouds" aria-hidden="true">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <img key={index} src="/assets/images/clouds_1.avif" alt="" />
-        ))}
+    </section>
+  );
+}
+
+function ScorecardBlock({ showMicroProof = true }: { showMicroProof?: boolean }) {
+  return (
+    <section id="scorecard-block" className="section scorecard-section">
+      <div className="site-container">
+        <div className="scorecard-panel" data-reveal>
+          <div className="scorecard-copy">
+            <h2>How credible is your brand, really?</h2>
+            <p className="scorecard-sub">{scorecardSub}</p>
+            <ul className="scorecard-bullets">
+              {scorecardBullets.map((bullet) => (
+                <li key={bullet}>{bullet}</li>
+              ))}
+            </ul>
+            <div className="scorecard-actions">
+              <Link href={SCORECARD_URL} className="btn btn-primary scorecard-cta">
+                <span>Check my brand&apos;s credibility</span>
+                <ArrowIcon />
+              </Link>
+              <p className="scorecard-expectation">{scorecardExpectation}</p>
+            </div>
+            {showMicroProof ? (
+              <p className="scorecard-microproof">{scorecardMicroProof}</p>
+            ) : null}
+          </div>
+
+          <div className="scorecard-report" data-vignette aria-hidden="true">
+            <div className="scr-head">
+              <div className="scr-ring">
+                <svg viewBox="0 0 42 42">
+                  <circle className="scr-ring-track" cx="21" cy="21" r="18" />
+                  <circle className="scr-ring-fill" cx="21" cy="21" r="18" />
+                </svg>
+                <span className="scr-score">62</span>
+              </div>
+              <div className="scr-verdict">
+                <span className="scr-verdict-label">Credibility score</span>
+                <span className="scr-verdict-line" />
+                <span className="scr-verdict-tag">Undersold in 3 of 5 places</span>
+              </div>
+            </div>
+            <div className="scr-thumbs">
+              <div className="scr-thumb scr-thumb-you">
+                <span className="scr-thumb-cap">You</span>
+                <span className="scr-thumb-bar" />
+                <span className="scr-thumb-bar scr-thumb-bar-sm" />
+              </div>
+              <div className="scr-thumb scr-thumb-comp">
+                <span className="scr-thumb-cap">Competitor</span>
+                <span className="scr-thumb-bar" />
+                <span className="scr-thumb-bar scr-thumb-bar-sm" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+    </section>
+  );
+}
+
+function Proof() {
+  // Split the case line so the two stats read as chips, without changing the text.
+  const caseParts = proofCaseLine.split(/(35%|33%)/);
+  return (
+    <section className="section proof-section">
+      <div className="site-container">
+        <div className="proof-grid">
+          <figure className="proof-quote" data-reveal>
+            <div className="proof-bubble">
+              <svg viewBox="0 0 51 42" aria-hidden="true" className="quote-mark">
+                <path d="M4.327 6.373C7.903 2.476 13.315.5 20.41.5h2.549v7.224l-2.05.412c-3.492.702-5.921 2.083-7.221 4.11a7.1 7.1 0 0 0-1.117 3.629h7.839a2.56 2.56 0 0 1 2.549 2.563v17.937c0 2.826-2.287 5.125-5.099 5.125H2.565a2.56 2.56 0 0 1-2.549-2.563V26.125l.008-7.48c-.023-.284-.508-7.024 4.303-12.272ZM45.902 41.5H30.606a2.56 2.56 0 0 1-2.549-2.563V26.125l.008-7.48c-.023-.284-.507-7.024 4.303-12.272C35.944 2.476 41.356.5 48.451.5H51v7.224l-2.05.412c-3.492.702-5.921 2.083-7.221 4.11a7.1 7.1 0 0 0-1.117 3.629h7.839A2.56 2.56 0 0 1 51 18.438v17.937c0 2.826-2.287 5.125-5.098 5.125Z" />
+              </svg>
+              <blockquote className="proof-placeholder">{proofPlaceholderQuote}</blockquote>
+            </div>
+            <figcaption className="proof-attribution">
+              <span className="proof-avatar" aria-hidden="true" />
+              DMN
+            </figcaption>
+          </figure>
+
+          <article className="proof-case" data-reveal data-reveal-delay={0.1}>
+            <div className="proof-video">
+              <span className="proof-video-poster" aria-hidden="true" />
+              <span className="proof-video-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+              {process.env.NODE_ENV !== "production" ? (
+                <span className="proof-video-pending" aria-hidden="true">
+                  Video pending: oxipack-testimonial.mp4
+                </span>
+              ) : null}
+            </div>
+            <p className="proof-case-line">
+              {caseParts.map((part, i) =>
+                part === "35%" || part === "33%" ? (
+                  <span className="proof-stat" key={i}>
+                    {part}
+                  </span>
+                ) : (
+                  part
+                ),
+              )}
+            </p>
+            <Link href={OXIPACK_CASE_URL} className="text-cta">
+              <span>Read the full case study</span>
+              <ArrowIcon />
+            </Link>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Success() {
+  return (
+    <section className="section success-section">
+      {/* Media band. When booth-loop.mp4 exists, swap this poster for a muted,
+          looping <video> with booth-loop-poster.jpg as its poster. Until then the
+          designed poster below stands in and reads as an intentional booth scene. */}
+      <div className="success-media" aria-hidden="true">
+        <svg
+          className="success-booth"
+          viewBox="0 0 1200 400"
+          preserveAspectRatio="xMidYMax slice"
+          fill="none"
+        >
+          <path className="success-spot" d="M300 -40 L180 400 L520 400 L360 -40 Z" />
+          <path className="success-spot" d="M900 -40 L720 400 L1060 400 L840 -40 Z" />
+          <rect x="360" y="150" width="480" height="210" rx="6" />
+          <rect x="360" y="150" width="480" height="34" rx="6" />
+          <path d="M360 250 H840 M600 184 V360" />
+          <rect x="250" y="196" width="96" height="164" rx="6" />
+          <rect x="854" y="196" width="96" height="164" rx="6" />
+          <rect x="520" y="300" width="160" height="60" rx="4" />
+        </svg>
+        {process.env.NODE_ENV !== "production" ? (
+          <span className="success-pending">Loop pending: booth-loop.mp4</span>
+        ) : null}
+      </div>
+      <div className="site-container">
+        <div className="success-inner" data-reveal>
+          <p className="success-body">{successBody}</p>
+          <div className="btn-group success-actions">
+            <BookCallButton />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProofBarTrack({ clone = false }: { clone?: boolean }) {
+  return (
+    <ul className="proof-bar-track" aria-hidden={clone || undefined}>
+      {proofBarLines.map((line, index) => (
+        <li className="proof-bar-item" key={index}>
+          <span className="proof-bar-mark" aria-hidden="true" />
+          {line}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ProofBar() {
+  return (
+    <section className="proof-bar-section">
+      <div className="proof-bar-marquee">
+        <ProofBarTrack />
+        <ProofBarTrack clone />
+      </div>
+    </section>
+  );
+}
+
+function Faq() {
+  return (
+    <section className="section faq-section faq-solo">
+      <div className="site-container">
+        <div className="faq-list" data-reveal>
+          {faqs.map(([question, answer]) => (
+            <details key={question} name="homepage-faq">
+              <summary>
+                <span>{question}</span>
+                <svg
+                  className="chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M19.5 8.25L12 15.75L4.5 8.25"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+      <img className="faq-bg" src="/assets/images/bg-mark.svg" alt="" />
     </section>
   );
 }
