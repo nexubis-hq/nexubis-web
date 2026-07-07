@@ -166,26 +166,33 @@ export function ReportView({
   loomUrl = null,
   teaser = false,
   runId,
+  chrome = true,
 }: {
   result: ScorecardResult;
   loomUrl?: string | null;
   teaser?: boolean;
   /** Required in teaser mode: the unlock panel promotes this run. */
   runId?: string;
+  /** False when embedded inside a page that already owns the main landmark
+   *  and top bar (the instant-check flow); true for the standalone route. */
+  chrome?: boolean;
 }) {
   const p = prospectScores(result);
   const overall = p?.overall ?? null;
   const rivals = result.scores.filter((s) => !s.isProspect);
   const embed = loomUrl ? loomEmbedUrl(loomUrl) : null;
 
+  const Shell = chrome ? "main" : "div";
   return (
-    <main className="sc-report">
+    <Shell className="sc-report">
       <RevealOnScroll />
-      <nav className="sc-topbar" aria-label="Report">
-        <Link href="/" aria-label="Nexubis home">
-          <NexubisLogo className="sc-topbar-logo" />
-        </Link>
-      </nav>
+      {chrome ? (
+        <nav className="sc-topbar" aria-label="Report">
+          <Link href="/" aria-label="Nexubis home">
+            <NexubisLogo className="sc-topbar-logo" />
+          </Link>
+        </nav>
+      ) : null}
 
       {/* 1. Cover */}
       <header className="sc-cover">
@@ -349,6 +356,6 @@ export function ReportView({
           </footer>
         </>
       )}
-    </main>
+    </Shell>
   );
 }

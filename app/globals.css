@@ -6757,3 +6757,223 @@ button.nav-link {
     break-inside: avoid;
   }
 }
+
+/* ── Scorecard landing + flow ─────────────────────────────── */
+
+.sc-entry {
+  background: var(--white);
+}
+
+.sc-landing {
+  padding-block: var(--s-7) var(--s-8);
+}
+
+.sc-landing-grid {
+  display: grid;
+  gap: calc(var(--grid-gap) * 1.5);
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .sc-landing-grid {
+    grid-template-columns: 1.15fr 1fr;
+  }
+}
+
+.sc-landing-intro h1 {
+  font-size: var(--h1);
+  line-height: 1.05;
+  max-width: 14ch;
+  margin-bottom: var(--s-4);
+}
+
+.sc-landing-sub {
+  font-size: var(--p-lg);
+  line-height: 1.6;
+  color: var(--body);
+  max-width: 54ch;
+  margin-bottom: var(--s-4);
+}
+
+.sc-landing-bullets {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: var(--s-4);
+}
+
+.sc-landing-bullets li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.sc-landing-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 0.85rem;
+  height: 0.28rem;
+  background: var(--primary);
+}
+
+.sc-landing-microproof {
+  color: var(--mid);
+  font-size: 0.95rem;
+  max-width: 44ch;
+}
+
+.sc-landing-form-card {
+  background: var(--surface);
+  border-radius: 0.6rem;
+  padding: clamp(1.4rem, 3.5vw, 2.2rem);
+  position: sticky;
+  top: 5.5rem;
+}
+
+.sc-landing-form-card h2 {
+  font-size: var(--h4);
+  margin-bottom: 0.4rem;
+}
+
+.sc-landing-form-intro {
+  color: var(--body);
+  margin-bottom: var(--s-3);
+}
+
+.sc-landing-form {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.sc-landing-form .sc-field input,
+.sc-landing-form .sc-field select {
+  background: var(--white);
+}
+
+.sc-competitors {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.sc-competitors legend {
+  padding: 0;
+  margin-bottom: 0.35rem;
+}
+
+.sc-landing-submit {
+  justify-self: start;
+}
+
+.sc-landing-expectation {
+  font-size: 0.88rem;
+  color: var(--mid);
+}
+
+/* Scan animation */
+.sc-scan {
+  display: grid;
+  gap: 1.2rem;
+  padding-block: 0.5rem;
+}
+
+.sc-scan-company {
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-weight: 500;
+  font-size: var(--h4);
+}
+
+.sc-scan-bar {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--light);
+  overflow: hidden;
+}
+
+.sc-scan-bar span {
+  display: block;
+  height: 100%;
+  background: var(--primary);
+  border-radius: inherit;
+  transition: width 0.25s linear;
+}
+
+.sc-scan-stages {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sc-scan-stages li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--mid);
+  font-size: 0.98rem;
+}
+
+.sc-scan-tick {
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 50%;
+  border: 2px solid var(--light);
+  flex: none;
+  position: relative;
+}
+
+.sc-scan-stages li.is-active {
+  color: var(--black);
+  font-weight: 500;
+}
+
+.sc-scan-stages li.is-active .sc-scan-tick {
+  border-color: var(--primary);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sc-scan-stages li.is-active .sc-scan-tick::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: sc-tick-pulse 1.1s ease-in-out infinite alternate;
+  }
+}
+
+.sc-scan-stages li.is-done {
+  color: var(--body);
+}
+
+.sc-scan-stages li.is-done .sc-scan-tick {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+
+.sc-scan-stages li.is-done .sc-scan-tick::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: center / 60% no-repeat
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.2 5 9l5-6' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+.sc-scan-note {
+  color: var(--mid);
+  font-size: 0.88rem;
+}
+
+@keyframes sc-tick-pulse {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.35;
+  }
+}
