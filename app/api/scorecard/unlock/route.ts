@@ -1,9 +1,20 @@
 // The unlock endpoint: name, work email and role unlock the full report. On
-// success the run record is promoted to its permanent shared slug. The lead
-// plumbing (KV lead record, Funnelr webhook, team notification, Email 1
-// fallback) chains after the promote and never blocks the user's unlock.
+// success the run record is promoted to its permanent shared slug, and the
+// lead plumbing (KV lead record, signed Funnelr webhook with retries, team
+// notification, flag-gated Email 1) runs AFTER the response via after(), so
+// the user's unlock never waits on it. Double submits are idempotent: the
+// same email + run returns the same link and fires nothing twice.
 import { NextRequest, NextResponse } from "next/server";
-import { validateUnlockInput, verifyTurnstile, promoteRun, type UnlockInput } from "@/lib/scorecard/unlock";
+import { after } from "next/server";
+import {
+  validateUnlockInput,
+  verifyTurnstile,
+  promoteRun,
+  readExistingUnlock,
+  markUnlocked,
+  runLeadPlumbing,
+  type UnlockInput,
+} from "@/lib/scorecard/unlock";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -21,6 +32,14 @@ function parse(body: unknown): UnlockInput | null {
     turnstileToken: typeof b.turnstileToken === "string" ? b.turnstileToken : undefined,
     elapsedMs: typeof b.elapsedMs === "number" ? b.elapsedMs : undefined,
   };
+}
+
+function originOf(req: NextRequest): string {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL;
+  if (configured) return configured.replace(/\/$/, "");
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  const proto = req.headers.get("x-forwarded-proto") ?? "https";
+  return host ? `${proto}://${host}` : "https://www.nexubis.io";
 }
 
 export async function POST(req: NextRequest) {
@@ -41,12 +60,27 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // Idempotency: a repeat unlock returns the existing link, fires nothing.
+    const existing = await readExistingUnlock(input);
+    if (existing) {
+      return NextResponse.json({ reportUrl: `/scorecard/r/${existing}`, slug: existing });
+    }
+
     const outcome = await promoteRun(input);
     if (!outcome.ok) {
       return NextResponse.json({ error: outcome.error }, { status: outcome.status });
     }
-    // Lead plumbing chains here (fire-and-forget) once the unlock prompt
-    // lands: lead record, Funnelr webhook, team notification, Email 1 flag.
+    await markUnlocked(input, outcome.slug);
+
+    const origin = originOf(req);
+    after(async () => {
+      try {
+        await runLeadPlumbing(outcome.record, input, outcome.slug, origin);
+      } catch (err) {
+        console.error("[scorecard-unlock] lead plumbing failed:", err instanceof Error ? err.message : err);
+      }
+    });
+
     return NextResponse.json({ reportUrl: outcome.reportUrl, slug: outcome.slug });
   } catch (err) {
     console.error("[scorecard-unlock] failed:", err instanceof Error ? err.message : err);

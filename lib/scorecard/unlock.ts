@@ -3,11 +3,16 @@
 // data where possible so every branch is unit-tested. The lead plumbing
 // (Funnelr webhook, team notification, Email 1 fallback) extends onUnlocked
 // in the lead-plumbing prompt.
+import { createHash } from "node:crypto";
 import { readRunRecord } from "./run";
 import { uniqueSlug, writeShared, type SharedScorecard } from "./share";
 import { DISPOSABLE_DOMAINS } from "./disposable-domains";
 import { roleSeniority } from "./routing";
-import type { ScorecardResult } from "./result";
+import { getKv } from "./kv";
+import { pushLead, updateLead, type LeadRecord } from "./leads";
+import { buildFunnelrPayload, fireFunnelrWebhook } from "./funnelr";
+import { notifyTeam, sendFallbackEmail1 } from "./notify";
+import { prospectScores, type ScorecardResult } from "./result";
 import type { ProspectData } from "./types";
 
 export interface UnlockInput {
@@ -110,6 +115,33 @@ export function applyContact(prospect: ProspectData, result: ScorecardResult, in
   };
 }
 
+// Idempotency: a double submit (same email, same run) returns the SAME report
+// link and never double-fires the webhook or the emails. The dedupe key stores
+// the slug for 7 days.
+export function hashEmail(email: string): string {
+  return createHash("sha256").update(email.trim().toLowerCase()).digest("hex").slice(0, 24);
+}
+export function dedupeKey(email: string, runId: string): string {
+  return `scorecard-unlock:${hashEmail(email)}:${runId}`;
+}
+const DEDUPE_TTL_S = 7 * 24 * 60 * 60;
+
+export async function readExistingUnlock(input: UnlockInput): Promise<string | null> {
+  try {
+    return (await getKv().get<string>(dedupeKey(input.email, input.runId))) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function markUnlocked(input: UnlockInput, slug: string): Promise<void> {
+  try {
+    await getKv().set(dedupeKey(input.email, input.runId), slug, { ex: DEDUPE_TTL_S });
+  } catch {
+    // Dedupe is best-effort; a lost marker only risks a duplicate webhook.
+  }
+}
+
 // Promote the run to its permanent shared report. Never emails or webhooks
 // here; the caller chains the lead plumbing after (and never blocks the
 // user's unlock on it).
@@ -137,4 +169,71 @@ export async function promoteRun(input: UnlockInput): Promise<UnlockOutcome> {
   };
   await writeShared(slug, record);
   return { ok: true, slug, reportUrl: `/scorecard/r/${slug}`, record };
+}
+
+// ── The lead plumbing, in order (Part 2B / build pack Prompt 6) ──────────────
+// 1. Persist the lead in KV (queryable: powers admin + the Loom selection).
+// 2. Fire the Funnelr webhook (signed); 3 attempts; on final failure the lead
+//    is flagged webhook:failed and the team notification says so.
+// 3. Resend internal notification to the team.
+// 4. Fallback Email 1 to the lead, only while SCORECARD_SEND_EMAIL1=true.
+// Runs AFTER the unlock response (the route uses after()); nothing here can
+// block or fail the user's unlock.
+export function buildLeadRecord(record: SharedScorecard, input: UnlockInput, slug: string): LeadRecord {
+  const result = record.result;
+  const overall = prospectScores(result)?.overall ?? 0;
+  const now = new Date().toISOString();
+  return {
+    name: input.firstName.trim(),
+    email: input.email.trim(),
+    role: input.role.trim(),
+    company: result.meta.company,
+    url: record.prospectData.url,
+    productOneLiner: result.meta.productOneLiner,
+    competitors: result.meta.competitors,
+    credibilityScore: overall,
+    verdict: result.verdict.band,
+    firstFixCategory: result.firstFix?.category ?? null,
+    reportSlug: slug,
+    routing: result.routing,
+    webhookStatus: "skipped",
+    note: "",
+    loomStatus: "none",
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+export async function runLeadPlumbing(record: SharedScorecard, input: UnlockInput, slug: string, origin: string): Promise<LeadRecord> {
+  const lead = buildLeadRecord(record, input, slug);
+  const absoluteReportUrl = `${origin}/scorecard/r/${slug}`;
+  const adminUrl = `${origin}/scorecard/admin/${slug}`;
+
+  // 1. The lead record lands first, so even a total email/webhook outage
+  //    leaves the lead queryable in admin.
+  try {
+    await pushLead(lead);
+  } catch (err) {
+    console.error("[scorecard-unlock] lead persist failed:", err instanceof Error ? err.message : err);
+  }
+
+  // 2. Funnelr webhook. Failure flags the record and rides into the team email.
+  const webhook = await fireFunnelrWebhook(buildFunnelrPayload(lead, absoluteReportUrl));
+  lead.webhookStatus = webhook.ok ? "sent" : process.env.FUNNELR_WEBHOOK_URL ? "failed" : "skipped";
+  if (!webhook.ok && lead.webhookStatus === "failed") {
+    console.error(`[scorecard-unlock] Funnelr webhook failed after ${webhook.attempts} attempts: ${webhook.lastError}`);
+  }
+  try {
+    await updateLead(slug, { webhookStatus: lead.webhookStatus });
+  } catch {
+    // non-fatal
+  }
+
+  // 3. Team notification (carries the webhook warning when it failed).
+  await notifyTeam(lead, absoluteReportUrl, adminUrl);
+
+  // 4. Email 1 fallback, flag-gated. Funnelr owns Email 1 once live.
+  await sendFallbackEmail1(lead, absoluteReportUrl);
+
+  return lead;
 }
