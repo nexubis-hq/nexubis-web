@@ -1,5 +1,5 @@
 /**
- * "How it works" process vignettes — direct descendants of the old 4-step cards.
+ * "How it works" process vignettes - direct descendants of the old 4-step cards.
  *
  * Hand-built fake UI (no images beyond the existing brand avatars, no icon
  * libraries). Each is decorative: wrapped in `data-vignette aria-hidden="true"`
@@ -34,7 +34,7 @@ function CursorGlyph() {
   );
 }
 
-/** Step 1 — application call: avatar cluster wired to a booking button. */
+/** Step 1 - application call: avatar cluster wired to a booking button. */
 export function PlanCallVignette() {
   return (
     <div className="vg vg-call" data-vignette aria-hidden="true">
@@ -77,7 +77,7 @@ export function PlanCallVignette() {
   );
 }
 
-/** Step 2 — see it before you commit: a live artboard where brand work paints in. */
+/** Step 2 - see it before you commit: a live artboard where brand work paints in. */
 export function PlanPreviewVignette() {
   return (
     <div className="vg vg-preview" data-vignette aria-hidden="true">
@@ -121,7 +121,7 @@ export function PlanPreviewVignette() {
   );
 }
 
-/** Step 3 — our team becomes your team: Slack list, dedicated channel highlighted. */
+/** Step 3 - our team becomes your team: Slack list, dedicated channel highlighted. */
 export function PlanSlackVignette() {
   return (
     <div className="vg vg-slack" data-vignette aria-hidden="true">

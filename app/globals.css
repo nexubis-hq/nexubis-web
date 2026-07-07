@@ -4297,18 +4297,19 @@ button.nav-link {
   inset: 0;
   width: 100%;
   height: 100%;
-  stroke: rgb(255 255 255 / 9%);
+  stroke: rgb(255 255 255 / 15%);
   stroke-width: 2;
 }
 
 .success-booth rect,
 .success-booth path {
-  stroke: rgb(255 255 255 / 9%);
+  stroke: rgb(255 255 255 / 15%);
+  fill: rgb(255 255 255 / 3%);
 }
 
-.success-spot {
+.success-booth .success-spot {
   stroke: none;
-  fill: color-mix(in srgb, var(--primary) 9%, transparent);
+  fill: color-mix(in srgb, var(--primary) 13%, transparent);
 }
 
 .success-pending {
@@ -4456,7 +4457,7 @@ button.nav-link {
 }
 
 /* =========================================================================
-   VIGNETTES — hand-built fake-UI illustrations (tokens only)
+   VIGNETTES - hand-built fake-UI illustrations (tokens only)
    Sized in container-query units (cqw) against their .plan-vignette frame.
    Static baseline first; motion is added only under no-preference + .is-inview.
    ========================================================================= */
@@ -5436,11 +5437,11 @@ button.nav-link {
 }
 
 /* =========================================================================
-   VALUE STACK VIGNETTES (Section 2)  — cqw against .value-vignette
+   VALUE STACK VIGNETTES (Section 2)  - cqw against .value-vignette
    Static baseline = finished state; motion added under no-preference + .is-inview.
    ========================================================================= */
 
-/* 01 — worth: branded product picked over the cheaper one */
+/* 01 - worth: branded product picked over the cheaper one */
 .vg-worth {
   display: flex;
   align-items: center;
@@ -5516,7 +5517,7 @@ button.nav-link {
   bottom: 15%;
 }
 
-/* 02 — output: a queue of deliverables past a countdown timer */
+/* 02 - output: a queue of deliverables past a countdown timer */
 .vg-output {
   position: relative;
   display: flex;
@@ -5528,7 +5529,7 @@ button.nav-link {
 
 .vv-queue {
   position: relative;
-  width: 40cqw;
+  width: 46cqw;
   height: 30cqw;
 }
 
@@ -5552,8 +5553,8 @@ button.nav-link {
 }
 
 .vv-d1 { z-index: 3; }
-.vv-d2 { z-index: 2; transform: translate(4cqw, -50%) scale(0.95); }
-.vv-d3 { z-index: 1; transform: translate(8cqw, -50%) scale(0.9); }
+.vv-d2 { z-index: 2; transform: translate(7cqw, -46%) scale(0.95) rotate(3deg); }
+.vv-d3 { z-index: 1; transform: translate(13cqw, -42%) scale(0.9) rotate(6deg); }
 
 .vv-d-line {
   height: 2cqw;
@@ -5608,7 +5609,7 @@ button.nav-link {
   stroke-dashoffset: 33;
 }
 
-/* 03 — launch: checklist completes into a Published pill */
+/* 03 - launch: checklist completes into a Published pill */
 .vg-launch {
   display: flex;
   flex-direction: column;
@@ -5732,7 +5733,7 @@ button.nav-link {
 }
 
 /* =========================================================================
-   STAKES LINEUP (Section 3) — identical products, the cheap one wrongly picked
+   STAKES LINEUP (Section 3) - identical products, the cheap one wrongly picked
    ========================================================================= */
 .stakes-lineup {
   display: grid;

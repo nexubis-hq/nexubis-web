@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 
 /**
- * Solutions showcase vignettes — one themed fake-UI illustration per service.
+ * Solutions showcase vignettes - one themed fake-UI illustration per service.
  *
  * All decorative (`data-vignette aria-hidden="true"`), so no copy is added. Entry
  * and idle motion key off the native `.solution-row[open]` state in CSS: a vignette
@@ -9,7 +9,7 @@ import type { CSSProperties } from "react";
  * closed. Reduced-motion shows the finished state.
  */
 
-/** Brand identity — a logo lockup snapping onto a grid with colour swatches. */
+/** Brand identity - a logo lockup snapping onto a grid with colour swatches. */
 export function SolBrandVignette() {
   return (
     <div className="sv sv-brand" data-vignette aria-hidden="true">
@@ -31,7 +31,7 @@ export function SolBrandVignette() {
   );
 }
 
-/** Website — a wireframe assembling into a polished industrial product page. */
+/** Website - a wireframe assembling into a polished industrial product page. */
 export function SolWebsiteVignette() {
   return (
     <div className="sv sv-website" data-vignette aria-hidden="true">
@@ -75,7 +75,7 @@ export function SolWebsiteVignette() {
   );
 }
 
-/** 3D & CGI — a machine silhouette rotating from wireframe to shaded cutaway. */
+/** 3D & CGI - a machine silhouette rotating from wireframe to shaded cutaway. */
 export function Sol3DVignette() {
   return (
     <div className="sv sv-3d" data-vignette aria-hidden="true">
@@ -105,7 +105,7 @@ export function Sol3DVignette() {
   );
 }
 
-/** Video & motion — a filmstrip / scrubber playing a product shot. */
+/** Video & motion - a filmstrip / scrubber playing a product shot. */
 export function SolVideoVignette() {
   return (
     <div className="sv sv-video" data-vignette aria-hidden="true">
@@ -130,7 +130,7 @@ export function SolVideoVignette() {
   );
 }
 
-/** Trade show & print — a booth front elevation with a brochure unfolding. */
+/** Trade show & print - a booth front elevation with a brochure unfolding. */
 export function SolTradeshowVignette() {
   return (
     <div className="sv sv-booth" data-vignette aria-hidden="true">

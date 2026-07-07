@@ -1,5 +1,5 @@
 /**
- * Value-stack vignettes — one fake-UI illustration per outcome tile.
+ * Value-stack vignettes - one fake-UI illustration per outcome tile.
  * Decorative (aria-hidden), no copy added. Entry/idle motion keys off the
  * parent `.value-tile.is-inview`; loops and hover live in CSS and stop under
  * reduced-motion.
@@ -23,7 +23,7 @@ function RocketGlyph() {
   );
 }
 
-/** 01 — Buyers see your worth: the branded product is picked over the cheaper one. */
+/** 01 - Buyers see your worth: the branded product is picked over the cheaper one. */
 export function ValueWorthVignette() {
   return (
     <div className="vg vg-worth" data-vignette aria-hidden="true">
@@ -46,7 +46,7 @@ export function ValueWorthVignette() {
   );
 }
 
-/** 02 — More output, faster turnaround: deliverables fly off a queue past a timer. */
+/** 02 - More output, faster turnaround: deliverables fly off a queue past a timer. */
 export function ValueOutputVignette() {
   return (
     <div className="vg vg-output" data-vignette aria-hidden="true">
@@ -72,7 +72,7 @@ export function ValueOutputVignette() {
   );
 }
 
-/** 03 — Brand ready for every launch: checklist completes into a Published pill. */
+/** 03 - Brand ready for every launch: checklist completes into a Published pill. */
 export function ValueLaunchVignette() {
   return (
     <div className="vg vg-launch" data-vignette aria-hidden="true">

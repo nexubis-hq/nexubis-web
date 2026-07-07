@@ -1,5 +1,5 @@
 /**
- * Guide proof-card vignettes — small fake-diagram illustrations, one per
+ * Guide proof-card vignettes - small fake-diagram illustrations, one per
  * authority bullet. Decorative (aria-hidden). Idle motion keys off the parent
  * `.guide-proof-cards.is-inview` in CSS; reduced-motion shows the static state.
  */
