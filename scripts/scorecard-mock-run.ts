@@ -8,11 +8,7 @@
 process.env.SCORECARD_MOCK = "1";
 
 import { prospectFromRunInput, runInputIsValid, runIdFor } from "../lib/scorecard/run";
-import { resolveCompetitors } from "../lib/scorecard/competitors";
-import { fetchSite } from "../lib/scorecard/fetch-site";
-import { captureFirstImpression } from "../lib/scorecard/screenshot";
-import { runPageSpeed } from "../lib/scorecard/pagespeed";
-import { searchWeb, formatSearchBlock } from "../lib/scorecard/web-search";
+import { gatherEvidenceUncached } from "../lib/scorecard/orchestrator";
 import { checkEnv } from "../lib/scorecard/env";
 
 async function main() {
@@ -28,37 +24,18 @@ async function main() {
   console.log(`run id:   ${runIdFor(prospect)}`);
   console.log(`env ok:   ${JSON.stringify(checkEnv("ai", "retrieval", "screenshots", "pagespeed"))}`);
 
-  const competitors = await resolveCompetitors(prospect);
-  for (const c of competitors) {
-    console.log(`competitor: "${c.raw}" -> ${c.resolved ? c.url : "UNRESOLVED"} (${c.name ?? "?"})`);
-  }
-
-  const companies = [
-    { name: prospect.company, url: prospect.url },
-    ...competitors.filter((c) => c.resolved && c.url).map((c) => ({ name: c.name ?? c.raw, url: c.url! })),
-  ];
-
-  for (const company of companies) {
-    const [site, shots, speed] = await Promise.all([
-      fetchSite(company.url),
-      captureFirstImpression(company.url),
-      runPageSpeed(company.url),
-    ]);
-    if (!site.ok) throw new Error(`fetchSite failed for ${company.url}: ${site.reason}`);
+  const set = await gatherEvidenceUncached(prospect, { onStage: (s) => console.log(`stage: ${s}`) });
+  for (const c of set.companies) {
     console.log(
-      `${company.name}: crawl ${site.text.length} chars, shots ${shots.desktop ? "desktop" : "-"}/${shots.mobile ? "mobile" : "-"}, ` +
-        `pagespeed mobile ${speed?.mobile?.performance ?? "n/a"} desktop ${speed?.desktop?.performance ?? "n/a"}`,
+      `${c.isProspect ? "PROSPECT " : "rival    "}${c.company}: resolved=${c.resolved} fetched=${c.fetched} ` +
+        `crawl=${c.siteText?.length ?? 0} chars, shots=${c.screenshots.desktopUrl ? "d" : "-"}${c.screenshots.mobileUrl ? "m" : "-"}, ` +
+        `pagespeed=${c.pageSpeed?.mobile?.performance ?? "n/a"}/${c.pageSpeed?.desktop?.performance ?? "n/a"}, ` +
+        `offsite=[${c.offsiteFacts.map((f) => `${f.key}:${f.present ? "y" : "n"}`).join(" ")}], ` +
+        `vision=${c.firstImpression ? c.firstImpression.designEra : "none"}${c.flags.length ? `, flags: ${c.flags.join(" | ")}` : ""}`,
     );
   }
-
-  const searches = await Promise.all([
-    searchWeb(`${prospect.company} linkedin`),
-    searchWeb(`${prospect.company} brochure filetype:pdf`),
-  ]);
-  const block = formatSearchBlock(searches);
-  console.log(`search block: ${block.split("\n").length} lines`);
-
-  console.log("mock run complete: all foundation modules executed with zero spend.");
+  console.log(`cost ~$${set.estimatedCostUsd}, searches ${set.searchQueriesUsed}, flags: ${set.flags.length}`);
+  console.log("mock run complete: evidence pipeline executed with zero spend.");
 }
 
 main().catch((err) => {

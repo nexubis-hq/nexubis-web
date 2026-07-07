@@ -95,9 +95,13 @@ export async function searchWeb(query: string): Promise<WebSearchResponse | null
   }
   const res = await serperSearch(query);
   if (res) {
-    getKv()
-      .set(key, res, { ex: SCORECARD_RECORD_TTL_S })
-      .catch(() => {});
+    try {
+      getKv()
+        .set(key, res, { ex: SCORECARD_RECORD_TTL_S })
+        .catch(() => {});
+    } catch {
+      // KV unavailable (local dev without a store): skip memoization, non-fatal
+    }
   }
   return res;
 }
