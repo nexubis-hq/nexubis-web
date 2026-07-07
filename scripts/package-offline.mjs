@@ -6,7 +6,7 @@ import { mkdirSync, writeFileSync, cpSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const BASE = "http://localhost:3010";
-const OUT = "offline-package/nexubis-homepage-preview";
+const OUT = process.env.HOME + "/Desktop/nexubis-homepage-preview"; // outside the repo: Turbopack/Tailwind scan the project tree and choke on mirrored HTML
 const PAGES = [
   { route: "/", file: "index.html", depth: 0 },
   { route: "/packages", file: "packages/index.html", depth: 1 },
