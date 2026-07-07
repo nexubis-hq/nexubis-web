@@ -15,6 +15,9 @@ Nexubis is the in-house creative team for European industrial manufacturers whos
 
 - **Homepage** (`/`) - The locked 12-section story. See below.
 - **Packages** (`/packages`) - Pricing and packages page (unchanged this round; it shares the header and footer).
+- **Scorecard** (`/scorecard`) - The Industrial Brand Credibility Scorecard: the instant lead-generator tool. A visitor enters their website, what they make, and 2 or 3 competitors; the tool checks all of them (crawl, first-impression screenshots, loading speed, web presence), scores 25 checks with Nexubis AI, and shows a preview on the spot. Entering name, work email and role unlocks the full report.
+- **Shared reports** (`/scorecard/r/...`) - Each unlocked report lives at its own private link for 180 days: score, competitor benchmark, five category pages, the first place to fix, the Oxipack proof, and the booking step. Not indexed by search engines. A personal video can be attached from the admin and appears at the top.
+- **Scorecard admin** (`/scorecard/admin`) - Password-protected team area: the leads table (with a "Loom candidates" view for the weekly video selection), notes, and per-report tools (attach the video, regenerate, copy the link). Not indexed.
 
 ## Homepage sections (in order)
 
@@ -62,7 +65,17 @@ Everything about the Brand Credibility Scorecard is hidden until you turn it on.
 - **Change colours or fonts:** edit the tokens at the top of `app/globals.css`. The whole site follows them.
 - **Turn the Scorecard on or off:** the `NEXT_PUBLIC_SHOW_SCORECARD` switch above.
 
+## The Scorecard tool (how it works, in plain words)
+
+- **Where things live:** the engine is in `lib/scorecard/` (crawling, screenshots, scoring, emails, storage), the screens in `components/scorecard/`, and the pages under `app/scorecard/`. All the words a visitor sees are in one file, `lib/scorecard/copy.ts`.
+- **What a run costs:** roughly 20 to 30 US cents in API fees per fresh check (measured, logged per run). Repeat checks of the same company are free thanks to caching.
+- **Leads:** every unlock saves a lead (visible in the admin), pings the team by email, and sends the contact to Funnelr by webhook so the email sequence starts. If Funnelr is not connected yet, a built-in first email can be switched on with `SCORECARD_SEND_EMAIL1=true`.
+- **House rules are enforced by tests:** no em dashes anywhere, the word "audit" never appears for visitors (it is always the Scorecard or the Credibility Check), Oxipack is named exactly once per report, and the AI only states what it actually saw.
+- **Test drive without spending:** `SCORECARD_MOCK=1` makes the whole tool run on canned data (currently ON in local development). In production this must be OFF.
+- **Before launch:** work through `LAUNCH_CHECKLIST.md` (new database, email domain, bot-check keys, Funnelr webhook, privacy wording).
+
 ## Recent Changes
 
+- 2026-07-07: Built the complete Brand Credibility Scorecard tool (the Section 7 lead generator). New: the `/scorecard` check flow, shareable reports, the team admin, lead capture with Funnelr webhook and team notifications, and the full AI scoring engine behind it. Three real manufacturer sites were scored end to end to tune the output. The homepage entry points now resolve to the working tool when the Scorecard switch is on.
 - 2026-07-07: Elevated every homepage section with hand-built illustrations ("vignettes") in the old process-card style — small, realistic fake interfaces drawn in code (no stock images, no icon libraries). The words on the page did not change at all; only the visuals did. New vignettes live in `components/vignettes/`. Each one is decorative and animates gently as you scroll (and holds still if you prefer reduced motion). Two spots wait on real footage and show a tidy placeholder until it arrives: the Oxipack video testimonial (`oxipack-testimonial.mp4`) and the trade-show booth loop behind the closing statement (`booth-loop.mp4`).
 - 2026-07-06: Rebuilt the homepage to the locked 12-section wireframe (new industrial-manufacturer positioning and copy). Added `lib/site-config.ts` so every CTA reads from one place, with `BOOKING_URL` pointing at contact for now. Added the Scorecard feature switch. Updated the header CTA and the footer links, social, and sign-off. Retired the old testimonial wall, the old process cards, the old solutions grid, and the "Empowering Dreams" closer from the homepage. The relocated components (`WorkSection`, `TestimonialsCarousel`) remain in the repo for reuse on other pages.
