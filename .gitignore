@@ -52,3 +52,4 @@ next-env.d.ts
 
 # Local reference material (contains the LekkeWeb audit-tool snapshot with live API keys). Never commit.
 /reference/
+/offline-package/
