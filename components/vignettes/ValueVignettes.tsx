@@ -1,14 +1,47 @@
 /**
  * Value-stack vignettes - one fake-UI illustration per outcome tile.
- * Decorative (aria-hidden), no copy added. Entry/idle motion keys off the
- * parent `.value-tile.is-inview`; loops and hover live in CSS and stop under
- * reduced-motion.
+ * Decorative (aria-hidden), no copy added. Looping motion keys off the
+ * parent `.value-tile.is-inview`; loops live in CSS and stop under
+ * reduced-motion, where the static baseline is the finished state.
  */
 
 function CursorGlyph() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor">
       <path d="M5 3l6.5 15.5 2-6 6-2L5 3z" />
+    </svg>
+  );
+}
+
+function ImageGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="8.5" cy="8.5" r="1.8" fill="currentColor" stroke="none" />
+      <path
+        d="M4 17.5l4.8-5.2 3.6 3.8 3.2-3.4 4.4 4.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function PlusGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6">
+      <path d="M12 5.5v13M5.5 12h13" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ArrowGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path
+        d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -23,21 +56,39 @@ function RocketGlyph() {
   );
 }
 
+function MiniCard({ className = "" }: { className?: string }) {
+  return (
+    <span className={`vv-mini ${className}`.trim()}>
+      <span className="vv-mini-thumb" />
+      <span className="vv-mini-line" />
+      <span className="vv-mini-cta" />
+    </span>
+  );
+}
+
 /** 01 - Buyers see your worth: the branded product is picked over the cheaper one. */
 export function ValueWorthVignette() {
   return (
     <div className="vg vg-worth" data-vignette aria-hidden="true">
       <div className="vv-card vv-card-plain">
-        <span className="vv-card-thumb" />
+        <span className="vv-card-thumb">
+          <ImageGlyph />
+        </span>
         <span className="vv-card-line" />
-        <span className="vv-tag" />
+        <span className="vv-card-line vv-card-line-sm" />
+        <span className="vv-cta vv-cta-plain" />
       </div>
       <div className="vv-card vv-card-brand">
-        <span className="vv-card-mark" />
-        <span className="vv-card-thumb" />
-        <span className="vv-card-line" />
-        <span className="vv-tag vv-tag-high" />
         <span className="vv-ring" />
+        <span className="vv-card-mark">
+          <PlusGlyph />
+        </span>
+        <span className="vv-card-thumb vv-thumb-brand">
+          <ImageGlyph />
+        </span>
+        <span className="vv-card-line" />
+        <span className="vv-card-line vv-card-line-sm" />
+        <span className="vv-cta" />
       </div>
       <span className="vg-cursor vv-cursor">
         <CursorGlyph />
@@ -46,21 +97,21 @@ export function ValueWorthVignette() {
   );
 }
 
-/** 02 - More output, faster turnaround: deliverables fly off a queue past a timer. */
+/** 02 - More output, faster turnaround: one brief multiplies into a stack of deliverables. */
 export function ValueOutputVignette() {
   return (
     <div className="vg vg-output" data-vignette aria-hidden="true">
-      <div className="vv-queue">
-        <span className="vv-deliverable vv-d1">
-          <span className="vv-d-line" />
-          <span className="vv-d-line" />
-        </span>
-        <span className="vv-deliverable vv-d2">
-          <span className="vv-d-bar" />
-        </span>
-        <span className="vv-deliverable vv-d3">
-          <span className="vv-d-cube" />
-        </span>
+      <div className="vv-source">
+        <MiniCard />
+        <MiniCard className="vv-flyer" />
+      </div>
+      <span className="vv-arrow">
+        <ArrowGlyph />
+      </span>
+      <div className="vv-stack">
+        <MiniCard className="vv-s3" />
+        <MiniCard className="vv-s2" />
+        <MiniCard className="vv-s1" />
       </div>
       <div className="vv-timer">
         <svg viewBox="0 0 36 36">
@@ -77,22 +128,20 @@ export function ValueLaunchVignette() {
   return (
     <div className="vg vg-launch" data-vignette aria-hidden="true">
       <div className="vv-checklist">
-        <span className="vv-check-row">
-          <span className="vv-check" />
-          <span className="vv-check-bar" />
-        </span>
-        <span className="vv-check-row">
-          <span className="vv-check" />
-          <span className="vv-check-bar" />
-        </span>
-        <span className="vv-check-row">
-          <span className="vv-check" />
-          <span className="vv-check-bar" />
-        </span>
+        {[0, 1, 2].map((row) => (
+          <span className="vv-check-row" key={row}>
+            <span className="vv-check" />
+            <span className="vv-check-lines">
+              <span />
+              <span />
+            </span>
+          </span>
+        ))}
       </div>
       <div className="vv-published">
         <RocketGlyph />
         <span>Published</span>
+        <span className="vv-shine" />
       </div>
     </div>
   );

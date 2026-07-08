@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, RocketIcon } from "@/components/SiteHeader";
-import { NexubisLogo } from "@/components/NexubisLogo";
 import { HeroAnimations } from "@/components/HeroAnimations";
+import { ScrollFillText } from "@/components/ScrollFillText";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import {
   PlanCallVignette,
@@ -57,9 +57,9 @@ const HERO_SUPPORT =
 const BOOK_CTA_LABEL = "Book an application call";
 
 const valueTiles = [
-  "Buyers see your worth",
-  "More output, faster turnaround",
-  "Brand ready for every launch",
+  "Buyers See Your Worth",
+  "More Output, Faster Turnaround",
+  "Brand Ready for Every Launch",
 ];
 
 const stakesLead = "A great product with a weak brand pays for it every day.";
@@ -81,7 +81,7 @@ const guideBullets = [
 
 const solutions = [
   {
-    title: "Brand identity",
+    title: "Brand Identity",
     text: "We make you look like the market leader you already are.",
   },
   {
@@ -93,26 +93,26 @@ const solutions = [
     text: "We show what your machines do, inside and out, without a film crew on site.",
   },
   {
-    title: "Video & motion",
+    title: "Video & Motion",
     text: "We produce product films and launch videos that match the engineering.",
   },
   {
-    title: "Trade show & print",
+    title: "Trade Show & Print",
     text: "We design brochures and stands that make people stop and look twice.",
   },
 ];
 
 const planSteps = [
   {
-    title: "Book an application call",
+    title: "Book an Application Call",
     text: "We only take on about two new partners a month, so the first step is a short application call, not a generic sales pitch. Tell us about your product and where the brand is lagging, and we'll show you what we'd do.",
   },
   {
-    title: "See it before you commit",
+    title: "See It Before You Commit",
     text: "If it's a fit, we show you live what your brand could look like. A real piece of work, so you judge the quality before you pay anything.",
   },
   {
-    title: "Our team becomes your team",
+    title: "Our Team Becomes Your Team",
     text: "We take on your website, brand, 3D, video, and print-ready design, all under one flat monthly retainer.",
   },
 ];
@@ -245,20 +245,20 @@ function Hero() {
       <div className="site-container hero-inner">
         <div className="hero-row">
           <div className="hero-col hero-title-wrap">
-            <h1 aria-label="Look as credible as your engineering, with one in-house creative team.">
+            <h1 aria-label="Look as Credible as Your Engineering, with One In-House Creative Team.">
               <span className="hero-title-muted">
                 <span className="hero-title-word">Look</span>{" "}
                 <span className="hero-title-word">as</span>{" "}
-                <span className="hero-title-word">credible</span>{" "}
+                <span className="hero-title-word">Credible</span>{" "}
                 <span className="hero-title-word">as</span>{" "}
-                <span className="hero-title-word">your</span>{" "}
-                <span className="hero-title-word">engineering,</span>{" "}
+                <span className="hero-title-word">Your</span>{" "}
+                <span className="hero-title-word">Engineering,</span>{" "}
               </span>
               <span className="hero-title-word">with</span>{" "}
-              <span className="hero-title-word">one</span>{" "}
-              <span className="hero-title-word">in-house</span>{" "}
-              <span className="hero-title-word">creative</span>{" "}
-              <span className="hero-title-word">team.</span>
+              <span className="hero-title-word">One</span>{" "}
+              <span className="hero-title-word">In-House</span>{" "}
+              <span className="hero-title-word">Creative</span>{" "}
+              <span className="hero-title-word">Team.</span>
             </h1>
           </div>
         </div>
@@ -269,7 +269,7 @@ function Hero() {
             <div className="btn-group hero-buttons">
               <BookCallButton className="hero-primary" />
               {SHOW_SCORECARD ? (
-                <Link href={SCORECARD_URL} className="hero-scorecard-link">
+                <Link href={SCORECARD_URL} className="btn btn-secondary hero-scorecard-btn">
                   <span>{HERO_SCORECARD_LINK}</span>
                   <ArrowIcon />
                 </Link>
@@ -419,6 +419,7 @@ function Stakes() {
               <span className="sl-thumb" />
               <span className="sl-bar" />
               <span className="sl-tag" />
+              {i === 0 ? <span className="sl-label">Your product</span> : null}
               {i === 1 ? (
                 <>
                   <span className="sl-ring" />
@@ -444,9 +445,8 @@ function Guide() {
       <div className="site-container">
         <div className="guide-grid">
           <div className="guide-lead" data-reveal>
-            <p className="guide-empathy">{guideEmpathy}</p>
+            <ScrollFillText className="guide-empathy" text={guideEmpathy} />
             <div className="guide-authority">
-              <NexubisLogo className="guide-logo" />
               <p>{guideAuthority}</p>
             </div>
           </div>
@@ -488,7 +488,7 @@ function Solutions() {
     <section id="what-we-do" className="section solutions-accordion-section">
       <div className="site-container">
         <div className="solutions-accordion-head" data-reveal>
-          <h2>What we take off your plate</h2>
+          <h2>What We Take Off Your Plate</h2>
         </div>
         <div className="solutions-accordion">
           {solutions.map((solution, index) => {
@@ -556,7 +556,7 @@ function Plan() {
     <section className="section plan-section">
       <div className="site-container">
         <div className="plan-head" data-reveal>
-          <h2>How it works</h2>
+          <h2>How It Works</h2>
         </div>
         <ol className="plan-grid">
           {planSteps.map((step, index) => {
@@ -601,7 +601,7 @@ function ScorecardBlock({ showMicroProof = true }: { showMicroProof?: boolean })
       <div className="site-container">
         <div className="scorecard-panel" data-reveal>
           <div className="scorecard-copy">
-            <h2>How credible is your brand, really?</h2>
+            <h2>How Credible Is Your Brand, Really?</h2>
             <p className="scorecard-sub">{scorecardSub}</p>
             <ul className="scorecard-bullets">
               {scorecardBullets.map((bullet) => (
