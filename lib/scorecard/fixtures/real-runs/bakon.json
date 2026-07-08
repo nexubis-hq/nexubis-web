@@ -1,0 +1,761 @@
+{
+  "meta": {
+    "company": "Bakon",
+    "contactName": "",
+    "role": "",
+    "date": "2026-07-07",
+    "productOneLiner": "Depositing, spraying and cutting equipment for bakery production lines",
+    "competitors": [
+      {
+        "name": "Unifiller",
+        "url": "https://unifiller.com",
+        "resolved": true
+      },
+      {
+        "name": "Rademaker",
+        "url": "https://rademaker.com",
+        "resolved": true
+      }
+    ]
+  },
+  "scores": [
+    {
+      "company": "Bakon",
+      "isProspect": true,
+      "scored": true,
+      "categories": [
+        {
+          "key": "brand-identity",
+          "checks": [
+            {
+              "key": "visual-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Hero, machine-finder tool and page layout share a consistent colour and type system; no clashing styles seen across the homepage screenshots."
+            },
+            {
+              "key": "premium-feel",
+              "score": 2,
+              "assessable": true,
+              "evidence": "First-impression read rates design era as aging with solid premium feel; real machinery imagery lifts it but the overall look is not current."
+            },
+            {
+              "key": "linkedin-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "LinkedIn page for BAKON Food Equipment B.V. describes depositing, spraying and enrobing machines, matching the site offer and brand name clearly."
+            },
+            {
+              "key": "market-leader-look",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Machine-finder tool and professional product imagery suggest a serious supplier, but the aging design era prevents a clear category-leader read."
+            },
+            {
+              "key": "touchpoint-cohesion",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Site and LinkedIn both carry the Bakon name and bakery equipment offer; brochures on bakon.com and bakonusa.com suggest some fragmentation across domains."
+            }
+          ],
+          "total": 12,
+          "assessedChecks": 5
+        },
+        {
+          "key": "website",
+          "checks": [
+            {
+              "key": "five-second-test",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Hero shows machinery with pastries on a conveyor belt and a machine-finder tool is prominent; what they make is clear in seconds."
+            },
+            {
+              "key": "design-quality",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Design reads aging against Rademaker, which reads current; ahead of Unifiller on imagery quality but behind on overall freshness."
+            },
+            {
+              "key": "pagespeed",
+              "score": 1,
+              "assessable": true,
+              "evidence": "Measured PageSpeed: desktop 48 (weighted 48)."
+            },
+            {
+              "key": "mobile-rendering",
+              "score": 2,
+              "assessable": true,
+              "evidence": "A broken WPML widget tag is visible on the mobile screenshot, signalling a technical fault that a buyer would notice."
+            },
+            {
+              "key": "outdated-signals",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Design era is rated aging and a broken WPML widget tag appears on mobile; these are clear outdated signals on the homepage."
+            }
+          ],
+          "total": 10,
+          "assessedChecks": 5
+        },
+        {
+          "key": "product-visuals",
+          "checks": [
+            {
+              "key": "imagery-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "First-impression read rates imagery as professional; hero shows real machinery in action with pastries on a conveyor belt."
+            },
+            {
+              "key": "three-d-cgi",
+              "score": 0,
+              "assessable": true,
+              "evidence": "First-impression read confirms no 3D or CGI present on the homepage; none seen in any other evidence."
+            },
+            {
+              "key": "video",
+              "score": 0,
+              "assessable": true,
+              "evidence": "First-impression read confirms no video present; no embedded video page signals found across any evidence reviewed."
+            },
+            {
+              "key": "shows-function",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Hero image shows machinery in action with product on a conveyor belt, making the depositing and cutting function visible to a buyer."
+            },
+            {
+              "key": "competitor-level",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Professional product imagery matches Rademaker and beats Unifiller on imagery, but aging design and no video keep it at par rather than above."
+            }
+          ],
+          "total": 8,
+          "assessedChecks": 5
+        },
+        {
+          "key": "trade-show-print",
+          "checks": [
+            {
+              "key": "brochures-findable",
+              "score": 3,
+              "assessable": true,
+              "evidence": "At least three downloadable PDFs are publicly findable, including an Ultrasonic Slicers brochure and a BD3 Depositor brochure on bakon.com."
+            },
+            {
+              "key": "brochure-design",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Brochure titles reference specific product names and a 2017 date on the BD3 brochure suggests some documents are not recently updated."
+            },
+            {
+              "key": "spec-sheets",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Product-specific brochures are findable but no dedicated spec sheets or datasheets with full technical tables were confirmed in the evidence."
+            },
+            {
+              "key": "exhibitions",
+              "score": 3,
+              "assessable": true,
+              "evidence": "A dedicated exhibitions page at bakon.com/about-us/exhibitions/ lists upcoming trade shows and confirms active fair participation."
+            },
+            {
+              "key": "print-web-consistency",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Brochures carry the Bakon name and product range matching the site, but distribution across bakon.com, bakonusa.com and sveba-dahlen.se suggests inconsistent brand control."
+            }
+          ],
+          "total": 12,
+          "assessedChecks": 5
+        },
+        {
+          "key": "message-clarity",
+          "checks": [
+            {
+              "key": "worth-more",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Machine-finder tool and professional imagery signal a serious offer, but no immediate value case explaining why Bakon costs more than alternatives is visible."
+            },
+            {
+              "key": "value-language",
+              "score": 2,
+              "assessable": true,
+              "evidence": "LinkedIn snippet leads with innovative designer and high-quality, but the site homepage evidence does not confirm benefit-led copy over feature lists."
+            },
+            {
+              "key": "jargon",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Product names like depositor, sprayer and ultrasonic slicer are standard bakery industry terms a first-time buyer would follow without difficulty."
+            },
+            {
+              "key": "proof-points",
+              "score": 1,
+              "assessable": true,
+              "evidence": "No numbers, case results or certifications were confirmed on the homepage or in the crawled evidence; claims appear unsupported by concrete proof."
+            },
+            {
+              "key": "copy-quality",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Site content could not be fully fetched; LinkedIn copy reads clearly but the broken WPML tag on mobile hints at unresolved content issues."
+            }
+          ],
+          "total": 10,
+          "assessedChecks": 5
+        }
+      ],
+      "overall": 52
+    },
+    {
+      "company": "Unifiller",
+      "isProspect": false,
+      "scored": true,
+      "categories": [
+        {
+          "key": "brand-identity",
+          "checks": [
+            {
+              "key": "visual-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Logo, blue-and-black palette and type appear consistent across homepage and inner pages; black icon section slightly reduces cohesion."
+            },
+            {
+              "key": "premium-feel",
+              "score": 2,
+              "assessable": true,
+              "evidence": "First-impression read rates design era as aging with solid feel; not dated enough to penalise heavily but not current either."
+            },
+            {
+              "key": "linkedin-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "LinkedIn page uses the same brand descriptor and positioning as the site; no visible clash in naming or offer language."
+            },
+            {
+              "key": "market-leader-look",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Coperion Group parentage, 80-dealer network, and global office count signal a category leader, though design execution is mid-tier."
+            },
+            {
+              "key": "touchpoint-cohesion",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Site, LinkedIn, and tradeshow page all carry consistent Unifiller branding and product focus; no conflicting identity found."
+            }
+          ],
+          "total": 14,
+          "assessedChecks": 5
+        },
+        {
+          "key": "website",
+          "checks": [
+            {
+              "key": "five-second-test",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Hero shows HIRO robotic depositor with video play button; offer and category are clear in five seconds, but value premium is not immediate."
+            },
+            {
+              "key": "design-quality",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Rademaker reads more current; Unifiller sits above Bakon on freshness but generic outline icons and mixed imagery hold it to mid-table."
+            },
+            {
+              "key": "pagespeed",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Measured PageSpeed: mobile 51, desktop 75 (weighted 61)."
+            },
+            {
+              "key": "mobile-rendering",
+              "score": null,
+              "assessable": false,
+              "evidence": "No mobile screenshot was provided to assess mobile rendering quality."
+            },
+            {
+              "key": "outdated-signals",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Design era rated aging; generic outline icons in the lower hero section read as a legacy pattern against current industrial sites."
+            }
+          ],
+          "total": 11,
+          "assessedChecks": 4
+        },
+        {
+          "key": "product-visuals",
+          "checks": [
+            {
+              "key": "imagery-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "First-impression read rates imagery as mixed; 21 application images on the bakery page and product shots on the homepage show reasonable quality."
+            },
+            {
+              "key": "three-d-cgi",
+              "score": 1,
+              "assessable": true,
+              "evidence": "First-impression read confirms no 3D or CGI present; only photography and outline icons are visible."
+            },
+            {
+              "key": "video",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Homepage page signal shows four Play buttons, confirming multiple embedded videos are present and prominent on first load."
+            },
+            {
+              "key": "shows-function",
+              "score": 3,
+              "assessable": true,
+              "evidence": "HIRO robotic operator video and application preview images on the bakery page show the machines in use and product output."
+            },
+            {
+              "key": "competitor-level",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Video presence and application gallery put Unifiller above Bakon and Rademaker on visual depth, though CGI absence limits the ceiling."
+            }
+          ],
+          "total": 13,
+          "assessedChecks": 5
+        },
+        {
+          "key": "trade-show-print",
+          "checks": [
+            {
+              "key": "brochures-findable",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Three PDFs are findable online and a Digital Brochures nav link exists, but all confirmed documents cover the Unifiller+ app, not machine specs."
+            },
+            {
+              "key": "brochure-design",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Found PDFs are app-focused user-story brochures; design context suggests functional rather than premium presentation."
+            },
+            {
+              "key": "spec-sheets",
+              "score": 1,
+              "assessable": true,
+              "evidence": "No machine spec sheets or datasheets are confirmed findable; a buyer researching individual depositor models cannot download technical data."
+            },
+            {
+              "key": "exhibitions",
+              "score": 4,
+              "assessable": true,
+              "evidence": "A dedicated Tradeshows page lists upcoming 2025 events, confirming active and findable trade show presence."
+            },
+            {
+              "key": "print-web-consistency",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Found brochures carry Unifiller branding consistent with the site, but they cover only the app product, limiting the comparison."
+            }
+          ],
+          "total": 11,
+          "assessedChecks": 5
+        },
+        {
+          "key": "message-clarity",
+          "checks": [
+            {
+              "key": "worth-more",
+              "score": 2,
+              "assessable": true,
+              "evidence": "No-tool design, fast assembly and yield improvement are mentioned, but the value case is buried in body copy rather than leading the page."
+            },
+            {
+              "key": "value-language",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Homepage mixes outcome phrases like increase production yield with feature lists of machine types; benefits do not consistently lead."
+            },
+            {
+              "key": "jargon",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Copy uses plain terms like depositors, filling machines and spraying; accessible to a first-time buyer without specialist knowledge."
+            },
+            {
+              "key": "proof-points",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Testimonials page exists in navigation and 80-dealer network is cited, but no case study numbers or certifications appear on the crawled pages."
+            },
+            {
+              "key": "copy-quality",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Homepage headline uses the banned-by-rubric phrase cutting-edge and copy is functional but not confident; grammar is clean throughout."
+            }
+          ],
+          "total": 11,
+          "assessedChecks": 5
+        }
+      ],
+      "overall": 60
+    },
+    {
+      "company": "Rademaker",
+      "isProspect": false,
+      "scored": true,
+      "categories": [
+        {
+          "key": "brand-identity",
+          "checks": [
+            {
+              "key": "visual-consistency",
+              "score": 4,
+              "assessable": true,
+              "evidence": "Bold serif wordmark, amber highlight block and structured navigation appear consistently across all crawled pages with no clashing styles."
+            },
+            {
+              "key": "premium-feel",
+              "score": 3,
+              "assessable": true,
+              "evidence": "First-impression screenshot reads current and confident; hero imagery of finished baked goods is polished, though machines themselves are not shown on load."
+            },
+            {
+              "key": "linkedin-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "LinkedIn pages for Rademaker BV and Rademaker USA carry the same partner-in-bakery positioning as the site, with no visible brand conflict."
+            },
+            {
+              "key": "market-leader-look",
+              "score": 4,
+              "assessable": true,
+              "evidence": "Dedicated Technology Centres in NL and USA, a branded Academy, a Radini sub-brand and a full exhibitions agenda all signal a category leader, not a job shop."
+            },
+            {
+              "key": "touchpoint-cohesion",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Site, LinkedIn, PDF brochures and exhibitions page share consistent naming and positioning; minor fragmentation between Rademaker BV and Rademaker USA LinkedIn pages."
+            }
+          ],
+          "total": 17,
+          "assessedChecks": 5
+        },
+        {
+          "key": "website",
+          "checks": [
+            {
+              "key": "five-second-test",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Hero shows baked goods, not machines; what Rademaker makes is not instantly clear, though the nav label Find your product helps orient a visitor quickly."
+            },
+            {
+              "key": "design-quality",
+              "score": 4,
+              "assessable": true,
+              "evidence": "Clean serif wordmark, amber accent and logical navigation read more current and deliberate than the aging designs of Bakon and Unifiller."
+            },
+            {
+              "key": "pagespeed",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Measured PageSpeed: mobile 67, desktop 76 (weighted 71)."
+            },
+            {
+              "key": "mobile-rendering",
+              "score": null,
+              "assessable": false,
+              "evidence": "No mobile screenshot was provided for this Scorecard assessment."
+            },
+            {
+              "key": "outdated-signals",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Design era reads current with no broken layouts or legacy patterns visible; no outdated copyright year confirmed, though cookie consent placeholder text ({title}) is a minor signal."
+            }
+          ],
+          "total": 14,
+          "assessedChecks": 4
+        },
+        {
+          "key": "product-visuals",
+          "checks": [
+            {
+              "key": "imagery-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "First-impression read confirms professional imagery quality; hero uses polished food photography, and seven images are present on the services page."
+            },
+            {
+              "key": "three-d-cgi",
+              "score": 1,
+              "assessable": true,
+              "evidence": "First-impression read explicitly notes no 3D or CGI present, and no renders or cutaways appear in any crawled page or page signal."
+            },
+            {
+              "key": "video",
+              "score": 2,
+              "assessable": true,
+              "evidence": "One embedded video is confirmed on the services page via page signal, but no video is visible on the homepage first load."
+            },
+            {
+              "key": "shows-function",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Hero shows finished baked goods rather than machines in operation; inner product pages exist but no process or internals imagery is confirmed in the crawled sample."
+            },
+            {
+              "key": "competitor-level",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Professional imagery and current design sit above Bakon and Unifiller's aging presentations; absence of 3D and limited machine-in-action visuals hold it back from a top score."
+            }
+          ],
+          "total": 11,
+          "assessedChecks": 5
+        },
+        {
+          "key": "trade-show-print",
+          "checks": [
+            {
+              "key": "brochures-findable",
+              "score": 3,
+              "assessable": true,
+              "evidence": "PDF brochures for Pressing Lines and Flatbread Line are publicly findable, and a Digital Brochures page exists in the navigation."
+            },
+            {
+              "key": "brochure-design",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Brochure filenames follow a consistent dated naming convention and are hosted on the main domain, suggesting a managed, on-brand document library."
+            },
+            {
+              "key": "spec-sheets",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Product-specific brochures are findable but no dedicated spec sheets or datasheets with technical parameters are confirmed in the verified evidence."
+            },
+            {
+              "key": "exhibitions",
+              "score": 4,
+              "assessable": true,
+              "evidence": "A dedicated Events and Exhibitions page lists upcoming shows including Sudback 2026 and Craft Baker Association Business Day with dates and venues."
+            },
+            {
+              "key": "print-web-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "PDF brochures are hosted on rademaker.com and follow the same product naming used in site navigation, indicating consistent brand treatment."
+            }
+          ],
+          "total": 15,
+          "assessedChecks": 5
+        },
+        {
+          "key": "message-clarity",
+          "checks": [
+            {
+              "key": "worth-more",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Homepage copy mentions precision, reliability and hygiene but does not immediately state a concrete reason a buyer should pay more than for a cheaper alternative."
+            },
+            {
+              "key": "value-language",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Copy leads with partnership and service depth, which is benefit-oriented, but phrases like performance, reliability and hygiene remain generic rather than outcome-specific."
+            },
+            {
+              "key": "jargon",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Navigation and body copy use plain product-category labels like Croissant Line and Flatbread Line that a first-time buyer can follow without industry background."
+            },
+            {
+              "key": "proof-points",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Homepage references numbers reflecting trust and excellence but no specific figures, customer names or certifications are visible in the crawled content."
+            },
+            {
+              "key": "copy-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "English copy is grammatically clean and confident throughout the crawled pages, with one minor typo (throughou) on the services page."
+            }
+          ],
+          "total": 12,
+          "assessedChecks": 5
+        }
+      ],
+      "overall": 69
+    }
+  ],
+  "verdict": {
+    "band": "wide",
+    "stance": "behind",
+    "paragraph": "Bakon scores 52 out of 100, a wide gap from where a category leader should sit. Rademaker scores 69 and pulls ahead most sharply on brand identity, setting a visible benchmark for what buyers expect from a serious bakery equipment supplier. The machinery is real and the offer is clear, but aging design, a broken mobile widget, no video, and thin proof points are costing credibility across every category. Product visuals is the first place to fix.",
+    "bestRival": {
+      "company": "Rademaker",
+      "overall": 69
+    },
+    "aheadRivals": [
+      {
+        "company": "Rademaker",
+        "overall": 69,
+        "leadCategory": "brand-identity",
+        "leadMargin": 5
+      },
+      {
+        "company": "Unifiller",
+        "overall": 60,
+        "leadCategory": "product-visuals",
+        "leadMargin": 5
+      }
+    ]
+  },
+  "firstFix": {
+    "category": "product-visuals",
+    "categoryLabel": "Product visuals",
+    "why": "Product visuals score 8 out of 20, the lowest category on the scorecard. Buyers evaluating depositing and cutting equipment want to see machines running before they request a quote. Without video, a buyer comparing Bakon against Unifiller or Rademaker will find motion content on competitor sites and nothing equivalent here. That gap costs consideration before a conversation even starts.",
+    "inPractice": "Film two or three machines running at production speed, each clip between 60 and 90 seconds, showing product going in and coming out. Place one clip on the homepage hero and one on each relevant product page. A short voiceover or on-screen text naming the output rate and product type gives buyers the proof point they are looking for. Static photography stays, but video becomes the lead asset."
+  },
+  "exhibits": [
+    {
+      "company": "Bakon",
+      "isProspect": true,
+      "resolved": true,
+      "fetched": false,
+      "desktopUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Fbakon.com&viewport_width=1440&viewport_height=900&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000",
+      "mobileUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Fbakon.com&viewport_width=390&viewport_height=844&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000&device_scale_factor=2",
+      "pageSpeed": {
+        "mobile": null,
+        "desktop": {
+          "performance": 48,
+          "seo": 92,
+          "accessibility": 89,
+          "bestPractices": 54
+        },
+        "lcp": null
+      }
+    },
+    {
+      "company": "Unifiller",
+      "isProspect": false,
+      "resolved": true,
+      "fetched": true,
+      "desktopUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Funifiller.com&viewport_width=1440&viewport_height=900&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000",
+      "mobileUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Funifiller.com&viewport_width=390&viewport_height=844&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000&device_scale_factor=2",
+      "pageSpeed": {
+        "mobile": {
+          "performance": 51,
+          "seo": 83,
+          "accessibility": 85,
+          "bestPractices": 58
+        },
+        "desktop": {
+          "performance": 75,
+          "seo": 83,
+          "accessibility": 88,
+          "bestPractices": 58
+        },
+        "lcp": "10.2 s"
+      }
+    },
+    {
+      "company": "Rademaker",
+      "isProspect": false,
+      "resolved": true,
+      "fetched": true,
+      "desktopUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Frademaker.com&viewport_width=1440&viewport_height=900&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000",
+      "mobileUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Frademaker.com&viewport_width=390&viewport_height=844&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000&device_scale_factor=2",
+      "pageSpeed": {
+        "mobile": {
+          "performance": 67,
+          "seo": 85,
+          "accessibility": 81,
+          "bestPractices": 96
+        },
+        "desktop": {
+          "performance": 76,
+          "seo": 85,
+          "accessibility": 84,
+          "bestPractices": 96
+        },
+        "lcp": "14.0 s"
+      }
+    }
+  ],
+  "deckCopy": {
+    "verdictParagraph": "Bakon scores 52 out of 100, a wide gap from where a category leader should sit. Rademaker scores 69 and pulls ahead most sharply on brand identity, setting a visible benchmark for what buyers expect from a serious bakery equipment supplier. The machinery is real and the offer is clear, but aging design, a broken mobile widget, no video, and thin proof points are costing credibility across every category. Product visuals is the first place to fix.",
+    "categories": [
+      {
+        "key": "brand-identity",
+        "findings": [
+          "Colour, type and layout are consistent across the homepage and machine-finder tool, giving a coherent first impression.",
+          "The design era reads as aging, which prevents Bakon from landing as a category leader even though the machinery imagery is professional.",
+          "Brochures split across bakon.com and bakonusa.com suggest fragmented brand control that a careful buyer will notice."
+        ],
+        "competitorNote": "Rademaker scores 17/20 here and reads as current; Unifiller scores 14/20, also ahead of Bakon."
+      },
+      {
+        "key": "website",
+        "findings": [
+          "The machine-finder tool is prominent on the hero and makes the product offer clear within seconds of landing.",
+          "Desktop PageSpeed scores 48, meaning pages load slowly and buyers on slower connections will feel it.",
+          "A broken WPML widget tag is visible on the mobile homepage, a technical fault any buyer browsing on a phone will see."
+        ],
+        "competitorNote": "Rademaker scores 14/20 and reads as a current, fast site; Unifiller scores 11/20, just ahead of Bakon."
+      },
+      {
+        "key": "product-visuals",
+        "findings": [
+          "The hero image shows real machinery in action with product on a conveyor belt, making the depositing and cutting function immediately visible.",
+          "No video exists anywhere on the site, so buyers cannot see the machines running at production speed.",
+          "No 3D renders or CGI are present, leaving complex machine geometry unexplained for buyers who cannot visit a showroom."
+        ],
+        "competitorNote": "Unifiller scores 13/20 and leads this category; Rademaker scores 11/20, still ahead of Bakon's 8/20."
+      },
+      {
+        "key": "trade-show-print",
+        "findings": [
+          "At least three downloadable PDFs are publicly available, including an Ultrasonic Slicers brochure and a BD3 Depositor brochure.",
+          "A dedicated exhibitions page lists upcoming trade shows, confirming Bakon is actively present at industry fairs.",
+          "The BD3 brochure carries a 2017 date, and no full technical datasheets with specification tables were found, which matters to engineers comparing options."
+        ],
+        "competitorNote": "Rademaker scores 15/20 with stronger print materials; Unifiller scores 11/20, just below Bakon."
+      },
+      {
+        "key": "message-clarity",
+        "findings": [
+          "Product names like depositor, sprayer and ultrasonic slicer are standard industry terms a first-time buyer follows without difficulty.",
+          "No numbers, production outputs, case results or certifications appear on the homepage, so claims carry no concrete proof for a buyer evaluating suppliers.",
+          "LinkedIn copy leads with innovative designer and high-quality but the homepage does not back those claims with benefit-led copy or supporting data."
+        ],
+        "competitorNote": "Rademaker scores 12/20 and Unifiller 11/20; both are narrow leads but both present clearer proof points than Bakon."
+      }
+    ],
+    "firstFix": {
+      "why": "Product visuals score 8 out of 20, the lowest category on the scorecard. Buyers evaluating depositing and cutting equipment want to see machines running before they request a quote. Without video, a buyer comparing Bakon against Unifiller or Rademaker will find motion content on competitor sites and nothing equivalent here. That gap costs consideration before a conversation even starts.",
+      "inPractice": "Film two or three machines running at production speed, each clip between 60 and 90 seconds, showing product going in and coming out. Place one clip on the homepage hero and one on each relevant product page. A short voiceover or on-screen text naming the output rate and product type gives buyers the proof point they are looking for. Static photography stays, but video becomes the lead asset."
+    }
+  },
+  "routing": {
+    "roleSeniority": "unknown",
+    "verticalGuess": "food-processing",
+    "geoGuess": "unknown",
+    "followUpTiming": "Personal follow-up within 3 to 4 days",
+    "loomCandidate": true
+  },
+  "flags": [],
+  "estimatedCostUsd": 0.1797,
+  "generatedAt": "2026-07-07T13:03:37.972Z"
+}

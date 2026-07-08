@@ -1,0 +1,739 @@
+{
+  "meta": {
+    "company": "Unifortes",
+    "contactName": "",
+    "role": "",
+    "date": "2026-07-07",
+    "productOneLiner": "Industrial crate and pallet washing systems for the food industry",
+    "competitors": [
+      {
+        "name": "Numafa",
+        "url": "https://numafa.com",
+        "resolved": true
+      },
+      {
+        "name": "Industrialwashingmachines",
+        "url": "https://industrialwashingmachines.co.uk",
+        "resolved": true
+      }
+    ]
+  },
+  "scores": [
+    {
+      "company": "Unifortes",
+      "isProspect": true,
+      "scored": true,
+      "categories": [
+        {
+          "key": "brand-identity",
+          "checks": [
+            {
+              "key": "visual-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Logo, blue colour palette and type appear consistent across the homepage and product navigation; no clashing styles seen across crawled pages."
+            },
+            {
+              "key": "premium-feel",
+              "score": 2,
+              "assessable": true,
+              "evidence": "First-impression read notes a solid but aging design era; the brochure popup on first load competes with the hero message and reduces polish."
+            },
+            {
+              "key": "linkedin-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "LinkedIn page uses the same brand name and category descriptor 'Industrial Cleaning Systems' matching the site positioning."
+            },
+            {
+              "key": "market-leader-look",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Wide product range and multiple sectors suggest scale, but the aging design era and popup-heavy homepage do not read like a clear category leader."
+            },
+            {
+              "key": "touchpoint-cohesion",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Site, LinkedIn, and downloadable brochures all carry the same 'Industrial Cleaning Systems & Logistics' identity and Unifortes name consistently."
+            }
+          ],
+          "total": 13,
+          "assessedChecks": 5
+        },
+        {
+          "key": "website",
+          "checks": [
+            {
+              "key": "five-second-test",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Hero headline names industrial cleaning systems directly and the offer is clear in five seconds, though the brochure popup partially obscures the hero on first load."
+            },
+            {
+              "key": "design-quality",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Design reads aging compared to a modern standard; Numafa also reads aging, so neither stands out as clearly superior in this comparison set."
+            },
+            {
+              "key": "pagespeed",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Measured PageSpeed: mobile 56, desktop 68 (weighted 61)."
+            },
+            {
+              "key": "mobile-rendering",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Corporate video thumbnail and hero are visible on mobile screenshot, but the brochure popup overlay competes with the main content on small screens."
+            },
+            {
+              "key": "outdated-signals",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Design era is noted as aging in the first-impression read; the intrusive brochure popup on load is a dated conversion pattern."
+            }
+          ],
+          "total": 11,
+          "assessedChecks": 5
+        },
+        {
+          "key": "product-visuals",
+          "checks": [
+            {
+              "key": "imagery-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "First-impression read rates imagery as professional with product visuals present; no low-grade snapshots noted."
+            },
+            {
+              "key": "three-d-cgi",
+              "score": 0,
+              "assessable": true,
+              "evidence": "First-impression read explicitly notes 3D or CGI not present; no renders or cutaways seen across crawled pages."
+            },
+            {
+              "key": "video",
+              "score": 3,
+              "assessable": true,
+              "evidence": "A corporate video thumbnail with play button is visible below the fold on both desktop and mobile screenshots, confirmed by the first-impression read."
+            },
+            {
+              "key": "shows-function",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Corporate video and product visuals are present; the site references washing and handling processes, suggesting function is shown rather than only static exteriors."
+            },
+            {
+              "key": "competitor-level",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Imagery rated professional versus Numafa's professional but aging presentation; Unifortes imagery is at least at par and video presence gives it an edge."
+            }
+          ],
+          "total": 12,
+          "assessedChecks": 5
+        },
+        {
+          "key": "trade-show-print",
+          "checks": [
+            {
+              "key": "brochures-findable",
+              "score": 4,
+              "assessable": true,
+              "evidence": "Three downloadable PDFs confirmed online including a general brochure and a poultry-specific brochure, plus a direct download link on the homepage."
+            },
+            {
+              "key": "brochure-design",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Brochure titles and the site download section present a consistent 'Industrial Cleaning Systems & Logistics' identity across multiple language editions."
+            },
+            {
+              "key": "spec-sheets",
+              "score": 2,
+              "assessable": true,
+              "evidence": "General and sector brochures are findable, but no dedicated technical datasheets or spec sheets with machine dimensions and performance data were confirmed."
+            },
+            {
+              "key": "exhibitions",
+              "score": 3,
+              "assessable": true,
+              "evidence": "News page lists Eurotier Hannover 2024 and Pig & Poultry 2024 as confirmed exhibition appearances, plus a Greentech Amsterdam mention."
+            },
+            {
+              "key": "print-web-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Downloaded brochures carry the same 'Industrial Cleaning Systems & Logistics' headline and Unifortes branding seen on the website."
+            }
+          ],
+          "total": 15,
+          "assessedChecks": 5
+        },
+        {
+          "key": "message-clarity",
+          "checks": [
+            {
+              "key": "worth-more",
+              "score": 2,
+              "assessable": true,
+              "evidence": "The site mentions high quality, latest technology and passion for hygiene but does not immediately state a concrete reason a buyer should pay more than for alternatives."
+            },
+            {
+              "key": "value-language",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Copy leads with 'state of the art' and 'high quality' descriptors but relies on feature listing rather than buyer outcomes or cost-of-ownership benefits."
+            },
+            {
+              "key": "jargon",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Product names like crate washers and pallet washers are plain trade terms a first-time buyer follows; no impenetrable insider terminology seen."
+            },
+            {
+              "key": "proof-points",
+              "score": 2,
+              "assessable": true,
+              "evidence": "No specific numbers, case results or certifications are visible in the crawled homepage copy; claims of quality are unsupported by concrete proof on the main page."
+            },
+            {
+              "key": "copy-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "English copy on the homepage is grammatically clean and confident; minor phrasing like 'in any event check out' is slightly informal but not broken."
+            }
+          ],
+          "total": 12,
+          "assessedChecks": 5
+        }
+      ],
+      "overall": 63
+    },
+    {
+      "company": "Numafa",
+      "isProspect": false,
+      "scored": true,
+      "categories": [
+        {
+          "key": "brand-identity",
+          "checks": [
+            {
+              "key": "visual-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Logo, blue colour palette and type appear consistent across homepage and products pages; no clashing styles seen across crawled pages."
+            },
+            {
+              "key": "premium-feel",
+              "score": 2,
+              "assessable": true,
+              "evidence": "First-impression read rates design era as aging with solid feel; professional imagery lifts it but the layout reads mid-market rather than premium."
+            },
+            {
+              "key": "linkedin-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "LinkedIn page uses the same brand name and positioning as the site, describing Numafa as global leader for industrial cleaning and handling systems."
+            },
+            {
+              "key": "market-leader-look",
+              "score": 3,
+              "assessable": true,
+              "evidence": "40-year heritage, global shipping, GO Line product range and industry-sector navigation all signal a serious specialist rather than a small job shop."
+            },
+            {
+              "key": "touchpoint-cohesion",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Site, LinkedIn and the PWM GO PDF brochure all carry consistent naming and positioning; no conflicting identity signals found across touchpoints."
+            }
+          ],
+          "total": 14,
+          "assessedChecks": 5
+        },
+        {
+          "key": "website",
+          "checks": [
+            {
+              "key": "five-second-test",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Hero shows a crate washer with water jets in action; product type and food-industry audience are clear within seconds, though the worth-more case is not immediate."
+            },
+            {
+              "key": "design-quality",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Compared to Unifortes, Numafa reads at a similar aging-but-solid level; neither stands out as clearly the best-designed of the set."
+            },
+            {
+              "key": "pagespeed",
+              "score": 4,
+              "assessable": true,
+              "evidence": "Measured PageSpeed: mobile 87, desktop 94 (weighted 90)."
+            },
+            {
+              "key": "mobile-rendering",
+              "score": null,
+              "assessable": false,
+              "evidence": "No mobile screenshot was supplied, so mobile rendering cannot be assessed."
+            },
+            {
+              "key": "outdated-signals",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Design era is rated aging in the first-impression read; no broken layouts seen, but the overall visual style shows its age."
+            }
+          ],
+          "total": 14,
+          "assessedChecks": 4
+        },
+        {
+          "key": "product-visuals",
+          "checks": [
+            {
+              "key": "imagery-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Homepage and products pages show 19 photos total including crate washers in production lines; imagery is professional and product-focused."
+            },
+            {
+              "key": "three-d-cgi",
+              "score": 1,
+              "assessable": true,
+              "evidence": "First-impression read confirms no 3D or CGI present; all visuals are photography only."
+            },
+            {
+              "key": "video",
+              "score": 1,
+              "assessable": true,
+              "evidence": "First-impression read confirms no video present on the homepage; no embedded video page signals were reported."
+            },
+            {
+              "key": "shows-function",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Hero image shows a crate washer in action with water jets visible; product-in-process imagery is present across the homepage."
+            },
+            {
+              "key": "competitor-level",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Imagery is professional and comparable to Unifortes; neither company clearly leads on visuals, placing Numafa at mid-set level."
+            }
+          ],
+          "total": 10,
+          "assessedChecks": 5
+        },
+        {
+          "key": "trade-show-print",
+          "checks": [
+            {
+              "key": "brochures-findable",
+              "score": 3,
+              "assessable": true,
+              "evidence": "PWM GO PDF brochure is hosted on the Numafa domain and an ECM Q Range brochure is findable via third-party sites; multiple documents are accessible to researching buyers."
+            },
+            {
+              "key": "brochure-design",
+              "score": 2,
+              "assessable": true,
+              "evidence": "PWM GO brochure is findable and product-specific, but no visual preview was available to judge design quality beyond its existence."
+            },
+            {
+              "key": "spec-sheets",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Product-specific PDFs exist for GO Line models; broader catalogue or full spec-sheet depth across all product lines is not confirmed."
+            },
+            {
+              "key": "exhibitions",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Numafa appears in the Reusable Packaging Association marketplace with a trade show programs mention, confirming some exhibition presence."
+            },
+            {
+              "key": "print-web-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "PWM GO brochure naming and product positioning align with the site's GO Line section; no conflicting brand signals between print and web."
+            }
+          ],
+          "total": 12,
+          "assessedChecks": 5
+        },
+        {
+          "key": "message-clarity",
+          "checks": [
+            {
+              "key": "worth-more",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Capacity figures like 6,000 crates per hour and 40-year heritage appear, but the value case for paying more is not immediately front and centre."
+            },
+            {
+              "key": "value-language",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Copy mixes outcome phrases like effortless and sustainable with feature lists; benefits lead in places but spec language dominates product descriptions."
+            },
+            {
+              "key": "jargon",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Terms like dolav bins and layer pad washers are industry-standard and explained in context; a first-time buyer can follow the copy without difficulty."
+            },
+            {
+              "key": "proof-points",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Capacity numbers are cited throughout and a References page exists in the navigation, but customer case results and certifications are not visible in the crawled content."
+            },
+            {
+              "key": "copy-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "English copy is grammatically clean and confident across homepage and products pages; no machine-translation artefacts detected."
+            }
+          ],
+          "total": 12,
+          "assessedChecks": 5
+        }
+      ],
+      "overall": 62
+    },
+    {
+      "company": "Industrialwashingmachines",
+      "isProspect": false,
+      "scored": true,
+      "categories": [
+        {
+          "key": "brand-identity",
+          "checks": [
+            {
+              "key": "visual-consistency",
+              "score": null,
+              "assessable": false,
+              "evidence": "The site shows only a holding page ('We're getting things ready'); no live pages exist to assess logo, colour, or type consistency."
+            },
+            {
+              "key": "premium-feel",
+              "score": null,
+              "assessable": false,
+              "evidence": "The site is a parked holding page with no design to read; premium or dated feel cannot be judged."
+            },
+            {
+              "key": "linkedin-consistency",
+              "score": null,
+              "assessable": false,
+              "evidence": "A LinkedIn page exists for Industrial Washing Machines Ltd but the site has no live brand to compare it against."
+            },
+            {
+              "key": "market-leader-look",
+              "score": null,
+              "assessable": false,
+              "evidence": "No live site exists; category-leader versus job-shop read cannot be made from a holding page."
+            },
+            {
+              "key": "touchpoint-cohesion",
+              "score": null,
+              "assessable": false,
+              "evidence": "With no live site, cross-touchpoint cohesion between site, LinkedIn, and documents cannot be assessed."
+            }
+          ],
+          "total": null,
+          "assessedChecks": 0
+        },
+        {
+          "key": "website",
+          "checks": [
+            {
+              "key": "five-second-test",
+              "score": 0,
+              "assessable": true,
+              "evidence": "A first-time visitor sees only 'We're getting things ready' and a domain-sale prompt; product, audience, and value are all invisible."
+            },
+            {
+              "key": "design-quality",
+              "score": 0,
+              "assessable": true,
+              "evidence": "The site is a holding page with no design; both Unifortes and Numafa show real product sites, placing this clearly below the comparison set."
+            },
+            {
+              "key": "pagespeed",
+              "score": null,
+              "assessable": false,
+              "evidence": "Loading speed could not be measured for this site."
+            },
+            {
+              "key": "mobile-rendering",
+              "score": null,
+              "assessable": false,
+              "evidence": "No mobile screenshot was supplied and the site has no live content to render."
+            },
+            {
+              "key": "outdated-signals",
+              "score": 0,
+              "assessable": true,
+              "evidence": "The live URL shows a 'Buy this domain' holding page, which is a strong signal of an inactive or abandoned web presence."
+            }
+          ],
+          "total": 0,
+          "assessedChecks": 3
+        },
+        {
+          "key": "product-visuals",
+          "checks": [
+            {
+              "key": "imagery-quality",
+              "score": null,
+              "assessable": false,
+              "evidence": "No live site pages exist; product imagery cannot be assessed from a holding page."
+            },
+            {
+              "key": "three-d-cgi",
+              "score": null,
+              "assessable": false,
+              "evidence": "No live site or page signals exist to confirm or rule out 3D or CGI content."
+            },
+            {
+              "key": "video",
+              "score": null,
+              "assessable": false,
+              "evidence": "No page signals or live pages were available to confirm video presence or absence."
+            },
+            {
+              "key": "shows-function",
+              "score": null,
+              "assessable": false,
+              "evidence": "No live site content exists; whether visuals show machine function cannot be judged."
+            },
+            {
+              "key": "competitor-level",
+              "score": 0,
+              "assessable": true,
+              "evidence": "Unifortes and Numafa both present real product sites; this company shows only a holding page, placing it clearly below both."
+            }
+          ],
+          "total": 0,
+          "assessedChecks": 1
+        },
+        {
+          "key": "trade-show-print",
+          "checks": [
+            {
+              "key": "brochures-findable",
+              "score": 2,
+              "assessable": true,
+              "evidence": "PDF spec sheets for IWM models (Crusader 800 SP, T400) are findable via third-party machinery sites, though not hosted on the company's own domain."
+            },
+            {
+              "key": "brochure-design",
+              "score": null,
+              "assessable": false,
+              "evidence": "The found PDFs are hosted on third-party reseller sites; no visual preview of the documents was available to judge design quality."
+            },
+            {
+              "key": "spec-sheets",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Two model-level spec sheets (Crusader 800 SP, T400) are findable via third-party hosts, giving a researching buyer some technical detail."
+            },
+            {
+              "key": "exhibitions",
+              "score": 1,
+              "assessable": true,
+              "evidence": "A trade-show calendar listing references industrial washing machines generically; no confirmed exhibitor page or event photo for this company was found."
+            },
+            {
+              "key": "print-web-consistency",
+              "score": null,
+              "assessable": false,
+              "evidence": "No live site brand exists to compare against the found documents; consistency cannot be judged."
+            }
+          ],
+          "total": 8,
+          "assessedChecks": 3
+        },
+        {
+          "key": "message-clarity",
+          "checks": [
+            {
+              "key": "worth-more",
+              "score": 0,
+              "assessable": true,
+              "evidence": "The only live page is a holding screen; no buyer can find any value case or differentiator for this company online."
+            },
+            {
+              "key": "value-language",
+              "score": null,
+              "assessable": false,
+              "evidence": "No live site copy exists to assess whether benefits or features lead the message."
+            },
+            {
+              "key": "jargon",
+              "score": null,
+              "assessable": false,
+              "evidence": "No live site copy exists to assess language clarity or jargon level."
+            },
+            {
+              "key": "proof-points",
+              "score": null,
+              "assessable": false,
+              "evidence": "No live site content exists; certifications, case results, or numbers cannot be confirmed or denied."
+            },
+            {
+              "key": "copy-quality",
+              "score": null,
+              "assessable": false,
+              "evidence": "No live site copy exists to assess grammar, clarity, or confidence."
+            }
+          ],
+          "total": 0,
+          "assessedChecks": 1
+        }
+      ],
+      "overall": 10
+    }
+  ],
+  "verdict": {
+    "band": "visible",
+    "stance": "level",
+    "paragraph": "Unifortes scores 63 out of 100, a visible gap from a strong result but closer than most manufacturers at this stage. On the benchmark that matters most, Numafa, the credibility tie is even right now. Small, specific gains tip it in Unifortes' favour. Trade show and print materials are already a genuine strength. The clearest place to close the gap is the website, where speed, design age, and a disruptive popup are holding back an otherwise solid brand.",
+    "bestRival": {
+      "company": "Numafa",
+      "overall": 62
+    },
+    "aheadRivals": []
+  },
+  "firstFix": {
+    "category": "website",
+    "categoryLabel": "Website",
+    "why": "The website is where most buyers form their first and often only impression before contacting a supplier. A slow mobile load, an aging design, and a popup that covers the hero all create friction at the exact moment a buyer is deciding whether to read further or leave. Fixing these three things costs nothing in new content and immediately changes how the whole brand reads.",
+    "inPractice": "Start by removing the brochure popup on first load and placing the brochure download as a visible button in the navigation or hero instead. Next, run image compression and defer non-critical scripts to bring mobile PageSpeed above 70. Finally, refresh the hero section typography and spacing to a cleaner, more current layout without changing the brand colours or logo. These are contained changes that do not require a full redesign."
+  },
+  "exhibits": [
+    {
+      "company": "Unifortes",
+      "isProspect": true,
+      "resolved": true,
+      "fetched": true,
+      "desktopUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Funifortes.com&viewport_width=1440&viewport_height=900&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000",
+      "mobileUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Funifortes.com&viewport_width=390&viewport_height=844&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000&device_scale_factor=2",
+      "pageSpeed": {
+        "mobile": {
+          "performance": 56,
+          "seo": 100,
+          "accessibility": 77,
+          "bestPractices": 92
+        },
+        "desktop": {
+          "performance": 68,
+          "seo": 100,
+          "accessibility": 78,
+          "bestPractices": 96
+        },
+        "lcp": "3.9 s"
+      }
+    },
+    {
+      "company": "Numafa",
+      "isProspect": false,
+      "resolved": true,
+      "fetched": true,
+      "desktopUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Fnumafa.com&viewport_width=1440&viewport_height=900&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000",
+      "mobileUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Fnumafa.com&viewport_width=390&viewport_height=844&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000&device_scale_factor=2",
+      "pageSpeed": {
+        "mobile": {
+          "performance": 87,
+          "seo": 100,
+          "accessibility": 88,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 94,
+          "seo": 100,
+          "accessibility": 90,
+          "bestPractices": 100
+        },
+        "lcp": "3.8 s"
+      }
+    },
+    {
+      "company": "Industrialwashingmachines",
+      "isProspect": false,
+      "resolved": true,
+      "fetched": true,
+      "desktopUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Findustrialwashingmachines.co.uk&viewport_width=1440&viewport_height=900&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000",
+      "mobileUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Findustrialwashingmachines.co.uk&viewport_width=390&viewport_height=844&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000&device_scale_factor=2",
+      "pageSpeed": null
+    }
+  ],
+  "deckCopy": {
+    "verdictParagraph": "Unifortes scores 63 out of 100, a visible gap from a strong result but closer than most manufacturers at this stage. On the benchmark that matters most, Numafa, the credibility tie is even right now. Small, specific gains tip it in Unifortes' favour. Trade show and print materials are already a genuine strength. The clearest place to close the gap is the website, where speed, design age, and a disruptive popup are holding back an otherwise solid brand.",
+    "categories": [
+      {
+        "key": "brand-identity",
+        "findings": [
+          "Logo, blue palette, and type are consistent across the site and product navigation, with no clashing styles.",
+          "The homepage brochure popup fires before a visitor reads the hero, which undercuts the first impression of a category leader.",
+          "LinkedIn uses the same 'Industrial Cleaning Systems' descriptor as the site, keeping the identity coherent off-site."
+        ],
+        "competitorNote": "Numafa scores 14/20 here, one point ahead, partly on a cleaner first impression without a competing popup."
+      },
+      {
+        "key": "website",
+        "findings": [
+          "The hero headline names industrial cleaning systems clearly and a visitor understands the offer within five seconds, popup aside.",
+          "PageSpeed scores of 56 on mobile and 68 on desktop are below the threshold where buyers on slow connections stay on the page.",
+          "The brochure popup overlay covers the hero on small screens, pushing the main message below where most mobile visitors look."
+        ],
+        "competitorNote": "Numafa scores 14/20 on website; its design also reads aging, but it does not carry the popup or the speed penalty."
+      },
+      {
+        "key": "product-visuals",
+        "findings": [
+          "Product photography is professional throughout, with no low-grade snapshots visible anywhere on the site.",
+          "A corporate video with a play button is visible below the fold on both desktop and mobile, showing process rather than only static exteriors.",
+          "No 3D renders or cutaway diagrams exist anywhere on the site, so buyers cannot see internal machine detail without requesting it directly."
+        ],
+        "competitorNote": "Numafa scores 10/20 here; Unifortes leads this category, with video presence giving it a clear edge over both named competitors."
+      },
+      {
+        "key": "trade-show-print",
+        "findings": [
+          "Three downloadable PDFs are live on the site, including a general brochure and a poultry-specific brochure, accessible from the homepage.",
+          "Exhibition appearances at Eurotier Hannover 2024, Pig and Poultry 2024, and Greentech Amsterdam are listed on the news page.",
+          "Buyers looking for machine dimensions or performance figures cannot find a dedicated technical datasheet or spec sheet anywhere on the site."
+        ],
+        "competitorNote": "Numafa scores 12/20 and Industrialwashingmachines 8/20; Unifortes leads both on print and exhibition presence."
+      },
+      {
+        "key": "message-clarity",
+        "findings": [
+          "Product names like crate washers and pallet washers are plain trade terms any first-time buyer follows without a glossary.",
+          "Homepage copy uses phrases like 'state of the art' and 'high quality' but gives buyers no concrete numbers, case results, or certifications to back those claims.",
+          "English copy is grammatically clean and confident throughout, which keeps the site credible for international buyers."
+        ],
+        "competitorNote": "Numafa also scores 12/20 on message clarity; neither company currently gives buyers a concrete, evidence-backed reason to choose them over the other."
+      }
+    ],
+    "firstFix": {
+      "why": "The website is where most buyers form their first and often only impression before contacting a supplier. A slow mobile load, an aging design, and a popup that covers the hero all create friction at the exact moment a buyer is deciding whether to read further or leave. Fixing these three things costs nothing in new content and immediately changes how the whole brand reads.",
+      "inPractice": "Start by removing the brochure popup on first load and placing the brochure download as a visible button in the navigation or hero instead. Next, run image compression and defer non-critical scripts to bring mobile PageSpeed above 70. Finally, refresh the hero section typography and spacing to a cleaner, more current layout without changing the brand colours or logo. These are contained changes that do not require a full redesign."
+    }
+  },
+  "routing": {
+    "roleSeniority": "unknown",
+    "verticalGuess": "food-processing",
+    "geoGuess": "unknown",
+    "followUpTiming": "Let the sequence run; review at day 7",
+    "loomCandidate": true
+  },
+  "flags": [],
+  "estimatedCostUsd": 0.1669,
+  "generatedAt": "2026-07-07T13:05:47.608Z"
+}
