@@ -31,10 +31,10 @@ export const LEARN_MORE_URL = CONTACT_URL;
  * line, the full lead-generator block, the header link, and the footer link).
  *
  * NEXT_PUBLIC_ so it is inlined into both Server and Client Components at build.
- * Unset (the default) evaluates to false, so nothing Scorecard renders until the
- * tool is ready and NEXT_PUBLIC_SHOW_SCORECARD is set to "true".
+ * On by default so the full Scorecard is visible on the testing deploy; set
+ * NEXT_PUBLIC_SHOW_SCORECARD to "false" to hide everything Scorecard-related.
  */
-export const SHOW_SCORECARD = process.env.NEXT_PUBLIC_SHOW_SCORECARD === "true";
+export const SHOW_SCORECARD = process.env.NEXT_PUBLIC_SHOW_SCORECARD !== "false";
 
 // Footer navigation. Scorecard is filtered out at render time when the flag is off.
 export const FOOTER_LINKS = [
