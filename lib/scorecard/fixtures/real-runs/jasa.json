@@ -1,0 +1,746 @@
+{
+  "meta": {
+    "company": "Jasa",
+    "contactName": "",
+    "role": "",
+    "date": "2026-07-07",
+    "productOneLiner": "Vertical packaging machines and weighing systems for fresh produce",
+    "competitors": [
+      {
+        "name": "Ulmapackaging",
+        "url": "https://ulmapackaging.com",
+        "resolved": true
+      },
+      {
+        "name": "Gks Packaging",
+        "url": "https://gks-packaging.com",
+        "resolved": true
+      }
+    ]
+  },
+  "scores": [
+    {
+      "company": "Jasa",
+      "isProspect": true,
+      "scored": true,
+      "categories": [
+        {
+          "key": "brand-identity",
+          "checks": [
+            {
+              "key": "visual-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Green and red brand colours, logo and type are consistent across desktop and mobile layouts per the first-impression read."
+            },
+            {
+              "key": "premium-feel",
+              "score": 3,
+              "assessable": true,
+              "evidence": "First-impression read rates design era as current and premium feel as solid, with professional food-industry imagery in the hero."
+            },
+            {
+              "key": "linkedin-consistency",
+              "score": null,
+              "assessable": false,
+              "evidence": "No LinkedIn page for JASA Packaging Solutions was confirmed; search results return an unrelated New York non-profit at the jasa handle."
+            },
+            {
+              "key": "market-leader-look",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Over 950 packaging lines worldwide is stated, product range covers 14 food categories, and the site reads as a specialist leader rather than a job shop."
+            },
+            {
+              "key": "touchpoint-cohesion",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Site is coherent internally, but no confirmed LinkedIn or trade-show presence for the packaging brand was found, limiting cross-touchpoint assessment."
+            }
+          ],
+          "total": 14,
+          "assessedChecks": 4
+        },
+        {
+          "key": "website",
+          "checks": [
+            {
+              "key": "five-second-test",
+              "score": 3,
+              "assessable": true,
+              "evidence": "First-impression read confirms offer is clear in five seconds: packaging machines for food products, with two CTAs and a product e-book prompt visible immediately."
+            },
+            {
+              "key": "design-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Compared to Ulma, which reads as aging, JASA's current design era and professional imagery place it clearly above the only comparable first impression available."
+            },
+            {
+              "key": "pagespeed",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Measured PageSpeed: mobile 56, desktop 80 (weighted 66)."
+            },
+            {
+              "key": "mobile-rendering",
+              "score": 3,
+              "assessable": true,
+              "evidence": "First-impression read confirms green and red brand colours are consistent across mobile layout, with no broken elements noted."
+            },
+            {
+              "key": "outdated-signals",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Copyright shows 2026, design reads current, and no broken layouts or legacy patterns were noted in the first-impression read."
+            }
+          ],
+          "total": 14,
+          "assessedChecks": 5
+        },
+        {
+          "key": "product-visuals",
+          "checks": [
+            {
+              "key": "imagery-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "85 photos on the homepage include close-range shots of workers operating equipment on conveyors, rated professional in the first-impression read."
+            },
+            {
+              "key": "three-d-cgi",
+              "score": 0,
+              "assessable": true,
+              "evidence": "First-impression read explicitly notes no 3D or CGI present, and no renders or cutaways appear in any crawled page."
+            },
+            {
+              "key": "video",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Two embedded videos are confirmed on the homepage via page signal, but the first-impression read does not flag video as prominent."
+            },
+            {
+              "key": "shows-function",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Alt text describes conveyor belts in active processing lines and workers operating equipment, showing the machine in use rather than static exterior shots."
+            },
+            {
+              "key": "competitor-level",
+              "score": 3,
+              "assessable": true,
+              "evidence": "JASA's professional imagery and current design clearly exceed Ulma's aging feel; GKS has no first-impression read for comparison."
+            }
+          ],
+          "total": 11,
+          "assessedChecks": 5
+        },
+        {
+          "key": "trade-show-print",
+          "checks": [
+            {
+              "key": "brochures-findable",
+              "score": 2,
+              "assessable": true,
+              "evidence": "One product data sheet for the JASA 400X is findable at jasapackaging.com; broader brochure range is not confirmed publicly accessible."
+            },
+            {
+              "key": "brochure-design",
+              "score": null,
+              "assessable": false,
+              "evidence": "Only a product data sheet title and URL were found; no visual preview of the document is available to judge design quality."
+            },
+            {
+              "key": "spec-sheets",
+              "score": 2,
+              "assessable": true,
+              "evidence": "A JASA 400X product data sheet PDF is publicly hosted at jasapackaging.com, but no wider catalogue or datasheet library was confirmed."
+            },
+            {
+              "key": "exhibitions",
+              "score": 2,
+              "assessable": true,
+              "evidence": "The homepage news section lists GreenTech 2026 with a booth number (02.324), confirming active trade show participation."
+            },
+            {
+              "key": "print-web-consistency",
+              "score": null,
+              "assessable": false,
+              "evidence": "No visual preview of the found data sheet is available, so print-to-web brand consistency cannot be judged."
+            }
+          ],
+          "total": 10,
+          "assessedChecks": 3
+        },
+        {
+          "key": "message-clarity",
+          "checks": [
+            {
+              "key": "worth-more",
+              "score": 2,
+              "assessable": true,
+              "evidence": "950 packaging lines worldwide and decades of experience are stated, but specific outcome-led reasons to pay more are not immediately prominent."
+            },
+            {
+              "key": "value-language",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Copy leads with product categories and system integration benefits, but phrases like stable product flow and precise weighing lean toward features over buyer outcomes."
+            },
+            {
+              "key": "jargon",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Copy uses plain terms like leafy greens, potatoes and ready-to-eat meals that a first-time buyer follows without industry background."
+            },
+            {
+              "key": "proof-points",
+              "score": 2,
+              "assessable": true,
+              "evidence": "950 packaging lines worldwide is a concrete number, but no customer case results, certifications or named references appear in the crawled content."
+            },
+            {
+              "key": "copy-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Homepage copy is grammatically clean and confident in English, with no machine-translation signals or broken phrasing observed."
+            }
+          ],
+          "total": 12,
+          "assessedChecks": 5
+        }
+      ],
+      "overall": 61
+    },
+    {
+      "company": "Ulmapackaging",
+      "isProspect": false,
+      "scored": true,
+      "categories": [
+        {
+          "key": "brand-identity",
+          "checks": [
+            {
+              "key": "visual-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Logo, dark colour palette and type system appear consistent across homepage hero, navigation and sector pages seen."
+            },
+            {
+              "key": "premium-feel",
+              "score": 3,
+              "assessable": true,
+              "evidence": "First-impression read notes a dark-background studio render hero and professional imagery; design era flagged as aging but overall feel is solid."
+            },
+            {
+              "key": "linkedin-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "LinkedIn page uses the same ULMA Packaging name, machinery-sector positioning and brand language as the main site; no visible clash."
+            },
+            {
+              "key": "market-leader-look",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Site presents six packaging technologies, eight food sectors, digital solutions, sustainability report and case studies; reads like a broad category leader."
+            },
+            {
+              "key": "touchpoint-cohesion",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Site, LinkedIn page and downloadable PDFs all carry the ULMA Packaging name and consistent sector framing; no rogue styling seen."
+            }
+          ],
+          "total": 15,
+          "assessedChecks": 5
+        },
+        {
+          "key": "website",
+          "checks": [
+            {
+              "key": "five-second-test",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Hero headline 'Creating the packaging of the future' with machine render and food-sector navigation makes the offer clear in seconds; value case is thin."
+            },
+            {
+              "key": "design-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Compared to Jasa (current, solid), ULMA is comparable; dark hero, structured navigation and professional imagery put it at a similar level."
+            },
+            {
+              "key": "pagespeed",
+              "score": 1,
+              "assessable": true,
+              "evidence": "Measured PageSpeed: mobile 27, desktop 56 (weighted 39)."
+            },
+            {
+              "key": "mobile-rendering",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Mobile view drops hero text and replaces it with icon-driven food-category list below the fold, reducing immediate clarity on mobile."
+            },
+            {
+              "key": "outdated-signals",
+              "score": 2,
+              "assessable": true,
+              "evidence": "First-impression read flags design era as aging; no broken layouts seen but the overall styling shows its age against current industrial sites."
+            }
+          ],
+          "total": 11,
+          "assessedChecks": 5
+        },
+        {
+          "key": "product-visuals",
+          "checks": [
+            {
+              "key": "imagery-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Homepage shows 32 images including professional sector shots; first-impression read confirms professional imagery quality with a studio-rendered hero."
+            },
+            {
+              "key": "three-d-cgi",
+              "score": 2,
+              "assessable": true,
+              "evidence": "First-impression read notes the hero as a dark-background studio render of the TFX machine, suggesting CGI or high-grade render use on at least one product."
+            },
+            {
+              "key": "video",
+              "score": 2,
+              "assessable": true,
+              "evidence": "One embedded video is confirmed on the homepage via page signal; prominence and quality cannot be confirmed from available evidence."
+            },
+            {
+              "key": "shows-function",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Meat sector page lists specific packaging processes (vacuum, shrink, flow pack) with named machines and application descriptions showing what each machine does."
+            },
+            {
+              "key": "competitor-level",
+              "score": 3,
+              "assessable": true,
+              "evidence": "ULMA's professional imagery, sector depth and studio render hero match or slightly exceed Jasa's comparable professional-but-not-CGI-led presentation."
+            }
+          ],
+          "total": 13,
+          "assessedChecks": 5
+        },
+        {
+          "key": "trade-show-print",
+          "checks": [
+            {
+              "key": "brochures-findable",
+              "score": 3,
+              "assessable": true,
+              "evidence": "A produce sector PDF, a traysealing brochure and a machine spec sheet (FR 100) are all findable online; meat sector page also links a direct PDF download."
+            },
+            {
+              "key": "brochure-design",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Produce PDF and meat sector brochure carry ULMA branding and structured content; design appears consistent with the main site presentation."
+            },
+            {
+              "key": "spec-sheets",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Machine-level spec sheet (FR 100) and sector brochures are publicly findable; navigation includes a dedicated downloads path per sector."
+            },
+            {
+              "key": "exhibitions",
+              "score": 3,
+              "assessable": true,
+              "evidence": "A Tradeshows 2026 page lists Prosweets and Fruit Logistica with dates and venues; a virtual showroom page also exists in the navigation."
+            },
+            {
+              "key": "print-web-consistency",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Downloaded PDFs carry the ULMA Packaging name and sector structure matching the site; no visible brand divergence between print and web materials."
+            }
+          ],
+          "total": 15,
+          "assessedChecks": 5
+        },
+        {
+          "key": "message-clarity",
+          "checks": [
+            {
+              "key": "worth-more",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Homepage copy leads with 'competitiveness and quality' but gives no concrete differentiator; a buyer cannot immediately see why ULMA costs more than alternatives."
+            },
+            {
+              "key": "value-language",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Copy mixes benefit phrases ('improve productivity') with technology labels (HFFS, VFFS); outcomes do not consistently lead over feature descriptions."
+            },
+            {
+              "key": "jargon",
+              "score": 2,
+              "assessable": true,
+              "evidence": "Terms like HFFS, VFFS and thermoforming appear without explanation on the homepage, which may slow first-time buyers unfamiliar with packaging technology."
+            },
+            {
+              "key": "proof-points",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Named case studies (LA ITALIANA, Finagricola) and a quality certificates page provide concrete references; sustainability report adds further credibility."
+            },
+            {
+              "key": "copy-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Homepage and sector copy is grammatically clean and confident in English; no machine-translation signals or broken phrasing observed."
+            }
+          ],
+          "total": 12,
+          "assessedChecks": 5
+        }
+      ],
+      "overall": 66
+    },
+    {
+      "company": "Gks Packaging",
+      "isProspect": false,
+      "scored": true,
+      "categories": [
+        {
+          "key": "brand-identity",
+          "checks": [
+            {
+              "key": "visual-consistency",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no page screenshots available to compare logo, colour, or type across pages."
+            },
+            {
+              "key": "premium-feel",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no visual design signals available to judge premium versus dated feel."
+            },
+            {
+              "key": "linkedin-consistency",
+              "score": 2,
+              "assessable": true,
+              "evidence": "LinkedIn page exists and uses the GKS Packaging name and machinery-manufacturing category, but no visual brand comparison is possible without the live site."
+            },
+            {
+              "key": "market-leader-look",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no design or presentation signals available to judge category-leader positioning."
+            },
+            {
+              "key": "touchpoint-cohesion",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; only LinkedIn and two PDF hosts are visible, which is too thin a sample to score cohesion fairly."
+            }
+          ],
+          "total": 10,
+          "assessedChecks": 1
+        },
+        {
+          "key": "website",
+          "checks": [
+            {
+              "key": "five-second-test",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no first-load screenshot exists to run a five-second test."
+            },
+            {
+              "key": "design-quality",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no design signals available to compare against Jasa or Ulmapackaging."
+            },
+            {
+              "key": "pagespeed",
+              "score": null,
+              "assessable": false,
+              "evidence": "Loading speed could not be measured for this site."
+            },
+            {
+              "key": "mobile-rendering",
+              "score": null,
+              "assessable": false,
+              "evidence": "No mobile screenshot exists because the site could not be fetched."
+            },
+            {
+              "key": "outdated-signals",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no layout, copyright year, or stock-photo signals are visible."
+            }
+          ],
+          "total": null,
+          "assessedChecks": 0
+        },
+        {
+          "key": "product-visuals",
+          "checks": [
+            {
+              "key": "imagery-quality",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no product imagery is visible in the available evidence."
+            },
+            {
+              "key": "three-d-cgi",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no renders or CGI assets are visible in the available evidence."
+            },
+            {
+              "key": "video",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no embedded video page signals are present in the available evidence."
+            },
+            {
+              "key": "shows-function",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no visuals showing machine process or output are available to assess."
+            },
+            {
+              "key": "competitor-level",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no imagery available to compare against Jasa or Ulmapackaging."
+            }
+          ],
+          "total": null,
+          "assessedChecks": 0
+        },
+        {
+          "key": "trade-show-print",
+          "checks": [
+            {
+              "key": "brochures-findable",
+              "score": 3,
+              "assessable": true,
+              "evidence": "Three downloadable PDFs are publicly findable: the CP300 datasheet on the GKS domain and two Lingwood-hosted documents including a LEAF paper-packaging brochure and a Packstation brochure."
+            },
+            {
+              "key": "brochure-design",
+              "score": null,
+              "assessable": false,
+              "evidence": "PDFs are confirmed present but no visual previews are available to judge design quality."
+            },
+            {
+              "key": "spec-sheets",
+              "score": 2,
+              "assessable": true,
+              "evidence": "One product datasheet (CP300) is publicly available; depth across the full product range cannot be confirmed from the available evidence."
+            },
+            {
+              "key": "exhibitions",
+              "score": 3,
+              "assessable": true,
+              "evidence": "GKS Packaging promoted attendance at Empack Gorinchem in April 2024, confirmed via a snippet on their own domain."
+            },
+            {
+              "key": "print-web-consistency",
+              "score": null,
+              "assessable": false,
+              "evidence": "Site could not be fetched; no live site design is available to compare against the found PDFs."
+            }
+          ],
+          "total": 13,
+          "assessedChecks": 3
+        },
+        {
+          "key": "message-clarity",
+          "checks": [
+            {
+              "key": "worth-more",
+              "score": 2,
+              "assessable": true,
+              "evidence": "LinkedIn snippet leads with ultra-reliable, cost-effective, modular, which hints at value but does not make a differentiated case over cheaper rivals."
+            },
+            {
+              "key": "value-language",
+              "score": 2,
+              "assessable": true,
+              "evidence": "LinkedIn copy uses outcome-oriented phrases like solves your real-world challenges but the CP300 datasheet appears spec-led based on its snippet."
+            },
+            {
+              "key": "jargon",
+              "score": 3,
+              "assessable": true,
+              "evidence": "LinkedIn snippet uses plain, accessible language; no impenetrable insider terminology is visible in the available snippets."
+            },
+            {
+              "key": "proof-points",
+              "score": 1,
+              "assessable": true,
+              "evidence": "No customer references, certifications, or performance numbers appear in the LinkedIn snippet or PDF titles found; claims are asserted without concrete backing."
+            },
+            {
+              "key": "copy-quality",
+              "score": 3,
+              "assessable": true,
+              "evidence": "LinkedIn snippet reads in clean, confident English with no grammar errors or machine-translation signals."
+            }
+          ],
+          "total": 11,
+          "assessedChecks": 5
+        }
+      ],
+      "overall": 57
+    }
+  ],
+  "verdict": {
+    "band": "visible",
+    "stance": "behind",
+    "paragraph": "JASA scores 61 out of 100, a visible gap from a strong result but closer than most manufacturers at this stage. The fixes are specific and contained. Ulma Packaging sits just ahead at 66, and it pulls that lead almost entirely from trade show and print materials, which is exactly where JASA should focus first. Sharpen that category and the gap closes fast.",
+    "bestRival": {
+      "company": "Ulmapackaging",
+      "overall": 66
+    },
+    "aheadRivals": [
+      {
+        "company": "Ulmapackaging",
+        "overall": 66,
+        "leadCategory": "trade-show-print",
+        "leadMargin": 5
+      }
+    ]
+  },
+  "firstFix": {
+    "category": "trade-show-print",
+    "categoryLabel": "Trade show and print",
+    "why": "Trade show and print is where fresh produce buyers make shortlist decisions. A buyer who visits the GreenTech booth and asks for a brochure on a machine other than the 400X leaves empty-handed. Ulma Packaging pulls its lead over JASA almost entirely from this category. Closing that gap does not require a full rebrand, just materials that match the quality already visible on the website.",
+    "inPractice": "Start by building a one-page data sheet for each core machine in the range, using the same green and red palette and photography already on the site. Host all sheets in a single downloadable library on the website. Before GreenTech 2026, produce a printed folder that holds those sheets so booth visitors leave with something tangible. That alone addresses the two biggest gaps: missing product coverage and no visible print-to-web consistency."
+  },
+  "exhibits": [
+    {
+      "company": "Jasa",
+      "isProspect": true,
+      "resolved": true,
+      "fetched": true,
+      "desktopUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Fjasa.nl&viewport_width=1440&viewport_height=900&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000",
+      "mobileUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Fjasa.nl&viewport_width=390&viewport_height=844&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000&device_scale_factor=2",
+      "pageSpeed": {
+        "mobile": {
+          "performance": 56,
+          "seo": 100,
+          "accessibility": 95,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 80,
+          "seo": 100,
+          "accessibility": 91,
+          "bestPractices": 96
+        },
+        "lcp": "30.7 s"
+      }
+    },
+    {
+      "company": "Ulmapackaging",
+      "isProspect": false,
+      "resolved": true,
+      "fetched": true,
+      "desktopUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Fulmapackaging.com&viewport_width=1440&viewport_height=900&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000",
+      "mobileUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Fulmapackaging.com&viewport_width=390&viewport_height=844&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000&device_scale_factor=2",
+      "pageSpeed": {
+        "mobile": {
+          "performance": 27,
+          "seo": 92,
+          "accessibility": 83,
+          "bestPractices": 54
+        },
+        "desktop": {
+          "performance": 56,
+          "seo": 92,
+          "accessibility": 73,
+          "bestPractices": 58
+        },
+        "lcp": "9.8 s"
+      }
+    },
+    {
+      "company": "Gks Packaging",
+      "isProspect": false,
+      "resolved": true,
+      "fetched": false,
+      "desktopUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Fgks-packaging.com&viewport_width=1440&viewport_height=900&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000",
+      "mobileUrl": "https://api.screenshotone.com/take?access_key=2bf85777c15baae0d015&url=https%3A%2F%2Fgks-packaging.com&viewport_width=390&viewport_height=844&format=png&full_page=false&block_ads=true&block_cookie_banners=true&delay=2&cache=true&cache_ttl=2592000&device_scale_factor=2",
+      "pageSpeed": null
+    }
+  ],
+  "deckCopy": {
+    "verdictParagraph": "JASA scores 61 out of 100, a visible gap from a strong result but closer than most manufacturers at this stage. The fixes are specific and contained. Ulma Packaging sits just ahead at 66, and it pulls that lead almost entirely from trade show and print materials, which is exactly where JASA should focus first. Sharpen that category and the gap closes fast.",
+    "categories": [
+      {
+        "key": "brand-identity",
+        "findings": [
+          "Green and red colours, logo and type are consistent across desktop and mobile, giving buyers a coherent first impression.",
+          "JASA reads as a specialist leader: 950 packaging lines worldwide and 14 food categories signal scale without feeling like a generalist.",
+          "Buyers searching for JASA on LinkedIn find an unrelated New York non-profit, not the packaging brand, which breaks a key trust signal."
+        ],
+        "competitorNote": "Ulma Packaging scores 15/20 here; GKS Packaging trails at 10/20, below JASA."
+      },
+      {
+        "key": "website",
+        "findings": [
+          "The offer is clear within five seconds: packaging machines for food, with two CTAs and a product e-book prompt visible immediately.",
+          "Mobile PageSpeed scores 56, which slows load times for buyers on phones at trade shows or in warehouses.",
+          "Design reads current and professional; Ulma's site reads as aging by comparison, giving JASA a clear visual advantage here."
+        ],
+        "competitorNote": "Ulma Packaging scores 11/20 on website; GKS Packaging could not be assessed on this category."
+      },
+      {
+        "key": "product-visuals",
+        "findings": [
+          "85 homepage photos include close-range shots of workers operating equipment, rated professional and showing machines in active use.",
+          "Two videos are embedded on the homepage but are not visually prominent, so many buyers will scroll past without watching them.",
+          "No 3D renders, CGI or cutaway diagrams appear anywhere on the site, leaving internal machine detail unexplained for technical buyers."
+        ],
+        "competitorNote": "Ulma Packaging scores 13/20 on product visuals; GKS Packaging could not be assessed on this category."
+      },
+      {
+        "key": "trade-show-print",
+        "findings": [
+          "JASA is confirmed at GreenTech 2026 with a booth number, showing active trade show participation.",
+          "Only one product data sheet, for the JASA 400X, is publicly accessible; buyers researching other models find no downloadable materials.",
+          "No visual preview of any print material is publicly available, so buyers cannot judge build quality or brand consistency before a meeting."
+        ],
+        "competitorNote": "Ulma Packaging leads this category at 15/20; GKS Packaging also outscores JASA here at 13/20."
+      },
+      {
+        "key": "message-clarity",
+        "findings": [
+          "Copy uses plain terms like leafy greens, potatoes and ready-to-eat meals that any first-time buyer follows without industry background.",
+          "Phrases like stable product flow and precise weighing describe features; buyer outcomes such as reduced giveaway or faster line changeover are absent.",
+          "950 packaging lines worldwide is a strong concrete number, but no named customer results or references appear to back it up."
+        ],
+        "competitorNote": "Ulma Packaging matches JASA at 12/20 here; GKS Packaging scores 11/20, just below."
+      }
+    ],
+    "firstFix": {
+      "why": "Trade show and print is where fresh produce buyers make shortlist decisions. A buyer who visits the GreenTech booth and asks for a brochure on a machine other than the 400X leaves empty-handed. Ulma Packaging pulls its lead over JASA almost entirely from this category. Closing that gap does not require a full rebrand, just materials that match the quality already visible on the website.",
+      "inPractice": "Start by building a one-page data sheet for each core machine in the range, using the same green and red palette and photography already on the site. Host all sheets in a single downloadable library on the website. Before GreenTech 2026, produce a printed folder that holds those sheets so booth visitors leave with something tangible. That alone addresses the two biggest gaps: missing product coverage and no visible print-to-web consistency."
+    }
+  },
+  "routing": {
+    "roleSeniority": "unknown",
+    "verticalGuess": "packaging",
+    "geoGuess": "Netherlands",
+    "followUpTiming": "Let the sequence run; review at day 7",
+    "loomCandidate": true
+  },
+  "flags": [],
+  "estimatedCostUsd": 0.1651,
+  "generatedAt": "2026-07-07T13:05:49.333Z"
+}

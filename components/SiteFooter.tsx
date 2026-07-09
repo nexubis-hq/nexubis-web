@@ -1,18 +1,12 @@
 import Link from "next/link";
 import { NexubisLogo } from "@/components/NexubisLogo";
 import { FooterAnimations } from "@/components/FooterAnimations";
+import { FOOTER_LINKS, SOCIAL_LINKS, SHOW_SCORECARD } from "@/lib/site-config";
 
-const footerLinks = [
-  { label: "Work", href: "/#work" },
-  { label: "Contact", href: "https://www.nexubis.io/contact" },
-  { label: "Packages", href: "/packages" },
-];
-
-const socialLinks = [
-  { label: "Instagram", href: "https://www.instagram.com/nexubis.design/" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/nexubis/" },
-  { label: "Threads", href: "https://www.threads.net/@nexubis.design" },
-];
+const footerLinks = FOOTER_LINKS.filter(
+  (link) => !("scorecard" in link && link.scorecard) || SHOW_SCORECARD,
+);
+const socialLinks = SOCIAL_LINKS;
 
 function FooterWordmark() {
   return (
@@ -92,8 +86,9 @@ export function SiteFooter() {
               </div>
             </div>
             <div className="footer-column footer-copyright-column">
+              <p className="footer-signoff">Built brilliantly. Branded to match.</p>
               <p className="copyright">
-                © 2025 — Nexubis Pty Ltd. All rights reserved.
+                © 2026 Nexubis Pty Ltd. All rights reserved.
               </p>
             </div>
           </div>

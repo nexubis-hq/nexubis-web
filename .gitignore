@@ -45,3 +45,11 @@ next-env.d.ts
 
 # Local Webflow export reference. Rebuild from this into components; do not deploy wholesale.
 /webflow-export/
+
+# local tooling artifacts
+/.playwright-mcp/
+/qa/
+
+# Local reference material (contains the LekkeWeb audit-tool snapshot with live API keys). Never commit.
+/reference/
+/offline-package/
