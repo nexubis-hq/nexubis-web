@@ -82,31 +82,58 @@ function tradeShowFact(company: string, res: WebSearchResponse | null): Verified
   return fact("trade-shows", true, `Trade show mention found: ${hit.title} (${hit.url}).${hit.snippet ? ` Snippet: ${hit.snippet.slice(0, 160)}` : ""}`);
 }
 
-// Gather the off-site evidence for one company. 3 queries when in budget.
-// Null responses (budget out, key missing, query failed) surface as
-// present:false facts whose evidence says the check could not run; the scorer
-// maps those to not-assessable, never to a zero.
+// Category findability: when a buyer searches for what the company makes,
+// does the company's own site appear on the first page of results? Runs for
+// the PROSPECT ONLY (one extra query per run). The evidence states exactly
+// what was searched and what appeared, so it can never overclaim: "does not
+// appear on the first page of results for this search" is the whole finding.
+function findabilityFact(term: string, host: string | null, res: WebSearchResponse | null): VerifiedFact {
+  if (!res || !host) return fact("category-findability", false, "Category findability could not be checked.");
+  const hit = res.organic.find((o) => (hostFromUrl(o.url) ?? "").endsWith(host));
+  if (hit) {
+    return fact("category-findability", true, `When buyers search "${term}", the company's own site appears: ${hit.title} (${hit.url}).`);
+  }
+  const whoDoes = res.organic
+    .map((o) => hostFromUrl(o.url))
+    .filter((h): h is string => Boolean(h))
+    .slice(0, 3);
+  return fact(
+    "category-findability",
+    false,
+    `The company's site does not appear on the first page of results for "${term}"${whoDoes.length ? ` (results show ${whoDoes.join(", ")})` : ""}. This one search is a sample, not a full visibility study.`,
+  );
+}
+
+// Gather the off-site evidence for one company. 3 queries when in budget
+// (plus 1 findability query for the prospect). Null responses (budget out,
+// key missing, query failed) surface as present:false facts whose evidence
+// says the check could not run; the scorer maps those to not-assessable,
+// never to a zero.
 export async function gatherOffsiteEvidence(
   company: string,
   url: string | null,
   budget: QueryBudget,
+  opts: { categoryTerm?: string } = {},
 ): Promise<OffsiteEvidence> {
   const host = hostFromUrl(url);
+  const term = (opts.categoryTerm ?? "").trim();
   const before = budget.used;
-  const [linkedinRes, pdfRes, siteDocsRes, tradeRes] = [
+  const [linkedinRes, pdfRes, siteDocsRes, tradeRes, findabilityRes] = [
     await budgetedSearch(`"${company}" site:linkedin.com/company`, budget),
     await budgetedSearch(`"${company}" brochure OR "spec sheet" OR datasheet filetype:pdf`, budget),
     host ? await budgetedSearch(`site:${host} filetype:pdf`, budget) : null,
     await budgetedSearch(`"${company}" exhibition OR "trade show" OR messe OR beurs`, budget),
+    term && host ? await budgetedSearch(term, budget) : null,
   ];
   const facts = [
     linkedinFact(company, linkedinRes),
     brochureFact(company, host, [pdfRes, siteDocsRes]),
     tradeShowFact(company, tradeRes),
+    ...(term && host ? [findabilityFact(term, host, findabilityRes)] : []),
   ];
   return {
     facts,
-    searchBlock: formatSearchBlock([linkedinRes, pdfRes, siteDocsRes, tradeRes]),
+    searchBlock: formatSearchBlock([linkedinRes, pdfRes, siteDocsRes, tradeRes, findabilityRes]),
     queriesUsed: budget.used - before,
   };
 }

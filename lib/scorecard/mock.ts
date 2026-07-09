@@ -4,6 +4,7 @@
 // numbers and the UI/QA path exercises real variation.
 import { createHash } from "node:crypto";
 import type { WebSearchResponse } from "./web-search";
+import type { SitePageFacts } from "./fetch-site";
 import type { PageSpeedScores } from "./types";
 
 // Stable small integer derived from a seed string. Range [0, mod).
@@ -36,6 +37,22 @@ export function mockPageSpeed(url: string): PageSpeedScores {
     bestPractices: Math.min(99, base + 8),
   });
   return { mobile: scores(0), desktop: scores(12), lcp: `${(1.2 + mockInt(url, 30) / 10).toFixed(1)} s` };
+}
+
+// Deterministic mock page facts, varying per company so the code-side
+// competitor comparison exercises real asymmetries in local QA.
+export function mockSiteFacts(company: string): SitePageFacts {
+  const langs = [["en"], ["en", "de"], ["de", "en", "fr", "nl"]][mockInt(`langs:${company}`, 3)];
+  const hasTech = mockInt(`tech:${company}`, 2) === 0;
+  return {
+    languages: langs,
+    languageSource: langs.length > 1 ? "hreflang" : "none",
+    copyrightYear: 2018 + mockInt(`year:${company}`, 9),
+    pdfLinkCount: mockInt(`pdf:${company}`, 6),
+    techDocLinks: hasTech ? ["Datasheet (PDF)", "CAD files"] : [],
+    videoCount: mockInt(`vidc:${company}`, 3),
+    contactForm: mockInt(`form:${company}`, 3) === 0 ? null : { fieldCount: 3 + mockInt(`formn:${company}`, 6), fields: ["name", "email", "message"] },
+  };
 }
 
 export function mockSiteText(url: string, company: string): string {

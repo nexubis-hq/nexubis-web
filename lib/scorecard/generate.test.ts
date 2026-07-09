@@ -1,8 +1,10 @@
 import { test, beforeEach, afterEach } from "vitest";
 import assert from "node:assert/strict";
-import { generateScorecardUncached } from "./generate";
+import { generateScorecardUncached, competitorEdges } from "./generate";
 import { RUBRIC, CATEGORY_KEYS } from "./rubric";
 import { prospectScores } from "./result";
+import { emptySiteFacts, type SitePageFacts } from "./fetch-site";
+import type { CompanyEvidence } from "./evidence";
 import type { ProspectData } from "./types";
 
 // Full generation round-trip in mock mode: evidence, scoring, verdict, copy,
@@ -111,6 +113,68 @@ test("the first fix matches the lowest scored category under the tie-break order
   assert.equal(p.categories.find((c) => c.key === result.firstFix!.category)!.total, lowest);
 });
 
+// ── Competitor edges: code-computed, both-sides-measured only ────────────────
+function evidenceWith(company: string, isProspect: boolean, facts: Partial<SitePageFacts> | null, fetched = true): CompanyEvidence {
+  return {
+    company,
+    url: `https://${company.toLowerCase()}.example`,
+    isProspect,
+    resolved: true,
+    fetched,
+    siteText: fetched ? "text" : null,
+    siteTitle: null,
+    finalUrl: null,
+    ...(facts ? { siteFacts: { ...emptySiteFacts(), ...facts } } : {}),
+    screenshots: { desktopUrl: null, mobileUrl: null },
+    pageSpeed: null,
+    offsiteFacts: [],
+    searchBlock: "",
+    firstImpression: null,
+    flags: [],
+  };
+}
+
+test("competitorEdges surfaces measured asymmetries: languages and technical material", () => {
+  const p = evidenceWith("Prospect", true, { languages: ["en"], languageSource: "none" });
+  const r = evidenceWith("Rival", false, {
+    languages: ["de", "en", "fr"],
+    languageSource: "hreflang",
+    techDocLinks: ["Datasheet (PDF)", "CAD files"],
+  });
+  const edges = competitorEdges(p, [r]);
+  assert.equal(edges.length, 2);
+  assert.ok(edges[0].includes("3 languages"));
+  assert.ok(edges[1].includes("Datasheet"));
+});
+
+test("competitorEdges stays silent when either side lacks measured facts", () => {
+  const rival = evidenceWith("Rival", false, { languages: ["de", "en"], languageSource: "hreflang" });
+  // Prospect without siteFacts (old cached bundle): no edges, never a guess.
+  assert.deepEqual(competitorEdges(evidenceWith("P", true, null), [rival]), []);
+  // Prospect fetch failed: no edges.
+  assert.deepEqual(competitorEdges(evidenceWith("P", true, { languages: ["en"] }, false), [rival]), []);
+  // Rival without facts: no edges.
+  assert.deepEqual(competitorEdges(evidenceWith("P", true, { languageSource: "none", languages: ["en"] }), [evidenceWith("R", false, null)]), []);
+  // Prospect with a language switcher detected: no language edge (not single-language).
+  const multiProspect = evidenceWith("P", true, { languages: ["en", "nl"], languageSource: "switcher" });
+  assert.deepEqual(competitorEdges(multiProspect, [rival]), []);
+});
+
+test("competitorEdges caps at 2 per rival and 4 total", () => {
+  const bare = { languages: ["en"] as string[], languageSource: "none" as const };
+  const loaded: Partial<SitePageFacts> = {
+    languages: ["de", "en", "fr"],
+    languageSource: "hreflang",
+    techDocLinks: ["Datasheet"],
+    videoCount: 2,
+  };
+  const p = evidenceWith("Prospect", true, bare);
+  const rivals = [evidenceWith("R1", false, loaded), evidenceWith("R2", false, loaded), evidenceWith("R3", false, loaded)];
+  const edges = competitorEdges(p, rivals);
+  assert.equal(edges.length, 4);
+  assert.equal(edges.filter((e) => e.startsWith("R1")).length, 2);
+});
+
 test("rubric integrity: 5 categories x 5 checks, pagespeed marked deterministic", () => {
   assert.equal(RUBRIC.length, 5);
   for (const cat of RUBRIC) assert.equal(cat.checks.length, 5);
@@ -118,4 +182,7 @@ test("rubric integrity: 5 categories x 5 checks, pagespeed marked deterministic"
   assert.ok(ps?.deterministic);
   const keys = RUBRIC.flatMap((c) => c.checks.map((ch) => ch.key));
   assert.equal(new Set(keys).size, 25);
+  // The buyer-mission checks that replaced linkedin-consistency and jargon.
+  assert.ok(keys.includes("language-reach"));
+  assert.ok(keys.includes("quote-path"));
 });

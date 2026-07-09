@@ -15,7 +15,9 @@ export interface RunInput {
 }
 
 export function normaliseToHttps(url: string): string {
-  const s = (url ?? "").trim();
+  // Drop trailing dots/slashes so "example.com." (a valid FQDN) or "example.com/"
+  // collapse to the same clean host the validator and cache key expect.
+  const s = (url ?? "").trim().replace(/[./]+$/, "");
   if (!s) return "";
   return /^https?:\/\//i.test(s) ? s : `https://${s}`;
 }
@@ -61,12 +63,11 @@ export function prospectFromRunInput(input: RunInput): ProspectData {
   };
 }
 
-// Enough to run: a website, a one-liner, and at least 2 non-empty competitors.
+// Enough to run: a website. The product one-liner and competitors are no longer
+// asked for; they are detected from the site before generation (see detect.ts),
+// so the only thing a prospect must give is a valid-looking web address.
 export function runInputIsValid(input: RunInput): boolean {
-  if (!input.url || !input.url.trim()) return false;
-  if (!input.productOneLiner || !input.productOneLiner.trim()) return false;
-  const entries = (input.competitors ?? []).map((c) => c.trim()).filter(Boolean);
-  return entries.length >= MIN_COMPETITORS && entries.length <= MAX_COMPETITORS;
+  return Boolean(input.url && input.url.trim());
 }
 
 export function runIdFor(prospect: ProspectData): string {

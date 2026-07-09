@@ -87,7 +87,8 @@ test("prospect plus every competitor goes through the identical pipeline", async
     assert.equal(c.pageSpeed?.mobile?.performance, 60);
     assert.ok(c.firstImpression);
     assert.equal(c.screenshots.desktopUrl, "https://shots.test/d");
-    assert.equal(c.offsiteFacts.length, 3);
+    // Prospect gets the extra category-findability fact; rivals do not.
+    assert.equal(c.offsiteFacts.length, c.isProspect ? 4 : 3);
   }
   // 1 crawl per company
   assert.equal(mocks.fetchSite.mock.calls.length, 3);
@@ -153,13 +154,14 @@ test("stage callbacks fire in pipeline order", async () => {
 
 test("search query usage is counted and capped", async () => {
   const set = await gatherEvidenceUncached(prospect);
-  // 3 companies x 4 off-site queries (linkedin, pdf, site-pdf, trade shows).
-  assert.equal(set.searchQueriesUsed, 12);
+  // 3 companies x 4 off-site queries (linkedin, pdf, site-pdf, trade shows)
+  // + 1 category-findability query for the prospect.
+  assert.equal(set.searchQueriesUsed, 13);
   assert.ok(set.searchQueriesUsed <= 24);
 });
 
 test("estimated cost sums AI usage plus search spend", async () => {
   const set = await gatherEvidenceUncached(prospect);
-  // 3 vision reads x $0.01 + 12 searches x $0.001 = 0.042
-  assert.equal(set.estimatedCostUsd, 0.042);
+  // 3 vision reads x $0.01 + 13 searches x $0.001 = 0.043
+  assert.equal(set.estimatedCostUsd, 0.043);
 });

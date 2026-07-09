@@ -11,7 +11,7 @@ import { getKv } from "./kv";
 import { currentEnvelope } from "./call-cache";
 import { searchCacheKey, SCORECARD_RECORD_TTL_S } from "./determinism";
 import { SEARCH_QUERY_COST_USD } from "./web-search";
-import { FIRST_IMPRESSION_OUTPUT, firstImpressionSchema } from "./output-schemas";
+import { FIRST_IMPRESSION_OUTPUT, firstImpressionSchema, DETECT_CONTEXT_OUTPUT, detectContextSchema, COMPETITOR_RESCUE_OUTPUT, competitorRescueSchema } from "./output-schemas";
 import { mockInt } from "./mock";
 
 // Copy-diet rule, applied to every model-written line. The reader is a
@@ -294,6 +294,150 @@ Return ONLY: { "apparentOffer": "...", "offerClearInFiveSeconds": true|false, "d
   });
 }
 
+// ── Auto-detect: read the site, infer what they make and who they rival ──────
+// Powers the website-only entry. From the prospect's own crawled homepage text,
+// Claude names what they make in one buyer-facing line and up to four real
+// companies a buyer would cross-shop against. Only companies it is genuinely
+// confident exist are named; the competitor resolver (Serper) validates each
+// one downstream, so a shaky guess simply fails to resolve rather than poisoning
+// the benchmark. Cheap model: this is inference over given text, not judgment.
+export interface DetectedContext {
+  /** What they make, one buyer-facing line. */
+  productOneLiner: string;
+  /** Up to 4 competitor names or domains, real companies only. */
+  competitors: string[];
+  /** The company's own name as written on its site ("DMN-Westinghouse"), so
+   *  reports never address a prospect by a mangled domain guess. */
+  companyName?: string;
+  /** Whether this site belongs to the Scorecard's audience. "outside" is the
+   *  only blocking value; "unclear" always proceeds (a wrongly rejected real
+   *  prospect costs more than a wasted run). */
+  industryFit?: "manufacturer" | "adjacent" | "outside" | "unclear";
+  /** Industry fingerprint, extractive only. Optional: payloads cached before
+   *  these fields existed omit them; detect.ts normalises to safe defaults. */
+  industries?: string[];
+  certifications?: string[];
+  productFamilies?: string[];
+  salesModel?: "direct" | "distributors" | "mixed" | "unclear";
+  buyerPersona?: string;
+}
+
+export async function detectProductContext(args: {
+  company: string;
+  url: string;
+  siteText: string | null;
+  siteTitle: string | null;
+}): Promise<WrapperResult<DetectedContext>> {
+  if (isMockMode()) {
+    const seed = `detect:${args.company}`;
+    const kinds = ["dosing pumps", "leak detection systems", "bulk-solids handling", "packaging machinery", "process valves"];
+    const models: Array<DetectedContext["salesModel"]> = ["direct", "distributors", "mixed", "unclear"];
+    const data: DetectedContext = {
+      productOneLiner: `${kinds[mockInt(seed, kinds.length)]} for industrial production lines (mock read for ${args.company})`,
+      competitors: ["altrix-systems.de", "vorne-industrial.com", "meridian-pack.eu"],
+      companyName: `${args.company} GmbH`,
+      industryFit: "manufacturer",
+      industries: [["food", "pharma"], ["dairy", "chemicals"], ["plastics"]][mockInt(seed + "ind", 3)],
+      certifications: mockInt(seed + "cert", 2) === 0 ? ["ATEX", "EHEDG"] : [],
+      productFamilies: [`${args.company.slice(0, 3).toUpperCase()} series`],
+      salesModel: models[mockInt(seed + "sales", models.length)],
+      buyerPersona: `a process engineer at an industrial plant (mock persona for ${args.company})`,
+    };
+    return { ok: true, data, usage: zeroUsage("mock") };
+  }
+
+  if (!args.siteText) return { ok: false, reason: "no-site-text" };
+
+  const user = `You are reading the website of an industrial company to set up a brand assessment. Company: "${args.company}" (${args.url}).${args.siteTitle ? ` Page title: "${args.siteTitle}".` : ""}
+
+From the SITE CONTENT below, return:
+- industryFit: whose site this is. "manufacturer" = makes or builds physical industrial products, machinery, equipment or components for business customers. "adjacent" = industrial B2B but not a manufacturer (system integrator, industrial service or engineering firm, technical distributor). "outside" = clearly none of that (consumer products or services, software, agencies, shops, restaurants, media, personal sites). "unclear" = the content does not say enough to tell. Choose "outside" ONLY when you are certain; when torn between two values, pick the more industrial one.
+- companyName: the company's own name exactly as it writes it on its site (max 6 words, e.g. "DMN-Westinghouse"). No legal suffixes unless the site leads with them. Empty string if the site never states a name.
+- productOneLiner: what this company makes or does, in one buyer-facing line (max 15 words). Say it the way the company would to a buyer, plain and specific. Example shape: "leak detection systems for packaging lines".
+- competitors: up to 4 real companies a buyer would cross-shop against this one, as company names or domains. Name ONLY companies you are genuinely confident exist in this industry; a company name that is right beats four that are guesses. If you are unsure, return fewer. Never invent a plausible-sounding name. Do not list the company itself, marketplaces, directories or trade bodies.
+- The industry fingerprint. EXTRACTIVE ONLY: each field may contain ONLY what the site content literally states. Empty arrays and empty strings are correct answers; a wrong entry is far worse than a missing one.
+  - industries: industries or sectors the site names serving (max 5, as written, e.g. "dairy", "pharmaceutical").
+  - certifications: certification and standard names literally present in the text (max 6, e.g. "ATEX", "EHEDG", "FDA"). Never add one the text does not contain.
+  - productFamilies: named product families, series or model names as written (max 6).
+  - salesModel: "direct" | "distributors" | "mixed" | "unclear". Only "distributors" or "mixed" when the text mentions distributors, dealers or resellers; otherwise "unclear" beats a guess.
+  - buyerPersona: one line (max 12 words) describing the likely buyer, grounded in who the site addresses (e.g. "a process engineer specifying equipment for a dairy line"). Empty string if the site gives no basis.
+
+${COPY_DIET}
+
+## SITE CONTENT (crawled)
+${args.siteText.slice(0, SITE_TEXT_BUDGET)}
+
+Return ONLY: { "industryFit": "...", "companyName": "...", "productOneLiner": "...", "competitors": ["..."], "industries": ["..."], "certifications": ["..."], "productFamilies": ["..."], "salesModel": "...", "buyerPersona": "..." }`;
+
+  return runJson<DetectedContext>({
+    label: "detect-context",
+    model: MODEL_HAIKU,
+    user,
+    maxTokens: 400,
+    outputFormat: DETECT_CONTEXT_OUTPUT,
+    schema: detectContextSchema,
+  });
+}
+
+// ── Competitor rescue: pick real rivals out of live search results ───────────
+// Runs only when the site-only detection found fewer than two competitors
+// (niche industries where model knowledge alone is too thin to name rivals
+// confidently). The candidates are grounded in the search results handed in,
+// and the downstream resolver still validates every name against the live
+// web, so a wrong pick fails to resolve rather than poisoning the benchmark.
+export async function pickCompetitorsFromSearch(args: {
+  company: string;
+  productOneLiner: string;
+  searchBlock: string;
+}): Promise<WrapperResult<{ competitors: string[] }>> {
+  if (isMockMode()) {
+    return { ok: true, data: { competitors: ["altrix-systems.de", "vorne-industrial.com"] }, usage: zeroUsage("mock") };
+  }
+  if (!args.searchBlock.trim()) return { ok: false, reason: "no-search-results" };
+
+  const user = `You are completing the setup of a brand benchmark for "${args.company}", which makes: ${args.productOneLiner}.
+
+From the SEARCH RESULTS below, name up to 4 real competitor MANUFACTURERS a buyer would cross-shop against "${args.company}", as company names or domains. Rules:
+- Only companies that appear in the search results or that you are genuinely confident exist in this industry.
+- Never "${args.company}" itself, its distributors or resellers, marketplaces, directories, trade bodies or media sites.
+- Manufacturers of the same product category only. Fewer right names beat four guesses. Return an empty list if nothing qualifies.
+
+${COPY_DIET}
+
+## SEARCH RESULTS
+${args.searchBlock.slice(0, 5000)}
+
+Return ONLY: { "competitors": ["...", "..."] }`;
+
+  return runJson<{ competitors: string[] }>({
+    label: "competitor-rescue",
+    model: MODEL_HAIKU,
+    user,
+    maxTokens: 300,
+    outputFormat: COMPETITOR_RESCUE_OUTPUT,
+    schema: competitorRescueSchema,
+  });
+}
+
+// Industry-fingerprint context block for the scorer and copy pass. Extractive
+// facts from the prospect's own site, so the model can speak the buyer's
+// language (industries, certifications, product families) without inventing
+// any of it. Empty fingerprint -> empty block, prompts render without it.
+import type { DetectedFingerprint } from "./types";
+
+export function companyContextBlock(fp: DetectedFingerprint | undefined | null): string {
+  if (!fp) return "";
+  const lines = [
+    fp.industries.length ? `- Industries they name serving: ${fp.industries.join(", ")}` : null,
+    fp.certifications.length ? `- Certifications named on their site: ${fp.certifications.join(", ")}` : null,
+    fp.productFamilies.length ? `- Named product families: ${fp.productFamilies.join(", ")}` : null,
+    fp.salesModel && fp.salesModel !== "unclear" ? `- Sales model stated on the site: ${fp.salesModel === "distributors" ? "via distributors" : fp.salesModel === "mixed" ? "direct and via distributors" : "direct"}` : null,
+    fp.buyerPersona ? `- The likely buyer: ${fp.buyerPersona}` : null,
+  ].filter(Boolean);
+  if (lines.length === 0) return "";
+  return `## COMPANY CONTEXT (stated on their own site; use these exact terms where relevant, never add to them)\n${lines.join("\n")}`;
+}
+
 // Positive-only evidence line from the vision read, appended to the company's
 // site text for the scorer. Absence stays unknown (no false negatives from
 // vision).
@@ -367,6 +511,8 @@ export async function scoreCompanyRubric(args: {
   evidence: CompanyEvidence;
   productOneLiner: string;
   competitorContext: string;
+  /** Preformatted company-context block (prospect only). Empty for rivals. */
+  companyContext?: string;
 }): Promise<WrapperResult<{ checks: RawCheck[] }>> {
   const e = args.evidence;
   if (isMockMode()) {
@@ -403,7 +549,7 @@ ${NO_FALSE_NEGATIVE}
 
 ${COPY_DIET}
 
-${args.competitorContext || "## THE OTHER COMPANIES IN THIS COMPARISON\n(none available)"}
+${args.companyContext ? `${args.companyContext}\n\n` : ""}${args.competitorContext || "## THE OTHER COMPANIES IN THIS COMPARISON\n(none available)"}
 
 ${evidenceBlock(e)}
 
@@ -436,6 +582,11 @@ export interface DeckCopyInput {
   firstFixLabel: string;
   /** Compact per-category summary lines: totals plus notable check evidence. */
   scoreSummary: string;
+  /** Preformatted company-context block (industry fingerprint). May be "". */
+  companyContext: string;
+  /** Code-computed concrete competitor advantages ("X offers 9 language
+   *  versions; your site shows one"). Measured facts, never model output. */
+  competitorEdges: string[];
 }
 
 export async function writeDeckCopy(input: DeckCopyInput): Promise<WrapperResult<DeckCopyReply>> {
@@ -474,22 +625,26 @@ export async function writeDeckCopy(input: DeckCopyInput): Promise<WrapperResult
         ? "Tone: encouraging. They are closer than most. The fixes are specific and contained."
         : "Tone: respectful. Acknowledge the work done. The notes show where to sharpen.";
 
+  const edgesBlock = input.competitorEdges.length
+    ? `\nCONCRETE COMPETITOR ADVANTAGES (measured on their sites by the same pipeline; use these in findings and competitorNotes where relevant, never invent others):\n${input.competitorEdges.map((e) => `- ${e}`).join("\n")}\n`
+    : "";
+
   const user = `Write the report copy blocks for the Industrial Brand Credibility Scorecard of "${input.company}" (they make: ${input.productOneLiner}).
 
-THE NUMBERS (already computed, never change them):
+${input.companyContext ? `${input.companyContext}\n\n` : ""}THE NUMBERS (already computed, never change them):
 - Overall Credibility Score: ${input.overall}/100. Verdict: ${input.verdictBand} gap.
 - Benchmark stance: ${input.stance}. ${stanceRule}
 - First place to fix: ${input.firstFixLabel}.
 
 PER-CATEGORY SCORES AND EVIDENCE:
 ${input.scoreSummary}
-
+${edgesBlock}
 WRITE THESE BLOCKS:
 1. verdictParagraph: one paragraph, maximum 85 words. State the verdict plainly, weave the benchmark stance per the rule above, end on the first place to fix. ${bandTone}
 2. categories: for EVERY category key, exactly 2 or 3 findings (each maximum 26 words) stating specifically what is working and what is costing them, referencing the real evidence above (name competitors where the evidence does), plus one competitorNote (maximum 22 words) on where the named competitors stand on this category. If a category's checks were mostly not assessable, one finding must say plainly what could not be assessed and why that matters.
-3. firstFix: "why" (maximum 75 words): why this category comes first, tied to where buyers look. "inPractice" (maximum 85 words): what fixing it looks like in practice, concrete and specific to their evidence. Describe the work, do not sell anything and do not mention any company that would do it.
+3. firstFix: "why" (maximum 75 words): why this category comes first, tied to where buyers look and, where the company context supports it, to THEIR buyer specifically. "inPractice" (maximum 85 words): what fixing it looks like in practice, concrete and specific to their evidence; name their actual product families, industries or certifications where the context above states them. Describe the work, do not sell anything and do not mention any company that would do it.
 
-HARD RULES: Never use the word audit anywhere; this is the Scorecard, the check, the report. The reader should feel helped, then concerned, then clear on what to do, in that order. Findings are facts, never sneering, about the prospect or the competitors. No hype words, no jargon, no em dashes, no selling anywhere in these blocks. Never mention Nexubis or any agency. Never invent anything not present in the evidence.
+HARD RULES: Never use the word audit anywhere; this is the Scorecard, the check, the report. The reader should feel helped, then concerned, then clear on what to do, in that order. Findings are facts, never sneering, about the prospect or the competitors. No hype words, no jargon, no em dashes, no selling anywhere in these blocks. Never mention Nexubis or any agency. Never invent anything not present in the evidence. Industry terms, certification names, product family names and buyer descriptions may ONLY come from the company context or the evidence above, exactly as written there.
 
 ${COPY_DIET}
 

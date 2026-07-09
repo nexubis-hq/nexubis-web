@@ -46,6 +46,8 @@ async function gatherCompanyEvidence(
   target: CompanyTarget,
   budget: QueryBudget,
   usages: Usage[],
+  /** Product one-liner, prospect only: powers the category-findability search. */
+  categoryTerm?: string,
 ): Promise<CompanyEvidence> {
   const flags: string[] = [];
   const base: CompanyEvidence = {
@@ -100,7 +102,9 @@ async function gatherCompanyEvidence(
     }
   })();
   const pageSpeedPromise = runPageSpeed(url).catch(() => null);
-  const offsitePromise = gatherOffsiteEvidence(target.company, url, budget).catch((err) => {
+  const offsitePromise = gatherOffsiteEvidence(target.company, url, budget, {
+    categoryTerm: target.isProspect ? categoryTerm : undefined,
+  }).catch((err) => {
     flags.push(`Off-site retrieval failed (${err instanceof Error ? err.message : "error"})`);
     return { facts: [], searchBlock: "", queriesUsed: 0 };
   });
@@ -117,6 +121,7 @@ async function gatherCompanyEvidence(
     base.siteText = site.text;
     base.siteTitle = site.title;
     base.finalUrl = site.finalUrl;
+    base.siteFacts = site.facts;
   } else {
     base.fetchReason = site.reason;
     flags.push(`Site fetch failed: ${site.reason}`);
@@ -190,7 +195,7 @@ export async function gatherEvidenceUncached(
   if (input.competitors.length + 1 > RUN_BUDGET.maxCompanies) {
     flags.push(`Company list capped at ${RUN_BUDGET.maxCompanies}`);
   }
-  const gatherAll = Promise.all(targets.map((t) => gatherCompanyEvidence(t, budget, usages)));
+  const gatherAll = Promise.all(targets.map((t) => gatherCompanyEvidence(t, budget, usages, input.productOneLiner)));
   // The competitor stage is cosmetic for the scan animation: flip to it once
   // the prospect's own gather has had a head start.
   const staged = gatherAll.then((companies) => {

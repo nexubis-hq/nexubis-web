@@ -5,14 +5,15 @@
 // one unlock panel). Server component; motion comes from RevealOnScroll's
 // data-reveal hook only, so nothing here couples to homepage animation markup.
 import Link from "next/link";
-import { NexubisLogo } from "@/components/NexubisLogo";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
+import { PlanCallVignette, PlanPreviewVignette, PlanSlackVignette } from "@/components/vignettes/PlanVignettes";
 import { ScoreRing } from "./ScoreRing";
 import { BenchmarkRadar } from "./BenchmarkRadar";
-import { UnlockPanel } from "./UnlockPanel";
-import { REPORT, POWERED_BY, VERDICT_LINES } from "@/lib/scorecard/copy";
+import { UnlockBar } from "./UnlockBar";
+import { ReportNav } from "./ReportNav";
+import { REPORT, POWERED_BY, VERDICT_LINES, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
 import { BOOKING_URL, OXIPACK_CASE_URL } from "@/lib/site-config";
-import { RUBRIC, categoryLabel } from "@/lib/scorecard/rubric";
+import { RUBRIC } from "@/lib/scorecard/rubric";
 import { VERDICT_LABELS } from "@/lib/scorecard/scoring";
 import { prospectScores, type ScorecardResult, type CompanyExhibit } from "@/lib/scorecard/result";
 
@@ -21,9 +22,13 @@ function loomEmbedUrl(loomUrl: string): string | null {
   return m ? `https://www.loom.com/embed/${m[1]}` : null;
 }
 
+// The three "recommended next step" cards reuse the homepage plan vignettes,
+// which line up one-to-one: book a call, see it first, the team joins.
+const NEXT_STEP_VIGNETTES = [PlanCallVignette, PlanPreviewVignette, PlanSlackVignette];
+
 function ExhibitCard({ exhibit, label }: { exhibit: CompanyExhibit; label: string }) {
   return (
-    <figure className="sc-exhibit" data-reveal>
+    <figure className={exhibit.isProspect ? "sc-exhibit sc-exhibit-prospect" : "sc-exhibit"} data-reveal>
       <div className="sc-exhibit-frame">
         {exhibit.desktopUrl ? (
           // ScreenshotOne serves a stable CDN-cached PNG; next/image cannot
@@ -137,7 +142,9 @@ function CategorySection({ result, index, catKey }: { result: ScorecardResult; i
 
 // The teaser's locked stand-in for a category: header real, body placeholder
 // bars. Placeholder markup, not blurred real content, so nothing gated ever
-// reaches the DOM before unlock.
+// reaches the DOM before unlock. Each carries a quiet nudge to the unlock
+// form, so a reader skimming the locked sections always has the next step in
+// reach.
 function LockedCategory({ index, label }: { index: number; label: string }) {
   return (
     <section className="sc-category sc-category-locked section" aria-label={`${label} (locked)`}>
@@ -156,8 +163,35 @@ function LockedCategory({ index, label }: { index: number; label: string }) {
           <span />
           <span />
         </div>
+        <a className="sc-locked-nudge" href="#sc-unlock">
+          {TEASER.lockedNudge}
+        </a>
       </div>
     </section>
+  );
+}
+
+// Where the score sits on the 0 to 100 scale, with the three bands marked, so
+// the band name carries its meaning instead of floating as a label.
+function BandScale({ overall, band }: { overall: number | null; band: "wide" | "visible" | "narrow" }) {
+  if (overall === null) return null;
+  return (
+    <div className="sc-band-scale">
+      <div className="sc-band-track" aria-hidden="true">
+        <span className="sc-band-seg" style={{ width: "60%" }} />
+        <span className="sc-band-seg" style={{ width: "20%" }} />
+        <span className="sc-band-seg" style={{ width: "20%" }} />
+        <span className="sc-band-marker" style={{ left: `${overall}%` }} />
+      </div>
+      <div className="sc-band-labels">
+        {BAND_SCALE.map((b) => (
+          <span key={b.band} className={b.band === band ? "sc-band-label is-current" : "sc-band-label"}>
+            {b.label}
+            <em>{b.range}</em>
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -186,13 +220,7 @@ export function ReportView({
   return (
     <Shell className="sc-report">
       <RevealOnScroll />
-      {chrome ? (
-        <nav className="sc-topbar" aria-label="Report">
-          <Link href="/" aria-label="Nexubis home">
-            <NexubisLogo className="sc-topbar-logo" />
-          </Link>
-        </nav>
-      ) : null}
+      {chrome ? <ReportNav company={result.meta.company} overall={overall} /> : null}
 
       {/* 1. Cover */}
       <header className="sc-cover">
@@ -223,15 +251,31 @@ export function ReportView({
         </section>
       ) : null}
 
-      {/* 3. First impression */}
+      {/* 3. First impression: the prospect's own screenshot leads, large; the
+          competitors follow in a smaller row beneath. */}
       <section className="sc-first-impression section">
         <div className="site-container">
           <h2 data-reveal>{REPORT.firstImpressionTitle}</h2>
-          <div className="sc-exhibit-grid">
-            {result.exhibits.map((e) => (
-              <ExhibitCard key={e.company} exhibit={e} label={e.isProspect ? `${e.company} (you)` : e.company} />
-            ))}
-          </div>
+          {(() => {
+            const prospectExhibit = result.exhibits.find((e) => e.isProspect);
+            const rivalExhibits = result.exhibits.filter((e) => !e.isProspect);
+            return (
+              <>
+                {prospectExhibit ? (
+                  <div className="sc-exhibit-hero">
+                    <ExhibitCard exhibit={prospectExhibit} label={`${prospectExhibit.company} (you)`} />
+                  </div>
+                ) : null}
+                {rivalExhibits.length > 0 ? (
+                  <div className="sc-exhibit-grid sc-exhibit-grid-rivals">
+                    {rivalExhibits.map((e) => (
+                      <ExhibitCard key={e.company} exhibit={e} label={e.company} />
+                    ))}
+                  </div>
+                ) : null}
+              </>
+            );
+          })()}
           <p className="sc-first-impression-line" data-reveal>
             {REPORT.firstImpressionLine}
           </p>
@@ -246,6 +290,7 @@ export function ReportView({
             <div className="sc-score-ring" data-reveal>
               <ScoreRing value={overall} display={overall === null ? "?" : String(overall)} subLabel="of 100" ariaLabel={`Credibility Score ${overall ?? "unknown"} of 100`} />
               <p className="sc-verdict-band">{VERDICT_LABELS[result.verdict.band]}</p>
+              <BandScale overall={overall} band={result.verdict.band} />
             </div>
             <div className="sc-score-copy" data-reveal>
               {teaser ? (
@@ -253,11 +298,12 @@ export function ReportView({
               ) : (
                 <p className="sc-verdict-paragraph">{result.verdict.paragraph}</p>
               )}
+              <p className="sc-chips-label">{TEASER.chipsLabel}</p>
               <ul className="sc-overall-chips">
                 {result.scores.map((s) => (
                   <li key={s.company} className={s.isProspect ? "sc-chip-you" : "sc-chip"}>
-                    <span className="sc-chip-name">{s.isProspect ? `${s.company} (you)` : s.company}</span>
-                    <span className="sc-chip-score">{s.scored && s.overall !== null ? s.overall : "n/a"}</span>
+                    <span className="sc-chip-name">{s.company}</span>
+                    <span className="sc-chip-score">{s.scored && s.overall !== null ? s.overall : TEASER.rivalNotScored}</span>
                   </li>
                 ))}
               </ul>
@@ -273,13 +319,13 @@ export function ReportView({
 
       {teaser ? (
         <>
-          {/* Locked category placeholders + the single unlock panel */}
+          {/* Locked category placeholders. The sticky bar is the single
+              unlock surface: its button (and every locked-section nudge)
+              opens the form in a modal, so no form sits at the page bottom. */}
           {RUBRIC.map((cat, i) => (
             <LockedCategory key={cat.key} index={i + 1} label={cat.label} />
           ))}
-          <section className="sc-unlock-section section">
-            <div className="site-container">{runId ? <UnlockPanel runId={runId} /> : null}</div>
-          </section>
+          {runId ? <UnlockBar runId={runId} /> : null}
         </>
       ) : (
         <>
@@ -323,17 +369,31 @@ export function ReportView({
             </div>
           </section>
 
-          {/* 8. Recommended next step */}
+          {/* 8. Recommended next step: the homepage "How It Works" treatment,
+              same numbered cards and looping vignettes. */}
           <section className="sc-next-step section">
             <div className="site-container">
               <h2 data-reveal>{REPORT.nextStepTitle}</h2>
-              <ol className="sc-steps">
-                {REPORT.nextStepSteps.map((s, i) => (
-                  <li key={s.title} data-reveal data-reveal-delay={i * 0.08}>
-                    <h3>{s.title}</h3>
-                    <p>{s.body}</p>
-                  </li>
-                ))}
+              <ol className="plan-grid sc-next-plan">
+                {REPORT.nextStepSteps.map((s, i) => {
+                  const Vignette = NEXT_STEP_VIGNETTES[i];
+                  return (
+                    <li className="plan-card" key={s.title} data-reveal data-reveal-delay={(i + 1) * 0.1}>
+                      <div className="plan-card-head">
+                        <span className="plan-card-index" aria-hidden="true">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <h3>{s.title}</h3>
+                      </div>
+                      <p>{s.body}</p>
+                      {Vignette ? (
+                        <div className="plan-vignette">
+                          <Vignette />
+                        </div>
+                      ) : null}
+                    </li>
+                  );
+                })}
               </ol>
               <a className="btn btn-primary sc-next-step-cta" href={BOOKING_URL} data-reveal>
                 {REPORT.nextStepButton}
@@ -341,11 +401,15 @@ export function ReportView({
             </div>
           </section>
 
-          {/* 9. Soft close */}
+          {/* 9. Soft close: the two sentences each get their own line. */}
           <footer className="sc-soft-close section">
             <div className="site-container">
               <p className="sc-soft-close-line" data-reveal>
-                {REPORT.softClose}
+                {REPORT.softClose.split(/(?<=\.)\s+/).map((sentence, i) => (
+                  <span className="sc-soft-close-sentence" key={i}>
+                    {sentence}
+                  </span>
+                ))}
               </p>
               <p className="sc-contact" data-reveal>
                 <a href={`mailto:${REPORT.contactEmail}`}>{REPORT.contactEmail}</a>

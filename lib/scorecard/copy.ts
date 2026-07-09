@@ -8,23 +8,23 @@ export const POWERED_BY = "Powered by Nexubis AI";
 
 // ── Landing (Section 13 / Prompt 5 locked copy) ──────────────────────────────
 export const LANDING = {
-  headline: "How credible is your brand, really?",
+  headline: "How Credible Is Your Brand, Really?",
   subheadline:
-    "Run the Industrial Brand Credibility Scorecard, powered by Nexubis AI. Enter your website and see, on the spot, how well your brand represents your product, how you benchmark against competitors you name, and the first place to fix.",
+    "Run the Industrial Brand Credibility Scorecard, powered by Nexubis AI. Enter your website and see, on the spot, how well your brand represents your product, how you benchmark against the competitors you cross-shop with, and the first place to fix.",
   bullets: [
     "Your Credibility Score across the five places buyers look",
-    "A side-by-side benchmark against two or three competitors you choose",
+    "A side-by-side benchmark against the competitors buyers weigh you against",
     "The first place to fix, explained in a short personal video",
   ],
-  formHeadline: "Check your brand's credibility",
-  formIntro: "Tell us where to look. You'll see your result on the spot.",
+  formHeadline: "Check Your Brand's Credibility",
+  formIntro: "Enter your website. We read the rest ourselves, and you'll see your result on the spot.",
   submitButton: "Check my brand's credibility",
   expectationLine: "You see your result on the spot. Unlock the full report by email, no waiting.",
   microProof: "Free, no obligations. We take on two new partners a month; the Scorecard is where most start.",
 } as const;
 
 export const FORM_FIELDS = {
-  website: { label: "Company website", helper: "We assess what buyers actually see." },
+  website: { label: "Company website", helper: "That's all we need. We read your site and work out the rest." },
   oneLiner: { label: "What do you make, in one line", helper: "Example: leak detection systems for packaging lines." },
   competitors: { label: "Two or three competitors you keep running into", helper: "Names or websites. We benchmark you against them." },
   firstName: { label: "First name", helper: "" },
@@ -43,6 +43,29 @@ export const UNLOCK = {
   // and honest until confirmed; the link target is the site privacy page.
   privacyNotice: "We use these details to send your report link and follow up about your results. See our privacy policy.",
   privacyUrl: "https://www.nexubis.io/privacy",
+} as const;
+
+// ── Report navigation + share ────────────────────────────────────────────────
+// The full report carries a sticky nav with two actions: book a call, and
+// share the report with a colleague. Share opens a prefilled email compose so
+// the sender only adds recipients. Never the banned word: this is the
+// Scorecard, never an audit.
+export const REPORT_NAV = {
+  book: "Book an application call",
+  share: "Share with your team",
+} as const;
+
+export const SHARE = {
+  subject: (company: string) => `Our Brand Credibility Scorecard: ${company}`,
+  body: (company: string, overall: number | null): string => {
+    const score = overall !== null ? `We scored ${overall} out of 100, ` : "";
+    return [
+      `Take a look at our Industrial Brand Credibility Scorecard for ${company}.`,
+      "",
+      `${score}benchmarked against the competitors buyers weigh us against. The full report has every category, the findings behind the scores, and the first place to fix:`,
+      "",
+    ].join("\n");
+  },
 } as const;
 
 // ── Report surfaces (Section 7) ──────────────────────────────────────────────
@@ -87,6 +110,50 @@ export const SCAN_STAGES: Record<"reading" | "impressions" | "competitors" | "sc
   competitors: "Checking your competitors",
   scoring: "Scoring 25 checks",
 };
+
+// Rotating ticker under the scan checklist: what the pipeline is genuinely
+// doing, in buyer terms, with a couple of clearly-labelled waiting jokes mixed
+// in so the minute feels shorter. The detected line lands the moment the
+// server has read the site: the first personal touch.
+export const SCAN_TICKER = {
+  detected: (oneLiner: string) => `So you make ${oneLiner}. Good. Now we know exactly what to benchmark.`,
+  lines: (company: string) => [
+    `Loading ${company} on a desktop and a phone, the way a buyer first sees it.`,
+    "Running the five-second test: can a stranger tell what you make, for whom, and why it is worth more?",
+    "Measuring your loading speed with Google PageSpeed, mobile and desktop.",
+    "Searching the web for your brochures, spec sheets and trade show presence.",
+    "Dad joke while you wait: we asked your website to open up. It said it had too many tabs.",
+    "Checking how your competitors show up when the same buyer looks at them.",
+    "Counting the languages your site speaks to its export markets.",
+    "Dad joke while you wait: the scan wanted a coffee break. We told it to filter faster.",
+    "Scoring all 25 checks across the five places buyers look.",
+  ],
+} as const;
+
+// ── Verdict band scale (teaser + report) ─────────────────────────────────────
+// Where the score sits on the 0 to 100 scale, so a band name like "Visible
+// gap" carries its meaning instead of floating as a label.
+export const BAND_SCALE = [
+  { band: "wide", label: "Wide gap", range: "0-59" },
+  { band: "visible", label: "Visible gap", range: "60-79" },
+  { band: "narrow", label: "Narrow gap", range: "80-100" },
+] as const;
+
+// ── Audience gate ────────────────────────────────────────────────────────────
+// Shown when the entered site is clearly outside the Scorecard's audience.
+// Warm and honest: the tool is for industrial manufacturers, and the reader
+// gets a way to object if we misread their site.
+export const OUT_OF_SCOPE_MESSAGE =
+  "The Scorecard is built for industrial manufacturers and machine builders, and this site does not look like one, so we did not run the check. If we have that wrong, email hello@nexubis.io and we will run it for you.";
+
+// ── Teaser nudges (locked sections + sticky unlock bar) ──────────────────────
+export const TEASER = {
+  chipsLabel: "Overall scores, you and the competitors buyers weigh you against:",
+  rivalNotScored: "could not be checked",
+  lockedNudge: "Unlock the full report to read what we found here",
+  stickyLine: "Your full report is ready.",
+  stickyButton: "Unlock full report",
+} as const;
 
 // ── Email 1 fallback (Section 10, exact copy; used only while
 //    SCORECARD_SEND_EMAIL1=true, before Funnelr owns the sequence) ────────────

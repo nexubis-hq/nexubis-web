@@ -206,10 +206,10 @@ test("assembleCompanyScores overrides the pagespeed check deterministically and 
 
 test("scores outside 0..4 are clamped, and null-with-assessable is normalised to unassessable", () => {
   const raw: RawCheck[] = RUBRIC.flatMap((cat) =>
-    cat.checks.map((c) => ({ key: c.key, score: c.key === "worth-more" ? 9 : c.key === "jargon" ? -2 : 2, assessable: true, evidence: "e" })),
+    cat.checks.map((c) => ({ key: c.key, score: c.key === "worth-more" ? 9 : c.key === "quote-path" ? -2 : 2, assessable: true, evidence: "e" })),
   );
   const scores = assembleCompanyScores({ company: "X", isProspect: true, rawChecks: raw, pageSpeed: null });
   const mc = scores.categories.find((c) => c.key === "message-clarity")!;
   assert.equal(mc.checks.find((c) => c.key === "worth-more")!.score, 4);
-  assert.equal(mc.checks.find((c) => c.key === "jargon")!.score, 0);
+  assert.equal(mc.checks.find((c) => c.key === "quote-path")!.score, 0);
 });

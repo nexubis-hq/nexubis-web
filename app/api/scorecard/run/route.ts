@@ -5,10 +5,13 @@
 //
 // Response: text/event-stream of JSON lines:
 //   {"type":"stage","stage":"reading"|"impressions"|"competitors"|"scoring"}
+//   {"type":"detected","oneLiner":"..."}   (what the site says they make)
 //   {"type":"done","runId":"...","teaser":{...redacted result...}}
-//   {"type":"error","error":"...","reason":"invalid|limited|failed"}
+//   {"type":"error","error":"...","reason":"invalid|limited|out-of-scope|failed"}
 import { NextRequest } from "next/server";
 import { prospectFromRunInput, runInputIsValid, runIdFor, storeRunRecord, type RunInput } from "@/lib/scorecard/run";
+import { detectProspectContext, applyDetection } from "@/lib/scorecard/detect";
+import { OUT_OF_SCOPE_MESSAGE } from "@/lib/scorecard/copy";
 import { generateScorecard } from "@/lib/scorecard/generate";
 import type { ScanStage } from "@/lib/scorecard/orchestrator";
 import { redactForTeaser } from "@/lib/scorecard/result";
@@ -30,19 +33,16 @@ function cleanText(v: unknown, cap: number): string | null {
   return cleaned;
 }
 
+// Website-only entry: the form sends just a URL. The product one-liner and
+// competitors are detected from the site (see detect.ts), so nothing else is
+// read off the request. cleanText still runs so a hostile URL cannot smuggle
+// control characters into the pipeline.
 function parseRunInput(body: unknown): RunInput | null {
   if (!body || typeof body !== "object") return null;
   const b = body as Record<string, unknown>;
   const url = cleanText(b.url, CAPS.url);
-  const productOneLiner = cleanText(b.productOneLiner, CAPS.oneLiner);
-  const rawCompetitors = Array.isArray(b.competitors) ? b.competitors : null;
-  if (!url || !productOneLiner || !rawCompetitors) return null;
-  const competitors: string[] = [];
-  for (const c of rawCompetitors.slice(0, 4)) {
-    const cleaned = cleanText(c, CAPS.competitor);
-    if (cleaned) competitors.push(cleaned);
-  }
-  const input: RunInput = { url, productOneLiner, competitors };
+  if (!url) return null;
+  const input: RunInput = { url, productOneLiner: "", competitors: [] };
   return runInputIsValid(input) ? input : null;
 }
 
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       };
       try {
         if (!input) {
-          fail("Check the form: a website, a one-line product description and 2 or 3 competitors are required.", "invalid");
+          fail("That website address does not look right. A plain domain like example.com works.", "invalid");
           return;
         }
         const prospect = prospectFromRunInput(input);
@@ -107,15 +107,39 @@ export async function POST(req: NextRequest) {
           console.error("[scorecard-run] limits unavailable, failing open:", err instanceof Error ? err.message : err);
         }
 
+        // Auto-detect: read the prospect's own site and infer what they make
+        // and who they cross-shop against, so the form only ever asked for a
+        // URL. Deterministic and cached per site (see detect.ts). Emit the
+        // "reading" stage up front so the scan animation reflects it.
+        send({ type: "stage", stage: "reading" });
+        const detection = await detectProspectContext(prospect);
+
+        // Audience gate: only a confident "outside" blocks; unreadable sites
+        // and unclear reads proceed, so a bad crawl can never lock out a real
+        // prospect. Gating here, before generation, is what keeps an abused
+        // run's cost at one cheap detection instead of a full scan.
+        if (detection.industryFit === "outside") {
+          console.log(`[scorecard-run] out-of-scope site blocked: ${prospect.url}`);
+          fail(OUT_OF_SCOPE_MESSAGE, "out-of-scope");
+          return;
+        }
+
+        const enriched = applyDetection(prospect, detection);
+        // The first personal beat of the scan: tell them what their site says
+        // they make, the moment we know it.
+        if (detection.productOneLiner) send({ type: "detected", oneLiner: detection.productOneLiner });
+
         // Generate (or replay). Stage events stream as the pipeline reaches
         // each real phase boundary.
-        const { result } = await generateScorecard(prospect, {
+        const { result } = await generateScorecard(enriched, {
           onStage: (stage: ScanStage) => send({ type: "stage", stage }),
         });
 
-        // The run record is what the unlock gate promotes. Short-lived.
+        // The run record is what the unlock gate promotes. Short-lived. Keyed
+        // on the prospect URL so the id is stable per site; the enriched
+        // prospect (with detected one-liner and competitors) is what we store.
         const runId = runIdFor(prospect);
-        await storeRunRecord(runId, { prospectData: prospect, result, createdAt: new Date().toISOString() });
+        await storeRunRecord(runId, { prospectData: enriched, result, createdAt: new Date().toISOString() });
 
         send({ type: "done", runId, teaser: redactForTeaser(result) });
         controller.close();

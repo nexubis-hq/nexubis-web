@@ -86,6 +86,50 @@ test("an exhausted budget skips queries and surfaces could-not-check evidence", 
   assert.ok(ts?.evidence.includes("could not be checked"));
 });
 
+test("category findability runs only when a term is given, and matches the company's own host", async () => {
+  // No term (competitor path): no findability fact, 3 or 4 queries as before.
+  const evNone = await gatherOffsiteEvidence("DosaTech", "https://dosatech.de", newQueryBudget(24));
+  assert.equal(evNone.facts.find((f) => f.key === "category-findability"), undefined);
+
+  // Term given and the prospect's own site shows up: a present fact.
+  searchWebMock.mockImplementation(async (q: string) => {
+    if (q === "dosing pumps for chemical lines") {
+      return {
+        query: q,
+        organic: [
+          { title: "Dosing pumps overview", url: "https://some-directory.com/pumps", snippet: "" },
+          { title: "DosaTech D-500", url: "https://www.dosatech.de/products/d500", snippet: "" },
+        ],
+        knowledgeGraph: null,
+      };
+    }
+    return empty;
+  });
+  const ev = await gatherOffsiteEvidence("DosaTech", "https://dosatech.de", newQueryBudget(24), {
+    categoryTerm: "dosing pumps for chemical lines",
+  });
+  const fa = ev.facts.find((f) => f.key === "category-findability");
+  assert.equal(fa?.present, true);
+  assert.ok(fa?.evidence.includes("dosatech.de"));
+});
+
+test("category findability phrases absence as a first-page sample, never a verdict", async () => {
+  searchWebMock.mockImplementation(async (q: string) =>
+    q === "dosing pumps"
+      ? {
+          query: q,
+          organic: [{ title: "Rival pumps", url: "https://rival.com/pumps", snippet: "" }],
+          knowledgeGraph: null,
+        }
+      : empty,
+  );
+  const ev = await gatherOffsiteEvidence("DosaTech", "https://dosatech.de", newQueryBudget(24), { categoryTerm: "dosing pumps" });
+  const fa = ev.facts.find((f) => f.key === "category-findability");
+  assert.equal(fa?.present, false);
+  assert.ok(fa?.evidence.includes("does not appear on the first page"));
+  assert.ok(fa?.evidence.includes("sample"), "the evidence declares itself a sample");
+});
+
 test("verifiedFactsBlock renders present and not-found lines for the scorer", () => {
   const block = verifiedFactsBlock([
     { key: "linkedin-page", present: true, evidence: "LinkedIn company page found: x." },

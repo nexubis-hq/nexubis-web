@@ -13,12 +13,16 @@ const SHORT: Record<string, string> = {
   "Message clarity": "Message",
 };
 
-const SIZE = 300;
-const C = SIZE / 2;
+// Wider than tall so the side labels ("Website", "Message") have room and
+// never clip at the viewBox edge.
+const W = 380;
+const H = 300;
+const CX = W / 2;
+const CY = H / 2;
 const R = 104;
 
 function point(angle: number, radius: number): [number, number] {
-  return [C + radius * Math.cos(angle), C + radius * Math.sin(angle)];
+  return [CX + radius * Math.cos(angle), CY + radius * Math.sin(angle)];
 }
 
 function shape(scores: CompanyScores, angleAt: (i: number) => number): string {
@@ -39,13 +43,13 @@ export function BenchmarkRadar({ prospect, rivals }: { prospect: CompanyScores; 
 
   return (
     <figure className="sc-radar-figure">
-      <svg className="sc-radar" viewBox={`0 0 ${SIZE} ${SIZE}`} role="img" aria-label="Credibility Score by category, you versus the competitors you named">
+      <svg className="sc-radar" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Credibility Score by category, you versus the competitors you named">
         {rings.map((f, i) => (
           <polygon key={i} className="sc-radar-grid" points={prospect.categories.map((_, j) => point(angleAt(j), R * f).join(",")).join(" ")} />
         ))}
         {prospect.categories.map((_, i) => {
           const [x, y] = point(angleAt(i), R);
-          return <line key={i} className="sc-radar-spoke" x1={C} y1={C} x2={x} y2={y} />;
+          return <line key={i} className="sc-radar-spoke" x1={CX} y1={CY} x2={x} y2={y} />;
         })}
         {scoredRivals.map((r, ri) => (
           <polygon key={r.company} className={`sc-radar-rival sc-radar-rival-${ri}`} points={shape(r, angleAt)} />
@@ -59,7 +63,7 @@ export function BenchmarkRadar({ prospect, rivals }: { prospect: CompanyScores; 
         {prospect.categories.map((cat, i) => {
           const [lx, ly] = point(angleAt(i), R + 18);
           const label = categoryLabel(cat.key);
-          const anchor = Math.abs(lx - C) < 4 ? "middle" : lx > C ? "start" : "end";
+          const anchor = Math.abs(lx - CX) < 4 ? "middle" : lx > CX ? "start" : "end";
           return (
             <text key={`l${i}`} className="sc-radar-label" x={lx} y={ly} textAnchor={anchor} dominantBaseline="middle">
               {SHORT[label] ?? label}

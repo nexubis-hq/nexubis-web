@@ -1,9 +1,49 @@
 import { load, type CheerioAPI } from "cheerio";
 import { isMockMode } from "./env";
-import { mockSiteText } from "./mock";
+import { mockSiteText, mockSiteFacts } from "./mock";
+
+/** Deterministic facts read straight from the HTML, no model involved. These
+ *  power the buyer-path checks and the code-side competitor comparison, so
+ *  they must stay strictly observational: counts and names of what IS there.
+ *  Absence of a fact means "not seen on the pages crawled", never "does not
+ *  exist"; phrasing that distinction is the consumers' job. */
+export interface SitePageFacts {
+  /** Distinct language codes reachable from the landing page (hreflang
+   *  alternates plus clear language-switcher links), own language included
+   *  when declared. Empty when nothing was declared or detected. */
+  languages: string[];
+  /** Where the language evidence came from; "none" = no alternates and no
+   *  switcher were visible on the landing page. */
+  languageSource: "hreflang" | "switcher" | "none";
+  /** Most recent copyright year in the footer, when one is printed. */
+  copyrightYear: number | null;
+  /** PDF links seen across the crawled pages. */
+  pdfLinkCount: number;
+  /** Sample link texts pointing at technical buyer material (datasheets, CAD
+   *  files, configurators, product selectors). Positive proof only. */
+  techDocLinks: string[];
+  /** Video embeds seen across the crawled pages. */
+  videoCount: number;
+  /** The largest form found on a contact or enquiry page, when one was
+   *  visible in the HTML. Null when no form was seen (it may be JS-rendered,
+   *  so null must never be read as "has no form"). */
+  contactForm: { fieldCount: number; fields: string[] } | null;
+}
+
+export function emptySiteFacts(): SitePageFacts {
+  return {
+    languages: [],
+    languageSource: "none",
+    copyrightYear: null,
+    pdfLinkCount: 0,
+    techDocLinks: [],
+    videoCount: 0,
+    contactForm: null,
+  };
+}
 
 export type FetchSiteResult =
-  | { ok: true; text: string; title: string; finalUrl: string }
+  | { ok: true; text: string; title: string; finalUrl: string; facts: SitePageFacts }
   | { ok: false; reason: string };
 
 const TIMEOUT_MS = 8000;
@@ -77,11 +117,26 @@ export function validateUrl(raw: string): { ok: true; url: URL } | { ok: false; 
   return { ok: true, url };
 }
 
-// Evidence the text extraction cannot see, emitted as bracketed signal lines.
-// Images carry no text and PDFs sit behind links, so without these signals the
-// AI would false-negate visuals and downloadable documents that clearly exist.
-// Must run BEFORE nav/footer/iframe stripping.
-function pageSignals($: CheerioAPI): string {
+// Evidence the text extraction cannot see, emitted as bracketed signal lines
+// AND as structured counts for the code-side competitor comparison. Images
+// carry no text and PDFs sit behind links, so without these signals the AI
+// would false-negate visuals and documents that clearly exist. Must run
+// BEFORE nav/footer/iframe stripping.
+interface PageSignalRead {
+  text: string;
+  pdfCount: number;
+  videoCount: number;
+  techDocLinks: string[];
+}
+
+// Vocabulary that marks a link as technical buyer material: datasheets, CAD
+// files, configurators, product selectors. Word-bounded so "cascade" never
+// matches "cad". Positive proof only; consumers never infer absence from an
+// empty list.
+const TECH_DOC_RE =
+  /\bdata ?sheets?\b|\bspec ?sheets?\b|\btechnical (?:data|specifications?|documentation)\b|\bcad\b|\.stp\b|\.step\b|\.dwg\b|\.igs\b|\bconfigurators?\b|\bproduct (?:selector|finder)\b|\bselector tool\b/i;
+
+function pageSignals($: CheerioAPI): PageSignalRead {
   const signals: string[] = [];
   const isChrome = (s: string) => /logo|icon|favicon|sprite|badge/i.test(s);
   const imgs = $("img")
@@ -110,7 +165,113 @@ function pageSignals($: CheerioAPI): string {
   if (pdfs.length > 0) {
     signals.push(`[page signal] This page links to ${pdfs.length} PDF document(s)${pdfs.length ? ` (e.g. ${pdfs.slice(0, 4).join("; ")})` : ""}.`);
   }
-  return signals.join("\n");
+  // Technical buyer material: datasheet/CAD/configurator links are direct
+  // evidence for the spec-sheets and quote-path checks.
+  const techDocLinks = Array.from(
+    new Set(
+      $("a[href]")
+        .toArray()
+        .map((el) => {
+          const text = $(el).text().replace(/\s+/g, " ").trim();
+          const href = $(el).attr("href") ?? "";
+          return TECH_DOC_RE.test(text) || TECH_DOC_RE.test(href) ? text || href : "";
+        })
+        .filter((t) => t.length > 0 && t.length < 80),
+    ),
+  ).slice(0, 6);
+  if (techDocLinks.length > 0) {
+    signals.push(`[page signal] This page links to technical buyer material (datasheets, CAD or a product selector): ${techDocLinks.join("; ")}.`);
+  }
+  return { text: signals.join("\n"), pdfCount: pdfs.length, videoCount: videos.length, techDocLinks };
+}
+
+// ── Language coverage ────────────────────────────────────────────────────────
+// hreflang alternates are the strong signal; a nav link whose entire text is a
+// language name or code is the fallback. Both are exact-match by design: a
+// false "your site speaks German" would be worse than missing one. Exported
+// for tests.
+const LANGUAGE_NAMES: Record<string, string> = {
+  english: "en", deutsch: "de", "français": "fr", francais: "fr", nederlands: "nl",
+  "español": "es", espanol: "es", italiano: "it", "português": "pt", portugues: "pt",
+  polski: "pl", svenska: "sv", dansk: "da", norsk: "no", suomi: "fi",
+  "türkçe": "tr", turkce: "tr", "čeština": "cs", cestina: "cs", "русский": "ru",
+  "中文": "zh", "日本語": "ja", "한국어": "ko",
+};
+const LANGUAGE_CODES = new Set(["en", "de", "fr", "nl", "es", "it", "pt", "pl", "sv", "da", "no", "fi", "tr", "cs", "ru", "zh", "ja", "ko"]);
+
+export function extractLanguages($: CheerioAPI): { languages: string[]; source: "hreflang" | "switcher" | "none" } {
+  const fromHreflang = new Set<string>();
+  $('link[rel="alternate"][hreflang]').each((_, el) => {
+    const raw = ($(el).attr("hreflang") ?? "").trim().toLowerCase();
+    if (!raw || raw === "x-default") return;
+    const code = raw.split(/[-_]/)[0];
+    if (code.length === 2) fromHreflang.add(code);
+  });
+  if (fromHreflang.size > 0) return { languages: Array.from(fromHreflang).sort(), source: "hreflang" };
+
+  const fromSwitcher = new Set<string>();
+  const ownLang = ($("html").attr("lang") ?? "").trim().toLowerCase().split(/[-_]/)[0];
+  if (ownLang.length === 2) fromSwitcher.add(ownLang);
+  $("a[href]").each((_, el) => {
+    const text = $(el).text().replace(/\s+/g, " ").trim().toLowerCase();
+    if (!text || text.length > 12) return;
+    if (LANGUAGE_CODES.has(text)) {
+      // A bare code like "IT" or "NO" is ambiguous (an IT-services page, the
+      // word "no"); only count it when the destination also looks like a
+      // language variant (/it/ path segment or a lang/locale query).
+      const href = ($(el).attr("href") ?? "").toLowerCase();
+      const languageShaped = new RegExp(`(?:^|/)${text}(?:/|$)|[?&](?:lang|locale|language)=${text}\\b`).test(href);
+      if (languageShaped) fromSwitcher.add(text);
+    } else if (LANGUAGE_NAMES[text]) {
+      fromSwitcher.add(LANGUAGE_NAMES[text]);
+    }
+  });
+  // The own <html lang> alone is not a switcher; only count a real choice.
+  if (fromSwitcher.size > 1) return { languages: Array.from(fromSwitcher).sort(), source: "switcher" };
+  return { languages: ownLang.length === 2 ? [ownLang] : [], source: "none" };
+}
+
+// Most recent copyright year printed in the footer, or null. Handles ranges
+// ("© 2010-2019") by taking the latest year. Exported for tests.
+export function extractCopyrightYear($: CheerioAPI): number | null {
+  const footerText = $("footer").text().replace(/\s+/g, " ");
+  if (!footerText) return null;
+  const years: number[] = [];
+  const re = /(?:©|\(c\)|copyright)[^0-9]{0,30}((?:19|20)\d{2})(?:\s*[-\u2013\u2014]\s*((?:19|20)\d{2}))?/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(footerText)) !== null) {
+    years.push(Number(m[1]));
+    if (m[2]) years.push(Number(m[2]));
+  }
+  return years.length ? Math.max(...years) : null;
+}
+
+// The largest visible form on the page: field count plus field names, so the
+// quote-path check can judge how seriously an enquiry is taken. Only forms
+// with 2+ visible fields count (a single field is search or newsletter). A
+// null result means no form was VISIBLE in the HTML; it may be JS-rendered,
+// so callers must never turn null into "has no form". Exported for tests.
+export function extractLargestForm($: CheerioAPI): { fieldCount: number; fields: string[] } | null {
+  let best: { fieldCount: number; fields: string[] } | null = null;
+  $("form").each((_, formEl) => {
+    const $form = $(formEl);
+    const fields: string[] = [];
+    $form.find("input, select, textarea").each((_, el) => {
+      const $el = $(el);
+      const type = ($el.attr("type") ?? "").toLowerCase();
+      if (["hidden", "submit", "button", "reset", "image"].includes(type)) return;
+      const name = ($el.attr("name") || $el.attr("placeholder") || $el.attr("aria-label") || $el.attr("id") || "")
+        .replace(/[_\-[\]]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+      fields.push(name || (el as { tagName?: string }).tagName?.toLowerCase() || "field");
+    });
+    if (fields.length >= 2 && (!best || fields.length > best.fieldCount)) {
+      best = { fieldCount: fields.length, fields: fields.slice(0, 12) };
+    }
+  });
+  return best;
 }
 
 function extractReadableText($: CheerioAPI, limit: number): string {
@@ -285,7 +446,13 @@ export async function fetchSite(rawUrl: string): Promise<FetchSiteResult> {
   if (!validated.ok) return { ok: false, reason: validated.reason };
   if (isMockMode()) {
     const host = validated.url.hostname.replace(/^www\./, "");
-    return { ok: true, text: mockSiteText(validated.url.toString(), host), title: host, finalUrl: validated.url.toString() };
+    return {
+      ok: true,
+      text: mockSiteText(validated.url.toString(), host),
+      title: host,
+      finalUrl: validated.url.toString(),
+      facts: mockSiteFacts(host),
+    };
   }
 
   const controller = new AbortController();
@@ -354,7 +521,34 @@ export async function fetchSite(rawUrl: string): Promise<FetchSiteResult> {
 
   // Capture no-text evidence (photos, videos, PDFs) before stripping chrome:
   // download links often sit in the footer we are about to remove.
-  const landingSignals = pageSignals($);
+  const landingRead = pageSignals($);
+  const langRead = extractLanguages($);
+  const copyrightYear = extractCopyrightYear($);
+  const facts: SitePageFacts = {
+    languages: langRead.languages,
+    languageSource: langRead.source,
+    copyrightYear,
+    pdfLinkCount: landingRead.pdfCount,
+    techDocLinks: [...landingRead.techDocLinks],
+    videoCount: landingRead.videoCount,
+    contactForm: null,
+  };
+  // Language and footer-year lines are deterministic facts, worded so the
+  // scorer can only ever repeat what was observed. The single-language line
+  // says what a buyer reaching this page can see, not that no other version
+  // exists anywhere.
+  const extraSignals: string[] = [];
+  if (langRead.languages.length > 1) {
+    extraSignals.push(`[page signal] The site offers ${langRead.languages.length} language versions (${langRead.languages.join(", ")}).`);
+  } else if (langRead.source === "none") {
+    extraSignals.push(
+      `[page signal] No language switcher or alternate-language versions are visible on this page${langRead.languages[0] ? ` (page language: ${langRead.languages[0]})` : ""}.`,
+    );
+  }
+  if (copyrightYear !== null) {
+    extraSignals.push(`[page signal] Footer copyright year: ${copyrightYear} (current year: ${new Date().getFullYear()}).`);
+  }
+  const landingSignals = [landingRead.text, ...extraSignals].filter(Boolean).join("\n");
 
   // Strip layout chrome from the landing page before reading its text. Nav
   // links are already in our navLinks list at this point, so dropping them is
@@ -374,7 +568,20 @@ export async function fetchSite(rawUrl: string): Promise<FetchSiteResult> {
         const html = siteIsSpa ? await fetchRenderedHtml(target.href) : await fetchHtml(target.href, INNER_TIMEOUT_MS);
         if (!html) return null;
         const inner$ = load(html);
-        const signals = pageSignals(inner$);
+        const innerRead = pageSignals(inner$);
+        const signalLines: string[] = innerRead.text ? [innerRead.text] : [];
+        // Enquiry pages: read the form itself, so the quote-path check judges
+        // real fields, not guesses. Only a form VISIBLE in the HTML is
+        // reported; a JS-rendered form simply yields no signal.
+        let form: { fieldCount: number; fields: string[] } | null = null;
+        if (target.category === "contact" || target.category === "next-step") {
+          form = extractLargestForm(inner$);
+          if (form) {
+            signalLines.push(
+              `[page signal] The enquiry form on this page has ${form.fieldCount} visible fields (${form.fields.join(", ")}).`,
+            );
+          }
+        }
         inner$("nav, footer, header").remove();
         const text = extractReadableText(inner$, INNER_PAGE_CHARS);
         if (!text) return null;
@@ -385,11 +592,25 @@ export async function fetchSite(rawUrl: string): Promise<FetchSiteResult> {
             return target.href;
           }
         })();
-        return `\n\n## [from ${path}, reached via "${target.text}"]\n${text}${signals ? `\n${signals}` : ""}`;
+        const signals = signalLines.join("\n");
+        return {
+          section: `\n\n## [from ${path}, reached via "${target.text}"]\n${text}${signals ? `\n${signals}` : ""}`,
+          read: innerRead,
+          form,
+        };
       }),
     );
-    for (const section of fetched) {
-      if (section) innerSections.push(section);
+    for (const item of fetched) {
+      if (!item) continue;
+      innerSections.push(item.section);
+      facts.pdfLinkCount += item.read.pdfCount;
+      facts.videoCount += item.read.videoCount;
+      for (const link of item.read.techDocLinks) {
+        if (!facts.techDocLinks.includes(link) && facts.techDocLinks.length < 10) facts.techDocLinks.push(link);
+      }
+      if (item.form && (!facts.contactForm || item.form.fieldCount > facts.contactForm.fieldCount)) {
+        facts.contactForm = item.form;
+      }
     }
   }
 
@@ -404,5 +625,5 @@ export async function fetchSite(rawUrl: string): Promise<FetchSiteResult> {
     0,
     MAX_CHARS + INNER_PAGE_CHARS * MAX_INNER_PAGES + 600,
   );
-  return { ok: true, text: combined, title, finalUrl };
+  return { ok: true, text: combined, title, finalUrl, facts };
 }

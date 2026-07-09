@@ -9,6 +9,14 @@ test("normaliseToHttps prepends https only when missing", () => {
   assert.equal(normaliseToHttps(""), "");
 });
 
+test("normaliseToHttps drops a trailing dot or slash (FQDN / pasted input)", () => {
+  assert.equal(normaliseToHttps("dmnwestinghouse.com."), "https://dmnwestinghouse.com");
+  assert.equal(normaliseToHttps("example.de/"), "https://example.de");
+  assert.equal(normaliseToHttps("  example.de.  "), "https://example.de");
+  // A trailing-dot FQDN yields the same provisional company as the clean form.
+  assert.equal(deriveCompanyFromUrl("dmn-westinghouse.com."), "Dmn Westinghouse");
+});
+
 test("deriveCompanyFromUrl makes a readable provisional name from the domain", () => {
   assert.equal(deriveCompanyFromUrl("https://www.example-machinery.de/"), "Example Machinery");
   assert.equal(deriveCompanyFromUrl("veltkamp-dosing.com"), "Veltkamp Dosing");
@@ -29,15 +37,12 @@ test("run input maps to a prospect with derived company, contact fields empty", 
   assert.deepEqual(p.competitors.map((c) => c.raw), ["DosaTech GmbH", "flowserve-dosing.com"]);
 });
 
-test("runInputIsValid needs url, one-liner and 2 or 3 competitors", () => {
-  const good = { url: "x.de", productOneLiner: "Dosing pumps", competitors: ["a.de", "b.de"] };
-  assert.equal(runInputIsValid(good), true);
-  assert.equal(runInputIsValid({ ...good, competitors: ["a.de", "b.de", "c.de"] }), true);
-  assert.equal(runInputIsValid({ ...good, url: "" }), false);
-  assert.equal(runInputIsValid({ ...good, productOneLiner: " " }), false);
-  assert.equal(runInputIsValid({ ...good, competitors: ["a.de"] }), false);
-  assert.equal(runInputIsValid({ ...good, competitors: ["a.de", "  "] }), false);
-  assert.equal(runInputIsValid({ ...good, competitors: ["a.de", "b.de", "c.de", "d.de"] }), false);
+test("runInputIsValid needs only a url (one-liner and competitors are detected)", () => {
+  assert.equal(runInputIsValid({ url: "x.de" }), true);
+  assert.equal(runInputIsValid({ url: "x.de", productOneLiner: "", competitors: [] }), true);
+  assert.equal(runInputIsValid({ url: "" }), false);
+  assert.equal(runInputIsValid({ url: "   " }), false);
+  assert.equal(runInputIsValid({}), false);
 });
 
 test("blank competitor entries are dropped and the list caps at 3", () => {

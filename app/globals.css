@@ -41,7 +41,9 @@
 }
 
 :root {
+  --sc-build: 11; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
+  --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
   --body: #5a5a5a;
   --mid: #888680;
@@ -65,6 +67,7 @@
   --s-4: clamp(2rem, 1.1312rem + 3.62vw, 4rem);
   --s-5: clamp(2.5rem, 1.4152rem + 4.52vw, 5rem);
   --s-6: clamp(3rem, 1.6968rem + 5.43vw, 6rem);
+  --s-7: clamp(3.5rem, 2.1968rem + 5.43vw, 6.5rem);
   --s-8: clamp(4rem, 2.6968rem + 5.43vw, 7rem);
 }
 
@@ -3489,6 +3492,14 @@ button.nav-link {
   gap: var(--s-4);
 }
 
+@media (min-width: 992px) {
+  .guide-grid {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: var(--s-5);
+    align-items: center;
+  }
+}
+
 .guide-empathy {
   position: relative;
   color: var(--black);
@@ -3534,316 +3545,393 @@ button.nav-link {
 .guide-proof-cards {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: clamp(0.85rem, 1.6vw, 1.15rem);
   align-self: start;
 }
 
+/* diagram sits to the left of the sentence, on the card surface (no inner panel) */
 .guide-proof-card {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  padding: 1.25rem 1.4rem;
-  border-radius: 12px;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(1.1rem, 1.8vw, 1.5rem);
+  border-radius: 14px;
   background: var(--surface);
   box-shadow: inset 0 0 0 1px rgb(29 28 26 / 5%);
 }
 
 .guide-proof-card p {
+  flex: 1 1 0;
+  min-width: 0;
   margin: 0;
   color: var(--black);
-  font-size: 1rem;
+  font-size: clamp(0.98rem, 1.05vw, 1.1rem);
   line-height: 1.5;
   letter-spacing: -0.01em;
 }
 
 .guide-proof-vignette {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  width: 5.25rem;
-  height: 5.25rem;
-  border-radius: 1.2rem;
-  background: linear-gradient(
-    150deg,
-    var(--white),
-    color-mix(in srgb, var(--surface) 70%, var(--white))
-  );
-  box-shadow:
-    0 10px 22px rgb(29 28 26 / 8%),
-    0 2px 6px rgb(29 28 26 / 5%),
-    inset 0 1px 0 rgb(255 255 255 / 90%),
-    inset 0 0 0 1px rgb(29 28 26 / 4%);
-}
-
-.gv {
+  flex: 0 0 44%;
+  max-width: 230px;
   position: relative;
+  aspect-ratio: 255 / 181;
 }
 
-/* hub: channels orbiting one glowing team node */
-.gv-hub {
-  width: 82%;
-  aspect-ratio: 1;
+@media (max-width: 600px) {
+  .guide-proof-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.1rem;
+  }
+
+  .guide-proof-vignette {
+    flex-basis: auto;
+    width: min(78%, 240px);
+    max-width: none;
+  }
 }
 
-.gv-hub-stems {
+/* The diagram fills its panel; inset keeps a margin while preserving the
+   255:181 aspect so SVG viewBox coords line up with percentage-placed nodes. */
+.gv {
+  position: absolute;
+  inset: 7%;
+}
+
+.gv svg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  stroke: rgb(29 28 26 / 14%);
-  stroke-width: 2.5;
+  overflow: visible;
 }
 
-.gv-node {
+/* ---- 1. team hub: channels routing into one red team core ---- */
+.gv-hub-track {
+  stroke: rgb(29 28 26 / 13%);
+  stroke-width: 1.4;
+}
+
+.gv-hub-flow {
+  stroke: var(--primary);
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-dasharray: 12 240;
+  stroke-dashoffset: 252;
+  opacity: 0;
+}
+
+.gv-hn {
   position: absolute;
   display: grid;
   place-items: center;
-  width: 28%;
+  width: 13%;
   aspect-ratio: 1;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  background: color-mix(in srgb, var(--black) 86%, var(--white));
+  background: color-mix(in srgb, var(--black) 88%, var(--white));
   color: var(--white);
+  box-shadow: 0 3px 8px rgb(29 28 26 / 14%);
 }
 
-.gv-node svg {
-  width: 52%;
-  height: 52%;
+.gv-hn svg {
+  position: static;
+  width: 54%;
+  height: 54%;
 }
 
-.gv-node-1 { left: 50%; top: 12%; }
-.gv-node-2 { left: 13%; top: 32%; }
-.gv-node-3 { left: 87%; top: 32%; }
-.gv-node-4 { left: 22%; top: 84%; }
-.gv-node-5 { left: 78%; top: 84%; }
-
-.gv-orb {
+.gv-hub-core {
   position: absolute;
   left: 50%;
   top: 50%;
   display: grid;
   place-items: center;
-  width: 38%;
+  width: 24%;
   aspect-ratio: 1;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   background: var(--primary);
   color: var(--white);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--primary) 45%, transparent);
 }
 
-.gv-orb svg {
+.gv-hub-core svg {
+  position: static;
   width: 56%;
   height: 56%;
 }
 
-/* growth: rising glass bars, red arrow sweeping up */
-.gv-growth {
-  width: 70%;
-  aspect-ratio: 64 / 46;
+/* ---- 2. growth: a rising staircase with a red growth arrow ---- */
+.gv-base,
+.gv-base-head {
+  stroke: rgb(29 28 26 / 22%);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.gv-bars {
+.gv-rise,
+.gv-rise-head {
+  stroke: var(--primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* both arrows draw out from the bottom-left corner (pathLength = 100) */
+.gv-base {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+}
+
+.gv-rise {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+}
+
+.gv-gc {
   position: absolute;
-  inset: 6% 6% 16% 6%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 9%;
-}
-
-.gv-bar {
-  width: 19%;
-  border-radius: 0.28rem;
-}
-
-.gv-bar-1 {
-  height: 34%;
-  background: rgb(29 28 26 / 30%);
-}
-
-.gv-bar-2 {
-  height: 56%;
-  background: color-mix(in srgb, var(--black) 84%, var(--white));
-}
-
-.gv-bar-3 {
-  height: 88%;
-  background: var(--primary);
-}
-
-.gv-baseline {
-  position: absolute;
-  left: 2%;
-  right: 2%;
-  bottom: 8%;
-  height: 7%;
-  border-radius: 99px;
-  background: color-mix(in srgb, var(--black) 84%, var(--white));
-}
-
-.gv-growth-arrow {
-  position: absolute;
-  inset: -8% -4% auto;
-  width: 108%;
-  color: var(--primary);
-  overflow: visible;
-}
-
-.gv-arrow-head {
-  transform-box: fill-box;
-  transform-origin: 60% 40%;
-}
-
-/* flow: hopper pours red granules onto a conveyor */
-.gv-flow {
-  width: 74%;
-  aspect-ratio: 1;
-}
-
-.gv-hopper {
-  position: absolute;
-  top: 2%;
-  left: 50%;
-  width: 66%;
-  transform: translateX(-50%);
-  color: color-mix(in srgb, var(--black) 86%, var(--white));
-}
-
-.gv-grain {
-  position: absolute;
-  left: 46.5%;
-  top: 38%;
-  width: 7%;
+  display: grid;
+  place-items: center;
+  width: 11.4%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: var(--primary);
+  transform: translate(-50%, -50%);
+  color: var(--white);
+  box-shadow: 0 3px 7px rgb(29 28 26 / 12%);
 }
 
-.gv-grain-2 { left: 42%; width: 5.5%; }
-.gv-grain-3 { left: 52%; width: 5%; }
+.gv-gc svg {
+  position: static;
+  width: 50%;
+  height: 50%;
+}
 
-.gv-pile {
-  position: absolute;
-  bottom: 25%;
-  left: 50%;
-  width: 36%;
-  height: 17%;
-  transform: translateX(-50%);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--primary) 80%, var(--white)),
-    var(--primary)
-  );
+.gv-gc-check {
+  background: color-mix(in srgb, var(--black) 82%, var(--white));
+}
+
+.gv-gc-plus {
+  background: color-mix(in srgb, var(--primary) 68%, var(--white));
+}
+
+.gv-gc-hot {
+  background: var(--primary);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 42%, transparent);
+}
+
+/* ---- 3. industrial: the full production loop, one stage lit at a time ---- */
+.gv-track {
+  stroke: color-mix(in srgb, var(--primary) 26%, var(--white));
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.gv-track-head {
+  stroke: color-mix(in srgb, var(--primary) 40%, var(--white));
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.gv-track-flow {
+  stroke: var(--primary);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 15 85;
+  stroke-dashoffset: 0;
+  opacity: 0;
+}
+
+.gv-funnel {
+  fill: color-mix(in srgb, var(--black) 82%, var(--white));
+}
+
+.gv-bead {
+  fill: var(--primary);
+  opacity: 0;
 }
 
 .gv-belt {
-  position: absolute;
-  bottom: 3%;
-  left: 6%;
-  right: 6%;
-  height: 21%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-inline: 3.5%;
-  border-radius: 99px;
-  background: color-mix(in srgb, var(--black) 86%, var(--white));
-  box-shadow: inset 0 1px 1px rgb(255 255 255 / 18%);
+  fill: color-mix(in srgb, var(--black) 22%, var(--white));
+  stroke: rgb(255 255 255 / 75%);
+  stroke-width: 1.9;
 }
 
-.gv-belt span {
-  width: 24%;
+.gv-roller {
+  fill: color-mix(in srgb, var(--black) 11%, var(--white));
+}
+
+.gv-out {
+  fill: color-mix(in srgb, var(--black) 80%, var(--white));
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* every stage node shares one charcoal base shade (matching the growth
+   staircase's checks); it only goes bright red at the moment the flowing line
+   reaches it (see gv-fn-pulse) */
+.gv-fn {
+  --base: color-mix(in srgb, var(--black) 82%, var(--white));
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 11%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--black) 86%, var(--white)) 30%,
-    rgb(255 255 255 / 92%) 34%
-  );
+  transform: translate(-50%, -50%);
+  background: var(--base);
+  color: var(--white);
+  box-shadow: 0 3px 7px rgb(29 28 26 / 12%);
 }
 
-@media (min-width: 992px) {
-  .guide-grid {
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: var(--s-5);
-    align-items: center;
+.gv-fn svg {
+  position: static;
+  width: 52%;
+  height: 52%;
+}
+
+/* --- Guide diagram motion: assemble on scroll, then idle-loop --- */
+/* icons ride out from behind the core along the lines, growing small -> big,
+   hold, then fade back inward toward the centre and repeat. --tx/--ty is each
+   node's offset back to the centre, expressed in its own box for transform. */
+@keyframes gv-hn-travel {
+  0% { opacity: 0; transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0.2); }
+  10% { opacity: 1; }
+  34% { opacity: 1; transform: translate(-50%, -50%) translate(0%, 0%) scale(1); }
+  74% { opacity: 1; transform: translate(-50%, -50%) translate(0%, 0%) scale(1); }
+  92% { opacity: 0; transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0.2); }
+  100% { opacity: 0; transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0.2); }
+}
+
+@keyframes gv-hub-flow {
+  0% { stroke-dashoffset: 252; opacity: 0; }
+  16% { opacity: 1; }
+  70% { stroke-dashoffset: 24; opacity: 1; }
+  86%, 100% { stroke-dashoffset: 24; opacity: 0; }
+}
+
+@keyframes gv-core-glow {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.06); }
+}
+
+@keyframes gv-gc-pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  9% { opacity: 1; transform: translate(-50%, -50%) scale(1.22); }
+  18%, 80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  90%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.35); }
+}
+
+/* baseline arrow draws rightward out of the bottom-left corner */
+@keyframes gv-base-draw {
+  0% { stroke-dashoffset: 100; opacity: 0; }
+  6% { opacity: 1; }
+  40%, 82% { stroke-dashoffset: 0; opacity: 1; }
+  92% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 100; opacity: 0; }
+}
+
+/* growth arrow draws up-and-right out of the same corner */
+@keyframes gv-rise-draw {
+  0% { stroke-dashoffset: 100; opacity: 0; }
+  6% { opacity: 1; }
+  46%, 82% { stroke-dashoffset: 0; opacity: 1; }
+  92% { stroke-dashoffset: 0; opacity: 0; }
+  100% { stroke-dashoffset: 100; opacity: 0; }
+}
+
+@keyframes gv-base-head {
+  0%, 36% { opacity: 0; }
+  44%, 82% { opacity: 1; }
+  92%, 100% { opacity: 0; }
+}
+
+@keyframes gv-rise-head {
+  0%, 42% { opacity: 0; }
+  50%, 82% { opacity: 1; }
+  92%, 100% { opacity: 0; }
+}
+
+/* the current stays hidden while the bead drops from the funnel, then a short
+   bright dash eases into view at the machine and flows around the whole track.
+   The dash only starts moving at 16% (node delays are timed to that); the
+   opacity fades in over 16-28% so the line grows in rather than popping. */
+@keyframes gv-track-flow {
+  0% { stroke-dashoffset: 100; opacity: 0; }
+  16% { stroke-dashoffset: 100; opacity: 0; }
+  28% { opacity: 1; }
+  87% { opacity: 1; }
+  94% { opacity: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* the instant the flow reaches a node it snaps bright red and lifts, then eases
+   back to its light base colour once the line has passed */
+@keyframes gv-fn-pulse {
+  0% {
+    background: var(--base);
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 3px 7px rgb(29 28 26 / 12%);
+  }
+  3% {
+    background: var(--primary);
+    transform: translate(-50%, -50%) scale(1.17);
+    box-shadow: 0 4px 15px color-mix(in srgb, var(--primary) 52%, transparent);
+  }
+  11% {
+    background: var(--primary);
+    transform: translate(-50%, -50%) scale(1.09);
+    box-shadow: 0 4px 13px color-mix(in srgb, var(--primary) 42%, transparent);
+  }
+  26%, 100% {
+    background: var(--base);
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 3px 7px rgb(29 28 26 / 12%);
   }
 }
 
-/* --- Guide vignette motion: gentle idle loops --- */
-@keyframes gv-orb-glow {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.07); }
+/* the packaged box swells a touch as the line passes through it (~46% of loop) */
+@keyframes gv-out-pop {
+  0%, 40%, 54%, 100% { transform: scale(1); }
+  46% { transform: scale(1.1); }
 }
 
-@keyframes gv-node-bob {
-  0%, 100% { transform: translate(-50%, -50%); }
-  50% { transform: translate(-50%, -58%); }
-}
-
-@keyframes gv-bar-breathe {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(1.07); }
-}
-
-@keyframes gv-arrow-draw {
-  0% { stroke-dashoffset: 70; opacity: 0; }
-  10% { opacity: 1; }
-  42%, 80% { stroke-dashoffset: 0; opacity: 1; }
-  94%, 100% { stroke-dashoffset: 0; opacity: 0; }
-}
-
-@keyframes gv-arrow-pop {
-  0%, 32% { opacity: 0; transform: scale(0.5); }
-  44%, 80% { opacity: 1; transform: scale(1); }
-  94%, 100% { opacity: 0; transform: scale(1); }
-}
-
-@keyframes gv-grain-fall {
-  0% { transform: translateY(0); opacity: 0; }
-  14% { opacity: 1; }
-  76% { transform: translateY(1.55rem); opacity: 1; }
-  100% { transform: translateY(1.75rem); opacity: 0; }
-}
-
-@keyframes gv-pile-pulse {
-  0%, 100% { transform: translateX(-50%) scaleY(1); }
-  50% { transform: translateX(-50%) scaleY(1.08); }
+/* a bead drops quickly out of the funnel onto the machine to kick off each pass */
+@keyframes gv-bead-drop {
+  0%, 7% { transform: translateY(-4px); opacity: 0; }
+  9% { opacity: 1; }
+  15% { transform: translateY(20px); opacity: 1; }
+  19%, 100% { transform: translateY(26px); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* hub: orb glow breathes, channel bubbles bob in turn */
-  .guide-proof-cards.is-inview .gv-orb { animation: gv-orb-glow 4s ease-in-out infinite; }
-  .guide-proof-cards.is-inview .gv-node { animation: gv-node-bob 4s ease-in-out infinite; }
-  .guide-proof-cards.is-inview .gv-node-2 { animation-delay: 0.5s; }
-  .guide-proof-cards.is-inview .gv-node-3 { animation-delay: 1s; }
-  .guide-proof-cards.is-inview .gv-node-4 { animation-delay: 1.5s; }
-  .guide-proof-cards.is-inview .gv-node-5 { animation-delay: 2s; }
+  /* hub: icons travel out from behind the core along the lines */
+  .gv-hn { opacity: 0; }
+  .guide-proof-cards.is-inview .gv-hn { animation: gv-hn-travel 6.5s ease-in-out var(--d, 0s) infinite; }
+  .guide-proof-cards.is-inview .gv-hub-flow-1 { animation: gv-hub-flow 6.5s ease-in-out infinite; }
+  .guide-proof-cards.is-inview .gv-hub-flow-2 { animation: gv-hub-flow 6.5s ease-in-out 0.5s infinite; }
+  .guide-proof-cards.is-inview .gv-hub-core { animation: gv-core-glow 6.5s ease-in-out infinite; }
 
-  /* growth: bars breathe, the arrow redraws on a loop */
-  .gv-bar { transform-origin: bottom; }
-  .guide-proof-cards.is-inview .gv-bar { animation: gv-bar-breathe 5s ease-in-out infinite; }
-  .guide-proof-cards.is-inview .gv-bar-2 { animation-delay: 0.35s; }
-  .guide-proof-cards.is-inview .gv-bar-3 { animation-delay: 0.7s; }
-  .gv-arrow-path { stroke-dasharray: 70; }
-  .guide-proof-cards.is-inview .gv-arrow-path { animation: gv-arrow-draw 5s ease-in-out infinite; }
-  .guide-proof-cards.is-inview .gv-arrow-head { animation: gv-arrow-pop 5s ease-in-out infinite; }
+  /* growth: both arrows draw out of the corner, circles scale up as they fill */
+  .gv-gc { opacity: 0; }
+  .gv-base { stroke-dashoffset: 100; }
+  .gv-base-head { opacity: 0; }
+  .gv-rise { stroke-dashoffset: 100; }
+  .gv-rise-head { opacity: 0; }
+  .guide-proof-cards.is-inview .gv-gc { animation: gv-gc-pop 6.5s ease-in-out var(--d, 0s) infinite; }
+  .guide-proof-cards.is-inview .gv-base { animation: gv-base-draw 6.5s ease-in-out infinite; }
+  .guide-proof-cards.is-inview .gv-base-head { animation: gv-base-head 6.5s ease-in-out infinite; }
+  .guide-proof-cards.is-inview .gv-rise { animation: gv-rise-draw 6.5s ease-in-out infinite; }
+  .guide-proof-cards.is-inview .gv-rise-head { animation: gv-rise-head 6.5s ease-in-out infinite; }
 
-  /* flow: granules stream from the hopper, the pile settles */
-  .gv-grain { opacity: 0; }
-  .guide-proof-cards.is-inview .gv-grain { animation: gv-grain-fall 1.4s linear infinite; }
-  .guide-proof-cards.is-inview .gv-grain-2 { animation-delay: 0.45s; }
-  .guide-proof-cards.is-inview .gv-grain-3 { animation-delay: 0.9s; }
-  .guide-proof-cards.is-inview .gv-pile { animation: gv-pile-pulse 2.8s ease-in-out infinite; }
-}
-
-@media (min-width: 992px) {
-  .guide-grid {
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: var(--s-5);
-    align-items: center;
-  }
+  /* industrial: current flows around the loop, lighting each stage as it passes,
+     and a bead drops from the funnel to begin every pass */
+  .guide-proof-cards.is-inview .gv-track-flow { opacity: 1; animation: gv-track-flow 7s linear infinite; }
+  .guide-proof-cards.is-inview .gv-bead { animation: gv-bead-drop 7s ease-in infinite; }
+  .guide-proof-cards.is-inview .gv-fn { animation: gv-fn-pulse 7s ease-in-out var(--d, 0s) infinite; }
+  .guide-proof-cards.is-inview .gv-out { animation: gv-out-pop 7s ease-in-out infinite; }
 }
 
 /* Section 5, Solutions accordion */
@@ -6546,9 +6634,88 @@ button.nav-link {
   width: auto;
 }
 
-/* 1. Cover */
+/* Sticky, light, branded report navigation with the two report actions. */
+.sc-report-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--white) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--light);
+}
+
+.sc-report-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.85rem;
+}
+
+.sc-report-nav-brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sc-report-nav-logo {
+  height: 1.7rem;
+  width: auto;
+}
+
+.sc-report-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.sc-report-nav-share,
+.sc-report-nav-book {
+  font-size: 0.92rem;
+  padding: 0.55em 1em;
+}
+
+.sc-report-nav-share {
+  gap: 0.45em;
+}
+
+.sc-report-nav-book-icon {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+}
+
+.sc-report-nav-book-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* On a phone the share label collapses to its icon so both actions fit. */
+@media (max-width: 560px) {
+  .sc-report-nav-logo {
+    height: 1.45rem;
+  }
+
+  .sc-report-nav-share span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .sc-report-nav-share,
+  .sc-report-nav-book {
+    font-size: 0.85rem;
+    padding: 0.5em 0.8em;
+  }
+}
+
+/* 1. Cover: Nexubis red, white type, the company name in ink so it reads as
+   the signature on the page. Wide enough measure that "Scorecard for <name>"
+   flows as one sentence instead of dropping the name to its own line. */
 .sc-cover {
-  background: var(--work-black);
+  background: var(--primary);
   color: var(--white);
   padding-block: var(--s-8) var(--s-7);
 }
@@ -6557,7 +6724,7 @@ button.nav-link {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  color: var(--mid);
+  color: color-mix(in srgb, var(--white) 88%, transparent);
   font-size: 0.95rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -6568,23 +6735,33 @@ button.nav-link {
   content: "";
   width: 0.85rem;
   height: 0.28rem;
-  background: var(--primary);
+  background: var(--white);
 }
 
 .sc-cover h1 {
   font-size: var(--h2);
   line-height: 1.08;
-  max-width: 22ch;
+  max-width: 30ch;
   color: var(--white);
 }
 
+/* The company name is the cover's display element: white, a touch bolder and
+   much bigger than the title line above it. clamp() keeps it comfortable on a
+   phone; break-word stops a long single-word name from overflowing. */
 .sc-cover-company {
-  color: var(--primary);
+  display: block;
+  color: var(--white);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 1.4rem + 5.2vw, 5.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin-top: 0.08em;
+  overflow-wrap: break-word;
 }
 
 .sc-cover-date {
   margin-top: var(--s-3);
-  color: var(--mid);
+  color: color-mix(in srgb, var(--white) 80%, transparent);
 }
 
 /* 2. Loom slot */
@@ -6641,6 +6818,36 @@ button.nav-link {
   box-shadow: 0 10px 30px rgb(0 0 0 / 8%);
 }
 
+/* The client's own screenshot leads the section: red frame, a warmer shadow,
+   and much larger than the competitor row that follows. */
+.sc-exhibit-prospect .sc-exhibit-frame {
+  border: 3px solid var(--primary);
+  box-shadow: 0 18px 48px color-mix(in srgb, var(--primary) 28%, transparent);
+}
+
+.sc-exhibit-hero {
+  max-width: 760px;
+  margin-bottom: var(--s-3);
+}
+
+.sc-exhibit-hero figcaption {
+  margin-top: 0.7rem;
+}
+
+.sc-exhibit-hero .sc-exhibit-you {
+  font-size: 1.2rem;
+}
+
+/* The competitor row: smaller shots, muted so the hero above stays dominant. */
+.sc-exhibit-grid-rivals {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.sc-exhibit-grid-rivals .sc-exhibit-name {
+  font-size: 0.9rem;
+  color: var(--body);
+}
+
 .sc-exhibit-frame img {
   width: 100%;
   height: 100%;
@@ -6694,7 +6901,8 @@ button.nav-link {
 
 @media (min-width: 900px) {
   .sc-score-grid {
-    grid-template-columns: minmax(180px, 240px) 1fr minmax(280px, 340px);
+    /* The radar carries the benchmark story: give it the widest column. */
+    grid-template-columns: minmax(170px, 220px) minmax(0, 1fr) minmax(420px, 600px);
   }
 }
 
@@ -6755,6 +6963,74 @@ button.nav-link {
   max-width: 58ch;
 }
 
+/* The 0-100 band scale under the ring: shows WHERE the score sits and what
+   the three bands mean, so "Visible gap" is a position, not a floating label. */
+.sc-band-scale {
+  margin-top: 0.9rem;
+  max-width: 15rem;
+  margin-inline: auto;
+}
+
+.sc-band-track {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  height: 0.45rem;
+}
+
+.sc-band-seg {
+  background: var(--light);
+  border-radius: 999px;
+}
+
+.sc-band-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 2px solid var(--white);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 25%);
+}
+
+.sc-band-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  gap: 0.4rem;
+}
+
+.sc-band-label {
+  display: grid;
+  gap: 0.05rem;
+  font-size: 0.72rem;
+  line-height: 1.25;
+  color: var(--mid);
+  text-align: center;
+}
+
+.sc-band-label em {
+  font-style: normal;
+  font-size: 0.68rem;
+}
+
+.sc-band-label.is-current {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sc-chips-label {
+  margin-top: var(--s-3);
+  font-size: 0.85rem;
+  color: var(--mid);
+}
+
+.sc-chips-label + .sc-overall-chips {
+  margin-top: 0.6rem;
+}
+
 .sc-overall-chips {
   display: flex;
   flex-wrap: wrap;
@@ -6762,24 +7038,35 @@ button.nav-link {
   margin-top: var(--s-3);
 }
 
+/* Two lines per chip (name over score) so the middle column stays compact
+   and the radar can take the space instead. */
 .sc-overall-chips li {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
+  display: grid;
+  gap: 0.15rem;
   border: 1px solid var(--light);
   background: var(--white);
   border-radius: 0.35rem;
-  padding: 0.45rem 0.75rem;
-  font-size: 0.92rem;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.88rem;
 }
 
 .sc-overall-chips .sc-chip-you {
   border-color: var(--primary);
 }
 
+.sc-chip-name {
+  color: var(--body);
+}
+
+.sc-chip-you .sc-chip-name {
+  color: var(--black);
+}
+
 .sc-chip-score {
   font-family: "Helvetica Now Display", Arial, sans-serif;
   font-weight: 500;
+  font-size: 1.15rem;
+  line-height: 1;
 }
 
 .sc-chip-you .sc-chip-score {
@@ -6793,19 +7080,25 @@ button.nav-link {
 
 .sc-radar {
   width: 100%;
-  max-width: 340px;
+  max-width: 600px;
   display: block;
   margin-inline: auto;
 }
 
 .sc-radar-grid {
   fill: none;
-  stroke: var(--light);
+  stroke: color-mix(in srgb, var(--mid) 55%, transparent);
   stroke-width: 1;
 }
 
+/* The outermost ring (4th grid polygon) is the chart's frame: clearly visible. */
+.sc-radar-grid:nth-of-type(4) {
+  stroke: color-mix(in srgb, var(--mid) 80%, transparent);
+  stroke-width: 1.5;
+}
+
 .sc-radar-spoke {
-  stroke: var(--light);
+  stroke: color-mix(in srgb, var(--mid) 45%, transparent);
   stroke-width: 1;
 }
 
@@ -6818,7 +7111,7 @@ button.nav-link {
 
 .sc-radar-rival {
   fill: none;
-  stroke: var(--mid);
+  stroke: color-mix(in srgb, var(--mid) 34%, var(--white));
   stroke-width: 1.5;
   stroke-linejoin: round;
 }
@@ -6860,7 +7153,7 @@ button.nav-link {
   content: "";
   width: 1rem;
   height: 0;
-  border-top: 2px solid var(--mid);
+  border-top: 2px solid color-mix(in srgb, var(--mid) 34%, var(--white));
 }
 
 .sc-radar-key-you::before {
@@ -7074,6 +7367,21 @@ button.nav-link {
   width: 64%;
 }
 
+/* The quiet per-section nudge to the unlock form. */
+.sc-locked-nudge {
+  display: inline-block;
+  margin-top: 1.1rem;
+  font-size: 0.88rem;
+  color: var(--body);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--primary) 60%, transparent);
+}
+
+.sc-locked-nudge:hover {
+  color: var(--primary);
+}
+
 /* Unlock panel */
 .sc-unlock-section {
   background: var(--work-black);
@@ -7134,6 +7442,59 @@ button.nav-link {
   color: var(--mid);
 }
 
+/* Live "this address looks right" state on the website field: green border,
+   a check badge inside the field, and a one-line confirmation under it. */
+.sc-input-wrap {
+  position: relative;
+  display: block;
+}
+
+.sc-input-wrap input {
+  width: 100%;
+}
+
+.sc-field-valid .sc-input-wrap input {
+  border-color: var(--sc-valid);
+  padding-right: 2.6rem;
+}
+
+.sc-input-check {
+  position: absolute;
+  top: 50%;
+  right: 0.8rem;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: var(--sc-valid);
+  color: var(--white);
+  animation: sc-check-pop 0.25s ease;
+}
+
+.sc-field-valid-note {
+  font-size: 0.85rem;
+  color: var(--sc-valid);
+}
+
+@keyframes sc-check-pop {
+  from {
+    transform: translateY(-50%) scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-input-check {
+    animation: none;
+  }
+}
+
 .sc-hp {
   position: absolute;
   left: -9999px;
@@ -7167,23 +7528,164 @@ button.nav-link {
   margin-bottom: var(--s-3);
 }
 
+/* Sticky unlock bar (teaser): the unlock action stays one tap away on desktop
+   and mobile. Hidden while the inline unlock form is on screen, and in print. */
+.sc-unlock-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.8rem 5%;
+  padding-bottom: calc(0.8rem + env(safe-area-inset-bottom, 0px));
+  background: color-mix(in srgb, var(--work-black) 94%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--white);
+  box-shadow: 0 -12px 30px rgb(0 0 0 / 25%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.sc-unlock-bar-line {
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-weight: 500;
+  font-size: 0.98rem;
+}
+
+.sc-unlock-bar-button {
+  white-space: nowrap;
+  position: relative;
+  isolation: isolate;
+}
+
+/* An expanding ring that pulses out from the button, plus a gentle scale
+   breath, to nudge the eye toward unlocking. The ring lives on a pseudo so
+   the button keeps its own base shadow. Both stop under reduced motion. */
+.sc-unlock-bar-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sc-unlock-bar-button {
+    animation: sc-unlock-breathe 2.8s ease-in-out infinite;
+  }
+
+  .sc-unlock-bar-button::after {
+    animation: sc-unlock-ring 2.8s ease-out infinite;
+  }
+}
+
+@keyframes sc-unlock-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes sc-unlock-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 55%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 14px color-mix(in srgb, var(--primary) 0%, transparent);
+  }
+}
+
+@media (max-width: 640px) {
+  .sc-unlock-bar-line {
+    display: none;
+  }
+
+  .sc-unlock-bar-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Unlock modal: the same UnlockPanel, opened from the sticky bar. */
+.sc-unlock-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.sc-unlock-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 55%);
+  backdrop-filter: blur(3px);
+}
+
+.sc-unlock-modal-card {
+  position: relative;
+  width: min(34rem, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  border-radius: 0.8rem;
+}
+
+.sc-unlock-modal-card .sc-unlock {
+  max-width: none;
+}
+
+.sc-unlock-modal-close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--black);
+  cursor: pointer;
+}
+
+.sc-unlock-modal-close:hover {
+  background: var(--light);
+}
+
+@media print {
+  .sc-unlock-bar,
+  .sc-unlock-modal {
+    display: none;
+  }
+}
+
 /* 6. First fix */
 .sc-first-fix {
-  background: var(--work-black);
+  background: var(--primary);
   color: var(--white);
 }
 
 .sc-first-fix h2 {
   font-size: var(--h3);
-  color: var(--white);
+  color: color-mix(in srgb, var(--white) 88%, transparent);
   margin-bottom: var(--s-3);
 }
 
 .sc-first-fix-category {
   font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   font-size: var(--h2);
-  color: var(--primary);
+  color: var(--white);
   margin-bottom: var(--s-4);
 }
 
@@ -7241,7 +7743,13 @@ button.nav-link {
 
 /* 8. Next step */
 .sc-next-step {
-  background: var(--surface);
+  background: var(--white);
+}
+
+/* The next-step cards reuse the homepage plan look; add a little breathing
+   room above the CTA. */
+.sc-next-plan {
+  margin-bottom: var(--s-4);
 }
 
 .sc-next-step h2 {
@@ -7302,10 +7810,17 @@ button.nav-link {
 .sc-soft-close-line {
   font-family: "Helvetica Now Display", Arial, sans-serif;
   font-weight: 500;
-  font-size: var(--h4);
-  max-width: 34ch;
+  font-size: var(--h2);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  max-width: 24ch;
   margin-inline: auto;
-  margin-bottom: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+/* Each sentence on its own line. */
+.sc-soft-close-sentence {
+  display: block;
 }
 
 .sc-contact a {
@@ -7410,6 +7925,8 @@ button.nav-link {
 /* Print */
 @media print {
   .sc-topbar,
+  .sc-report-nav,
+  .sc-unlock-bar,
   .sc-unlock-section {
     display: none;
   }
@@ -7426,7 +7943,9 @@ button.nav-link {
   }
 
   .sc-cover h1,
+  .sc-cover-company,
   .sc-first-fix h2,
+  .sc-first-fix-category,
   .sc-first-fix-grid h3,
   .sc-first-fix-grid p,
   .sc-soft-close-line {
@@ -7443,18 +7962,100 @@ button.nav-link {
 
 /* ── Scorecard landing + flow ─────────────────────────────── */
 
+/* The landing entry goes dark. The teaser the flow swaps in renders its own
+   light .sc-report panel over this, so the report keeps its white treatment. */
 .sc-entry {
-  background: var(--white);
+  background: var(--work-black);
 }
 
 .sc-landing {
-  padding-block: var(--s-7) var(--s-8);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--work-black);
+  min-height: calc(100svh - 4.75rem);
+  padding-block: calc(var(--s-7) / 2 + 1rem) var(--s-8);
+}
+
+/* Two soft Nexubis-red orbs bleed in from opposite corners, drifting slowly so
+   the dark backdrop feels lit from within without pulling focus. Purely
+   decorative; sits behind the content and never intercepts clicks. */
+.sc-landing::before,
+.sc-landing::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: clamp(26rem, 46vw, 52rem);
+  height: clamp(26rem, 46vw, 52rem);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    color-mix(in srgb, var(--primary) 85%, transparent) 0%,
+    color-mix(in srgb, var(--primary) 40%, transparent) 40%,
+    transparent 70%
+  );
+  filter: blur(36px);
+  opacity: 0.85;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.sc-landing::before {
+  top: -16rem;
+  left: -12rem;
+  animation: sc-orb-a 19s ease-in-out infinite;
+}
+
+.sc-landing::after {
+  right: -14rem;
+  bottom: -18rem;
+  opacity: 0.7;
+  animation: sc-orb-b 23s ease-in-out infinite;
+}
+
+@keyframes sc-orb-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  25% {
+    transform: translate3d(5rem, 3.5rem, 0) scale(1.12);
+  }
+  50% {
+    transform: translate3d(8rem, -1.5rem, 0) scale(1.22);
+  }
+  75% {
+    transform: translate3d(2.5rem, 5rem, 0) scale(1.1);
+  }
+}
+
+@keyframes sc-orb-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  25% {
+    transform: translate3d(-4rem, -5rem, 0) scale(1.14);
+  }
+  50% {
+    transform: translate3d(-8rem, 1.5rem, 0) scale(1.24);
+  }
+  75% {
+    transform: translate3d(-3rem, -6rem, 0) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-landing::before,
+  .sc-landing::after {
+    animation: none;
+  }
 }
 
 .sc-landing-grid {
   display: grid;
   gap: calc(var(--grid-gap) * 1.5);
-  align-items: start;
+  align-items: center;
 }
 
 @media (min-width: 960px) {
@@ -7468,12 +8069,13 @@ button.nav-link {
   line-height: 1.05;
   max-width: 14ch;
   margin-bottom: var(--s-4);
+  color: var(--white);
 }
 
 .sc-landing-sub {
   font-size: var(--p-lg);
   line-height: 1.6;
-  color: var(--body);
+  color: color-mix(in srgb, var(--white) 76%, transparent);
   max-width: 54ch;
   margin-bottom: var(--s-4);
 }
@@ -7489,6 +8091,7 @@ button.nav-link {
   padding-left: 1.5rem;
   font-weight: 500;
   line-height: 1.5;
+  color: color-mix(in srgb, var(--white) 88%, transparent);
 }
 
 .sc-landing-bullets li::before {
@@ -7502,17 +8105,24 @@ button.nav-link {
 }
 
 .sc-landing-microproof {
-  color: var(--mid);
+  color: color-mix(in srgb, var(--white) 52%, transparent);
   font-size: 0.95rem;
   max-width: 44ch;
 }
 
+/* On the dark section the form card reads as a bright, slightly translucent
+   glass panel lifted off the backdrop with a soft red-tinted glow. */
 .sc-landing-form-card {
-  background: var(--surface);
-  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--white) 96%, transparent);
+  border: 1px solid color-mix(in srgb, var(--white) 12%, transparent);
+  border-radius: 0.85rem;
   padding: clamp(1.4rem, 3.5vw, 2.2rem);
   position: sticky;
-  top: 5.5rem;
+  top: 6.5rem;
+  box-shadow:
+    0 1.5rem 4rem color-mix(in srgb, var(--primary) 18%, transparent),
+    0 1rem 2.5rem rgb(0 0 0 / 45%);
+  backdrop-filter: blur(6px);
 }
 
 .sc-landing-form-card h2 {
@@ -7549,12 +8159,138 @@ button.nav-link {
 }
 
 .sc-landing-submit {
-  justify-self: start;
+  justify-self: stretch;
+  width: 100%;
+  justify-content: center;
+  text-align: center;
 }
 
 .sc-landing-expectation {
   font-size: 0.88rem;
   color: var(--mid);
+}
+
+/* Landing intro kicker, matching the homepage section-eyebrow treatment. */
+.sc-landing-kicker {
+  display: inline-block;
+  margin-bottom: var(--s-2);
+  color: var(--primary);
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* The scorecard preview visual sits at the top of the form card, above the
+   website field, so the card reads as "here is what we measure, now enter your
+   site". */
+.sc-card-visual {
+  margin-bottom: var(--s-3);
+  padding: 1.75rem 1.25rem 1.5rem;
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, var(--surface) 82%, var(--light));
+  border: 1px solid color-mix(in srgb, var(--mid) 32%, transparent);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 5%);
+}
+
+.sc-preview {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+}
+
+.sc-preview-kicker {
+  color: var(--mid);
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.sc-preview-radar {
+  width: 100%;
+  max-width: 420px;
+  display: block;
+  overflow: visible;
+}
+
+.sc-preview-grid {
+  fill: none;
+  stroke: color-mix(in srgb, var(--mid) 28%, transparent);
+  stroke-width: 1;
+}
+
+.sc-preview-spoke {
+  stroke: color-mix(in srgb, var(--mid) 20%, transparent);
+  stroke-width: 1;
+}
+
+.sc-preview-benchmark {
+  fill: none;
+  stroke: color-mix(in srgb, var(--mid) 50%, transparent);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+  stroke-linejoin: round;
+}
+
+.sc-preview-area {
+  fill: color-mix(in srgb, var(--primary), transparent 80%);
+  stroke: var(--primary);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.sc-preview-dot {
+  fill: var(--primary);
+}
+
+.sc-preview-label {
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  fill: var(--body);
+}
+
+.sc-preview-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem 0.8rem;
+  font-size: 0.72rem;
+  color: var(--body);
+}
+
+.sc-preview-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sc-preview-key::before {
+  content: "";
+  width: 0.85rem;
+  height: 0;
+  border-top: 2px solid var(--mid);
+}
+
+.sc-preview-key-you::before {
+  border-top-color: var(--primary);
+  border-top-width: 3px;
+}
+
+.sc-preview-key-bench::before {
+  border-top-style: dashed;
+  border-top-color: color-mix(in srgb, var(--mid) 50%, transparent);
+}
+
+/* Inside the card the heading sits above the field; the grid gap governs the
+   rest. */
+.sc-landing-form > h2 {
+  margin: 0;
 }
 
 /* Scan animation */
@@ -7583,6 +8319,34 @@ button.nav-link {
   background: var(--primary);
   border-radius: inherit;
   transition: width 0.25s linear;
+  position: relative;
+  overflow: hidden;
+}
+
+/* A light sweep travelling along the filled bar, so the scan visibly works
+   even while the width crawls. */
+@media (prefers-reduced-motion: no-preference) {
+  .sc-scan-bar span::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 30%,
+      color-mix(in srgb, var(--white) 45%, transparent) 50%,
+      transparent 70%
+    );
+    animation: sc-bar-sweep 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes sc-bar-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
 }
 
 .sc-scan-stages {
@@ -7645,6 +8409,37 @@ button.nav-link {
   inset: 0;
   background: center / 60% no-repeat
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.2 5 9l5-6' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+/* The rotating "what we're doing right now" line. Re-keyed per message so the
+   fade-in replays; the detected line gets the brand red. */
+.sc-scan-ticker {
+  min-height: 2.6em;
+  color: var(--body);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sc-scan-ticker {
+    animation: sc-ticker-in 0.45s ease;
+  }
+}
+
+.sc-scan-ticker-detected {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+@keyframes sc-ticker-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .sc-scan-note {

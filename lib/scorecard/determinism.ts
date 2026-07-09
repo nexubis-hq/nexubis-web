@@ -17,7 +17,7 @@ export function normaliseUrl(raw: string | undefined | null): string {
   const withScheme = /^https?:\/\//i.test(s) ? s : `https://${s}`;
   try {
     const u = new URL(withScheme);
-    const host = u.hostname.replace(/^www\./i, "").toLowerCase();
+    const host = u.hostname.replace(/^www\./i, "").replace(/\.$/, "").toLowerCase();
     const path = u.pathname.replace(/\/+$/, "");
     return `${host}${path}`.toLowerCase();
   } catch {
@@ -45,12 +45,16 @@ export interface DeterminismInput {
 // deliberately NOT the contact person, so two people scoring the same company
 // against the same rivals get the byte-identical cached report and we never pay
 // to generate it twice.
+// v3: reports now address the prospect by the company name read from its own
+// site (v2 changed the rubric and added structured site facts). The name is
+// not part of this identity, so the bump is what retires cached runs stamped
+// with the old URL-derived placeholder name.
 export function scorecardIdentity(input: DeterminismInput): string {
   const competitors = input.competitors
     .map((c) => normaliseUrl(c) || normaliseText(c))
     .filter(Boolean)
     .sort();
-  return ["scorecard", normaliseUrl(input.url), competitors.join(","), normaliseText(input.productOneLiner)].join("|");
+  return ["scorecard-v3", normaliseUrl(input.url), competitors.join(","), normaliseText(input.productOneLiner)].join("|");
 }
 
 // The KV key the full run result is cached under. Same inputs, same key,

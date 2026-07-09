@@ -144,3 +144,63 @@ export const deckCopySchema = z
   .passthrough();
 
 export type DeckCopyReply = z.infer<typeof deckCopySchema>;
+
+// ── Auto-detect: product one-liner + likely competitors from the site ────────
+// Powers the website-only entry: the prospect enters a URL, the pipeline reads
+// their site and infers what they make and who they cross-shop against, so the
+// form asks for nothing else. Structural schema only (no length caps: the API
+// rejects them); discipline lives in the prompt.
+export const DETECT_CONTEXT_OUTPUT: Record<string, unknown> = {
+  type: "object",
+  additionalProperties: false,
+  required: ["industryFit", "companyName", "productOneLiner", "competitors", "industries", "certifications", "productFamilies", "salesModel", "buyerPersona"],
+  properties: {
+    industryFit: { type: "string", enum: ["manufacturer", "adjacent", "outside", "unclear"] },
+    companyName: { type: "string" },
+    productOneLiner: { type: "string" },
+    competitors: { type: "array", items: { type: "string" } },
+    // Industry fingerprint: extractive only (what the site itself states).
+    industries: { type: "array", items: { type: "string" } },
+    certifications: { type: "array", items: { type: "string" } },
+    productFamilies: { type: "array", items: { type: "string" } },
+    salesModel: { type: "string", enum: ["direct", "distributors", "mixed", "unclear"] },
+    buyerPersona: { type: "string" },
+  },
+};
+
+// Competitor rescue: when the site-only detection finds fewer than two
+// competitors, a second cheap call picks real candidates out of live search
+// results. Names only; the downstream resolver still validates each one.
+export const COMPETITOR_RESCUE_OUTPUT: Record<string, unknown> = {
+  type: "object",
+  additionalProperties: false,
+  required: ["competitors"],
+  properties: {
+    competitors: { type: "array", items: { type: "string" } },
+  },
+};
+
+export const competitorRescueSchema = z
+  .object({
+    competitors: z.array(z.string()),
+  })
+  .passthrough();
+
+// The fingerprint fields are optional with safe defaults so detection
+// payloads cached before these fields existed still validate; they simply
+// carry an empty fingerprint.
+export const detectContextSchema = z
+  .object({
+    // "unclear" always proceeds: a wrongly rejected real prospect costs more
+    // than one wasted run, so only an explicit "outside" ever blocks.
+    industryFit: z.enum(["manufacturer", "adjacent", "outside", "unclear"]).default("unclear"),
+    companyName: z.string().default(""),
+    productOneLiner: z.string(),
+    competitors: z.array(z.string()),
+    industries: z.array(z.string()).default([]),
+    certifications: z.array(z.string()).default([]),
+    productFamilies: z.array(z.string()).default([]),
+    salesModel: z.enum(["direct", "distributors", "mixed", "unclear"]).default("unclear"),
+    buyerPersona: z.string().default(""),
+  })
+  .passthrough();

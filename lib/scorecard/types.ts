@@ -16,6 +16,24 @@ export interface CompetitorRef {
   resolved?: boolean;
 }
 
+/** Industry fingerprint extracted from the prospect's own site text during
+ *  auto-detect. Every field is EXTRACTIVE: it may only contain what the site
+ *  itself states, never inference, so downstream prompts can treat it as
+ *  ground truth. All fields optional and empty-safe: an old cached detection
+ *  or a thin site simply yields less context, never wrong context. */
+export interface DetectedFingerprint {
+  /** Industries the site names serving (e.g. "dairy", "pharma"). */
+  industries: string[];
+  /** Certification names literally present on the site (e.g. "ATEX", "EHEDG"). */
+  certifications: string[];
+  /** Named product families or model series as written on the site. */
+  productFamilies: string[];
+  /** How they sell, only when the site says so. */
+  salesModel: "direct" | "distributors" | "mixed" | "unclear";
+  /** One line describing the likely buyer, grounded in who the site addresses. */
+  buyerPersona: string;
+}
+
 export interface ProspectData {
   /** Contact first name. Empty until the unlock gate collects it. */
   name: string;
@@ -29,6 +47,10 @@ export interface ProspectData {
   productOneLiner: string;
   /** 2 or 3 competitors the prospect keeps running into. */
   competitors: CompetitorRef[];
+  /** Industry fingerprint from auto-detect. Optional: absent on old records
+   *  and when detection failed; prompts simply omit the context block.
+   *  Deliberately NOT part of the determinism identity. */
+  fingerprint?: DetectedFingerprint;
 }
 
 export type GenerationStatus = "idle" | "in-progress" | "done" | "failed";

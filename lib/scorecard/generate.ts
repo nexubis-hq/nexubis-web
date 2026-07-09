@@ -4,7 +4,7 @@
 // envelope and the finished result is cached under the run key, so identical
 // inputs replay for free.
 import { gatherEvidenceUncached, generateCacheKey, type GatherOptions } from "./orchestrator";
-import { scoreCompanyRubric, writeDeckCopy, competitorContextBlock, type Usage, type DeckCopyInput } from "./anthropic";
+import { scoreCompanyRubric, writeDeckCopy, competitorContextBlock, companyContextBlock, type Usage, type DeckCopyInput } from "./anthropic";
 import {
   assembleCompanyScores,
   unscoredCompany,
@@ -47,6 +47,49 @@ function scoreSummaryBlock(prospect: CompanyScores, rivals: CompanyScores[]): st
   return lines.join("\n");
 }
 
+// Concrete competitor advantages, computed in code from the deterministic
+// site facts both sides went through identically. Accuracy rules: an edge
+// exists only when the rival's capability was POSITIVELY measured AND the
+// prospect's absence comes from the same measurement on a successfully
+// crawled prospect site. Anything weaker is silently skipped; a missing edge
+// costs nothing, a wrong one costs the report's credibility. Max 2 per rival,
+// 4 total, strongest classes first.
+export function competitorEdges(prospect: CompanyEvidence, rivals: CompanyEvidence[]): string[] {
+  const p = prospect.siteFacts;
+  if (!prospect.fetched || !p) return [];
+  const edges: string[] = [];
+  for (const rival of rivals) {
+    if (edges.length >= 4) break;
+    const r = rival.siteFacts;
+    if (!rival.fetched || !r) continue;
+    const rivalEdges: string[] = [];
+    // Languages: hreflang/switcher evidence on the rival, nothing on the prospect.
+    if (r.languages.length >= 2 && p.languageSource === "none" && p.languages.length <= 1) {
+      rivalEdges.push(
+        `${rival.company} offers its site in ${r.languages.length} languages (${r.languages.join(", ")}); your site is reachable in one.`,
+      );
+    }
+    // Technical buyer material: datasheet/CAD/selector links.
+    if (r.techDocLinks.length > 0 && p.techDocLinks.length === 0) {
+      rivalEdges.push(
+        `${rival.company} links buyers to technical material (${r.techDocLinks.slice(0, 3).join("; ")}); your main pages show no datasheet, CAD or selector links.`,
+      );
+    }
+    // Video: measured embeds, or confirmed by the homepage vision read.
+    const rivalVideo = r.videoCount > 0 || rival.firstImpression?.videoPresent === true;
+    const prospectVideo = p.videoCount > 0 || prospect.firstImpression?.videoPresent === true;
+    if (rivalVideo && !prospectVideo) {
+      rivalEdges.push(`${rival.company} shows its product on video; your main pages show none.`);
+    }
+    // 3D/CGI: vision read on both homepages, above the fold only.
+    if (rival.firstImpression?.threeDOrCgi === true && prospect.firstImpression?.threeDOrCgi === false) {
+      rivalEdges.push(`${rival.company} leads its homepage with 3D product renders; yours shows none above the fold.`);
+    }
+    edges.push(...rivalEdges.slice(0, 2));
+  }
+  return edges.slice(0, 4);
+}
+
 // A copy block is only accepted if every string passes the content-safety
 // scan; one dirty string swaps the WHOLE deck copy to the templated fallback
 // (a mixed report would read inconsistently).
@@ -85,6 +128,7 @@ export async function generateScorecardUncached(
 
   // 2. Score every resolved company in parallel, identical rubric. The
   //    PageSpeed check is overridden deterministically inside assembly.
+  const prospectContext = companyContextBlock(input.fingerprint);
   const scoreOne = async (e: CompanyEvidence): Promise<CompanyScores> => {
     if (!e.resolved) return unscoredCompany(e.company, e.isProspect);
     const others = evidence.companies.filter((o) => o !== e && o.resolved);
@@ -92,6 +136,8 @@ export async function generateScorecardUncached(
       evidence: e,
       productOneLiner: input.productOneLiner,
       competitorContext: competitorContextBlock(others),
+      // The fingerprint describes the prospect; rivals are scored without it.
+      companyContext: e.isProspect ? prospectContext : "",
     });
     if (!res.ok) {
       flags.push(`Scoring failed for ${e.company} (${res.reason})`);
@@ -139,6 +185,13 @@ export async function generateScorecardUncached(
     firstFixCategory: firstFix ?? "website",
     firstFixLabel: firstFix ? categoryLabel(firstFix) : "Website",
     scoreSummary: scoreSummaryBlock(prospect, rivals),
+    companyContext: prospectContext,
+    competitorEdges: (() => {
+      const prospectEvidence = evidence.companies.find((c) => c.isProspect);
+      return prospectEvidence
+        ? competitorEdges(prospectEvidence, evidence.companies.filter((c) => !c.isProspect))
+        : [];
+    })(),
   };
   const fallback = fallbackDeckCopy({
     company: prospect.company,

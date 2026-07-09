@@ -4,6 +4,7 @@
 // pipeline. The scorer (Prompt 3) consumes bundles; it never fetches anything
 // itself.
 import type { FirstImpressionRead } from "./anthropic";
+import type { SitePageFacts } from "./fetch-site";
 import type { PageSpeedScores, VerifiedFact } from "./types";
 
 export interface CompanyEvidence {
@@ -25,6 +26,11 @@ export interface CompanyEvidence {
   siteText: string | null;
   siteTitle: string | null;
   finalUrl: string | null;
+  /** Deterministic facts read from the HTML (languages, footer year, PDF and
+   *  technical-document links, enquiry-form depth). Powers the code-side
+   *  competitor comparison. Optional: absent on bundles cached before this
+   *  field existed and when the fetch failed. */
+  siteFacts?: SitePageFacts;
   /** Stable ScreenshotOne URLs for the report exhibits. Null when capture
    *  failed; the report renders an honest placeholder, never a guess. */
   screenshots: {

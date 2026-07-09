@@ -24,9 +24,16 @@ export function UnlockPanel({ runId }: { runId: string }) {
   const [state, setState] = useState<"idle" | "submitting" | "done" | "error">("idle");
   const [error, setError] = useState("");
   const [reportUrl, setReportUrl] = useState("");
-  const startedAt = useRef(Date.now());
+  // The "human took time to read" clock. Stamped in an effect (not during
+  // render, so render stays pure); the effect runs on mount, long before a
+  // person can read the form and click submit, so elapsedMs stays honest.
+  const startedAt = useRef(0);
   const turnstileRef = useRef<HTMLDivElement>(null);
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
+  useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
 
   useEffect(() => {
     if (!siteKey || !turnstileRef.current) return;
@@ -124,10 +131,23 @@ export function UnlockPanel({ runId }: { runId: string }) {
             ))}
           </select>
         </label>
-        {/* Honeypot: invisible to people, tempting to bots. */}
+        {/* Honeypot: invisible to people, tempting to bots. The field name is
+            deliberately non-semantic ("company"/"email"/etc. get filled by
+            browser autofill and password managers, which would block real
+            users); the data-* hints tell 1Password and LastPass to skip it. */}
         <label className="sc-hp" aria-hidden="true">
-          Company
-          <input type="text" name="company" tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
+          Leave this field empty
+          <input
+            type="text"
+            name="nx_extra_field"
+            tabIndex={-1}
+            autoComplete="off"
+            data-lpignore="true"
+            data-1p-ignore
+            data-form-type="other"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+          />
         </label>
         {siteKey ? <div ref={turnstileRef} className="sc-turnstile" /> : null}
         <p className="sc-privacy">

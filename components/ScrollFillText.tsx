@@ -33,8 +33,8 @@ export function ScrollFillText({
       frame = 0;
       const rect = element.getBoundingClientRect();
       const viewport = window.innerHeight;
-      const start = viewport * 0.88;
-      const end = viewport * 0.34;
+      const start = viewport * 0.72;
+      const end = viewport * 0.3;
       const progress = Math.min(1, Math.max(0, (start - rect.top) / (start - end)));
       const filled = Math.round(progress * words.length);
       words.forEach((word, index) =>

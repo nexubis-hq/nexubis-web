@@ -47,10 +47,10 @@ export const RUBRIC: readonly CategoryDef[] = [
         guidance: "Premium versus dated feel, from the first-impression read and design signals. 4 = reads premium and current; 0 = clearly dated.",
       },
       {
-        key: "linkedin-consistency",
-        label: "Consistency with LinkedIn presence",
-        plain: "Whether the LinkedIn presence matches the website's brand",
-        guidance: "Consistency between the site brand and the LinkedIn presence found in the web evidence. Score only if a LinkedIn page was found; otherwise mark not assessable.",
+        key: "language-reach",
+        label: "Language coverage for export markets",
+        plain: "Whether buyers in your export markets can read you in their language",
+        guidance: "Language coverage, from the deterministic language page signal ONLY (never guess languages). 4 = the site covers its main buying markets' languages; 2 = one or two beyond the home language; 0 to 1 = a single language while the site names international customers, distributors or export markets. If no language signal is present or the site could not be crawled, mark not assessable.",
       },
       {
         key: "market-leader-look",
@@ -192,10 +192,10 @@ export const RUBRIC: readonly CategoryDef[] = [
         guidance: "Value language versus feature dump. 4 = benefits and outcomes lead, features support; 0 = spec-sheet language only.",
       },
       {
-        key: "jargon",
-        label: "Jargon level",
-        plain: "How much jargon stands between the buyer and the point",
-        guidance: "Jargon level. 4 = plain language a first-time buyer follows; 0 = impenetrable insider terminology.",
+        key: "quote-path",
+        label: "Path to a quote",
+        plain: "What happens when a buyer wants a price: whether the enquiry path takes them seriously",
+        guidance: "The path from interest to enquiry, judged from the crawled contact/enquiry pages and the enquiry-form page signal. 4 = a buyer can state their application properly (technical or application fields, guided product selection, a clear response promise); 2 = a standard generic contact form; 0 to 1 = the enquiry path is hard to find or a bare form for a custom-engineered product. Score ONLY what the crawled pages and form signals show; if no contact or enquiry page was crawled, mark not assessable (the form may exist but was not seen).",
       },
       {
         key: "proof-points",
