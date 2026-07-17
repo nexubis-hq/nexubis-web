@@ -11,6 +11,9 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "funnelr:inspect": "tsx scripts/funnelr-inspect.ts",
+    "test:funnelr": "npm run funnelr:inspect",
+    "test:funnelr:write": "tsx scripts/test-funnelr-write.ts",
     "test:watch": "vitest"
   },
   "dependencies": {
