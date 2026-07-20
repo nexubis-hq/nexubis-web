@@ -1,5 +1,5 @@
 const DEFAULT_BASE_URL = "https://ab513.gappstack.com";
-const DEFAULT_TIMEOUT_MS = 8000;
+const DEFAULT_TIMEOUT_MS = 30000;
 
 type QueryValue = string | number | boolean | undefined;
 

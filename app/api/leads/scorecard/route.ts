@@ -3,7 +3,7 @@ import { normalizeScorecardLeadInput, scorecardSlugFromReportUrl, submitScorecar
 import { readShared } from "@/lib/scorecard/share";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 30;
+export const maxDuration = 300;
 
 function originOf(req: NextRequest): string {
   const configured = process.env.NEXT_PUBLIC_SITE_URL;
