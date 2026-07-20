@@ -16,6 +16,12 @@ export interface FunnelrUser {
   email?: string | null;
   firstName?: string | null;
   lastName?: string | null;
+  company?: string | null;
+  currencyCode?: string | null;
+  isAgent?: boolean;
+  isStaff?: boolean;
+  isUnsubscribed?: boolean;
+  hasAcceptedMarketing?: boolean | null;
   isContact?: boolean;
   isDeleted?: boolean;
 }
@@ -24,6 +30,14 @@ export interface CreateFunnelrContactInput {
   email: string;
   firstName?: string;
   lastName?: string;
+  company?: string;
+  hasAcceptedMarketing?: boolean;
+}
+
+export interface UpdateFunnelrContactInput extends CreateFunnelrContactInput {
+  userId: number;
+  currencyCode?: string | null;
+  isAgent?: boolean;
 }
 
 export interface FunnelrList {
@@ -46,6 +60,19 @@ export interface FunnelrSequence {
   statusKey?: string | null;
   sequenceUserCount?: number;
   isComplete?: boolean;
+}
+
+export interface FunnelrContactField {
+  value?: string | null;
+  caption?: string | null;
+  label?: string | null;
+}
+
+export interface FunnelrUserProfile {
+  formFieldId: string;
+  value?: unknown;
+  formFieldLabel?: string | null;
+  formFieldName?: string | null;
 }
 
 export class FunnelrApiError extends Error {
@@ -161,15 +188,56 @@ export class FunnelrClient {
       email,
       firstName: input.firstName?.trim() || null,
       lastName: input.lastName?.trim() || null,
+      company: input.company?.trim() || null,
       isAgent: false,
       isStaff: false,
       isUnsubscribed: false,
+      hasAcceptedMarketing: input.hasAcceptedMarketing ?? true,
       originKey: "Optin",
+    });
+  }
+
+  async updateContact(input: UpdateFunnelrContactInput): Promise<FunnelrUser> {
+    const email = input.email.trim().toLowerCase();
+    if (!email) throw new Error("email is required.");
+    if (!input.currencyCode) {
+      throw new Error("Funnelr contact update requires an existing currencyCode.");
+    }
+
+    return this.request<FunnelrUser>("PUT", "/api/v1/user/users", {
+      userId: input.userId,
+      email,
+      currencyCode: input.currencyCode,
+      isAgent: input.isAgent ?? false,
+      firstName: input.firstName?.trim() || null,
+      lastName: input.lastName?.trim() || null,
+      company: input.company?.trim() || null,
+      hasAcceptedMarketing: input.hasAcceptedMarketing ?? true,
     });
   }
 
   async listLists(): Promise<FunnelrList[]> {
     return this.get<FunnelrList[]>("/api/v1/user/lists");
+  }
+
+  async findListByName(name: string): Promise<FunnelrList | null> {
+    const normalized = name.trim();
+    if (!normalized) throw new Error("list name is required.");
+    const lists = await this.listLists();
+    return lists.find((list) => list.name === normalized) ?? null;
+  }
+
+  async getContactLists(userId: number): Promise<FunnelrList[]> {
+    return this.get<FunnelrList[]>(`/api/v1/user/users/${userId}/lists`);
+  }
+
+  async contactBelongsToList(userId: number, listId: string): Promise<boolean> {
+    const lists = await this.getContactLists(userId);
+    return lists.some((list) => list.listId.toLowerCase() === listId.toLowerCase());
+  }
+
+  async addContactToList(userId: number, listId: string): Promise<void> {
+    await this.request("POST", `/api/v1/user/users/${userId}/lists/${listId}`, { userListOriginKey: "Optin" });
   }
 
   async listTags(): Promise<FunnelrTag[]> {
@@ -202,6 +270,19 @@ export class FunnelrClient {
 
   async listSequences(): Promise<FunnelrSequence[]> {
     return this.get<FunnelrSequence[]>("/api/v1/messenger/sequences");
+  }
+
+  async listContactFields(): Promise<FunnelrContactField[]> {
+    return this.get<FunnelrContactField[]>("/api/v1/user/option/contactFields");
+  }
+
+  async getContactCustomFields(userId: number): Promise<FunnelrUserProfile[]> {
+    return this.get<FunnelrUserProfile[]>(`/api/v1/user/users/${userId}/custom`);
+  }
+
+  async updateContactCustomFields(userId: number, userProfiles: Array<{ formFieldId: string; value: unknown }>): Promise<void> {
+    if (!userProfiles.length) return;
+    await this.request("PUT", `/api/v1/user/users/${userId}/profile`, { userProfiles });
   }
 
   private async get<T>(path: string, query?: Record<string, QueryValue>): Promise<T> {
