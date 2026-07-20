@@ -1,16 +1,15 @@
 // Unlock logic: validates the gate submission, then promotes the short-lived
 // run record to a permanent shared report. Pure orchestration over injected
 // data where possible so every branch is unit-tested. The lead plumbing
-// (Funnelr webhook, team notification, Email 1 fallback) extends onUnlocked
-// in the lead-plumbing prompt.
+// persists/admin-notifies after unlock; Funnelr capture is triggered by the
+// browser once this route returns the permanent report URL.
 import { createHash } from "node:crypto";
 import { readRunRecord } from "./run";
 import { uniqueSlug, writeShared, type SharedScorecard } from "./share";
 import { DISPOSABLE_DOMAINS } from "./disposable-domains";
 import { roleSeniority } from "./routing";
 import { getKv } from "./kv";
-import { pushLead, updateLead, type LeadRecord } from "./leads";
-import { buildFunnelrPayload, fireFunnelrWebhook } from "./funnelr";
+import { pushLead, type LeadRecord } from "./leads";
 import { notifyTeam, sendFallbackEmail1 } from "./notify";
 import { prospectScores, type ScorecardResult } from "./result";
 import type { ProspectData } from "./types";
@@ -173,10 +172,8 @@ export async function promoteRun(input: UnlockInput): Promise<UnlockOutcome> {
 
 // ── The lead plumbing, in order (Part 2B / build pack Prompt 6) ──────────────
 // 1. Persist the lead in KV (queryable: powers admin + the Loom selection).
-// 2. Fire the Funnelr webhook (signed); 3 attempts; on final failure the lead
-//    is flagged webhook:failed and the team notification says so.
-// 3. Resend internal notification to the team.
-// 4. Fallback Email 1 to the lead, only while SCORECARD_SEND_EMAIL1=true.
+// 2. Resend internal notification to the team.
+// 3. Fallback Email 1 to the lead, only while SCORECARD_SEND_EMAIL1=true.
 // Runs AFTER the unlock response (the route uses after()); nothing here can
 // block or fail the user's unlock.
 export function buildLeadRecord(record: SharedScorecard, input: UnlockInput, slug: string): LeadRecord {
@@ -217,22 +214,10 @@ export async function runLeadPlumbing(record: SharedScorecard, input: UnlockInpu
     console.error("[scorecard-unlock] lead persist failed:", err instanceof Error ? err.message : err);
   }
 
-  // 2. Funnelr webhook. Failure flags the record and rides into the team email.
-  const webhook = await fireFunnelrWebhook(buildFunnelrPayload(lead, absoluteReportUrl));
-  lead.webhookStatus = webhook.ok ? "sent" : process.env.FUNNELR_WEBHOOK_URL ? "failed" : "skipped";
-  if (!webhook.ok && lead.webhookStatus === "failed") {
-    console.error(`[scorecard-unlock] Funnelr webhook failed after ${webhook.attempts} attempts: ${webhook.lastError}`);
-  }
-  try {
-    await updateLead(slug, { webhookStatus: lead.webhookStatus });
-  } catch {
-    // non-fatal
-  }
-
-  // 3. Team notification (carries the webhook warning when it failed).
+  // 2. Team notification.
   await notifyTeam(lead, absoluteReportUrl, adminUrl);
 
-  // 4. Email 1 fallback, flag-gated. Funnelr owns Email 1 once live.
+  // 3. Email 1 fallback, flag-gated. Funnelr owns Email 1 once live.
   await sendFallbackEmail1(lead, absoluteReportUrl);
 
   return lead;
