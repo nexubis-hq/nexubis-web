@@ -5,8 +5,7 @@ import type { FunnelrTag, FunnelrUser } from "@/lib/funnelr/client";
 
 const secret = "cal-secret";
 const slug = "application-call";
-const bookedTag: FunnelrTag = { tagId: "tag-booked", name: "Pipeline: Call Booked" };
-const cancelledTag: FunnelrTag = { tagId: "tag-cancelled", name: "Pipeline: Call Cancelled" };
+const bookedTag: FunnelrTag = { tagId: "tag-booked", name: "Pipeline: Nexubis | Call Booked" };
 const user: FunnelrUser = { userId: 42, email: "lead@example.com", firstName: "Lead", lastName: "Example" };
 const env = { CAL_WEBHOOK_SECRET: secret, CAL_APPLICATION_EVENT_SLUG: slug };
 
@@ -47,8 +46,7 @@ function makeClient(existingUser: FunnelrUser | null = user, initialTags: string
     },
     async findTagByName(name) {
       calls.push(`tag:${name}`);
-      if (name === "Pipeline: Call Booked") return bookedTag;
-      if (name === "Pipeline: Call Cancelled") return cancelledTag;
+      if (name === "Pipeline: Nexubis | Call Booked") return bookedTag;
       return null;
     },
     async contactHasTag(_userId, tagId) {
@@ -132,13 +130,13 @@ test("BOOKING_RESCHEDULED keeps Call Booked applied", async () => {
   assert.equal(client.tags.has(bookedTag.tagId), true);
 });
 
-test("BOOKING_CANCELLED removes Call Booked and adds Call Cancelled when available", async () => {
+test("BOOKING_CANCELLED removes Call Booked and does not add Call Cancelled", async () => {
   const client = makeClient(user, [bookedTag.tagId]);
   const { raw, signature } = signed(booking("BOOKING_CANCELLED"));
   const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false });
   assert.equal(res.status, 200);
   assert.equal(client.tags.has(bookedTag.tagId), false);
-  assert.equal(client.tags.has(cancelledTag.tagId), true);
+  assert.equal(client.calls.some((call) => call.includes("Call Cancelled")), false);
 });
 
 test("webhook ping/test request returns success without Funnelr changes", async () => {

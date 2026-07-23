@@ -54,3 +54,6 @@ next-env.d.ts
 # Local reference material (contains the LekkeWeb audit-tool snapshot with live API keys). Never commit.
 /reference/
 /offline-package/
+
+# Local Funnelr migration/read-back evidence can contain live contact data.
+/docs/funnelr-snapshots/

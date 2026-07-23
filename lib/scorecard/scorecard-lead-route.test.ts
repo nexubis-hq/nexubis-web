@@ -41,7 +41,7 @@ beforeEach(() => {
   readSharedMock.mockReset();
   submitScorecardLeadToFunnelrMock.mockReset();
   readSharedMock.mockResolvedValue({ result: { meta: { company: "Veltkamp Dosing" } } });
-  submitScorecardLeadToFunnelrMock.mockResolvedValue({ ok: true, listMembershipConfirmed: true, customFieldsUpdated: [], missingCustomFields: [] });
+  submitScorecardLeadToFunnelrMock.mockResolvedValue({ ok: true, tagsApplied: [], customFieldsUpdated: [] });
   delete process.env.NEXT_PUBLIC_SITE_URL;
 });
 

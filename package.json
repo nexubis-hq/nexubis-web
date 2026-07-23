@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "funnelr:inspect": "tsx scripts/funnelr-inspect.ts",
+    "funnelr:verify:nexubis": "tsx scripts/funnelr-verify-nexubis-readonly.ts",
     "test:funnelr": "npm run funnelr:inspect",
     "test:funnelr:write": "tsx scripts/test-funnelr-write.ts",
     "test:watch": "vitest"

@@ -49,8 +49,8 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     ok: true,
-    listMembershipConfirmed: result.listMembershipConfirmed,
+    tagsApplied: result.tagsApplied,
+    triggerTagSkipped: result.triggerTagSkipped,
     customFieldsUpdated: result.customFieldsUpdated,
-    missingCustomFields: result.missingCustomFields,
   });
 }

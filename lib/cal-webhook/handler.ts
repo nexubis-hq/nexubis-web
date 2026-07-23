@@ -2,8 +2,7 @@ import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { createFunnelrClient, type FunnelrTag, type FunnelrUser } from "@/lib/funnelr/client";
 import { getKv } from "@/lib/scorecard/kv";
 
-const CALL_BOOKED_TAG_NAME = "Pipeline: Call Booked";
-const CALL_CANCELLED_TAG_NAME = "Pipeline: Call Cancelled";
+const CALL_BOOKED_TAG_NAME = "Pipeline: Nexubis | Call Booked";
 
 export type CalTriggerEvent = "BOOKING_CREATED" | "BOOKING_RESCHEDULED" | "BOOKING_CANCELLED";
 
@@ -185,9 +184,6 @@ export async function handleCalWebhook(
     const userId = requireUserId(contact);
     const callBookedTag = await resolveTag(client, CALL_BOOKED_TAG_NAME);
     await removeTagIfPresent(client, userId, callBookedTag.tagId);
-
-    const cancelledTag = await client.findTagByName(CALL_CANCELLED_TAG_NAME);
-    if (cancelledTag) await ensureTag(client, userId, cancelledTag.tagId);
 
     if (options.dedupe !== false && dedupeKey) await markCalWebhookProcessed(dedupeKey);
     return jsonResult(200, { ok: true, action: "booking_cancelled" });

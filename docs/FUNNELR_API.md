@@ -25,6 +25,7 @@ Implemented read-only functions:
 - `listLists()` -> `GET /api/v1/user/lists`
 - `listTags()` -> `GET /api/v1/user/tags`
 - `listSequences()` -> `GET /api/v1/messenger/sequences`
+- `listSystemFormFields()` -> `GET /api/v1/system/formFields`
 
 Run:
 
@@ -56,9 +57,24 @@ The command performs only GET requests and prints sanitized endpoint availabilit
 | Remove tag | `DELETE /api/v1/user/users/{uid}/tags/{id}` | Path `uid` integer user id, `id` tag UUID. Also supported via `PUT /api/v1/user/users/{id}/tags` body `deleteTagIds[]`. |
 | Read user's tags | `GET /api/v1/user/users/{id}/tags` | Path `id` integer user id. Optional query `tagId`. |
 | List sequences | `GET /api/v1/messenger/sequences` | Optional query: `WebinarId`, `SequenceCategoryKey`, `StatusKey`. |
+| Create/update standard sequence | `POST` / `PUT /api/v1/messenger/sequences/standard` | Create/update standard sequence metadata, status and recipient list IDs. |
+| Read sequence | `GET /api/v1/messenger/sequences/{id}` | Path `id` sequence UUID. |
 | Add/remove user in sequence | `PUT /api/v1/messenger/sequences/{id}/users` | Path `id` sequence UUID. Body: `MergeSequenceUsers` with optional `userId`, `sequenceId`, `sequenceUsers[]`, `mustDelete`. |
 | Add/remove user sequences | `PUT /api/v1/user/users/{id}/sequences` | Path `id` integer user id. Body: `UpdateUserSequencesRequest` with `sequenceIds[]`, `mustDelete`. |
 | Read sequence membership | `GET /api/v1/messenger/sequences/{id}/users` | Path `id` sequence UUID. Optional query: `SequenceId`, `UserId`, `Search`, `Page`, `Size`, `PageDate`. |
+| Read sequence recipient lists | `GET /api/v1/messenger/sequences/{id}/lists` | Path `id` sequence UUID. |
+| Update sequence recipient lists | `PUT /api/v1/messenger/sequences/{id}/lists` | Body: `UpdateSequenceListsRequest` with `sequenceId`, `listIds[]`, `mustDelete`. Note: in live migration, deleting a recipient list via this endpoint returned 200 but did not remove the mapping; `PUT /api/v1/messenger/sequences/standard` with `recipientListIds: []` worked. |
+| Create/update list | `POST` / `PUT /api/v1/user/lists` | Create by `name`; update with `listId`, `name`, `isArchived`. |
+| Create/update tag | `POST` / `PUT /api/v1/user/tags` | Create by `name`; update with `tagId`, `name`, `isArchived`. |
+| List system form fields | `GET /api/v1/system/formFields` | Required for custom `ContactProfile` fields such as `Nexubis | Scorecard Report URL`. |
+| Create/update system form field | `POST` / `PUT /api/v1/system/formFields` | Create/update custom fields. |
+| List automations | `GET /api/v1/query/automations` | Optional query: `automationTypeKey`. |
+| Create/update automation | `POST` / `PUT /api/v1/query/automations` | Create/update automation metadata, including `name` and `isEnabled`. |
+| Read/delete automation | `GET` / `DELETE /api/v1/query/automations/{id}` | Path `id` automation UUID. |
+| List automation filters | `GET /api/v1/query/filters` | Query by `automationId`. |
+| Create/update/delete automation filter | `POST` / `PUT /api/v1/query/filters`, `DELETE /api/v1/query/filters/{id}` | Used for automation trigger/condition rules. |
+| List automation actions | `GET /api/v1/query/automations/{aid}/actions` | Path `aid` automation UUID. |
+| Create/update/delete automation action | `POST` / `PUT /api/v1/query/automations/{aid}/actions`, `DELETE /api/v1/query/automations/{aid}/actions/{id}` | Used for list, sequence and tag actions. |
 
 ## Documented Gaps
 
@@ -66,3 +82,6 @@ The command performs only GET requests and prints sanitized endpoint availabilit
 - Pagination: `Page`, `Size`, and sometimes `PageDate` are documented on user/list/tag/sequence membership endpoints; response pagination metadata is not documented.
 - Update behavior: update endpoints are documented as `PUT`; the spec does not state whether they are partial updates, full replacements, merges, or upserts.
 - Duplicate list, tag, or sequence assignments: idempotency is not documented.
+- `GET /api/v1/query/option/automationActionTypes` currently returns HTTP 500 in this account: `Could not find stored procedure 'query.v1_OptionAutomationActionTypes'.` Do not let this block automation work.
+- Funnelr commonly responds slowly. Use a timeout of at least 180 seconds for Funnelr API work. For writes, issue one write at a time and read the target resource back before continuing.
+- Never blindly retry create requests after timeout or transport failure. First search by internal ID, old name and target name because a timed-out request may have succeeded server-side.
