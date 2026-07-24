@@ -20,7 +20,7 @@ The Nexubis website/server only:
 
 - creates or updates the Funnelr contact
 - saves `Nexubis | Scorecard Report URL`
-- temporarily mirrors the same report URL into Funnelr's built-in `Telephone` field for the supported `{$RecipientTelephone}` Messenger merge tag
+- temporarily mirrors the same report URL into Funnelr's built-in `Last name` field
 - applies `Brand: Nexubis`
 - applies `Source: Nexubis | Scorecard`
 - applies `Trigger: Nexubis | Start Scorecard Sales`
@@ -102,7 +102,7 @@ Sequence activation remains a separate launch decision because activating sequen
 
 Custom contact-profile fields are discovered through `GET /api/v1/system/formFields`, not `GET /api/v1/user/option/contactFields`.
 
-The permanent Scorecard report URL source of truth is `Nexubis | Scorecard Report URL`. For Messenger compatibility, the website/server also writes the exact same trimmed HTTPS URL to Funnelr's built-in `Telephone` field, represented in the contact create/update API as the standard `telephone` property. The old `Alternative Address` / `street` mirror is retired. The website must not write the report URL to `street`; when updating an existing Scorecard contact, it may clear `street` only if `street` contains a previous Nexubis Scorecard report URL written by this integration.
+The permanent Scorecard report URL source of truth is `Nexubis | Scorecard Report URL`. For Messenger compatibility, the website/server also writes the exact same trimmed HTTPS URL to Funnelr's built-in `Last name` field, represented in the contact create/update API as the standard `lastName` property. The old `Alternative Address` / `street` and `Telephone` / `telephone` mirrors are retired. The website must not write the report URL to `street` or `telephone`; when updating an existing Scorecard contact, it may clear `street` or `telephone` only if the value contains a previous Nexubis Scorecard report URL written by this integration.
 
 ## Automations
 
@@ -206,7 +206,7 @@ Manual Holding is removed when nurture entry succeeds. `Nexubis | All Contacts` 
 ### Scorecard-First Lead
 
 1. Visitor completes and unlocks the Scorecard.
-2. Website creates or updates the contact, writes the report URL to `Nexubis | Scorecard Report URL`, mirrors the same URL to `Telephone`, and applies Brand, Scorecard Source, and sales Trigger tags.
+2. Website creates or updates the contact, writes the report URL to `Nexubis | Scorecard Report URL`, mirrors the same URL to `Last name`, and applies Brand, Scorecard Source, and sales Trigger tags.
 3. Funnelr enters the contact into Scorecard sales and applies Scorecard sales History.
 4. A future timed handoff may later apply the nurture Trigger only for Scorecard-first contacts who have never received nurture.
 
@@ -273,7 +273,7 @@ Current flow:
 
 Do not send leads to Funnelr when the Scorecard page loads, the scan begins, the preview is generated, the contact form opens, or an existing report is viewed.
 
-The Scorecard capture flow must only create/update the contact, write `Nexubis | Scorecard Report URL`, mirror that same URL to `Telephone`, and apply the three required tags. It must never directly add or remove the Scorecard sales list, nurture list, holding list, Scorecard sales sequence, or nurture sequence.
+The Scorecard capture flow must only create/update the contact, write `Nexubis | Scorecard Report URL`, mirror that same URL to `Last name`, and apply the three required tags. It must never directly add or remove the Scorecard sales list, nurture list, holding list, Scorecard sales sequence, or nurture sequence.
 
 ## Cal.com Booking Flow
 
@@ -330,11 +330,11 @@ Do not delete or rename these without separate approval:
 
 ## Testing Checklist
 
-- New Scorecard contact creates one contact, saves report URL to `Nexubis | Scorecard Report URL`, mirrors the same URL to `Telephone`, applies brand/source/sales trigger, then Funnelr applies sales history, sales list, sales sequence, and removes trigger.
+- New Scorecard contact creates one contact, saves report URL to `Nexubis | Scorecard Report URL`, mirrors the same URL to `Last name`, applies brand/source/sales trigger, then Funnelr applies sales history, sales list, sales sequence, and removes trigger.
 - Brand-tagged Nexubis contact is automatically added to `Nexubis | All Contacts` with no campaign Source, Trigger, Pipeline, History, list, or sequence changes.
 - Manual contact added to `Nexubis | Manual Leads - Holding` receives Brand, Manual Source, and nurture Trigger tags, then enters nurture through the existing nurture automation.
 - Existing contact submission updates the same contact and report URL without duplicating contact or sequence enrolment.
-- Existing contact submission writes the latest permanent report URL to `Telephone` and removes a stale `street` value only when that value is a previous Nexubis Scorecard report URL.
+- Existing contact submission writes the latest permanent report URL to `Last name` and removes stale `street` or `telephone` values only when they contain a previous Nexubis Scorecard report URL.
 - Repeated trigger does not reset sequence progress or resend Email 1.
 - Call Booked removes active campaign lists/sequences, adds `Nexubis | Call Booked`, keeps the booked Pipeline tag, and does not start `Booking Confirmation`.
 - Replied removes active campaign lists/sequences, keeps the replied Pipeline tag, and keeps History tags.
@@ -371,8 +371,8 @@ Rollback steps:
 
 2026-07-24:
 
-- Replaced the failed `Alternative Address` / `street` Messenger workaround with the built-in `Telephone` field, represented by the contact `telephone` API property and available through `{$RecipientTelephone}`.
-- Confirmed the custom `Nexubis | Scorecard Report URL` field remains the permanent source of truth and both the custom field and `Telephone` must be updated on new and existing unlocks with a valid HTTPS report URL.
+- Replaced the failed `Telephone` / `telephone` Messenger workaround with the built-in `Last name` field, represented by the contact `lastName` API property.
+- Confirmed the custom `Nexubis | Scorecard Report URL` field remains the permanent source of truth and both the custom field and `Last name` must be updated on new and existing unlocks with a valid HTTPS report URL.
 - Created `Nexubis | All Contacts` as the visibility-only master list for Nexubis contacts.
 - Created and enabled `Nexubis | Brand Tag - Add to All Contacts`.
 - Created and enabled `Nexubis | Manual Holding - Apply Contact Tags`.
