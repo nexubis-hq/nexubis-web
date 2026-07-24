@@ -44,8 +44,19 @@ function lead(overrides: Partial<ScorecardLeadInput> = {}): ScorecardLeadInput {
 
 function client(
   existing: FunnelrUser | null = null,
-  opts: { fail?: boolean; existingTagIds?: string[]; fieldList?: FunnelrSystemFormField[] } = {},
-): ScorecardLeadFunnelrClient & { calls: string[]; contactTags: Set<string>; updates: Array<{ formFieldId: string; value: unknown }> } {
+  opts: { fail?: boolean; existingTagIds?: string[]; fieldList?: FunnelrSystemFormField[]; missingTag?: string; failTagAdd?: string } = {},
+): ScorecardLeadFunnelrClient & {
+  calls: string[];
+  contactTags: Set<string>;
+  updates: Array<{ formFieldId: string; value: unknown }>;
+  findListByName(name: string): Promise<never>;
+  contactBelongsToList(userId: number, listId: string): Promise<never>;
+  addContactToList(userId: number, listId: string): Promise<never>;
+  removeContactFromList(userId: number, listId: string): Promise<never>;
+  findSequenceByName(name: string): Promise<never>;
+  addContactToSequence(userId: number, sequenceId: string): Promise<never>;
+  removeContactFromSequence(userId: number, sequenceId: string): Promise<never>;
+} {
   const calls: string[] = [];
   const contactTags = new Set(opts.existingTagIds ?? []);
   const updates: Array<{ formFieldId: string; value: unknown }> = [];
@@ -69,6 +80,7 @@ function client(
     },
     async findTagByName(name) {
       calls.push(`tag:${name}`);
+      if (name === opts.missingTag) return null;
       return routingTags.find((tag) => tag.name === name) ?? null;
     },
     async contactHasTag(_userId, tagId) {
@@ -77,6 +89,7 @@ function client(
     },
     async addTagToContact(_userId, tagId) {
       calls.push(`add-tag:${tagId}`);
+      if (tagId === opts.failTagAdd) throw new Error(`Tag write failed for ${tagId}`);
       contactTags.add(tagId);
     },
     async listSystemFormFields() {
@@ -87,7 +100,41 @@ function client(
       calls.push(`custom:${userProfiles.length}`);
       updates.push(...userProfiles);
     },
+    async findListByName(name) {
+      calls.push(`find-list:${name}`);
+      throw new Error("Scorecard flow must not find Funnelr lists.");
+    },
+    async contactBelongsToList(userId, listId) {
+      calls.push(`has-list:${userId}:${listId}`);
+      throw new Error("Scorecard flow must not check Funnelr list membership.");
+    },
+    async addContactToList(userId, listId) {
+      calls.push(`add-list:${userId}:${listId}`);
+      throw new Error("Scorecard flow must not add Funnelr lists.");
+    },
+    async removeContactFromList(userId, listId) {
+      calls.push(`remove-list:${userId}:${listId}`);
+      throw new Error("Scorecard flow must not remove Funnelr lists.");
+    },
+    async findSequenceByName(name) {
+      calls.push(`find-sequence:${name}`);
+      throw new Error("Scorecard flow must not find Funnelr sequences.");
+    },
+    async addContactToSequence(userId, sequenceId) {
+      calls.push(`add-sequence:${userId}:${sequenceId}`);
+      throw new Error("Scorecard flow must not add Funnelr sequences.");
+    },
+    async removeContactFromSequence(userId, sequenceId) {
+      calls.push(`remove-sequence:${userId}:${sequenceId}`);
+      throw new Error("Scorecard flow must not remove Funnelr sequences.");
+    },
   };
+}
+
+function assertNoDirectRouting(c: { calls: string[] }) {
+  for (const prefix of ["find-list:", "has-list:", "add-list:", "remove-list:", "find-sequence:", "add-sequence:", "remove-sequence:"]) {
+    assert.equal(c.calls.some((call) => call.startsWith(prefix)), false, `unexpected direct routing call: ${prefix}`);
+  }
 }
 
 test("new contact is created, report URL is saved, and final routing tags are assigned", async () => {
@@ -96,7 +143,7 @@ test("new contact is created, report URL is saved, and final routing tags are as
   assert.equal(res.ok, true);
   assert.equal(res.contactCreated, true);
   assert.ok(c.calls.includes("create:mark@veltkamp-dosing.nl:Mark:true"));
-  assert.equal(c.calls.some((call) => call.startsWith("add-list:")), false);
+  assertNoDirectRouting(c);
   assert.ok(c.calls.includes("add-tag:tag-brand"));
   assert.ok(c.calls.includes("add-tag:tag-source"));
   assert.ok(c.calls.includes("add-tag:tag-trigger"));
@@ -111,6 +158,7 @@ test("first name and email only creates a contact and applies final routing tags
   assert.ok(c.calls.includes("find:mark@veltkamp-dosing.nl"));
   assert.ok(c.calls.includes("create:mark@veltkamp-dosing.nl:Mark:undefined"));
   assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assertNoDirectRouting(c);
   assert.equal(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID), false);
 });
 
@@ -129,6 +177,7 @@ test("existing contact is reused and not duplicated", async () => {
   assert.equal(c.calls.some((call) => call.startsWith("create:")), false);
   assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true"));
   assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assertNoDirectRouting(c);
 });
 
 test("invalid email is rejected", () => {
@@ -159,12 +208,14 @@ test("duplicate submission updates contact without duplicating tags", async () =
   assert.equal(c.calls.some((call) => call.startsWith("add-tag:")), false);
   assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true"));
   assert.ok(c.calls.includes("custom:1"));
+  assertNoDirectRouting(c);
 });
 
 test("successful routing tag assignment is verified", async () => {
   const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false });
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.deepEqual(res.tagsApplied, [BRAND_NEXUBIS_TAG_NAME, SOURCE_SCORECARD_TAG_NAME, START_SCORECARD_SALES_TAG_NAME]);
+  assertNoDirectRouting(c);
 });
 
 test("Funnelr API failure is sanitized and non-throwing", async () => {
@@ -187,12 +238,30 @@ test("custom field mapping resolves the target field by key", () => {
   assert.deepEqual(mapped.updates, [{ formFieldId: "field-key", value: "https://www.nexubis.io/scorecard/r/abc12345" }]);
 });
 
-test("unsubscribed existing contact is updated but not given the sales trigger", async () => {
+test("unsubscribed existing contact is still given the required sales trigger", async () => {
   const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, isUnsubscribed: true });
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, true);
-  assert.equal(res.triggerTagSkipped, true);
   assert.ok(c.calls.includes("add-tag:tag-brand"));
   assert.ok(c.calls.includes("add-tag:tag-source"));
-  assert.equal(c.calls.includes("add-tag:tag-trigger"), false);
+  assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assertNoDirectRouting(c);
+});
+
+test("missing Scorecard URL field returns a useful safe error and does not silently skip the update", async () => {
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { fieldList: [] }) });
+  assert.equal(res.ok, false);
+  assert.match(res.error ?? "", /Required Funnelr custom field was not found/);
+});
+
+test("failed required tag operation returns a useful safe error", async () => {
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { missingTag: SOURCE_SCORECARD_TAG_NAME }) });
+  assert.equal(res.ok, false);
+  assert.match(res.error ?? "", /Required Funnelr tag was not found/);
+});
+
+test("failed required tag write returns a useful safe error", async () => {
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { failTagAdd: "tag-source" }) });
+  assert.equal(res.ok, false);
+  assert.match(res.error ?? "", /Tag write failed/);
 });

@@ -17,6 +17,8 @@ Swagger UI: `https://ab513.gappstack.com/api/swagger/index.html`
 
 The server-only client is in `lib/funnelr/client.ts`.
 
+Scorecard routing note: `/api/leads/scorecard` and `submitScorecardLeadToFunnelr()` must not call list or sequence endpoints. They are limited to contact create/update, `GET /api/v1/system/formFields`, custom profile update, and tag assignment. Funnelr automation triggered by `Trigger: Nexubis | Start Scorecard Sales` owns campaign-list and sequence movement.
+
 Implemented read-only functions:
 
 - `testAuthentication()` -> `GET /api/v1/user/users/count`
