@@ -205,6 +205,15 @@ test("optional marketing consent is passed through when present", async () => {
   assert.ok(c.calls.includes("create:mark@veltkamp-dosing.nl:Mark::true:"));
 });
 
+test("submitted surname is not saved to Last name when there is no valid report URL", async () => {
+  const c = client(null);
+  const res = await submitScorecardLeadToFunnelr({ firstName: "Mark", lastName: "Veltkamp", email: "mark@veltkamp-dosing.nl" }, { client: c });
+  assert.equal(res.ok, true);
+  assert.ok(c.calls.includes("create:mark@veltkamp-dosing.nl:Mark::undefined:"));
+  assert.deepEqual(res.standardFieldsUpdated, []);
+  assertNoDirectRouting(c);
+});
+
 test("existing contact is reused and not duplicated", async () => {
   const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false });
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
@@ -239,12 +248,30 @@ test("new-contact report URL is mirrored to Last name", async () => {
   assertNoDirectRouting(c);
 });
 
+test("report URL takes priority over submitted surname on new contacts", async () => {
+  const c = client(null);
+  const res = await submitScorecardLeadToFunnelr(lead({ lastName: "Veltkamp" }), { client: c });
+  assert.equal(res.ok, true);
+  assert.ok(c.calls.includes("create:mark@veltkamp-dosing.nl:Mark:https://www.nexubis.io/scorecard/r/abc12345:true:"));
+  assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === "https://www.nexubis.io/scorecard/r/abc12345"));
+  assertNoDirectRouting(c);
+});
+
 test("existing-contact report URL is mirrored to Last name without writing Address or Telephone", async () => {
   const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, street: null });
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, true);
   assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345::"));
   assert.equal(c.calls.some((call) => call.startsWith("create:")), false);
+  assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === "https://www.nexubis.io/scorecard/r/abc12345"));
+  assertNoDirectRouting(c);
+});
+
+test("report URL takes priority over submitted and existing Last name on existing contacts", async () => {
+  const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, lastName: "Existing" });
+  const res = await submitScorecardLeadToFunnelr(lead({ lastName: "Submitted" }), { client: c });
+  assert.equal(res.ok, true);
+  assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345::"));
   assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === "https://www.nexubis.io/scorecard/r/abc12345"));
   assertNoDirectRouting(c);
 });
@@ -283,6 +310,7 @@ test("invalid non-HTTPS report URL does not update Last name", async () => {
   const res = await submitScorecardLeadToFunnelr(lead({ reportUrl: "http://www.nexubis.io/scorecard/r/abc12345" }), { client: c });
   assert.equal(res.ok, true);
   assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:Veltkamp:+27110000000:"));
+  assert.equal(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID), false);
   assert.deepEqual(res.standardFieldsUpdated, []);
   assertNoDirectRouting(c);
 });

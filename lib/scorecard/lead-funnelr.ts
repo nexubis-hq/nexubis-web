@@ -175,8 +175,9 @@ function validHttpsReportUrl(value: string | undefined): string | undefined {
 
 function isScorecardReportUrl(value: unknown): boolean {
   if (typeof value !== "string") return false;
+  if (value !== value.trim()) return false;
   try {
-    const parsed = new URL(value.trim());
+    const parsed = new URL(value);
     return parsed.protocol === "https:" && /^\/scorecard\/r\/[abcdefghjkmnpqrstuvwxyz23456789]{8}$/.test(parsed.pathname);
   } catch {
     return false;
@@ -192,7 +193,7 @@ export function buildCustomFieldUpdates(input: NormalizedScorecardLead, fields: 
   updatedNames: string[];
 } {
   const values = {
-    reportUrl: input.reportUrl,
+    reportUrl: validHttpsReportUrl(input.reportUrl),
   };
   const updates: Array<{ formFieldId: string; value: unknown }> = [];
   const updatedNames: string[] = [];
@@ -252,7 +253,7 @@ export async function submitScorecardLeadToFunnelr(
       (await client.createContact({
         email: normalized.email,
         firstName: normalized.firstName,
-        lastName: reportUrlMirror ?? normalized.lastName,
+        lastName: reportUrlMirror,
         company: normalized.company,
         hasAcceptedMarketing: normalized.marketingConsent,
       }));
@@ -263,7 +264,7 @@ export async function submitScorecardLeadToFunnelr(
         userId,
         email: normalized.email,
         firstName: normalized.firstName,
-        lastName: reportUrlMirror ?? normalized.lastName ?? existing.lastName ?? undefined,
+        lastName: reportUrlMirror ?? existing.lastName ?? undefined,
         company: normalized.company ?? existing.company ?? undefined,
         currencyCode: existing.currencyCode,
         isAgent: existing.isAgent,
