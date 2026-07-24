@@ -4,6 +4,12 @@ State of every launch item as of 2026-07-07. The tool is code-complete and
 verified end to end (mock and real runs); the items marked PENDING are
 external provisioning, most of them 10-minute jobs.
 
+> **NOTE (2026-07-23):** the funnel/tracking/booking layer (Meta pixel + CAPI,
+> cal.com, Resend, the Funnelr REST bridge, and the nexubis.io **domain-migration**
+> steps) is now tracked in the living doc [`docs/go-live-and-migration.md`](docs/go-live-and-migration.md).
+> That doc supersedes the Funnelr-webhook and interim-`BOOKING_URL` rows below
+> (Funnelr is now a REST bridge, and `BOOKING_URL` already points at `cal.com/nexubis/30min`).
+
 ## Environment (production Vercel env)
 
 | Item | State | Notes |

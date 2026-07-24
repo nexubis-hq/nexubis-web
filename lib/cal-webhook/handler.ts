@@ -1,6 +1,9 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { createFunnelrClient, type FunnelrTag, type FunnelrUser } from "@/lib/funnelr/client";
 import { getKv } from "@/lib/scorecard/kv";
+import { sendCapiEvent } from "@/lib/meta/capi";
+import { META_EVENTS, LEAD_CONTENT_NAME } from "@/lib/meta/events";
+import { isInternalEmail } from "@/lib/internal-emails";
 
 const CALL_BOOKED_TAG_NAME = "Pipeline: Nexubis | Call Booked";
 
@@ -171,6 +174,19 @@ export async function handleCalWebhook(
       const contact = await findOrCreateContact(client, event, email);
       const callBookedTag = await resolveTag(client, CALL_BOOKED_TAG_NAME);
       await ensureTag(client, requireUserId(contact), callBookedTag.tagId);
+      // Meta Schedule — a CONFIRMED booking (created only, not reschedule). event_id
+      // cal_<uid> dedupes against any embed-side Schedule. No-ops without a CAPI
+      // token, skips internal/test emails, and never fails the webhook.
+      if (event.triggerEvent === "BOOKING_CREATED" && event.payload?.uid && !isInternalEmail(email)) {
+        await sendCapiEvent({
+          eventName: META_EVENTS.schedule,
+          eventId: `cal_${event.payload.uid}`,
+          email,
+          clientIp: null,
+          userAgent: null,
+          customData: { content_name: LEAD_CONTENT_NAME },
+        }).catch((err) => console.error("[cal-webhook] Schedule CAPI failed:", err instanceof Error ? err.message : err));
+      }
       if (options.dedupe !== false && dedupeKey) await markCalWebhookProcessed(dedupeKey);
       return jsonResult(200, { ok: true, action: event.triggerEvent === "BOOKING_CREATED" ? "booking_created" : "booking_rescheduled" });
     }
