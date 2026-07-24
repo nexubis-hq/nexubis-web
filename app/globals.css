@@ -6994,6 +6994,219 @@ button.nav-link {
   color: color-mix(in srgb, var(--white) 80%, transparent);
 }
 
+/* ── Merged hero: brand + score in one landing section ─────────────────────── */
+.sc-hero {
+  background: var(--primary);
+  color: var(--white);
+  padding-block: var(--s-7) var(--s-6);
+}
+.sc-hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: color-mix(in srgb, var(--white) 88%, transparent);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: var(--s-3);
+}
+.sc-hero-kicker::before {
+  content: "";
+  width: 0.85rem;
+  height: 0.28rem;
+  background: var(--white);
+}
+.sc-hero-title {
+  font-size: var(--h4);
+  font-weight: 500;
+  line-height: 1.12;
+  max-width: 34ch;
+  color: color-mix(in srgb, var(--white) 90%, transparent);
+}
+.sc-hero-company {
+  display: block;
+  color: var(--white);
+  font-weight: 600;
+  font-size: clamp(2.2rem, 1.2rem + 4.2vw, 4.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin-top: 0.1em;
+  overflow-wrap: break-word;
+}
+/* The score sits on a white card on the red band: no restyling of the ring or
+   radar, and the reader lands on the number the moment the page loads. */
+.sc-hero-card {
+  margin-top: var(--s-5);
+  background: var(--white);
+  color: var(--black);
+  border-radius: 1.1rem;
+  padding: var(--s-5);
+  box-shadow: 0 34px 70px rgb(0 0 0 / 20%);
+}
+@media (max-width: 640px) {
+  .sc-hero-card { padding: var(--s-4); }
+}
+
+/* ── Body: category cards alongside the sticky "on this page" sidebar ───────── */
+.sc-body {
+  background: var(--surface);
+}
+.sc-body-inner {
+  padding-block: var(--s-6);
+}
+@media (min-width: 1000px) {
+  .sc-body-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: var(--grid-gap);
+    align-items: start;
+  }
+}
+.sc-body-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  min-width: 0;
+}
+/* Category sections become white cards inside the column (they were full-width
+   sections). Neutralise their own container + section padding. */
+.sc-body-main .sc-category {
+  padding-block: 0;
+  background: var(--white);
+  border-radius: 1rem;
+  box-shadow: 0 12px 34px rgb(0 0 0 / 6%);
+  overflow: hidden;
+}
+.sc-body-main .sc-category .site-container {
+  max-width: none;
+  width: 100%;
+  margin-inline: 0;
+  padding: var(--s-5);
+}
+.sc-body-main .sc-category-grid {
+  grid-template-columns: 1fr;
+}
+
+.sc-side {
+  display: none;
+}
+@media (min-width: 1000px) {
+  .sc-side {
+    display: block;
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+  }
+}
+.sc-side-nav {
+  background: var(--white);
+  border-radius: 1rem;
+  padding: 1.3rem 1rem;
+  box-shadow: 0 12px 34px rgb(0 0 0 / 6%);
+}
+.sc-side-title {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  color: var(--mid);
+  padding-inline: 0.7rem;
+  margin-bottom: 0.8rem;
+}
+.sc-side-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.sc-side-link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.55rem;
+  border-left: 2px solid transparent;
+  color: var(--body);
+  font-size: 0.95rem;
+  line-height: 1.25;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.sc-side-link:hover {
+  color: var(--black);
+  background: color-mix(in srgb, var(--black) 4%, transparent);
+}
+.sc-side-link.is-active {
+  color: var(--black);
+  font-weight: 600;
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  border-left-color: var(--primary);
+}
+.sc-side-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  flex: none;
+  background: var(--mid);
+}
+.sc-side-dot-good { background: #3f9d6a; }
+.sc-side-dot-mid { background: #d9a441; }
+.sc-side-dot-poor { background: var(--primary); }
+.sc-side-dot-neutral { background: var(--mid); }
+
+/* Laine's book-a-call card: dark, so it reads as the one action in the rail. */
+.sc-side-cta {
+  margin-top: var(--s-4);
+  background: var(--black);
+  color: var(--white);
+  border-radius: 1rem;
+  padding: 1.4rem;
+}
+.sc-side-cta-head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+.sc-side-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  flex: none;
+  border: 2px solid color-mix(in srgb, var(--white) 26%, transparent);
+}
+.sc-side-cta-person {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.sc-side-cta-name {
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-weight: 600;
+  color: var(--white);
+}
+.sc-side-cta-role {
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--white) 68%, transparent);
+}
+.sc-side-cta-copy {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--white) 82%, transparent);
+  margin-bottom: 1.1rem;
+}
+.sc-side-cta-btn {
+  width: 100%;
+  justify-content: center;
+}
+@media print {
+  .sc-side { display: none; }
+  .sc-hero-card { box-shadow: none; }
+}
+
 /* 2. Loom slot */
 .sc-loom {
   background: var(--surface);
@@ -7131,8 +7344,10 @@ button.nav-link {
 
 @media (min-width: 900px) {
   .sc-score-grid {
-    /* The radar carries the benchmark story: give it the widest column. */
-    grid-template-columns: minmax(170px, 220px) minmax(0, 1fr) minmax(420px, 600px);
+    /* ring | verdict copy | radar. The copy needs real width inside the hero
+       card, so the radar column is capped rather than greedy. */
+    grid-template-columns: minmax(150px, 190px) minmax(0, 1fr) minmax(320px, 430px);
+    column-gap: var(--s-5);
   }
 }
 
