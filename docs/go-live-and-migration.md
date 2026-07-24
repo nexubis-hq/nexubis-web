@@ -23,7 +23,8 @@ Set locally in `.env.local` (gitignored). **Everything marked "Vercel ⬜" must 
 | `META_CAPI_TOKEN` | **secret** | ✅ set + verified | ⬜ | Server-side events. Runtime secret (not baked). Verified: `events_received:1` |
 | `META_TEST_EVENT_CODE` | temp | ✅ `TEST87920` | ⚠️ **never in prod** | Routes events into Test Events. **Remove before production** or real events divert into the test panel |
 | `META_LEAD_VALUE` / `META_CURRENCY` | config | optional | optional | Value-based optimization. Omitted entirely if unset. `META_CURRENCY` defaults `EUR` |
-| `CAL_WEBHOOK_SECRET` | **secret** | ✅ set | ⬜ | HMAC for `/api/cal-booking`. Must byte-match the secret Laine sets on the cal.com webhook |
+| `CAL_WEBHOOK_SECRET` | **secret** | ✅ set | ⬜ | HMAC for `/api/webhooks/cal`. Must byte-match the secret on the cal.com webhook |
+| `CAL_APPLICATION_EVENT_SLUG` | config | ✅ `30min` | ⬜ | The cal.com event-type slug the handler accepts; verify against a real `payload.type` |
 | `FUNNELR_API_KEY` | **secret** | ⏳ pending | ⬜ | REST bridge auth (X-ApiKey header). Present = live; absent = dry-run |
 | `FUNNELR_API_BASE_URL` | config | optional | optional | Defaults `https://ab513.gappstack.com/api` |
 | `FUNNELR_NURTURE_ENABLED` | flag | ✅ `false` | ⬜ | Sales→nurture cron. `false` = dry-run (writes nothing). Flip to `true` ONLY after sequences are un-paused |
@@ -55,7 +56,7 @@ Set locally in `.env.local` (gitignored). **Everything marked "Vercel ⬜" must 
 |---|---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | Set to `https://www.nexubis.io`, then **redeploy** | env | Validates Scorecard report URLs in `/api/leads/scorecard`; makes email/report links canonical. Baked at build |
 | Report-link stability | Do real lead capture only on the final domain, OR set `NEXT_PUBLIC_SITE_URL` now | — | Report links are built from the origin the visitor unlocked on; links made on a preview URL die if that preview goes away |
-| cal.com webhook URL | Point `BOOKING_CREATED` → `https://www.nexubis.io/api/cal-booking` (secret unchanged) | Laine | Otherwise confirmed bookings never reach the site |
+| cal.com webhook URL | Point `BOOKING_CREATED` → `https://<canonical-host>/api/webhooks/cal` (secret unchanged) | Laine | Otherwise confirmed bookings never reach the site |
 | Turnstile | Add `nexubis.io` (+ `www`) as allowed hostnames on the widget | Cloudflare | Keys are domain-scoped; wrong host = every unlock fails the challenge |
 | Meta pixel | Add `nexubis.io` to the pixel's allowed domains (optional but tidy) | Meta UI | CAPI `event_source_url` auto-follows the real domain; no code change |
 | Resend | **Already Verified on nexubis.io** — no action | ✅ | SPF/bounce sit on `send.nexubis.io`, DKIM on `resend._domainkey`, so no clash with the CRM root SPF |
@@ -77,9 +78,9 @@ Set locally in `.env.local` (gitignored). **Everything marked "Vercel ⬜" must 
 | Resend (email send) | ✅ live + verified (test send ok) | — | Mirror key to Vercel |
 | Lead alerts → laine@ | ✅ wired | — | Delivers now that Resend is live |
 | cal.com booking links | ✅ all CTAs route to `cal.com/nexubis/30min` | — | — |
-| cal.com webhook/event config | ✅ done (live test pending post-migration) | Laine | Fields aligned in code (`title`, `Report-Link`) |
-| Funnelr REST bridge | ⏸️ held — Shannah's Codex is doing the tag-only rewrite + pushing to main | Shannah | On her push: pull + verify against her handover doc; then rewire live path off the dead webhook |
-| Sales→nurture scheduler | ✅ built + tested (12/12), live but dormant | Hannes | `/api/cron/nurture-handoff` daily; applies only `Trigger: Nexubis \| Start Credibility Brief Nurture`. Dormant until `FUNNELR_API_KEY` + `FUNNELR_NURTURE_ENABLED=true`. Tag names in `lib/funnelr/nexubis-tags.ts` — reconcile with Shannah's mapping module when it lands |
+| cal.com webhook/event config | 🔴 webhook URL must move to `/api/webhooks/cal` | Laine | Route is now Shannah's `/api/webhooks/cal` (+ Meta Schedule ported in). Fields aligned (`title`, `Report-Link`) |
+| Funnelr REST bridge | ✅ merged from main (tag-only, auth verified working) | Shannah | Live path routes unlock → `/api/leads/scorecard` → 3 tags. Verify end-to-end with a real unlock |
+| Sales→nurture scheduler | ✅ built + tested (12/12), live but dormant | Hannes | `/api/cron/nurture-handoff` daily; applies only `Trigger: Nexubis \| Start Credibility Brief Nurture`. Dormant until `FUNNELR_API_KEY` + `FUNNELR_NURTURE_ENABLED=true`. Tag names in `lib/funnelr/nexubis-tags.ts` — verified matching Shannah's merged code (she has no single mapping module; her literals match exactly) |
 | Reply detection | ✅ endpoint + tag-only action built (6 tests); **inbox monitor still to wire** | Hannes | `/api/inbound/reply` applies `Pipeline: Nexubis \| Replied`. Dormant until a monitor POSTs to it + `REPLY_TAGGING_ENABLED=true`. Until then, apply the Replied tag manually in Funnelr. See §4 for the recommended wiring |
 | Turnstile (bot gate) | ⏳ | Hannes | Keys + nexubis.io hostname |
 | Upstash KV | ⏳ | Hannes | New DB (never LekkeWeb's) |
@@ -88,11 +89,12 @@ Set locally in `.env.local` (gitignored). **Everything marked "Vercel ⬜" must 
 
 ## 4. Human / config tasks (not code)
 
-- **Laine — cal.com event (`nexubis/30min`):** ✅ **DONE (2026-07-23)** — webhook enabled (`Booking created` only, secret set, URL `https://nexubis.io/api/cal-booking`), and two questions added. Confirmed via the public API; the code was aligned to the **real** field identifiers:
-  - Business Name → `title` (Laine mapped it onto cal.com's built-in meeting-title field, so the company name becomes the meeting title — fine).
-  - Report Link → `Report-Link`.
-  - ⚠️ **Migration gotcha:** the webhook targets the **apex** `nexubis.io` (not `www`). At cutover, apex `nexubis.io` must serve `/api/cal-booking` **directly** — a 301/302 apex→www redirect can drop the POST body/signature and cal.com may not follow it. Either serve apex directly, or change the webhook URL to the canonical host. Keep `NEXT_PUBLIC_SITE_URL` on the same host to avoid report-URL origin mismatches.
-  - Still to verify (post-migration): one real test booking → webhook fires → `Schedule` + Call-Booked tag. Today the webhook shows "No data yet" (can't reach localhost).
+- **Laine — cal.com event (`nexubis/30min`):** questions ✅ done; **webhook URL needs a 1-line change.**
+  - 🔴 **Re-point the webhook** from `/api/cal-booking` (deleted) to the canonical **`/api/webhooks/cal`** — Shannah's route is now the live one. Secret + `Booking created` trigger stay as-is.
+  - Field identifiers confirmed via the public API and aligned in code: Business Name → `title` (cal.com's built-in meeting-title field, relabeled — company becomes the meeting title), Report Link → `Report-Link`.
+  - New env her handler requires: **`CAL_APPLICATION_EVENT_SLUG=30min`** (it ignores other event types). Verify against a real `payload.type`.
+  - ⚠️ **Migration gotcha:** the webhook targets the **apex** `nexubis.io` (not `www`). At cutover, apex must serve `/api/webhooks/cal` **directly** — a 301/302 apex→www redirect can drop the signed POST body. Serve apex directly, or point the webhook at the canonical host; keep `NEXT_PUBLIC_SITE_URL` on the same host.
+  - Post-migration verify: one real booking → webhook fires → Call-Booked tag + Meta `Schedule`.
 - **Meta custom conversions** (Events Manager → Custom Conversions):
   - `Scorecard — Started` = event `AuditStart`.
   - `Scorecard — Lead (email unlock)` = event `Lead`, `content_name` = `Nexubis Scorecard`.
