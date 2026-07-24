@@ -21,6 +21,7 @@ import {
   ValueOutputVignette,
   ValueLaunchVignette,
 } from "@/components/vignettes/ValueVignettes";
+import { StakesScene } from "@/components/vignettes/StakesScene";
 import {
   GuideTeamVignette,
   GuideScopeVignette,
@@ -410,30 +411,7 @@ function Stakes() {
             ))}
           </div>
         </div>
-        <div className="stakes-lineup" data-reveal data-reveal-delay={0.2} aria-hidden="true">
-          {[0, 1, 2, 3].map((i) => (
-            <div
-              className={i === 1 ? "sl-item sl-item-picked" : "sl-item"}
-              key={i}
-            >
-              <span className="sl-thumb" />
-              <span className="sl-bar" />
-              <span className="sl-tag" />
-              {i === 0 ? <span className="sl-label">Your product</span> : null}
-              {i === 1 ? (
-                <>
-                  <span className="sl-ring" />
-                  <span className="sl-flag">Picked on price</span>
-                  <span className="vg-cursor sl-cursor">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M5 3l6.5 15.5 2-6 6-2L5 3z" />
-                    </svg>
-                  </span>
-                </>
-              ) : null}
-            </div>
-          ))}
-        </div>
+        <StakesScene />
       </div>
     </section>
   );

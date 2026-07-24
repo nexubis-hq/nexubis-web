@@ -12,10 +12,30 @@ import type { LeadRecord } from "./leads";
 const FROM = process.env.SCORECARD_EMAIL_FROM || "Nexubis <hello@nexubis.io>";
 const SENDER_FIRST_NAME = process.env.SCORECARD_SENDER_FIRST_NAME || "Hannes";
 
-async function sendEmail(args: { to: string; subject: string; text: string; replyTo?: string }): Promise<boolean> {
+// Who gets the internal "new lead" alert: a comma list (SCORECARD_LEAD_EMAILS),
+// falling back to the single team address. Parsed + empty-filtered because ONE
+// empty recipient makes Resend reject the WHOLE send, silently dropping every
+// alert — never trust `?? fallback` against an env that may be "" (see
+// docs/funnel-audit-checklist.md §4).
+export function leadNotifyRecipients(): string[] {
+  const configured = (process.env.SCORECARD_LEAD_EMAILS ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return configured.length ? configured : [TEAM_EMAIL].filter(Boolean);
+}
+
+async function sendEmail(args: { to: string | string[]; subject: string; text: string; replyTo?: string }): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn("[scorecard-notify] RESEND_API_KEY not set; email skipped:", args.subject);
+    return false;
+  }
+  const to = (Array.isArray(args.to) ? args.to : [args.to]).map((a) => a.trim()).filter(Boolean);
+  if (!to.length) {
+    // All-blank recipients would 422 the whole send and lose the alert. Refuse
+    // loudly rather than silently drop it.
+    console.error(`[scorecard-notify] no valid recipients for "${args.subject}"; send skipped`);
     return false;
   }
   try {
@@ -24,7 +44,7 @@ async function sendEmail(args: { to: string; subject: string; text: string; repl
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from: FROM,
-        to: [args.to],
+        to,
         subject: args.subject,
         text: args.text,
         ...(args.replyTo ? { reply_to: args.replyTo } : {}),
@@ -63,7 +83,7 @@ export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, ad
     `Report: ${absoluteReportUrl}`,
     `Admin: ${adminUrl}`,
   ].filter((l) => l !== null);
-  return sendEmail({ to: TEAM_EMAIL, subject, text: lines.join("\n"), replyTo: lead.email });
+  return sendEmail({ to: leadNotifyRecipients(), subject, text: lines.join("\n"), replyTo: lead.email });
 }
 
 // Fallback Email 1, exact copy from the build doc. Only while the flag is on.

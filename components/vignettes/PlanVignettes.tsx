@@ -1,73 +1,79 @@
 /**
- * "How it works" process vignettes - direct descendants of the old 4-step cards.
+ * "How it works" process vignettes - one hand-built fake UI per step, matched to
+ * the designer's Section 3 mockups (before -> after, plus the motion notes).
  *
- * Hand-built fake UI (no images beyond the existing brand avatars, no icon
- * libraries). Each is decorative: wrapped in `data-vignette aria-hidden="true"`
- * so it never enters the copy layer. Looping motion keys off the parent
- * `.plan-card.is-inview` (added by RevealOnScroll) and stops under
- * `prefers-reduced-motion`, where the static baseline is the finished state.
+ * Hand-built fake UI (only the existing brand avatars, no icon libraries). Each
+ * is decorative: wrapped in `data-vignette aria-hidden="true"` so it never enters
+ * the copy layer. The static markup renders the resolved "after" state, so under
+ * `prefers-reduced-motion` the still image is the finished result. An entrance
+ * plays once and a gentle ambient loop layers on top, both keyed off the parent
+ * `.plan-card.is-inview` (added by RevealOnScroll).
+ *
+ * Step 1 - Book an application call: a Google-Meet-style call grid where the
+ *          "speaking" glow flips between your team and the client, reactions pop.
+ * Step 2 - See it before you commit: a browser before/after, a grey out-of-order
+ *          wireframe resolving into the branded, in-order layout with red accents.
+ * Step 3 - Our team becomes your team: an org chart that branches out from the
+ *          Nexubis mark - the client above, your new creative team below.
  */
 
-function CalendarGlyph() {
+import { NexubisLogo } from "@/components/NexubisLogo";
+
+/* ---------- shared glyphs ---------- */
+
+function MicGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
-      <path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" strokeLinecap="round" />
-      <rect x="7" y="12.5" width="3.2" height="3" rx="0.8" fill="currentColor" stroke="none" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" stroke="none" />
+      <path d="M6 11a6 6 0 0 0 12 0M12 17v3.5" strokeLinecap="round" />
     </svg>
   );
 }
 
-function ArrowGlyph() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
-      <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function CursorGlyph() {
+function VideoGlyph() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor">
-      <path d="M5 3l6.5 15.5 2-6 6-2L5 3z" />
+      <rect x="3" y="6" width="12" height="12" rx="2.4" />
+      <path d="M16.5 10.2 21 7.4v9.2l-4.5-2.8v-3.6Z" />
     </svg>
   );
 }
 
-function HandleGlyph() {
+function EmojiGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-      <path d="M9 8l-4 4 4 4M15 8l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M8.5 14c.9 1.4 2.1 2.1 3.5 2.1s2.6-.7 3.5-2.1" strokeLinecap="round" />
+      <circle cx="9" cy="10" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="10" r="1" fill="currentColor" stroke="none" />
     </svg>
   );
 }
 
-function WebsiteGlyph() {
+function MoreGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" />
-      <path d="M3.5 9h17M7.5 6.8h.01" strokeLinecap="round" />
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="12" cy="5" r="1.7" />
+      <circle cx="12" cy="12" r="1.7" />
+      <circle cx="12" cy="19" r="1.7" />
     </svg>
   );
 }
 
-function BrandGlyph() {
+// The designer's rocket, lifted straight from her mockup so it matches exactly.
+function RocketGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg viewBox="303 82 154 152" fill="currentColor" fillRule="evenodd" aria-hidden="true">
+      <path d="M357.489 119.128C343.164 135.205 333.333 158.303 332.42 160.479L307 149.598L335.44 121.164C338.74 117.865 343.515 116.39 348.15 117.303L357.489 119.128ZM371.393 193.897C371.393 193.897 397.656 183.015 412.753 167.921C450.673 130.01 444.353 100.384 442.317 93.714C435.646 91.6079 406.012 85.3596 368.093 123.271C352.995 138.365 342.111 164.622 342.111 164.622L371.393 193.897ZM416.897 178.522C400.816 192.844 377.713 202.673 375.536 203.586L386.42 229L414.86 200.567C418.161 197.267 419.635 192.493 418.722 187.86L416.897 178.522ZM356.155 200.918C356.155 206.745 353.767 212.01 349.976 215.801C341.689 224.086 307 229 307 229C307 229 311.916 194.318 320.202 186.034C323.994 182.243 329.26 179.856 335.089 179.856C346.745 179.856 356.155 189.264 356.155 200.918ZM384.244 137.733C384.244 130.01 390.563 123.692 398.288 123.692C406.012 123.692 412.332 130.01 412.332 137.733C412.332 145.455 406.012 151.774 398.288 151.774C390.563 151.774 384.244 145.455 384.244 137.733Z" />
+    </svg>
+  );
+}
+
+function HandGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <path
-        d="M12.5 3.5 20.5 11.5a2 2 0 0 1 0 2.8l-6.2 6.2a2 2 0 0 1-2.8 0L3.5 12.5v-7a2 2 0 0 1 2-2h7Z"
-        strokeLinejoin="round"
-      />
-      <circle cx="8.2" cy="8.2" r="1.3" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
-
-function CubeGlyph() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path
-        d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3ZM4 7.5l8 4.5 8-4.5M12 12v9"
+        d="M8 11V5.5a1.5 1.5 0 0 1 3 0V10m0-.5V4.5a1.5 1.5 0 0 1 3 0V10m0-.5V6a1.5 1.5 0 0 1 3 0v7.5c0 3.3-2.4 6-5.6 6-1.9 0-3.3-.8-4.4-2.4L5 14.2a1.5 1.5 0 0 1 2.4-1.8L8 13"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -75,163 +81,244 @@ function CubeGlyph() {
   );
 }
 
-function VideoGlyph() {
+function ThumbGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <rect x="3.5" y="5" width="17" height="14" rx="2.5" />
-      <path d="M10.5 9.5l4.5 2.5-4.5 2.5v-5Z" fill="currentColor" stroke="none" />
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M13.4 2.6c1.2 0 2 1 1.9 2.2l-.4 3.4h4.4c1.5 0 2.6 1.4 2.2 2.9l-1.9 7c-.3 1.1-1.3 1.9-2.5 1.9H9.5V9.7l3.9-7.1ZM7.5 9.5H4.2c-.9 0-1.7.8-1.7 1.7v7c0 1 .8 1.8 1.7 1.8h3.3V9.5Z" />
     </svg>
   );
 }
 
-function PrintGlyph() {
+function BuildingGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M7 8V4h10v4M7 17H4.5v-6a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v6H17" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="7" y="14.5" width="10" height="5.5" rx="1" />
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M5 21V6.2c0-.6.4-1.1 1-1.3l6-1.8c.8-.2 1.6.4 1.6 1.3V21H5Zm9.6 0V10.5H18c.6 0 1 .5 1 1.1V21h-4.4ZM7.6 8.2h2.2v2H7.6v-2Zm0 3.6h2.2v2H7.6v-2Zm0 3.6h2.2v2H7.6v-2Z" />
     </svg>
   );
 }
 
-/** Step 1 - application call: the team plus a calendar, one button to press. */
+/* ---------- Step 1: video call grid ---------- */
+
+/**
+ * Each tile takes a turn as the speaker. `slot` (1-5) picks its window in the
+ * shared loop; the order below lights up non-adjacent tiles so it feels like a
+ * real, roaming call - members and the company all get a turn.
+ */
+const meetTop = [
+  { src: "/assets/images/avatar-1.png", slot: 1, live: true },
+  { src: "/assets/images/avatar-2.png", slot: 3 },
+  { src: "/assets/images/avatar-3.png", slot: 5, react: "thumb" as const },
+];
+const meetBottom = [
+  { src: "/assets/images/avatar-4.png", slot: 2, react: "hand" as const },
+  { client: true, slot: 4 },
+];
+
+function MeetTile({
+  src,
+  client,
+  slot,
+  live,
+  react,
+}: {
+  src?: string;
+  client?: boolean;
+  slot: number;
+  live?: boolean;
+  react?: "thumb" | "hand";
+}) {
+  return (
+    <span className={`vm-tile vm-s${slot}${live ? " vm-live" : ""}`}>
+      <span className="vm-glow" />
+      <span className="vm-wave" />
+      {client ? (
+        <span className="vm-client">
+          <BuildingGlyph />
+        </span>
+      ) : (
+        <span className="vm-av">
+          <span
+            className="vm-face"
+            style={{ backgroundImage: `url(${src})` }}
+          />
+        </span>
+      )}
+      {react === "thumb" ? (
+        <span className="vm-react vm-react-thumb">
+          <ThumbGlyph />
+        </span>
+      ) : null}
+      {react === "hand" ? (
+        <span className="vm-react vm-react-hand">
+          <HandGlyph />
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+/** Step 1 - book a call: a live call grid, the speaking glow flips team <-> client. */
 export function PlanCallVignette() {
   return (
-    <div className="vg vg-call" data-vignette aria-hidden="true">
-      <div className="vg-call-row">
-        <div className="vg-call-avatars">
-          <span
-            className="vg-av"
-            style={{ backgroundImage: "url(/assets/images/avatar-1.png)" }}
-          />
-          <span
-            className="vg-av"
-            style={{ backgroundImage: "url(/assets/images/avatar-4.png)" }}
-          />
-          <span
-            className="vg-av"
-            style={{ backgroundImage: "url(/assets/images/avatar-2.png)" }}
-          />
+    <div className="vg vg-meet" data-vignette aria-hidden="true">
+      <div className="vm-grid">
+        <div className="vm-row">
+          {meetTop.map((t, i) => (
+            <MeetTile key={i} {...t} />
+          ))}
         </div>
-        <svg className="vg-call-link" viewBox="0 0 48 16" fill="none" stroke="currentColor">
-          <path className="vg-link-dash" d="M2 8h34" strokeWidth="2" strokeLinecap="round" strokeDasharray="5 5" />
-          <path d="M36 3l8 5-8 5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span className="vg-av-cal">
-          <CalendarGlyph />
-          <span className="vg-av-cal-ring" />
+        <div className="vm-row">
+          {meetBottom.map((t, i) => (
+            <MeetTile key={i} {...t} />
+          ))}
+        </div>
+      </div>
+      <div className="vm-bar">
+        <span className="vm-ctrl">
+          <MicGlyph />
+        </span>
+        <span className="vm-ctrl">
+          <VideoGlyph />
+        </span>
+        <span className="vm-ctrl">
+          <EmojiGlyph />
+        </span>
+        <span className="vm-ctrl">
+          <MoreGlyph />
+        </span>
+        <span className="vm-ctrl vm-leave">
+          <RocketGlyph />
         </span>
       </div>
-
-      <div className="vg-call-btn">
-        <span>Book a call</span>
-        <span className="vg-call-btn-arrow">
-          <ArrowGlyph />
-        </span>
-      </div>
-
-      <span className="vg-cursor vg-call-cursor">
-        <CursorGlyph />
-      </span>
     </div>
   );
 }
 
-/** Step 2 - see it before you commit: a before/after slider sweeps wireframe into brand. */
+/* ---------- Step 2: browser before/after ---------- */
+
+function PreviewPage({ brand = false }: { brand?: boolean }) {
+  return (
+    <div className={`pv-page${brand ? " pv-brand" : ""}`}>
+      <div className="pv-nav">
+        <span className="pv-logo" />
+        <span className="pv-navlink" />
+        <span className="pv-navlink" />
+        <span className="pv-navlink" />
+        <span className="pv-navcta" />
+      </div>
+      <div className="pv-body">
+        <div className="pv-col">
+          <span className="pv-h1" />
+          <span className="pv-h2" />
+          <div className="pv-lines">
+            <span className="pv-p" />
+            <span className="pv-p" />
+            <span className="pv-p pv-p-sm" />
+          </div>
+          <span className="pv-btn" />
+          <div className="pv-btnrow">
+            <span />
+            <span />
+          </div>
+        </div>
+        <div className="pv-art">
+          {brand ? (
+            <>
+              <span className="pv-rocket">
+                <RocketGlyph />
+              </span>
+              <span className="pv-card" />
+            </>
+          ) : (
+            <span className="pv-circle" />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Step 2 - see it before you commit: a grey wireframe resolves into the branded build. */
 export function PlanPreviewVignette() {
   return (
     <div className="vg vg-preview" data-vignette aria-hidden="true">
-      <div className="vg-window">
-        <div className="vg-window-bar">
-          <span className="vg-dot" />
-          <span className="vg-dot" />
-          <span className="vg-dot" />
-          <span className="vg-window-tab" />
+      <div className="pv-window">
+        <div className="pv-bar">
+          <span className="pv-dot" />
+          <span className="pv-dot" />
+          <span className="pv-dot" />
         </div>
-        <div className="vg-compare">
-          <div className="vg-layer vg-wire">
-            <div className="vg-layer-nav">
-              <span className="vg-layer-mark" />
-              <span className="vg-layer-navline" />
-              <span className="vg-layer-navline" />
-              <span className="vg-layer-pill" />
-            </div>
-            <div className="vg-layer-hero">
-              <div className="vg-layer-copy">
-                <span className="vg-layer-line vg-layer-line-lg" />
-                <span className="vg-layer-line" />
-                <span className="vg-layer-line vg-layer-line-sm" />
-                <span className="vg-layer-cta" />
-              </div>
-              <div className="vg-layer-art" />
-            </div>
-          </div>
-          <div className="vg-layer vg-brand">
-            <div className="vg-layer-nav">
-              <span className="vg-layer-mark" />
-              <span className="vg-layer-navline" />
-              <span className="vg-layer-navline" />
-              <span className="vg-layer-pill" />
-            </div>
-            <div className="vg-layer-hero">
-              <div className="vg-layer-copy">
-                <span className="vg-layer-line vg-layer-line-lg" />
-                <span className="vg-layer-line" />
-                <span className="vg-layer-line vg-layer-line-sm" />
-                <span className="vg-layer-cta" />
-              </div>
-              <div className="vg-layer-art">
-                <span className="vg-vase" />
-              </div>
-            </div>
-          </div>
-          <span className="vg-divider">
-            <span className="vg-divider-handle">
-              <HandleGlyph />
-            </span>
-          </span>
+        <div className="pv-frame">
+          <PreviewPage />
+          <PreviewPage brand />
+          <span className="pv-split" />
         </div>
       </div>
     </div>
   );
 }
 
-const planChannels = [
-  WebsiteGlyph,
-  BrandGlyph,
-  CubeGlyph,
-  VideoGlyph,
-  PrintGlyph,
+/* ---------- Step 3: org chart ---------- */
+
+const teamMembers = [
+  { src: "/assets/images/avatar-2.png", x: 13, y: 79 },
+  { src: "/assets/images/avatar-4.png", x: 31.5, y: 86 },
+  { src: "/assets/images/avatar-3.png", x: 50, y: 79 },
+  { src: "/assets/images/avatar-1.png", x: 68.5, y: 86 },
+  { src: "/assets/images/avatar-2.png", x: 87, y: 79 },
 ];
 
-/** Step 3 - our team becomes your team: every channel covered, highlight sweeps the list. */
+/** Step 3 - our team becomes your team: the Nexubis mark branches into your new team. */
 export function PlanSlackVignette() {
   return (
-    <div className="vg vg-channels" data-vignette aria-hidden="true">
-      <div className="vg-chan-panel">
-        <div className="vg-chan-head">
-          <span className="vg-chan-mark" />
-          <span className="vg-chan-title" />
-          <div className="vg-chan-avatars">
-            <span style={{ backgroundImage: "url(/assets/images/avatar-1.png)" }} />
-            <span style={{ backgroundImage: "url(/assets/images/avatar-4.png)" }} />
-            <span style={{ backgroundImage: "url(/assets/images/avatar-2.png)" }} />
-          </div>
-        </div>
-        <div className="vg-chan-label">Channels</div>
-        {planChannels.map((Glyph, index) => (
-          <div
-            className={`vg-chan-row${index === 2 ? " vg-chan-row-active" : ""}`}
-            key={index}
-          >
-            <span className="vg-chan-icon">
-              <Glyph />
-            </span>
-            <span className="vg-chan-name" />
-            <span className="vg-chan-thumb" />
-            <span className="vg-chan-check" />
-          </div>
-        ))}
-      </div>
+    <div className="vg vg-tree" data-vignette aria-hidden="true">
+      <svg
+        className="vt-wires"
+        viewBox="0 0 160 110"
+        fill="none"
+        preserveAspectRatio="none"
+      >
+        <g
+          stroke="currentColor"
+          strokeWidth="1.1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        >
+          <path className="vt-wire vt-wire-up" pathLength={100} d="M80 26 V34" />
+          <path
+            className="vt-wire vt-wire-trunk"
+            pathLength={100}
+            d="M80 57 V68"
+          />
+          <path
+            className="vt-wire vt-wire-bus"
+            pathLength={100}
+            d="M20.8 68 H139.2"
+          />
+          <path
+            className="vt-wire vt-wire-drops"
+            pathLength={100}
+            d="M20.8 68 V78 M50.4 68 V85 M80 68 V78 M109.6 68 V85 M139.2 68 V78"
+          />
+        </g>
+      </svg>
+
+      <span className="vt-node vt-client" style={{ left: "50%", top: "13%" }}>
+        <BuildingGlyph />
+      </span>
+      <span className="vt-node vt-hub" style={{ left: "50%", top: "41%" }}>
+        <NexubisLogo markOnly />
+      </span>
+      {teamMembers.map((m, i) => (
+        <span
+          key={i}
+          className="vt-node vt-member"
+          style={{ left: `${m.x}%`, top: `${m.y}%`, ["--i" as string]: i }}
+        >
+          <span className="vm-face" style={{ backgroundImage: `url(${m.src})` }} />
+        </span>
+      ))}
     </div>
   );
 }

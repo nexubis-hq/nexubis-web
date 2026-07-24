@@ -6,6 +6,8 @@
 // complete and self-contained.
 import { useEffect, useRef, useState } from "react";
 import { FORM_FIELDS, UNLOCK } from "@/lib/scorecard/copy";
+import { trackMeta } from "@/lib/meta/track";
+import { META_EVENTS, LEAD_CONTENT_NAME, leadValue } from "@/lib/meta/events";
 
 declare global {
   interface Window {
@@ -82,6 +84,15 @@ export function UnlockPanel({ runId }: { runId: string }) {
         setState("error");
         return;
       }
+      // Lead: email gate success. Distinct content_name so Scorecard leads never
+      // blend with contact-form leads; email flows to the server leg (hashed
+      // there, never sent to the browser pixel in the clear) (§3).
+      const value = leadValue();
+      trackMeta(
+        META_EVENTS.lead,
+        { content_name: LEAD_CONTENT_NAME, ...(value ? { value: value.value, currency: value.currency } : {}) },
+        { email },
+      );
       setReportUrl(body.reportUrl);
       setState("done");
       window.setTimeout(() => {

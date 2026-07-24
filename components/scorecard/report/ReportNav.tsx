@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { NexubisLogo } from "@/components/NexubisLogo";
 import { RocketIcon } from "@/components/SiteHeader";
-import { BOOKING_URL } from "@/lib/site-config";
+import { BookCallButton } from "./BookCallButton";
 import { REPORT_NAV, SHARE } from "@/lib/scorecard/copy";
 
 // Build the mailto: for sharing this report. Exported so it can be unit-tested
@@ -49,12 +49,12 @@ export function ReportNav({ company, overall }: { company: string; overall: numb
             <ShareIcon />
             <span>{REPORT_NAV.share}</span>
           </a>
-          <Link href={BOOKING_URL} className="btn btn-primary sc-report-nav-book">
+          <BookCallButton className="btn btn-primary sc-report-nav-book" business={company}>
             <span className="sc-report-nav-book-icon">
               <RocketIcon />
             </span>
             <span>{REPORT_NAV.book}</span>
-          </Link>
+          </BookCallButton>
         </div>
       </div>
     </nav>
