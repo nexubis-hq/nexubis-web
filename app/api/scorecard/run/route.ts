@@ -80,6 +80,19 @@ export async function POST(req: NextRequest) {
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const send = (obj: unknown) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
+      // Heartbeat. The scan has long silent stretches: screenshots + PageSpeed,
+      // then rubric scoring, can each run ~50s with no stage event between them.
+      // An SSE comment line every 10s keeps the connection warm so a browser,
+      // proxy or VPN idle timeout never drops it mid-scan (which surfaced to the
+      // user as "the check could not finish"). Comment lines start with ":", so
+      // the client's data:-only parser ignores them.
+      const heartbeat = setInterval(() => {
+        try {
+          controller.enqueue(encoder.encode(`: keep-alive\n\n`));
+        } catch {
+          // controller already closed; nothing to keep alive.
+        }
+      }, 10_000);
       const fail = (error: string, reason: string) => {
         send({ type: "error", error, reason });
         controller.close();
@@ -146,6 +159,8 @@ export async function POST(req: NextRequest) {
       } catch (err) {
         console.error("[scorecard-run] failed:", err instanceof Error ? err.message : err);
         fail("The check could not finish this time. Nothing is broken on your side; give it another try in a few minutes.", "failed");
+      } finally {
+        clearInterval(heartbeat);
       }
     },
   });
