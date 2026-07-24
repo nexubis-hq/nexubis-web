@@ -12,6 +12,7 @@ import { BenchmarkRadar } from "./BenchmarkRadar";
 import { UnlockBar } from "./UnlockBar";
 import { ReportNav } from "./ReportNav";
 import { BookCallButton } from "./BookCallButton";
+import { ReportSidebar, type ReportNavItem, type SectionTone } from "./ReportSidebar";
 import { REPORT, POWERED_BY, VERDICT_LINES, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
 import { OXIPACK_CASE_URL } from "@/lib/site-config";
 import { RUBRIC } from "@/lib/scorecard/rubric";
@@ -217,24 +218,63 @@ export function ReportView({
   const rivals = result.scores.filter((s) => !s.isProspect);
   const embed = loomUrl ? loomEmbedUrl(loomUrl) : null;
 
+  // Sidebar "on this page" items: first impression plus the five categories,
+  // each dot toned by how the category scored (good / mid / poor).
+  const navItems: ReportNavItem[] = [
+    { id: "sc-first-impression", label: "First impression", tone: "neutral" },
+    ...RUBRIC.map((cat): ReportNavItem => {
+      const total = p?.categories.find((x) => x.key === cat.key)?.total ?? null;
+      const tone: SectionTone = total === null ? "neutral" : total >= 14 ? "good" : total >= 9 ? "mid" : "poor";
+      return { id: `category-${cat.key}`, label: cat.label, tone };
+    }),
+  ];
+
   const Shell = chrome ? "main" : "div";
   return (
     <Shell className="sc-report">
       <RevealOnScroll />
       {chrome ? <ReportNav company={result.meta.company} overall={overall} /> : null}
 
-      {/* 1. Cover */}
-      <header className="sc-cover">
+      {/* 1. Hero: land straight on the score. Brand, score and benchmark share
+          one section, so a stranger sees where they stand before scrolling. */}
+      <header className="sc-hero">
         <div className="site-container">
-          <p className="sc-cover-kicker" data-reveal>
+          <p className="sc-hero-kicker" data-reveal>
             {POWERED_BY}
           </p>
-          <h1 data-reveal>
-            {REPORT.coverTitlePrefix} <span className="sc-cover-company">{result.meta.company}</span>
+          <h1 className="sc-hero-title" data-reveal>
+            {REPORT.coverTitlePrefix} <span className="sc-hero-company">{result.meta.company}</span>
           </h1>
-          <p className="sc-cover-date" data-reveal>
-            {result.meta.date}
-          </p>
+          <div className="sc-hero-card" data-reveal>
+            <div className="sc-score-grid">
+              <div className="sc-score-ring">
+                <ScoreRing value={overall} display={overall === null ? "?" : String(overall)} subLabel="of 100" ariaLabel={`Credibility Score ${overall ?? "unknown"} of 100`} />
+                <p className="sc-verdict-band">{VERDICT_LABELS[result.verdict.band]}</p>
+                <BandScale overall={overall} band={result.verdict.band} />
+              </div>
+              <div className="sc-score-copy">
+                {teaser ? (
+                  <p className="sc-verdict-paragraph">{VERDICT_LINES[result.verdict.band]}</p>
+                ) : (
+                  <p className="sc-verdict-paragraph">{result.verdict.paragraph}</p>
+                )}
+                <p className="sc-chips-label">{TEASER.chipsLabel}</p>
+                <ul className="sc-overall-chips">
+                  {result.scores.map((s) => (
+                    <li key={s.company} className={s.isProspect ? "sc-chip-you" : "sc-chip"}>
+                      <span className="sc-chip-name">{s.company}</span>
+                      <span className="sc-chip-score">{s.scored && s.overall !== null ? s.overall : TEASER.rivalNotScored}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {p ? (
+                <div className="sc-score-radar">
+                  <BenchmarkRadar prospect={p} rivals={rivals} />
+                </div>
+              ) : null}
+            </div>
+          </div>
         </div>
       </header>
 
@@ -254,7 +294,7 @@ export function ReportView({
 
       {/* 3. First impression: the prospect's own screenshot leads, large; the
           competitors follow in a smaller row beneath. */}
-      <section className="sc-first-impression section">
+      <section className="sc-first-impression section" id="sc-first-impression">
         <div className="site-container">
           <h2 data-reveal>{REPORT.firstImpressionTitle}</h2>
           {(() => {
@@ -283,41 +323,6 @@ export function ReportView({
         </div>
       </section>
 
-      {/* 4. Your Credibility Score */}
-      <section className="sc-score section">
-        <div className="site-container">
-          <h2 data-reveal>{REPORT.scoreTitle}</h2>
-          <div className="sc-score-grid">
-            <div className="sc-score-ring" data-reveal>
-              <ScoreRing value={overall} display={overall === null ? "?" : String(overall)} subLabel="of 100" ariaLabel={`Credibility Score ${overall ?? "unknown"} of 100`} />
-              <p className="sc-verdict-band">{VERDICT_LABELS[result.verdict.band]}</p>
-              <BandScale overall={overall} band={result.verdict.band} />
-            </div>
-            <div className="sc-score-copy" data-reveal>
-              {teaser ? (
-                <p className="sc-verdict-paragraph">{VERDICT_LINES[result.verdict.band]}</p>
-              ) : (
-                <p className="sc-verdict-paragraph">{result.verdict.paragraph}</p>
-              )}
-              <p className="sc-chips-label">{TEASER.chipsLabel}</p>
-              <ul className="sc-overall-chips">
-                {result.scores.map((s) => (
-                  <li key={s.company} className={s.isProspect ? "sc-chip-you" : "sc-chip"}>
-                    <span className="sc-chip-name">{s.company}</span>
-                    <span className="sc-chip-score">{s.scored && s.overall !== null ? s.overall : TEASER.rivalNotScored}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            {p ? (
-              <div className="sc-score-radar" data-reveal>
-                <BenchmarkRadar prospect={p} rivals={rivals} />
-              </div>
-            ) : null}
-          </div>
-        </div>
-      </section>
-
       {teaser ? (
         <>
           {/* Locked category placeholders. The sticky bar is the single
@@ -330,10 +335,18 @@ export function ReportView({
         </>
       ) : (
         <>
-          {/* 5. Five category pages */}
-          {RUBRIC.map((cat, i) => (
-            <CategorySection key={cat.key} result={result} index={i + 1} catKey={cat.key} />
-          ))}
+          {/* 5. Five category pages, alongside the sticky "on this page" nav +
+              Laine's book-a-call card (desktop; the nav collapses on mobile). */}
+          <div className="sc-body">
+            <div className="site-container sc-body-inner">
+              <div className="sc-body-main">
+                {RUBRIC.map((cat, i) => (
+                  <CategorySection key={cat.key} result={result} index={i + 1} catKey={cat.key} />
+                ))}
+              </div>
+              <ReportSidebar items={navItems} company={result.meta.company} contactName={result.meta.contactName} />
+            </div>
+          </div>
 
           {/* 6. The first place to fix */}
           {result.firstFix ? (
