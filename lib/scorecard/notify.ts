@@ -22,7 +22,10 @@ export function leadNotifyRecipients(): string[] {
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
-  return configured.length ? configured : [TEAM_EMAIL].filter(Boolean);
+  if (configured.length) return configured;
+  // Default: the team inbox AND Laine both get every new-lead alert, even if
+  // SCORECARD_LEAD_EMAILS is not set in the deployment env. Deduped + empty-safe.
+  return Array.from(new Set([TEAM_EMAIL, "laine@nexubis.io"].map((e) => e.trim().toLowerCase()).filter(Boolean)));
 }
 
 async function sendEmail(args: { to: string | string[]; subject: string; text: string; replyTo?: string }): Promise<boolean> {
