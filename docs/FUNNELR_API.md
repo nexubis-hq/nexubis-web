@@ -19,7 +19,7 @@ The server-only client is in `lib/funnelr/client.ts`.
 
 Scorecard routing note: `/api/leads/scorecard` and `submitScorecardLeadToFunnelr()` must not call list or sequence endpoints. They are limited to contact create/update, `GET /api/v1/system/formFields`, custom profile update, custom profile read-back, and tag assignment. Funnelr automation triggered by `Trigger: Nexubis | Start Scorecard Sales` owns campaign-list and sequence movement.
 
-Temporary Messenger compatibility note: Funnelr Messenger cannot currently merge custom contact fields. The permanent Nexubis Scorecard report URL is still written to the custom `Nexubis | Scorecard Report URL` profile field. The same URL is also mirrored into the default Messenger `Alternative Address` contact field. Live API verification on 2026-07-24 confirmed that this value is represented in `POST /api/v1/user/users`, `PUT /api/v1/user/users`, and `GET /api/v1/user/users` as the standard `street` property. `PUT /api/v1/user/users/{id}/profile` with the built-in system `Address` form field did not produce a readable value, and `/api/v1/user/userAddresses` rejected the URL because its `email` property is email-validated, so neither path is used for this mirror.
+Messenger compatibility note: Funnelr Messenger cannot currently merge the custom Scorecard report URL field. The permanent Nexubis Scorecard report URL is still written to the custom `Nexubis | Scorecard Report URL` profile field. The same trimmed HTTPS URL is also mirrored into the built-in `Telephone` contact field for the supported `{$RecipientTelephone}` merge tag. Swagger verification on 2026-07-24 confirmed that this value is represented in `POST /api/v1/user/users`, `PUT /api/v1/user/users`, and `GET /api/v1/user/users` as the standard `telephone` property. The failed `Alternative Address` / `street` mirror is no longer used; existing `street` values are cleared only when they contain a previous Nexubis Scorecard report URL written by this integration.
 
 Implemented read-only functions:
 
@@ -47,7 +47,7 @@ The command performs only GET requests and prints sanitized endpoint availabilit
 | Find contact by email | `GET /api/v1/user/users` | Query: `Email`, plus required `Page`, `Size`. |
 | Create contact/user | `POST /api/v1/user/users` | Body: `CreateUserRequest`; required `email`, `isAgent`, `isStaff`, `isUnsubscribed`. |
 | Update contact/user | `PUT /api/v1/user/users` | Body: `UpdateUserRequest`; required `currencyCode`, `email`, `isAgent`, `userId`. |
-| Mirror Scorecard report URL to Messenger Alternative Address | `POST` / `PUT /api/v1/user/users` | Use the standard contact `street` property. The value must exactly match `Nexubis | Scorecard Report URL`. |
+| Mirror Scorecard report URL to Messenger Telephone | `POST` / `PUT /api/v1/user/users` | Use the standard contact `telephone` property. The value must exactly match `Nexubis | Scorecard Report URL`. |
 | Read custom contact fields | `GET /api/v1/user/users/{id}/custom` | Path `id` is integer user id. |
 | Update custom contact fields | `PUT /api/v1/user/users/{id}/profile` | Body: `UpdateUserProfileRequest` with `userProfiles[]` of `{ formFieldId, value }`. |
 | List contact field options | `GET /api/v1/user/option/contactFields` | No required params. |

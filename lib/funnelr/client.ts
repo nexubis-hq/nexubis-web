@@ -48,7 +48,7 @@ export interface CreateFunnelrContactInput {
   firstName?: string;
   lastName?: string;
   company?: string;
-  street?: string | null;
+  telephone?: string | null;
   hasAcceptedMarketing?: boolean;
 }
 
@@ -241,7 +241,7 @@ export class FunnelrClient {
       firstName: input.firstName?.trim() || null,
       lastName: input.lastName?.trim() || null,
       company: input.company?.trim() || null,
-      street: input.street?.trim() || null,
+      telephone: input.telephone?.trim() || null,
       isAgent: false,
       isStaff: false,
       isUnsubscribed: false,

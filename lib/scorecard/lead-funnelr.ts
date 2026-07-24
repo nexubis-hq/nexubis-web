@@ -3,8 +3,8 @@ import { createFunnelrClient, type FunnelrSystemFormField, type FunnelrTag, type
 export const SCORECARD_REPORT_URL_FIELD_ID = "6CDFB703-9B38-43A3-A2E4-311107F15424";
 export const SCORECARD_REPORT_URL_FIELD_KEY = "NexubisScorecardReportURL";
 export const SCORECARD_REPORT_URL_FIELD_NAME = "Nexubis | Scorecard Report URL";
-export const SCORECARD_REPORT_URL_MESSENGER_MIRROR_FIELD_NAME = "Alternative Address";
-export const SCORECARD_REPORT_URL_MESSENGER_MIRROR_API_FIELD = "street";
+export const SCORECARD_REPORT_URL_MESSENGER_MIRROR_FIELD_NAME = "Telephone";
+export const SCORECARD_REPORT_URL_MESSENGER_MIRROR_API_FIELD = "telephone";
 
 export const BRAND_NEXUBIS_TAG_NAME = "Brand: Nexubis";
 export const SOURCE_SCORECARD_TAG_NAME = "Source: Nexubis | Scorecard";
@@ -34,7 +34,7 @@ export interface ScorecardLeadResult {
 
 export interface ScorecardLeadFunnelrClient {
   findContactByEmail(email: string): Promise<FunnelrUser | null>;
-  createContact(input: { email: string; firstName?: string; lastName?: string; company?: string; street?: string; hasAcceptedMarketing?: boolean }): Promise<FunnelrUser>;
+  createContact(input: { email: string; firstName?: string; lastName?: string; company?: string; telephone?: string; hasAcceptedMarketing?: boolean }): Promise<FunnelrUser>;
   updateContact(input: {
     userId: number;
     email: string;
@@ -163,6 +163,30 @@ function profileValue(profile: FunnelrUserProfile): string {
   return typeof value === "string" ? value : "";
 }
 
+function validHttpsReportUrl(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" ? value : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function isScorecardReportUrl(value: unknown): boolean {
+  if (typeof value !== "string") return false;
+  try {
+    const parsed = new URL(value.trim());
+    return parsed.protocol === "https:" && /^\/scorecard\/r\/[abcdefghjkmnpqrstuvwxyz23456789]{8}$/.test(parsed.pathname);
+  } catch {
+    return false;
+  }
+}
+
+function streetForUpdate(existing: FunnelrUser): string | null | undefined {
+  return isScorecardReportUrl(existing.street) ? null : existing.street;
+}
+
 export function buildCustomFieldUpdates(input: NormalizedScorecardLead, fields: FunnelrSystemFormField[]): {
   updates: Array<{ formFieldId: string; value: unknown }>;
   updatedNames: string[];
@@ -196,7 +220,7 @@ async function applyTag(client: ScorecardLeadFunnelrClient, userId: number, name
 
 async function verifyReportUrlWrites(client: ScorecardLeadFunnelrClient, userId: number, email: string, reportUrl: string): Promise<void> {
   const [contact, profiles] = await Promise.all([client.findContactByEmail(email), client.getContactCustomFields(userId)]);
-  if (contact?.street !== reportUrl) {
+  if (contact?.telephone !== reportUrl) {
     throw new Error(`${SCORECARD_REPORT_URL_MESSENGER_MIRROR_FIELD_NAME} mirror was not saved correctly.`);
   }
 
@@ -229,7 +253,7 @@ export async function submitScorecardLeadToFunnelr(
         firstName: normalized.firstName,
         lastName: normalized.lastName,
         company: normalized.company,
-        street: normalized.reportUrl,
+        telephone: validHttpsReportUrl(normalized.reportUrl),
         hasAcceptedMarketing: normalized.marketingConsent,
       }));
     const userId = requireUserId(contact);
@@ -253,9 +277,9 @@ export async function submitScorecardLeadToFunnelr(
         subdivisionCode: existing.subdivisionCode,
         city: existing.city,
         postalCode: existing.postalCode,
-        street: normalized.reportUrl ?? existing.street,
+        street: streetForUpdate(existing),
         unit: existing.unit,
-        telephone: existing.telephone,
+        telephone: validHttpsReportUrl(normalized.reportUrl) ?? existing.telephone,
         timeZoneKey: existing.timeZoneKey,
         unsubscribeReasonKey: existing.unsubscribeReasonKey,
         companyTaxNumber: existing.companyTaxNumber,
@@ -269,8 +293,9 @@ export async function submitScorecardLeadToFunnelr(
     const fields = await client.listSystemFormFields();
     const { updates, updatedNames } = buildCustomFieldUpdates(normalized, fields);
     await client.updateContactCustomFields(userId, updates);
-    if (normalized.reportUrl) {
-      await verifyReportUrlWrites(client, userId, normalized.email, normalized.reportUrl);
+    const reportUrlMirror = validHttpsReportUrl(normalized.reportUrl);
+    if (reportUrlMirror) {
+      await verifyReportUrlWrites(client, userId, normalized.email, reportUrlMirror);
     }
 
     const tagsApplied = [
@@ -284,7 +309,7 @@ export async function submitScorecardLeadToFunnelr(
       contactCreated: !existing,
       tagsApplied,
       customFieldsUpdated: updatedNames,
-      standardFieldsUpdated: normalized.reportUrl ? [SCORECARD_REPORT_URL_MESSENGER_MIRROR_FIELD_NAME] : [],
+      standardFieldsUpdated: reportUrlMirror ? [SCORECARD_REPORT_URL_MESSENGER_MIRROR_FIELD_NAME] : [],
     };
   } catch (err) {
     return { ok: false, error: safeError(err) };

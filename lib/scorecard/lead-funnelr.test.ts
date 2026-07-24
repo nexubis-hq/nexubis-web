@@ -80,19 +80,20 @@ function client(
       return storedContact;
     },
     async createContact(input) {
-      calls.push(`create:${input.email}:${input.firstName ?? ""}:${input.hasAcceptedMarketing}:${input.street ?? ""}`);
-      storedContact = { userId: 101, email: input.email, firstName: input.firstName, street: opts.staleMirrorReadback ? "https://old.example/report" : input.street };
+      calls.push(`create:${input.email}:${input.firstName ?? ""}:${input.hasAcceptedMarketing}:${input.telephone ?? ""}`);
+      storedContact = { userId: 101, email: input.email, firstName: input.firstName, telephone: opts.staleMirrorReadback ? "https://old.example/report" : input.telephone };
       return storedContact;
     },
     async updateContact(input) {
-      calls.push(`update:${input.userId}:${input.email}:${input.hasAcceptedMarketing}:${input.street ?? ""}`);
+      calls.push(`update:${input.userId}:${input.email}:${input.hasAcceptedMarketing}:${input.telephone ?? ""}:${input.street ?? ""}`);
       storedContact = {
         ...(storedContact ?? {}),
         userId: input.userId,
         email: input.email,
         firstName: input.firstName,
         currencyCode: input.currencyCode,
-        street: opts.staleMirrorReadback ? "https://old.example/report" : input.street,
+        street: input.street,
+        telephone: opts.staleMirrorReadback ? "https://old.example/report" : input.telephone,
       };
       return storedContact;
     },
@@ -203,7 +204,7 @@ test("existing contact is reused and not duplicated", async () => {
   assert.equal(res.ok, true);
   assert.equal(res.contactCreated, false);
   assert.equal(c.calls.some((call) => call.startsWith("create:")), false);
-  assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345"));
+  assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345:"));
   assert.ok(c.calls.includes("add-tag:tag-trigger"));
   assertNoDirectRouting(c);
 });
@@ -220,35 +221,62 @@ test("optional report URL updates the report custom field", async () => {
   assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === "https://www.nexubis.io/scorecard/r/abc12345"));
 });
 
-test("new-contact report URL is mirrored to Alternative Address", async () => {
+test("new-contact report URL is mirrored to Telephone", async () => {
   const c = client(null);
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, true);
   assert.ok(c.calls.includes("create:mark@veltkamp-dosing.nl:Mark:true:https://www.nexubis.io/scorecard/r/abc12345"));
+  assert.equal(c.calls.some((call) => call.includes(":true::https://www.nexubis.io/scorecard/r/abc12345")), false);
   assert.deepEqual(res.customFieldsUpdated, ["reportUrl"]);
   assert.deepEqual(res.standardFieldsUpdated, [SCORECARD_REPORT_URL_MESSENGER_MIRROR_FIELD_NAME]);
   assertNoDirectRouting(c);
 });
 
-test("existing-contact report URL is mirrored to Alternative Address", async () => {
+test("existing-contact report URL is mirrored to Telephone without writing Address", async () => {
   const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, street: null });
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, true);
-  assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345"));
+  assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345:"));
   assert.equal(c.calls.some((call) => call.startsWith("create:")), false);
   assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === "https://www.nexubis.io/scorecard/r/abc12345"));
   assertNoDirectRouting(c);
 });
 
-test("stale Alternative Address mirror is replaced on repeat unlock", async () => {
-  const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, street: "https://old.example/report" });
+test("previously mirrored Scorecard report URL is removed from Address on repeat unlock", async () => {
+  const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, street: "https://www.nexubis.io/scorecard/r/abc23456" });
   const latest = "https://www.nexubis.io/scorecard/r/latest42";
   const res = await submitScorecardLeadToFunnelr(lead({ reportUrl: latest }), { client: c });
   assert.equal(res.ok, true);
-  assert.ok(c.calls.includes(`update:7:mark@veltkamp-dosing.nl:true:${latest}`));
+  assert.ok(c.calls.includes(`update:7:mark@veltkamp-dosing.nl:true:${latest}:`));
   assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === latest));
   assert.equal(c.calls.some((call) => call.startsWith("create:")), false);
   assertNoDirectRouting(c);
+});
+
+test("genuine existing Address is preserved when Telephone receives the report URL", async () => {
+  const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, street: "12 Market Street" });
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
+  assert.equal(res.ok, true);
+  assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345:12 Market Street"));
+  assertNoDirectRouting(c);
+});
+
+test("invalid non-HTTPS report URL does not update Telephone", async () => {
+  const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, telephone: "+27110000000" });
+  const res = await submitScorecardLeadToFunnelr(lead({ reportUrl: "http://www.nexubis.io/scorecard/r/abc12345" }), { client: c });
+  assert.equal(res.ok, true);
+  assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:+27110000000:"));
+  assert.deepEqual(res.standardFieldsUpdated, []);
+  assertNoDirectRouting(c);
+});
+
+test("unrelated contact without a report URL keeps existing Telephone and custom report URL untouched", async () => {
+  const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, telephone: "+27110000000", street: "12 Market Street" });
+  const res = await submitScorecardLeadToFunnelr({ firstName: "Mark", email: "mark@veltkamp-dosing.nl" }, { client: c });
+  assert.equal(res.ok, true);
+  assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:undefined:+27110000000:12 Market Street"));
+  assert.equal(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID), false);
+  assert.deepEqual(res.standardFieldsUpdated, []);
 });
 
 test("non-boolean consent is rejected", () => {
@@ -265,7 +293,7 @@ test("duplicate submission updates contact without duplicating tags", async () =
   assert.equal(res.ok, true);
   assert.equal(c.calls.some((call) => call.startsWith("create:")), false);
   assert.equal(c.calls.some((call) => call.startsWith("add-tag:")), false);
-  assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345"));
+  assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345:"));
   assert.ok(c.calls.includes("custom:1"));
   assertNoDirectRouting(c);
 });
@@ -325,8 +353,8 @@ test("failed required tag write returns a useful safe error", async () => {
   assert.match(res.error ?? "", /Tag write failed/);
 });
 
-test("failed Alternative Address mirror read-back returns a useful safe error", async () => {
+test("failed Telephone mirror read-back returns a useful safe error", async () => {
   const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { staleMirrorReadback: true }) });
   assert.equal(res.ok, false);
-  assert.match(res.error ?? "", /Alternative Address mirror was not saved correctly/);
+  assert.match(res.error ?? "", /Telephone mirror was not saved correctly/);
 });
