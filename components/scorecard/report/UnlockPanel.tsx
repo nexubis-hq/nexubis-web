@@ -93,6 +93,20 @@ export function UnlockPanel({ runId }: { runId: string }) {
         { content_name: LEAD_CONTENT_NAME, ...(value ? { value: value.value, currency: value.currency } : {}) },
         { email },
       );
+      // Route the lead to Funnelr's tag-only bridge (create/update contact, store
+      // report URL, apply Brand/Source/Start-Sales tags). Fire-and-forget.
+      const leadReportUrl = new URL(body.reportUrl, window.location.origin).toString();
+      void fetch("/api/leads/scorecard", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        keepalive: true,
+        body: JSON.stringify({
+          firstName,
+          email,
+          marketingConsent: true,
+          reportUrl: leadReportUrl,
+        }),
+      }).catch(() => {});
       setReportUrl(body.reportUrl);
       setState("done");
       window.setTimeout(() => {

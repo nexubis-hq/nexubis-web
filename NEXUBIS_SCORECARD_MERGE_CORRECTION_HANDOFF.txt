@@ -1,0 +1,73 @@
+Nexubis Scorecard Merge Correction Handoff
+Date: 2026-07-24
+
+1. Root cause
+
+The previous merge resolution treated two competing Scorecard routing models as compatible.
+That was incorrect. The final Funnelr contract is tag-only, so the Nexubis website/server
+must not duplicate Funnelr list or sequence automation.
+
+2. Files changed
+
+- app/api/leads/scorecard/route.ts
+- lib/scorecard/lead-funnelr.ts
+- lib/scorecard/lead-funnelr.test.ts
+- lib/scorecard/scorecard-lead-route.test.ts
+- docs/FUNNELR_AUTOMATION_CONTRACT.md
+- docs/FUNNELR_API.md
+
+3. Direct list behaviour removed and enforced
+
+- No Scorecard lead flow list lookup
+- No list membership verification
+- No add/remove list calls
+- No direct sequence calls
+- Removed triggerTagSkipped response/contract artifact
+- Tests now include explicit negative mocks/assertions for list and sequence methods
+
+4. Final Scorecard actions
+
+- Normalize email
+- Find/create Funnelr contact
+- Update existing contact
+- Resolve Nexubis | Scorecard Report URL via system form fields
+- Update report URL custom field
+- Apply Brand: Nexubis
+- Apply Source: Nexubis | Scorecard
+- Apply Trigger: Nexubis | Start Scorecard Sales
+
+5. Remaining list-helper usages and why they remain
+
+- lib/funnelr/client.ts still has generic list helpers and listSequences() because they
+  are shared Funnelr client/API inspection utilities, not Scorecard routing.
+- scripts/funnelr-inspect.ts uses list/sequence reads for read-only endpoint inspection.
+- Tests reference list method names only as negative assertions.
+- Migration audit/report docs retain historical references.
+
+6. Test results
+
+- npx vitest run lib/scorecard/lead-funnelr.test.ts lib/scorecard/scorecard-lead-route.test.ts:
+  23 passed
+- npm test:
+  169 passed
+- npm run typecheck:
+  passed
+- npm run lint:
+  passed with existing warnings only, no errors
+
+7. Documentation updates
+
+- docs/FUNNELR_AUTOMATION_CONTRACT.md now states Scorecard is tag-only and direct
+  Scorecard list/sequence handling is a regression.
+- Added 2026-07-24 changelog entry for removing merge-reintroduced direct list behavior.
+- docs/FUNNELR_API.md now notes Scorecard must not call list/sequence endpoints.
+
+8. Local commit
+
+- f7f0f8d fix(funnelr): remove direct Scorecard list routing
+
+9. Push/deploy status before this handoff file
+
+- No push had been performed for f7f0f8d at the time this handoff was originally prepared.
+- No deploy was performed.
+- main was ahead 1 locally.

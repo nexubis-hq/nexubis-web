@@ -1,5 +1,5 @@
 const DEFAULT_BASE_URL = "https://ab513.gappstack.com";
-const DEFAULT_TIMEOUT_MS = 30000;
+const DEFAULT_TIMEOUT_MS = 180000;
 
 type QueryValue = string | number | boolean | undefined;
 
@@ -18,12 +18,29 @@ export interface FunnelrUser {
   lastName?: string | null;
   company?: string | null;
   currencyCode?: string | null;
+  cultureCode?: string | null;
+  countryCode?: string | null;
+  subdivisionCode?: string | null;
+  city?: string | null;
+  postalCode?: string | null;
+  street?: string | null;
+  unit?: string | null;
+  telephone?: string | null;
+  timeZoneKey?: string | null;
+  unsubscribeReasonKey?: string | null;
+  companyTaxNumber?: string | null;
+  companyRegistrationNumber?: string | null;
+  statusId?: string | null;
+  rankId?: string | null;
   isAgent?: boolean;
   isStaff?: boolean;
+  isBouncing?: boolean;
+  isPlaced?: boolean;
   isUnsubscribed?: boolean;
   hasAcceptedMarketing?: boolean | null;
   isContact?: boolean;
   isDeleted?: boolean;
+  rating?: number | null;
 }
 
 export interface CreateFunnelrContactInput {
@@ -38,6 +55,25 @@ export interface UpdateFunnelrContactInput extends CreateFunnelrContactInput {
   userId: number;
   currencyCode?: string | null;
   isAgent?: boolean;
+  isStaff?: boolean;
+  isBouncing?: boolean;
+  isPlaced?: boolean;
+  isUnsubscribed?: boolean;
+  cultureCode?: string | null;
+  countryCode?: string | null;
+  subdivisionCode?: string | null;
+  city?: string | null;
+  postalCode?: string | null;
+  street?: string | null;
+  unit?: string | null;
+  telephone?: string | null;
+  timeZoneKey?: string | null;
+  unsubscribeReasonKey?: string | null;
+  companyTaxNumber?: string | null;
+  companyRegistrationNumber?: string | null;
+  statusId?: string | null;
+  rankId?: string | null;
+  rating?: number | null;
 }
 
 export interface FunnelrList {
@@ -66,6 +102,19 @@ export interface FunnelrContactField {
   value?: string | null;
   caption?: string | null;
   label?: string | null;
+}
+
+export interface FunnelrSystemFormField {
+  formFieldId: string;
+  formFieldKey?: string | null;
+  formFieldTypeKey?: string | null;
+  formControlKey?: string | null;
+  label?: string | null;
+  name?: string | null;
+  description?: string | null;
+  value?: string | null;
+  isUnique?: boolean;
+  isSystem?: boolean;
 }
 
 export interface FunnelrUserProfile {
@@ -209,9 +258,28 @@ export class FunnelrClient {
       email,
       currencyCode: input.currencyCode,
       isAgent: input.isAgent ?? false,
+      isStaff: input.isStaff ?? false,
+      isUnsubscribed: input.isUnsubscribed ?? false,
+      isBouncing: input.isBouncing ?? false,
+      isPlaced: input.isPlaced ?? false,
+      rating: input.rating ?? 0,
       firstName: input.firstName?.trim() || null,
       lastName: input.lastName?.trim() || null,
       company: input.company?.trim() || null,
+      cultureCode: input.cultureCode ?? null,
+      countryCode: input.countryCode ?? null,
+      subdivisionCode: input.subdivisionCode ?? null,
+      city: input.city ?? null,
+      postalCode: input.postalCode ?? null,
+      street: input.street ?? null,
+      unit: input.unit ?? null,
+      telephone: input.telephone ?? null,
+      timeZoneKey: input.timeZoneKey ?? null,
+      unsubscribeReasonKey: input.unsubscribeReasonKey ?? null,
+      companyTaxNumber: input.companyTaxNumber ?? null,
+      companyRegistrationNumber: input.companyRegistrationNumber ?? null,
+      statusId: input.statusId ?? null,
+      rankId: input.rankId ?? null,
       hasAcceptedMarketing: input.hasAcceptedMarketing ?? true,
     });
   }
@@ -274,6 +342,10 @@ export class FunnelrClient {
 
   async listContactFields(): Promise<FunnelrContactField[]> {
     return this.get<FunnelrContactField[]>("/api/v1/user/option/contactFields");
+  }
+
+  async listSystemFormFields(): Promise<FunnelrSystemFormField[]> {
+    return this.get<FunnelrSystemFormField[]>("/api/v1/system/formFields");
   }
 
   async getContactCustomFields(userId: number): Promise<FunnelrUserProfile[]> {

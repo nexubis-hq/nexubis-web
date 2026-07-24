@@ -41,7 +41,12 @@ beforeEach(() => {
   readSharedMock.mockReset();
   submitScorecardLeadToFunnelrMock.mockReset();
   readSharedMock.mockResolvedValue({ result: { meta: { company: "Veltkamp Dosing" } } });
-  submitScorecardLeadToFunnelrMock.mockResolvedValue({ ok: true, listMembershipConfirmed: true, customFieldsUpdated: [], missingCustomFields: [] });
+  submitScorecardLeadToFunnelrMock.mockResolvedValue({
+    ok: true,
+    contactCreated: true,
+    tagsApplied: ["Brand: Nexubis", "Source: Nexubis | Scorecard", "Trigger: Nexubis | Start Scorecard Sales"],
+    customFieldsUpdated: ["reportUrl"],
+  });
   delete process.env.NEXT_PUBLIC_SITE_URL;
 });
 
@@ -58,6 +63,9 @@ test("scorecard lead endpoint accepts first name and email only", async () => {
   const body = await res.json();
   assert.equal(res.status, 200);
   assert.equal(body.ok, true);
+  assert.equal("listMembershipConfirmed" in body, false);
+  assert.equal("listMembership" in body, false);
+  assert.deepEqual(body.tagsApplied, ["Brand: Nexubis", "Source: Nexubis | Scorecard", "Trigger: Nexubis | Start Scorecard Sales"]);
   assert.equal(readSharedMock.mock.calls.length, 0);
   assert.deepEqual(submitScorecardLeadToFunnelrMock.mock.calls[0][0], {
     firstName: "Mark",
@@ -111,4 +119,15 @@ test("scorecard lead endpoint returns safe success when Funnelr fails", async ()
   assert.equal(res.status, 200);
   assert.equal(body.ok, false);
   assert.equal(body.error, "Lead capture is temporarily unavailable.");
+  assert.equal("tagsApplied" in body, false);
+});
+
+test("scorecard lead endpoint does not claim full success when required tag application fails", async () => {
+  submitScorecardLeadToFunnelrMock.mockResolvedValue({ ok: false, error: "Required Funnelr tag was not found: Source: Nexubis | Scorecard" });
+  const res = await POST(request(payload()));
+  const body = await res.json();
+  assert.equal(res.status, 200);
+  assert.equal(body.ok, false);
+  assert.equal(body.error, "Lead capture is temporarily unavailable.");
+  assert.equal("tagsApplied" in body, false);
 });

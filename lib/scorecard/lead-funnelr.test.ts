@@ -1,12 +1,34 @@
 import { test } from "vitest";
 import assert from "node:assert/strict";
-import { buildCustomFieldUpdates, normalizeScorecardLeadInput, SCORECARD_LEADS_LIST_NAME, submitScorecardLeadToFunnelr, type ScorecardLeadFunnelrClient, type ScorecardLeadInput } from "./lead-funnelr";
-import type { FunnelrContactField, FunnelrList, FunnelrUser } from "@/lib/funnelr/client";
+import {
+  BRAND_NEXUBIS_TAG_NAME,
+  buildCustomFieldUpdates,
+  normalizeScorecardLeadInput,
+  SCORECARD_REPORT_URL_FIELD_ID,
+  SCORECARD_REPORT_URL_FIELD_KEY,
+  SCORECARD_REPORT_URL_FIELD_NAME,
+  SOURCE_SCORECARD_TAG_NAME,
+  START_SCORECARD_SALES_TAG_NAME,
+  submitScorecardLeadToFunnelr,
+  type ScorecardLeadFunnelrClient,
+  type ScorecardLeadInput,
+} from "./lead-funnelr";
+import type { FunnelrSystemFormField, FunnelrTag, FunnelrUser } from "@/lib/funnelr/client";
 
-const scorecardList: FunnelrList = { listId: "list-scorecard", name: SCORECARD_LEADS_LIST_NAME };
-const fields: FunnelrContactField[] = [
-  { value: "field-started", label: "Scorecard Started Timestamp" },
-  { value: "field-url", label: "Scorecard Report URL" },
+const routingTags: FunnelrTag[] = [
+  { tagId: "tag-brand", name: BRAND_NEXUBIS_TAG_NAME },
+  { tagId: "tag-source", name: SOURCE_SCORECARD_TAG_NAME },
+  { tagId: "tag-trigger", name: START_SCORECARD_SALES_TAG_NAME },
+];
+
+const fields: FunnelrSystemFormField[] = [
+  {
+    formFieldId: SCORECARD_REPORT_URL_FIELD_ID,
+    formFieldKey: SCORECARD_REPORT_URL_FIELD_KEY,
+    formFieldTypeKey: "ContactProfile",
+    formControlKey: "Text",
+    name: SCORECARD_REPORT_URL_FIELD_NAME,
+  },
 ];
 
 function lead(overrides: Partial<ScorecardLeadInput> = {}): ScorecardLeadInput {
@@ -20,13 +42,28 @@ function lead(overrides: Partial<ScorecardLeadInput> = {}): ScorecardLeadInput {
   };
 }
 
-function client(existing: FunnelrUser | null = null, opts: { fail?: boolean; alreadyInList?: boolean } = {}): ScorecardLeadFunnelrClient & { calls: string[]; listMembers: Set<number>; updates: Array<{ formFieldId: string; value: unknown }> } {
+function client(
+  existing: FunnelrUser | null = null,
+  opts: { fail?: boolean; existingTagIds?: string[]; fieldList?: FunnelrSystemFormField[]; missingTag?: string; failTagAdd?: string } = {},
+): ScorecardLeadFunnelrClient & {
+  calls: string[];
+  contactTags: Set<string>;
+  updates: Array<{ formFieldId: string; value: unknown }>;
+  findListByName(name: string): Promise<never>;
+  contactBelongsToList(userId: number, listId: string): Promise<never>;
+  addContactToList(userId: number, listId: string): Promise<never>;
+  removeContactFromList(userId: number, listId: string): Promise<never>;
+  findSequenceByName(name: string): Promise<never>;
+  addContactToSequence(userId: number, sequenceId: string): Promise<never>;
+  removeContactFromSequence(userId: number, sequenceId: string): Promise<never>;
+} {
   const calls: string[] = [];
-  const listMembers = new Set<number>(opts.alreadyInList && existing?.userId ? [existing.userId] : []);
+  const contactTags = new Set(opts.existingTagIds ?? []);
   const updates: Array<{ formFieldId: string; value: unknown }> = [];
+
   return {
     calls,
-    listMembers,
+    contactTags,
     updates,
     async findContactByEmail(email) {
       calls.push(`find:${email}`);
@@ -41,51 +78,88 @@ function client(existing: FunnelrUser | null = null, opts: { fail?: boolean; alr
       calls.push(`update:${input.userId}:${input.email}:${input.hasAcceptedMarketing}`);
       return { userId: input.userId, email: input.email, firstName: input.firstName, currencyCode: input.currencyCode };
     },
-    async findListByName(name) {
-      calls.push(`list:${name}`);
-      return name === SCORECARD_LEADS_LIST_NAME ? scorecardList : null;
+    async findTagByName(name) {
+      calls.push(`tag:${name}`);
+      if (name === opts.missingTag) return null;
+      return routingTags.find((tag) => tag.name === name) ?? null;
     },
-    async contactBelongsToList(userId, listId) {
-      calls.push(`has-list:${userId}:${listId}`);
-      return listMembers.has(userId);
+    async contactHasTag(_userId, tagId) {
+      calls.push(`has-tag:${tagId}`);
+      return contactTags.has(tagId);
     },
-    async addContactToList(userId, listId) {
-      calls.push(`add-list:${userId}:${listId}`);
-      listMembers.add(userId);
+    async addTagToContact(_userId, tagId) {
+      calls.push(`add-tag:${tagId}`);
+      if (tagId === opts.failTagAdd) throw new Error(`Tag write failed for ${tagId}`);
+      contactTags.add(tagId);
     },
-    async listContactFields() {
+    async listSystemFormFields() {
       calls.push("fields");
-      return fields;
+      return opts.fieldList ?? fields;
     },
     async updateContactCustomFields(_userId, userProfiles) {
       calls.push(`custom:${userProfiles.length}`);
       updates.push(...userProfiles);
     },
+    async findListByName(name) {
+      calls.push(`find-list:${name}`);
+      throw new Error("Scorecard flow must not find Funnelr lists.");
+    },
+    async contactBelongsToList(userId, listId) {
+      calls.push(`has-list:${userId}:${listId}`);
+      throw new Error("Scorecard flow must not check Funnelr list membership.");
+    },
+    async addContactToList(userId, listId) {
+      calls.push(`add-list:${userId}:${listId}`);
+      throw new Error("Scorecard flow must not add Funnelr lists.");
+    },
+    async removeContactFromList(userId, listId) {
+      calls.push(`remove-list:${userId}:${listId}`);
+      throw new Error("Scorecard flow must not remove Funnelr lists.");
+    },
+    async findSequenceByName(name) {
+      calls.push(`find-sequence:${name}`);
+      throw new Error("Scorecard flow must not find Funnelr sequences.");
+    },
+    async addContactToSequence(userId, sequenceId) {
+      calls.push(`add-sequence:${userId}:${sequenceId}`);
+      throw new Error("Scorecard flow must not add Funnelr sequences.");
+    },
+    async removeContactFromSequence(userId, sequenceId) {
+      calls.push(`remove-sequence:${userId}:${sequenceId}`);
+      throw new Error("Scorecard flow must not remove Funnelr sequences.");
+    },
   };
 }
 
-test("new contact is created, custom fields are updated and Scorecard list is assigned", async () => {
+function assertNoDirectRouting(c: { calls: string[] }) {
+  for (const prefix of ["find-list:", "has-list:", "add-list:", "remove-list:", "find-sequence:", "add-sequence:", "remove-sequence:"]) {
+    assert.equal(c.calls.some((call) => call.startsWith(prefix)), false, `unexpected direct routing call: ${prefix}`);
+  }
+}
+
+test("new contact is created, report URL is saved, and final routing tags are assigned", async () => {
   const c = client(null);
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, true);
   assert.equal(res.contactCreated, true);
-  assert.equal(res.listMembershipConfirmed, true);
   assert.ok(c.calls.includes("create:mark@veltkamp-dosing.nl:Mark:true"));
-  assert.ok(c.calls.includes("add-list:101:list-scorecard"));
-  assert.ok(c.updates.some((u) => u.formFieldId === "field-url" && u.value === "https://www.nexubis.io/scorecard/r/abc12345"));
-  assert.ok(c.updates.some((u) => u.formFieldId === "field-started"));
+  assertNoDirectRouting(c);
+  assert.ok(c.calls.includes("add-tag:tag-brand"));
+  assert.ok(c.calls.includes("add-tag:tag-source"));
+  assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === "https://www.nexubis.io/scorecard/r/abc12345"));
 });
 
-test("first name and email only creates a contact and assigns the Scorecard list", async () => {
+test("first name and email only creates a contact and applies final routing tags", async () => {
   const c = client(null);
   const res = await submitScorecardLeadToFunnelr({ firstName: "Mark", email: "MARK@VELTKAMP-DOSING.NL" }, { client: c });
   assert.equal(res.ok, true);
   assert.equal(res.contactCreated, true);
   assert.ok(c.calls.includes("find:mark@veltkamp-dosing.nl"));
   assert.ok(c.calls.includes("create:mark@veltkamp-dosing.nl:Mark:undefined"));
-  assert.ok(c.calls.includes("add-list:101:list-scorecard"));
-  assert.equal(c.updates.some((u) => u.formFieldId === "field-url"), false);
-  assert.ok(c.updates.some((u) => u.formFieldId === "field-started"));
+  assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assertNoDirectRouting(c);
+  assert.equal(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID), false);
 });
 
 test("optional marketing consent is passed through when present", async () => {
@@ -102,7 +176,8 @@ test("existing contact is reused and not duplicated", async () => {
   assert.equal(res.contactCreated, false);
   assert.equal(c.calls.some((call) => call.startsWith("create:")), false);
   assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true"));
-  assert.ok(c.calls.includes("add-list:7:list-scorecard"));
+  assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assertNoDirectRouting(c);
 });
 
 test("invalid email is rejected", () => {
@@ -114,7 +189,7 @@ test("optional report URL updates the report custom field", async () => {
   const c = client(null);
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, true);
-  assert.ok(c.updates.some((u) => u.formFieldId === "field-url" && u.value === "https://www.nexubis.io/scorecard/r/abc12345"));
+  assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === "https://www.nexubis.io/scorecard/r/abc12345"));
 });
 
 test("non-boolean consent is rejected", () => {
@@ -122,20 +197,25 @@ test("non-boolean consent is rejected", () => {
   assert.equal("error" in res, true);
 });
 
-test("duplicate submission updates contact without duplicating list membership", async () => {
-  const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false }, { alreadyInList: true });
+test("duplicate submission updates contact without duplicating tags", async () => {
+  const c = client(
+    { userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false },
+    { existingTagIds: ["tag-brand", "tag-source", "tag-trigger"] },
+  );
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, true);
   assert.equal(c.calls.some((call) => call.startsWith("create:")), false);
-  assert.equal(c.calls.includes("add-list:7:list-scorecard"), false);
+  assert.equal(c.calls.some((call) => call.startsWith("add-tag:")), false);
   assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true"));
-  assert.ok(c.calls.includes("custom:2"));
+  assert.ok(c.calls.includes("custom:1"));
+  assertNoDirectRouting(c);
 });
 
-test("successful Scorecard list assignment is verified", async () => {
+test("successful routing tag assignment is verified", async () => {
   const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false });
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
-  assert.equal(res.listMembershipConfirmed, true);
+  assert.deepEqual(res.tagsApplied, [BRAND_NEXUBIS_TAG_NAME, SOURCE_SCORECARD_TAG_NAME, START_SCORECARD_SALES_TAG_NAME]);
+  assertNoDirectRouting(c);
 });
 
 test("Funnelr API failure is sanitized and non-throwing", async () => {
@@ -145,10 +225,43 @@ test("Funnelr API failure is sanitized and non-throwing", async () => {
   assert.equal(res.error?.includes("MARK@"), false);
 });
 
-test("custom field mapping reports missing live fields without blocking list assignment", async () => {
+test("custom field mapping fails when the target report field is missing", () => {
   const normalized = normalizeScorecardLeadInput(lead());
   assert.ok(!("error" in normalized));
-  const mapped = buildCustomFieldUpdates(normalized, fields.filter((f) => f.label !== "Scorecard Report URL"));
-  assert.ok(mapped.updatedNames.includes("scorecardStartedAt"));
-  assert.ok(mapped.missingNames.includes("reportUrl"));
+  assert.throws(() => buildCustomFieldUpdates(normalized, []), /Required Funnelr custom field/);
+});
+
+test("custom field mapping resolves the target field by key", () => {
+  const normalized = normalizeScorecardLeadInput(lead());
+  assert.ok(!("error" in normalized));
+  const mapped = buildCustomFieldUpdates(normalized, [{ formFieldId: "field-key", formFieldKey: SCORECARD_REPORT_URL_FIELD_KEY, formFieldTypeKey: "ContactProfile" }]);
+  assert.deepEqual(mapped.updates, [{ formFieldId: "field-key", value: "https://www.nexubis.io/scorecard/r/abc12345" }]);
+});
+
+test("unsubscribed existing contact is still given the required sales trigger", async () => {
+  const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, isUnsubscribed: true });
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
+  assert.equal(res.ok, true);
+  assert.ok(c.calls.includes("add-tag:tag-brand"));
+  assert.ok(c.calls.includes("add-tag:tag-source"));
+  assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assertNoDirectRouting(c);
+});
+
+test("missing Scorecard URL field returns a useful safe error and does not silently skip the update", async () => {
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { fieldList: [] }) });
+  assert.equal(res.ok, false);
+  assert.match(res.error ?? "", /Required Funnelr custom field was not found/);
+});
+
+test("failed required tag operation returns a useful safe error", async () => {
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { missingTag: SOURCE_SCORECARD_TAG_NAME }) });
+  assert.equal(res.ok, false);
+  assert.match(res.error ?? "", /Required Funnelr tag was not found/);
+});
+
+test("failed required tag write returns a useful safe error", async () => {
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { failTagAdd: "tag-source" }) });
+  assert.equal(res.ok, false);
+  assert.match(res.error ?? "", /Tag write failed/);
 });
