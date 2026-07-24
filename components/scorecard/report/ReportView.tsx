@@ -11,8 +11,9 @@ import { ScoreRing } from "./ScoreRing";
 import { BenchmarkRadar } from "./BenchmarkRadar";
 import { UnlockBar } from "./UnlockBar";
 import { ReportNav } from "./ReportNav";
+import { BookCallButton } from "./BookCallButton";
 import { REPORT, POWERED_BY, VERDICT_LINES, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
-import { BOOKING_URL, OXIPACK_CASE_URL } from "@/lib/site-config";
+import { OXIPACK_CASE_URL } from "@/lib/site-config";
 import { RUBRIC } from "@/lib/scorecard/rubric";
 import { VERDICT_LABELS } from "@/lib/scorecard/scoring";
 import { prospectScores, type ScorecardResult, type CompanyExhibit } from "@/lib/scorecard/result";
@@ -395,9 +396,14 @@ export function ReportView({
                   );
                 })}
               </ol>
-              <a className="btn btn-primary sc-next-step-cta" href={BOOKING_URL} data-reveal>
+              <BookCallButton
+                className="btn btn-primary sc-next-step-cta"
+                personName={result.meta.contactName}
+                business={result.meta.company}
+                reveal
+              >
                 {REPORT.nextStepButton}
-              </a>
+              </BookCallButton>
             </div>
           </section>
 

@@ -1,6 +1,6 @@
 # AI READ FIRST: Funnelr Automation Master Contract
 
-Last updated: 2026-07-23
+Last updated: 2026-07-24
 
 This document is the single permanent source of truth for Nexubis Funnelr automation behaviour in this repository. Future AI agents and human maintainers must read this file before changing Funnelr lists, sequences, tags, automations, contact-routing code, or related scripts.
 
@@ -11,6 +11,8 @@ Do not create competing Funnelr automation explanation files. Update this master
 ## Purpose
 
 The Nexubis Scorecard integration captures qualified Scorecard leads, stores the permanent report URL on the Funnelr contact, and requests campaign routing through temporary trigger tags. Funnelr owns campaign membership, sequence enrolment, exit handling, and history safeguards.
+
+The Scorecard website/server integration is tag-only. Any reintroduction of direct Scorecard campaign-list or sequence handling in website code is a regression.
 
 ## Responsibility Split
 
@@ -27,6 +29,8 @@ The website/server must not:
 - add contacts directly to campaign lists
 - add contacts directly to sequences
 - remove contacts from campaign lists or sequences
+- find, verify, add, or remove Scorecard campaign-list membership
+- add, remove, or verify Scorecard sequence enrolment
 - apply History tags
 - recreate Funnelr automation logic in code
 
@@ -266,6 +270,8 @@ Current flow:
 
 Do not send leads to Funnelr when the Scorecard page loads, the scan begins, the preview is generated, the contact form opens, or an existing report is viewed.
 
+The Scorecard capture flow must only create/update the contact, write `Nexubis | Scorecard Report URL`, and apply the three required tags. It must never directly add or remove the Scorecard sales list, nurture list, holding list, Scorecard sales sequence, or nurture sequence.
+
 ## Cal.com Booking Flow
 
 `lib/cal-webhook/handler.ts` verifies the Cal.com webhook signature and event slug.
@@ -367,9 +373,6 @@ Rollback steps:
 - Updated `Nexubis | Start Credibility Brief Nurture` to remove `Nexubis | Manual Leads - Holding` when nurture entry succeeds.
 - Documented manual-first and Scorecard-first journeys and confirmed nurture History must not be reset.
 - Renamed this file to `AI_READ_FIRST_FUNNELR_AUTOMATION_MASTER_CONTRACT.md` and removed obsolete `.txt` migration handoff artifacts so this remains the single master automation logic document.
-
-2026-07-24:
-
 - Removed direct Scorecard list-routing behaviour that was reintroduced during branch merge resolution.
 - Reconfirmed the website/server Scorecard integration as tag-only: contact create/update, report URL custom field, Brand tag, Source tag, and sales Trigger tag.
 - Added explicit regression warning that the Scorecard website must never directly add/remove campaign lists or sequences.

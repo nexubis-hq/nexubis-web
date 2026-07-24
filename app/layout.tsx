@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AgentationProvider } from "@/components/AgentationProvider";
+import { MetaPixel } from "@/components/MetaPixel";
 
 export const metadata: Metadata = {
   title: "Nexubis | Your in-house creative team",
@@ -18,6 +19,7 @@ export default function RootLayout({
       <body>
         {children}
         <AgentationProvider />
+        <MetaPixel />
       </body>
     </html>
   );

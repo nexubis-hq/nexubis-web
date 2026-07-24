@@ -25,7 +25,6 @@ export interface ScorecardLeadResult {
   ok: boolean;
   contactCreated?: boolean;
   tagsApplied?: string[];
-  triggerTagSkipped?: boolean;
   customFieldsUpdated?: string[];
   error?: string;
 }
@@ -246,17 +245,13 @@ export async function submitScorecardLeadToFunnelr(
     const tagsApplied = [
       await applyTag(client, userId, BRAND_NEXUBIS_TAG_NAME),
       await applyTag(client, userId, SOURCE_SCORECARD_TAG_NAME),
+      await applyTag(client, userId, START_SCORECARD_SALES_TAG_NAME),
     ];
-    const triggerTagSkipped = contact.isUnsubscribed === true;
-    if (!triggerTagSkipped) {
-      tagsApplied.push(await applyTag(client, userId, START_SCORECARD_SALES_TAG_NAME));
-    }
 
     return {
       ok: true,
       contactCreated: !existing,
       tagsApplied,
-      triggerTagSkipped,
       customFieldsUpdated: updatedNames,
     };
   } catch (err) {

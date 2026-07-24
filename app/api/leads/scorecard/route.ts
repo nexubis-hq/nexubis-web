@@ -50,7 +50,6 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     tagsApplied: result.tagsApplied,
-    triggerTagSkipped: result.triggerTagSkipped,
     customFieldsUpdated: result.customFieldsUpdated,
   });
 }

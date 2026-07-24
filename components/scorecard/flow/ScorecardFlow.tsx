@@ -7,6 +7,8 @@
 // is hardcoded here.
 import { useRef, useState } from "react";
 import { LANDING, FORM_FIELDS } from "@/lib/scorecard/copy";
+import { trackMeta } from "@/lib/meta/track";
+import { META_EVENTS } from "@/lib/meta/events";
 import { ScanAnimation } from "./ScanAnimation";
 import { ScorecardPreviewRadar } from "./ScorecardPreviewRadar";
 import { ReportView } from "@/components/scorecard/report/ReportView";
@@ -56,6 +58,9 @@ export function ScorecardFlow() {
   const [url, setUrl] = useState("");
   const [fieldError, setFieldError] = useState("");
   const teaserRef = useRef<HTMLDivElement>(null);
+  // AuditStart fires once per visit, even if validation bounces the user back
+  // and they resubmit (§3: once per visit, ref-guarded against retries).
+  const auditStartFired = useRef(false);
   const urlValid = looksLikeWebAddress(url);
 
   async function submit(e: React.FormEvent) {
@@ -67,6 +72,10 @@ export function ScorecardFlow() {
     }
 
     const company = companyFromUrl(url);
+    if (!auditStartFired.current) {
+      auditStartFired.current = true;
+      trackMeta(META_EVENTS.auditStart, { content_category: "scorecard", content_name: company });
+    }
     setFlow({ step: "scanning", stage: "reading", company });
     try {
       const res = await fetch("/api/scorecard/run", {
