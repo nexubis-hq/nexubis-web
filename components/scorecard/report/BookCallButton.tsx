@@ -2,9 +2,9 @@
 
 // The report's "book a call" CTA. A non-embed link that opens cal.com prefilled
 // with the person's name, their business, and THIS report's URL, so an
-// email/report-originated booking correlates back to the exact Scorecard (§1).
-// Fires AuditBookClick on click — a click is intent, NOT a booking; the confirmed
-// Schedule only comes from the cal.com webhook (§3). Usable from server components.
+// email/report-originated booking correlates back to the exact Scorecard (section 1).
+// Fires AuditBookClick on click; a click is intent, NOT a booking. The confirmed
+// Schedule only comes from the cal.com webhook (section 3). Usable from server components.
 import { useEffect, useRef } from "react";
 import { buildBookingUrl } from "@/lib/booking";
 import { trackMeta } from "@/lib/meta/track";
@@ -24,7 +24,7 @@ export function BookCallButton({
   children: React.ReactNode;
 }) {
   // SSR-safe href carries name + business immediately; on mount it is upgraded
-  // with the live report URL (window.location) — a DOM write via ref, not state,
+  // with the live report URL (window.location); a DOM write via ref, not state,
   // so there is no hydration mismatch (same pattern as the share link).
   const baseHref = buildBookingUrl({ name: personName, business });
   const ref = useRef<HTMLAnchorElement>(null);

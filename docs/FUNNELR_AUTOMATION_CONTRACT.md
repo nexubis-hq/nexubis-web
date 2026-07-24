@@ -20,6 +20,7 @@ The Nexubis website/server only:
 
 - creates or updates the Funnelr contact
 - saves `Nexubis | Scorecard Report URL`
+- temporarily mirrors the same report URL into Funnelr's default `Alternative Address` Messenger field
 - applies `Brand: Nexubis`
 - applies `Source: Nexubis | Scorecard`
 - applies `Trigger: Nexubis | Start Scorecard Sales`
@@ -97,6 +98,8 @@ Sequence activation remains a separate launch decision because activating sequen
 | `Nexubis | Scorecard Sales Started At` | `289A7E5A-46A8-4E82-8C5E-4781056FBE21` | `NexubisScorecardSalesStartedAt` | Date | Existing field reserved for later sales-to-nurture scheduling. |
 
 Custom contact-profile fields are discovered through `GET /api/v1/system/formFields`, not `GET /api/v1/user/option/contactFields`.
+
+The permanent Scorecard report URL source of truth is `Nexubis | Scorecard Report URL`. For temporary Messenger compatibility, the website/server also writes the exact same URL to Funnelr's default `Alternative Address` field. Live API read-back verified that this default Messenger field is represented in the contact create/update API as the standard `street` property. Both the custom field and `street` mirror must be updated on every new or existing Scorecard unlock. The `street` mirror can be removed later when Funnelr Messenger supports custom contact-field merge tags.
 
 ## Automations
 
@@ -212,7 +215,7 @@ Current flow:
 
 Do not send leads to Funnelr when the Scorecard page loads, the scan begins, the preview is generated, the contact form opens, or an existing report is viewed.
 
-The Scorecard capture flow must only create/update the contact, write `Nexubis | Scorecard Report URL`, and apply the three required tags. It must never directly add or remove the Scorecard sales list, nurture list, holding list, Scorecard sales sequence, or nurture sequence.
+The Scorecard capture flow must only create/update the contact, write `Nexubis | Scorecard Report URL`, mirror that same URL to `Alternative Address`, and apply the three required tags. It must never directly add or remove the Scorecard sales list, nurture list, holding list, Scorecard sales sequence, or nurture sequence.
 
 ## Cal.com Booking Flow
 
@@ -269,8 +272,9 @@ Do not delete or rename these without separate approval:
 
 ## Testing Checklist
 
-- New Scorecard contact creates one contact, saves report URL, applies brand/source/sales trigger, then Funnelr applies sales history, sales list, sales sequence, and removes trigger.
+- New Scorecard contact creates one contact, saves report URL to `Nexubis | Scorecard Report URL`, mirrors the same URL to `Alternative Address`, applies brand/source/sales trigger, then Funnelr applies sales history, sales list, sales sequence, and removes trigger.
 - Existing contact submission updates the same contact and report URL without duplicating contact or sequence enrolment.
+- Existing contact submission also overwrites stale `Alternative Address` values with the latest permanent report URL.
 - Repeated trigger does not reset sequence progress or resend Email 1.
 - Call Booked removes active campaign lists/sequences, adds `Nexubis | Call Booked`, keeps the booked Pipeline tag, and does not start `Booking Confirmation`.
 - Replied removes active campaign lists/sequences, keeps the replied Pipeline tag, and keeps History tags.
@@ -307,6 +311,8 @@ Rollback steps:
 
 2026-07-24:
 
+- Added temporary Funnelr Messenger compatibility by mirroring the permanent Scorecard report URL into Funnelr's default `Alternative Address` field, represented by the contact `street` API property.
+- Confirmed the custom `Nexubis | Scorecard Report URL` field remains the permanent source of truth and both fields must be updated on new and existing unlocks.
 - Removed direct Scorecard list-routing behaviour that was reintroduced during branch merge resolution.
 - Reconfirmed the website/server Scorecard integration as tag-only: contact create/update, report URL custom field, Brand tag, Source tag, and sales Trigger tag.
 - Added explicit regression warning that the Scorecard website must never directly add/remove campaign lists or sequences.

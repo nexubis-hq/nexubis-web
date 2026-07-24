@@ -15,8 +15,8 @@ const SENDER_FIRST_NAME = process.env.SCORECARD_SENDER_FIRST_NAME || "Hannes";
 // Who gets the internal "new lead" alert: a comma list (SCORECARD_LEAD_EMAILS),
 // falling back to the single team address. Parsed + empty-filtered because ONE
 // empty recipient makes Resend reject the WHOLE send, silently dropping every
-// alert — never trust `?? fallback` against an env that may be "" (see
-// docs/funnel-audit-checklist.md §4).
+// alert; never trust `?? fallback` against an env that may be "" (see
+// docs/funnel-audit-checklist.md section 4).
 export function leadNotifyRecipients(): string[] {
   const configured = (process.env.SCORECARD_LEAD_EMAILS ?? "")
     .split(",")

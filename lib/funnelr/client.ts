@@ -48,6 +48,7 @@ export interface CreateFunnelrContactInput {
   firstName?: string;
   lastName?: string;
   company?: string;
+  street?: string | null;
   hasAcceptedMarketing?: boolean;
 }
 
@@ -119,9 +120,11 @@ export interface FunnelrSystemFormField {
 
 export interface FunnelrUserProfile {
   formFieldId: string;
+  formFieldKey?: string | null;
   value?: unknown;
   formFieldLabel?: string | null;
   formFieldName?: string | null;
+  plainTextValue?: string | null;
 }
 
 export class FunnelrApiError extends Error {
@@ -238,6 +241,7 @@ export class FunnelrClient {
       firstName: input.firstName?.trim() || null,
       lastName: input.lastName?.trim() || null,
       company: input.company?.trim() || null,
+      street: input.street?.trim() || null,
       isAgent: false,
       isStaff: false,
       isUnsubscribed: false,
