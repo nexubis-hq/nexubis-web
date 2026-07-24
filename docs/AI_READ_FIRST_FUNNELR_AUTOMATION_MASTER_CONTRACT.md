@@ -1,12 +1,12 @@
-# Funnelr Automation Contract
+# AI READ FIRST: Funnelr Automation Master Contract
 
 Last updated: 2026-07-23
 
-This document is the permanent source of truth for Nexubis Funnelr behaviour in this repository.
+This document is the single permanent source of truth for Nexubis Funnelr automation behaviour in this repository. Future AI agents and human maintainers must read this file before changing Funnelr lists, sequences, tags, automations, contact-routing code, or related scripts.
 
 Any future change to Funnelr tags, lists, sequences, custom fields, automation conditions, automation actions, Scorecard capture logic or booking logic is incomplete until this document is updated in the same code change.
 
-Before performing future Funnelr work, Codex must read this document first.
+Do not create competing Funnelr automation explanation files. Update this master contract in the same change as any Funnelr automation, routing, or integration update.
 
 ## Purpose
 
@@ -72,6 +72,9 @@ Do not create `Pipeline: Nexubis | Call Cancelled`, needsHuman tags, Full Report
 | `Nexubis | The Credibility Brief - Nurture` | `A8A408CE-DB84-415B-9FC1-8EABC2A391A6` | Nurture campaign list. Renamed in place from `The Credibility Brief - Nurture Campaign`. |
 | `Nexubis | Call Booked` | `3169E25F-3B23-4E75-8E48-5AC4673E966F` | Booked contacts. Existing list retained. |
 | `Nexubis | Manual Leads - Holding` | `49992A25-D155-4674-A0DB-3B8DA00F41E9` | Holding list for manual Nexubis leads. |
+| `Nexubis | All Contacts` | `C4AF8E82-8363-4AC5-9B93-D28D1385C75E` | Visibility-only master list for all Nexubis contacts. Not a campaign-recipient list and must not be attached to any sequence. |
+
+`Nexubis | All Contacts` is populated automatically when `Brand: Nexubis` is applied. Team members should not need to add contacts to this list manually. Campaign-state automations must not remove contacts from this list; it persists when contacts enter Scorecard sales, enter nurture, book a call, reply, leave a campaign, or move between campaign states.
 
 ## Nexubis Sequences
 
@@ -95,6 +98,38 @@ Sequence activation remains a separate launch decision because activating sequen
 Custom contact-profile fields are discovered through `GET /api/v1/system/formFields`, not `GET /api/v1/user/option/contactFields`.
 
 ## Automations
+
+### Nexubis | Brand Tag - Add to All Contacts
+
+ID: `7C635FEF-2DDB-4EF0-ABB6-8A306B1322B7`  
+Enabled: yes
+
+Trigger:
+
+- contact has tag `Brand: Nexubis`
+
+Actions:
+
+1. Add to list `Nexubis | All Contacts`
+
+This automation is visibility-only. It must not apply Source, Trigger, Pipeline, or History tags; add or remove campaign-recipient lists; add or remove sequences; or remove contacts from any list.
+
+### Nexubis | Manual Holding - Apply Contact Tags
+
+ID: `601EA06F-412D-480E-A612-D033F964EB88`  
+Enabled: yes
+
+Trigger:
+
+- contact belongs to list `Nexubis | Manual Leads - Holding`
+
+Actions:
+
+1. Apply tag `Brand: Nexubis`
+2. Apply tag `Source: Nexubis | Manual`
+3. Apply tag `Trigger: Nexubis | Start Credibility Brief Nurture`
+
+A Nexubis team member should only need to create the contact and add it to `Nexubis | Manual Leads - Holding`. This automation communicates intent through tags. It must not directly add the contact to `Nexubis | All Contacts`, the nurture list, the nurture sequence, Scorecard sales, any Pipeline tag, or any History tag.
 
 ### Nexubis | Start Scorecard Sales
 
@@ -144,8 +179,31 @@ Actions:
 4. Add to sequence `Nexubis | The Credibility Brief`
 5. Apply tag `History: Nexubis | Credibility Brief Nurture Started`
 6. Remove tag `Trigger: Nexubis | Start Credibility Brief Nurture`
+7. Remove from list `Nexubis | Manual Leads - Holding`
 
 Sales-to-nurture handoff is pending. The server-side scheduler that applies the nurture trigger is not implemented yet.
+
+Manual Holding is removed when nurture entry succeeds. `Nexubis | All Contacts` must not be removed by this automation.
+
+## Contact Journeys
+
+### Manual-First Lead
+
+1. Team member creates the contact and adds it to `Nexubis | Manual Leads - Holding`.
+2. `Nexubis | Manual Holding - Apply Contact Tags` applies Brand, Manual Source, and nurture Trigger tags.
+3. `Nexubis | Brand Tag - Add to All Contacts` adds the contact to `Nexubis | All Contacts`.
+4. `Nexubis | Start Credibility Brief Nurture` enters the contact into nurture, applies nurture History, removes the temporary nurture Trigger, and removes Manual Holding.
+5. If the contact later runs the Scorecard, Scorecard sales may start, but the existing nurture History must remain.
+6. A manual-first contact who already received nurture must not be returned to nurture after later completing Scorecard sales.
+
+### Scorecard-First Lead
+
+1. Visitor completes and unlocks the Scorecard.
+2. Website creates or updates the contact, writes the report URL, and applies Brand, Scorecard Source, and sales Trigger tags.
+3. Funnelr enters the contact into Scorecard sales and applies Scorecard sales History.
+4. A future timed handoff may later apply the nurture Trigger only for Scorecard-first contacts who have never received nurture.
+
+Do not reset or remove `History: Nexubis | Credibility Brief Nurture Started`. The nurture History tag distinguishes manual-first contacts from Scorecard-first contacts for future handoff logic.
 
 ### Nexubis | Call Booked - Exit Campaigns
 
@@ -264,6 +322,8 @@ Do not delete or rename these without separate approval:
 ## Testing Checklist
 
 - New Scorecard contact creates one contact, saves report URL, applies brand/source/sales trigger, then Funnelr applies sales history, sales list, sales sequence, and removes trigger.
+- Brand-tagged Nexubis contact is automatically added to `Nexubis | All Contacts` with no campaign Source, Trigger, Pipeline, History, list, or sequence changes.
+- Manual contact added to `Nexubis | Manual Leads - Holding` receives Brand, Manual Source, and nurture Trigger tags, then enters nurture through the existing nurture automation.
 - Existing contact submission updates the same contact and report URL without duplicating contact or sequence enrolment.
 - Repeated trigger does not reset sequence progress or resend Email 1.
 - Call Booked removes active campaign lists/sequences, adds `Nexubis | Call Booked`, keeps the booked Pipeline tag, and does not start `Booking Confirmation`.
@@ -298,6 +358,21 @@ Rollback steps:
 6. Do not delete contacts, contact profile values, sequence users, email history, automation history, unsubscribe records, or test evidence.
 
 ## Change Log
+
+2026-07-24:
+
+- Created `Nexubis | All Contacts` as the visibility-only master list for Nexubis contacts.
+- Created and enabled `Nexubis | Brand Tag - Add to All Contacts`.
+- Created and enabled `Nexubis | Manual Holding - Apply Contact Tags`.
+- Updated `Nexubis | Start Credibility Brief Nurture` to remove `Nexubis | Manual Leads - Holding` when nurture entry succeeds.
+- Documented manual-first and Scorecard-first journeys and confirmed nurture History must not be reset.
+- Renamed this file to `AI_READ_FIRST_FUNNELR_AUTOMATION_MASTER_CONTRACT.md` and removed obsolete `.txt` migration handoff artifacts so this remains the single master automation logic document.
+
+2026-07-24:
+
+- Removed direct Scorecard list-routing behaviour that was reintroduced during branch merge resolution.
+- Reconfirmed the website/server Scorecard integration as tag-only: contact create/update, report URL custom field, Brand tag, Source tag, and sales Trigger tag.
+- Added explicit regression warning that the Scorecard website must never directly add/remove campaign lists or sequences.
 
 2026-07-23:
 

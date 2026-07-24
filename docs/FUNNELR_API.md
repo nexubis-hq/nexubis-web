@@ -73,6 +73,8 @@ The command performs only GET requests and prints sanitized endpoint availabilit
 | Read/delete automation | `GET` / `DELETE /api/v1/query/automations/{id}` | Path `id` automation UUID. |
 | List automation filters | `GET /api/v1/query/filters` | Query by `automationId`. |
 | Create/update/delete automation filter | `POST` / `PUT /api/v1/query/filters`, `DELETE /api/v1/query/filters/{id}` | Used for automation trigger/condition rules. |
+| List filter templates | `GET /api/v1/query/filterTemplates` | Used to discover filter template IDs such as `Contact:Tag` and `Contact:List`. |
+| List filter operators | `GET /api/v1/query/option/filterOperators` | Used to discover operator IDs such as `FilterOperator_User_TagIs` and `FilterOperator_User_ListIs`. |
 | List automation actions | `GET /api/v1/query/automations/{aid}/actions` | Path `aid` automation UUID. |
 | Create/update/delete automation action | `POST` / `PUT /api/v1/query/automations/{aid}/actions`, `DELETE /api/v1/query/automations/{aid}/actions/{id}` | Used for list, sequence and tag actions. |
 
