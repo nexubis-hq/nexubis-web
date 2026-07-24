@@ -3,7 +3,10 @@ import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
 
 // In-memory KV shared by run records, shared reports, leads and dedupe keys.
-const { store, lists } = vi.hoisted(() => ({ store: new Map<string, unknown>(), lists: new Map<string, unknown[]>() }));
+const { store, lists } = vi.hoisted(() => ({
+  store: new Map<string, unknown>(),
+  lists: new Map<string, unknown[]>(),
+}));
 vi.mock("./kv", () => ({
   getKv: () => ({
     get: async (k: string) => (store.has(k) ? store.get(k) : null),
@@ -30,7 +33,6 @@ vi.mock("./kv", () => ({
     },
   }),
 }));
-
 import { buildFunnelrPayload, fireFunnelrWebhook, signPayload } from "./funnelr";
 import { buildLeadRecord, runLeadPlumbing, readExistingUnlock, markUnlocked, promoteRun, dedupeKey, type UnlockInput } from "./unlock";
 import { listLeads, readLead, type LeadRecord } from "./leads";
@@ -140,15 +142,13 @@ test("a first-attempt success fires exactly one request", async () => {
 
 // The failed-webhook path sits through the real retry backoff (1.5s + 4s),
 // so this test carries its own timeout.
-test("lead plumbing persists a complete lead, flags a failed webhook, and skips Email 1 when the flag is off", { timeout: 15000 }, async () => {
-  process.env.FUNNELR_WEBHOOK_URL = "https://funnelr.test/hook";
+test("lead plumbing persists a complete lead, notifies the team, and skips Email 1 when the flag is off", { timeout: 15000 }, async () => {
   process.env.RESEND_API_KEY = "re_test";
   const sent: Array<{ url: string; body: Record<string, unknown> }> = [];
   vi.stubGlobal(
     "fetch",
     vi.fn(async (url: string | URL | Request, init?: RequestInit) => {
       const u = String(url);
-      if (u.includes("funnelr")) return new Response("down", { status: 500 });
       sent.push({ url: u, body: JSON.parse(String(init?.body)) });
       return new Response(JSON.stringify({ id: "email" }), { status: 200 });
     }),
@@ -157,20 +157,21 @@ test("lead plumbing persists a complete lead, flags a failed webhook, and skips 
   const record = await makeSharedRecord();
   const lead = await runLeadPlumbing(record, unlockInput, "slug9999", "https://www.nexubis.io");
 
-  // Lead record complete and queryable, webhook flagged failed.
+  // Lead record complete and queryable. Funnelr capture is handled by the
+  // unlock form calling /api/leads/scorecard after the permanent URL exists.
   const storedLead = await readLead("slug9999");
   assert.ok(storedLead);
-  assert.equal(storedLead.webhookStatus, "failed");
+  assert.equal(storedLead.webhookStatus, "skipped");
   assert.equal(storedLead.email, "Mark@Veltkamp-Dosing.nl");
   assert.equal(storedLead.loomStatus, "none");
   assert.equal(storedLead.routing.roleSeniority, "unknown"); // routing from record; role applied at promote in prod
   assert.equal((await listLeads()).length, 1);
 
-  // Team email sent, carries the webhook warning; Email 1 skipped (flag off).
+  // Team email sent; Email 1 skipped (flag off).
   assert.equal(sent.length, 1);
   const teamEmail = sent[0].body as { subject: string; text: string; to: string[] };
   assert.ok(teamEmail.subject.startsWith(`Scorecard lead: Veltkamp Dosing, ${lead.credibilityScore}/100`));
-  assert.ok(teamEmail.text.includes("webhook FAILED"));
+  assert.ok(!teamEmail.text.includes("webhook FAILED"));
 });
 
 test("Email 1 goes to the lead only while SCORECARD_SEND_EMAIL1=true, with the exact locked copy", async () => {

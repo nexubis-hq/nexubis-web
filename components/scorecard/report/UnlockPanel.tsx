@@ -82,6 +82,18 @@ export function UnlockPanel({ runId }: { runId: string }) {
         setState("error");
         return;
       }
+      const leadReportUrl = new URL(body.reportUrl, window.location.origin).toString();
+      void fetch("/api/leads/scorecard", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        keepalive: true,
+        body: JSON.stringify({
+          firstName,
+          email,
+          marketingConsent: true,
+          reportUrl: leadReportUrl,
+        }),
+      }).catch(() => {});
       setReportUrl(body.reportUrl);
       setState("done");
       window.setTimeout(() => {
