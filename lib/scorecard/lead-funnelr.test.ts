@@ -354,7 +354,11 @@ test("failed required tag write returns a useful safe error", async () => {
 });
 
 test("failed Telephone mirror read-back returns a useful safe error", async () => {
-  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { staleMirrorReadback: true }) });
+  const c = client(null, { staleMirrorReadback: true });
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, false);
   assert.match(res.error ?? "", /Telephone mirror was not saved correctly/);
+  assert.ok(c.calls.includes("add-tag:tag-brand"));
+  assert.ok(c.calls.includes("add-tag:tag-source"));
+  assert.ok(c.calls.includes("add-tag:tag-trigger"));
 });

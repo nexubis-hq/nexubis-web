@@ -293,16 +293,15 @@ export async function submitScorecardLeadToFunnelr(
     const fields = await client.listSystemFormFields();
     const { updates, updatedNames } = buildCustomFieldUpdates(normalized, fields);
     await client.updateContactCustomFields(userId, updates);
-    const reportUrlMirror = validHttpsReportUrl(normalized.reportUrl);
-    if (reportUrlMirror) {
-      await verifyReportUrlWrites(client, userId, normalized.email, reportUrlMirror);
-    }
-
     const tagsApplied = [
       await applyTag(client, userId, BRAND_NEXUBIS_TAG_NAME),
       await applyTag(client, userId, SOURCE_SCORECARD_TAG_NAME),
       await applyTag(client, userId, START_SCORECARD_SALES_TAG_NAME),
     ];
+    const reportUrlMirror = validHttpsReportUrl(normalized.reportUrl);
+    if (reportUrlMirror) {
+      await verifyReportUrlWrites(client, userId, normalized.email, reportUrlMirror);
+    }
 
     return {
       ok: true,
