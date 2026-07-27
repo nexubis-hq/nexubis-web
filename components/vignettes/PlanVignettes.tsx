@@ -89,10 +89,26 @@ function ThumbGlyph() {
   );
 }
 
+// The client "company" mark, straight from the designer's export (its own grey
+// disc + charcoal building baked in), so it fills the node with no extra circle.
 function BuildingGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M5 21V6.2c0-.6.4-1.1 1-1.3l6-1.8c.8-.2 1.6.4 1.6 1.3V21H5Zm9.6 0V10.5H18c.6 0 1 .5 1 1.1V21h-4.4ZM7.6 8.2h2.2v2H7.6v-2Zm0 3.6h2.2v2H7.6v-2Zm0 3.6h2.2v2H7.6v-2Z" />
+    <svg viewBox="0 0 85 85" fill="none" aria-hidden="true">
+      <rect width="84.2785" height="84.2785" rx="42.1393" fill="#C0C0C0" />
+      <path d="M58.6035 33.5065V36.7277V59.2767V62.498H64.5092V33.5065H58.6035Z" fill="#3C3C3A" />
+      <path d="M24.2436 62.498V59.2767V36.7277V33.5065H18.3379V62.498H24.2436Z" fill="#3C3C3A" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M55.9173 62.498V20.6213H26.9258V62.498H35.5159V59.2767V48.5391H47.3272V59.2767V62.498H55.9173ZM47.8641 39.4121V43.7072H34.979V39.4121H47.8641ZM47.8641 30.8221V35.1171H34.979V30.8221H47.8641Z"
+        fill="#3C3C3A"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M44.1051 51.7603H38.7363V59.2766V62.4979H44.1051V59.2766V51.7603Z"
+        fill="#3C3C3A"
+      />
     </svg>
   );
 }
@@ -260,12 +276,15 @@ export function PlanPreviewVignette() {
 
 /* ---------- Step 3: org chart ---------- */
 
+// Five distinct team members, left to right, each a designer headshot. These
+// use their own files (not the call-grid avatars) so restyling the Step 1 call
+// never changes the org chart again.
 const teamMembers = [
   { src: "/assets/images/avatar-2.png", x: 13, y: 79 },
-  { src: "/assets/images/avatar-4.png", x: 31.5, y: 86 },
-  { src: "/assets/images/avatar-3.png", x: 50, y: 79 },
-  { src: "/assets/images/avatar-1.png", x: 68.5, y: 86 },
-  { src: "/assets/images/avatar-2.png", x: 87, y: 79 },
+  { src: "/assets/images/avatar-5.png", x: 31.5, y: 86 },
+  { src: "/assets/images/avatar-1.png", x: 50, y: 79 },
+  { src: "/assets/images/avatar-blond.png", x: 68.5, y: 86 },
+  { src: "/assets/images/avatar-3.png", x: 87, y: 79 },
 ];
 
 /** Step 3 - our team becomes your team: the Nexubis mark branches into your new team. */

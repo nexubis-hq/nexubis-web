@@ -36,7 +36,18 @@ export function HeroAnimations() {
       return;
     }
 
+    // On phones the control opens the reel fullscreen with sound; on larger
+    // screens it stays a mute/unmute toggle. Evaluated per interaction so it
+    // stays correct across rotation/resize.
+    const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
+
     const syncVideoControl = () => {
+      if (isMobile()) {
+        reelControl.classList.remove("is-unmuted");
+        reelControl.setAttribute("aria-label", "Play showreel fullscreen with sound");
+        reelControl.setAttribute("aria-pressed", "false");
+        return;
+      }
       reelControl.classList.toggle("is-unmuted", !video.muted);
       reelControl.setAttribute("aria-label", video.muted ? "Unmute showreel" : "Mute showreel");
       reelControl.setAttribute("aria-pressed", String(!video.muted));
@@ -45,10 +56,31 @@ export function HeroAnimations() {
       video.muted = !video.muted;
       syncVideoControl();
     };
+    const openFullscreen = () => {
+      video.muted = false;
+      const v = video as HTMLVideoElement & {
+        webkitEnterFullscreen?: () => void;
+        webkitRequestFullscreen?: () => void;
+      };
+      // iOS Safari only fullscreens the <video> itself via webkitEnterFullscreen.
+      if (typeof v.webkitEnterFullscreen === "function") {
+        v.webkitEnterFullscreen();
+      } else if (v.requestFullscreen) {
+        void v.requestFullscreen().catch(() => {});
+      } else if (typeof v.webkitRequestFullscreen === "function") {
+        v.webkitRequestFullscreen();
+      }
+      void video.play?.();
+      syncVideoControl();
+    };
+    const handleControlClick = () => {
+      if (isMobile()) openFullscreen();
+      else toggleVideoMuted();
+    };
     const refreshScrollTrigger = () => ScrollTrigger.refresh();
 
     syncVideoControl();
-    reelControl.addEventListener("click", toggleVideoMuted);
+    reelControl.addEventListener("click", handleControlClick);
     video.addEventListener("volumechange", syncVideoControl);
     video.addEventListener("loadedmetadata", refreshScrollTrigger);
 
@@ -72,6 +104,8 @@ export function HeroAnimations() {
         let reelTimeline: gsap.core.Timeline | undefined;
         const createReelTimeline = () => {
           if (reelTimeline) return;
+          // Mobile shows the reel full-width already, so skip the scroll-grow.
+          if (isMobile()) return;
           gsap.set(reel, { transformOrigin: "top left", willChange: "transform" });
           gsap.set(reelControl, { transformOrigin: "bottom left", willChange: "transform" });
 
@@ -194,7 +228,7 @@ export function HeroAnimations() {
     }, hero);
 
     return () => {
-      reelControl.removeEventListener("click", toggleVideoMuted);
+      reelControl.removeEventListener("click", handleControlClick);
       video.removeEventListener("volumechange", syncVideoControl);
       video.removeEventListener("loadedmetadata", refreshScrollTrigger);
       media.revert();
