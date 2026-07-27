@@ -4,18 +4,13 @@ import { SiteHeader, RocketIcon } from "@/components/SiteHeader";
 import { HeroAnimations } from "@/components/HeroAnimations";
 import { ScrollFillText } from "@/components/ScrollFillText";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
+import { SuccessStage } from "@/components/SuccessStage";
 import {
   PlanCallVignette,
   PlanPreviewVignette,
   PlanSlackVignette,
 } from "@/components/vignettes/PlanVignettes";
-import {
-  SolBrandVignette,
-  SolWebsiteVignette,
-  Sol3DVignette,
-  SolVideoVignette,
-  SolTradeshowVignette,
-} from "@/components/vignettes/SolutionsVignettes";
+import { SolutionLottie } from "@/components/vignettes/SolutionLottie";
 import {
   ValueWorthVignette,
   ValueOutputVignette,
@@ -327,6 +322,18 @@ function Hero() {
                       fill="currentColor"
                     />
                   </svg>
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="hero-reel-fullscreen"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" />
+                  </svg>
                 </button>
               </div>
             </div>
@@ -453,12 +460,13 @@ const guideVignettes = [
   GuideIndustrialVignette,
 ];
 
-const solutionVignettes = [
-  SolBrandVignette,
-  SolWebsiteVignette,
-  Sol3DVignette,
-  SolVideoVignette,
-  SolTradeshowVignette,
+// Designer-supplied Lottie per service, in the same order as `solutions`.
+const solutionLotties = [
+  "/assets/lotties/solution-brand.json",
+  "/assets/lotties/solution-website.json",
+  "/assets/lotties/solution-3d.json",
+  "/assets/lotties/solution-video.json",
+  "/assets/lotties/solution-tradeshow.json",
 ];
 
 function Solutions() {
@@ -470,7 +478,7 @@ function Solutions() {
         </div>
         <div className="solutions-accordion">
           {solutions.map((solution, index) => {
-            const Vignette = solutionVignettes[index];
+            const lottieSrc = solutionLotties[index];
             return (
               <details
                 className="solution-row"
@@ -508,9 +516,9 @@ function Solutions() {
                       <ArrowIcon />
                     </Link>
                   </div>
-                  {Vignette ? (
+                  {lottieSrc ? (
                     <div className="solution-row-vignette">
-                      <Vignette />
+                      <SolutionLottie src={lottieSrc} />
                     </div>
                   ) : null}
                 </div>
@@ -647,8 +655,20 @@ function Proof() {
               <blockquote className="proof-placeholder">{proofPlaceholderQuote}</blockquote>
             </div>
             <figcaption className="proof-attribution">
+              {/* Headshot placeholder - swap for <img> once Brigitte's photo lands. */}
               <span className="proof-avatar" aria-hidden="true" />
-              DMN
+              <img
+                className="proof-logo"
+                src="/assets/images/dmn-westinghouse.png"
+                alt="DMN Westinghouse"
+                width={370}
+                height={191}
+              />
+              <span className="proof-divider" aria-hidden="true" />
+              <span className="proof-person">
+                <span className="proof-name">Brigitte</span>
+                <span className="proof-role">Marketing Manager</span>
+              </span>
             </figcaption>
           </figure>
 
@@ -690,39 +710,9 @@ function Proof() {
 
 function Success() {
   return (
-    <section className="section success-section">
-      {/* Media band. When booth-loop.mp4 exists, swap this poster for a muted,
-          looping <video> with booth-loop-poster.jpg as its poster. Until then the
-          designed poster below stands in and reads as an intentional booth scene. */}
-      <div className="success-media" aria-hidden="true">
-        <svg
-          className="success-booth"
-          viewBox="0 0 1200 400"
-          preserveAspectRatio="xMidYMax slice"
-          fill="none"
-        >
-          <path className="success-spot" d="M300 -40 L180 400 L520 400 L360 -40 Z" />
-          <path className="success-spot" d="M900 -40 L720 400 L1060 400 L840 -40 Z" />
-          <rect x="360" y="150" width="480" height="210" rx="6" />
-          <rect x="360" y="150" width="480" height="34" rx="6" />
-          <path d="M360 250 H840 M600 184 V360" />
-          <rect x="250" y="196" width="96" height="164" rx="6" />
-          <rect x="854" y="196" width="96" height="164" rx="6" />
-          <rect x="520" y="300" width="160" height="60" rx="4" />
-        </svg>
-        {process.env.NODE_ENV !== "production" ? (
-          <span className="success-pending">Loop pending: booth-loop.mp4</span>
-        ) : null}
-      </div>
-      <div className="site-container">
-        <div className="success-inner" data-reveal>
-          <p className="success-body">{successBody}</p>
-          <div className="btn-group success-actions">
-            <BookCallButton />
-          </div>
-        </div>
-      </div>
-    </section>
+    <SuccessStage body={successBody}>
+      <BookCallButton />
+    </SuccessStage>
   );
 }
 

@@ -41,7 +41,7 @@
 }
 
 :root {
-  --sc-build: 19; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
+  --sc-build: 12; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
   --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
@@ -252,7 +252,16 @@ ul {
 .billing-option b { position:relative; z-index:1; border-radius:.25rem; background:#f7f7f7; color:var(--body); padding:.3125rem .625rem; font-size:1rem; line-height:1.6; font-weight:700; }
 .billing-option:nth-child(2) b { width:5.0635rem; }
 .billing-option:nth-child(3) b { width:8.084rem; }
-.billing-option.selected b { background:rgb(255 255 255 / 20%); color:#fff; }
+.billing-option.selected b { background:rgb(255 255 255 / 20%); }
+/* the billing selector has fixed rem widths that overflow small screens; let it
+   fit the viewport and wrap the options instead of clipping "Annually". */
+@media (max-width: 600px) {
+  .billing-selector { width: 100%; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+  .billing-option,
+  .billing-option:nth-child(1),
+  .billing-option:nth-child(2),
+  .billing-option:nth-child(3) { width: auto; }
+}
 .packages-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
 .package-card { min-width:0; padding:1.5rem; margin-bottom:1rem; border:1px solid var(--light); border-radius:.5rem; display:flex; flex-direction:column; justify-content:flex-start; align-items:flex-start; overflow:hidden; color:var(--black); transition:box-shadow .2s ease; }
 .package-card:hover { box-shadow:0 2px 8px rgb(90 90 90 / 10%); }
@@ -393,6 +402,14 @@ ul {
 .packages-faq-item:not([open]) .packages-faq-content { display:none; }
 .packages-faq-mark { position:absolute; inset:auto auto -5% 0; width:33vw; pointer-events:none; }
 .packages-faq-mark img { width:100%; }
+/* the FAQ is a fixed-height two-column layout; on smaller screens it squished
+   the questions to a sliver and left a huge gap. Stack it full-width instead. */
+@media (max-width: 900px) {
+  .packages-faq-row { height: auto; flex-direction: column; margin-inline: 0; }
+  .packages-faq-sidebar { position: static; flex: 0 0 auto; max-width: 100%; }
+  .packages-faq-sidebar h2 { font-size: clamp(2rem, 8vw, 2.75rem); }
+  .packages-faq-column { flex: 0 0 auto; max-width: 100%; height: auto; }
+}
 
 /* Packages page - cloud CTA */
 .packages-cloud-cta { position:relative; height:48rem; padding-top:5rem; color:#fff; background:linear-gradient(180deg,var(--primary),#fff 77%); overflow:hidden; overflow-x:clip; }
@@ -410,6 +427,17 @@ ul {
 .packages-cloud-image:nth-child(4) { left:4.07%; top:32%; }
 .packages-cloud-image:nth-child(5) { left:49.49%; top:2%; }
 .packages-cloud-image:nth-child(6) { left:-83.06%; top:15%; }
+/* mobile: the 8rem headings and off-canvas scaled clouds were widening the whole
+   page (horizontal scroll). Shrink the type, stack full-width, and clip the
+   decorative cloud bleed horizontally so the page fits the viewport. */
+@media (max-width: 900px) {
+  .packages-cloud-cta { height:auto; padding:3rem 0 5rem; overflow-x:clip; }
+  .packages-cloud-row { height:auto; margin:0; }
+  .packages-cloud-row-end { margin-top:0; }
+  .packages-cloud-column { flex:0 0 100%; max-width:100%; padding-inline:0; margin-bottom:0; }
+  .packages-cloud-column h2 { font-size:clamp(2.5rem, 12vw, 5rem); margin-bottom:0.5rem; }
+  .packages-clouds { transform:scale(1); min-height:12rem; }
+}
 
 .nav-container {
   display: flex;
@@ -570,6 +598,11 @@ button.nav-link {
   left: -15px;
   white-space: nowrap;
   transition: left 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* the CTA uses a compact label on small screens so it never overflows the bar */
+.nav-cta-label-short {
+  display: none;
 }
 
 .rocket-button:focus-visible .rocket-button-icon {
@@ -803,6 +836,26 @@ button.nav-link {
 
 .hero-reel-control.is-unmuted .hero-reel-unmute {
   display: none;
+}
+
+/* mobile: the control becomes a fullscreen button, not a mute toggle */
+.hero-reel-fullscreen {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .hero-reel-unmute,
+  .hero-reel-mute {
+    display: none;
+  }
+
+  .hero-reel-control.is-unmuted .hero-reel-mute {
+    display: none;
+  }
+
+  .hero-reel-fullscreen {
+    display: block;
+  }
 }
 
 .hero-reel-control.is-unmuted .hero-reel-mute {
@@ -2459,11 +2512,15 @@ button.nav-link {
 
 .site-footer {
   position: relative;
-  overflow: visible;
+  /* Clips the giant wordmark as it rises from behind the nav on scroll. */
+  overflow: hidden;
   min-height: auto;
-  background: var(--white);
+  /* Wordmark sits on the same grey as the FAQ section above (no white seam);
+     only the nav block below goes dark. */
+  background: var(--surface);
   padding-top: 7rem;
-  padding-bottom: 3rem;
+  /* No bottom padding - the full-bleed dark nav band runs to the page edge. */
+  padding-bottom: 0;
 }
 
 .footer-inner {
@@ -2472,18 +2529,21 @@ button.nav-link {
 }
 
 .footer-wordmark {
-  display: inline;
-  vertical-align: baseline;
+  display: block;
   width: 100%;
+  will-change: transform, opacity;
 }
 
 .footer-bottom {
   position: relative;
   z-index: 1;
   margin-top: -3rem;
-  border-top: 1px solid var(--light);
-  background-color: var(--white);
+  border-top: 1px solid rgb(255 255 255 / 12%);
+  /* Opaque so the wordmark reads as rising up from behind this nav block.
+     Matches the #141414 grey of the "holding" cards, not pure black. */
+  background-color: #141414;
   padding-top: 5rem;
+  padding-bottom: 3rem;
 }
 
 .footer-row {
@@ -2531,13 +2591,13 @@ button.nav-link {
 .footer-menus li {
   margin-bottom: 1rem;
   overflow: hidden;
-  color: var(--body);
+  color: rgb(255 255 255 / 72%);
   font-weight: 500;
 }
 
 .footer-menus a {
   display: inline-block;
-  color: var(--body);
+  color: rgb(255 255 255 / 72%);
   font-family: "Helvetica Now Display", Arial, sans-serif;
   font-size: 1.25rem;
   font-weight: 400;
@@ -2547,18 +2607,20 @@ button.nav-link {
 }
 
 .footer-menus a:hover {
-  color: var(--primary);
+  color: var(--white);
 }
 
 .copyright {
   margin-bottom: 0.875rem;
-  color: var(--body);
+  color: rgb(255 255 255 / 55%);
   font-size: 0.875rem;
   line-height: 1.6;
   letter-spacing: 0;
 }
 
 .footer-media {
+  /* Hidden for now - real footer photography pending. Remove to restore. */
+  display: none;
   position: absolute;
   inset: 0 0 auto;
   opacity: 1;
@@ -2926,7 +2988,8 @@ button.nav-link {
   }
 
   .nav-cta {
-    margin-left: 2rem;
+    margin-left: auto;
+    margin-right: 0.75rem;
     padding: 0.5rem 1rem;
   }
 
@@ -2936,6 +2999,14 @@ button.nav-link {
 
   .nav-cta-text {
     left: 0;
+  }
+
+  .nav-cta-label-full {
+    display: none;
+  }
+
+  .nav-cta-label-short {
+    display: inline;
   }
 
   .section-heading h2,
@@ -2991,29 +3062,22 @@ button.nav-link {
     min-height: auto;
   }
 
+  /* footer: on mobile the giant wordmark is small, so drop the "rise behind the
+     nav" overlap and tighten the padding so it sits cleanly above the nav. */
   .site-footer {
-    overflow: hidden;
-    padding-top: 5rem;
-  }
-
-  .site-footer .footer-inner {
-    width: 88%;
-    max-width: var(--container);
-  }
-
-  .footer-bottom {
-    margin-top: -1rem;
     padding-top: 3rem;
   }
 
-  .footer-row {
-    margin-right: 0;
-    margin-left: 0;
+  .footer-bottom {
+    margin-top: 0;
+    padding-top: 2.5rem;
   }
 
-  .footer-column {
-    padding-right: 0;
-    padding-left: 0;
+  /* footer: stack the columns full-width so the link menus aren't crammed into
+     a 33% column (which wrapped every word). */
+  .footer-row {
+    flex-direction: column;
+    margin-bottom: -1rem;
   }
 
   .footer-logo-column,
@@ -3021,15 +3085,47 @@ button.nav-link {
   .footer-copyright-column {
     flex-basis: 100%;
     max-width: 100%;
+    margin-bottom: 1.5rem;
   }
 
   .footer-menus {
-    flex-direction: column;
-    gap: 0.25rem;
+    display: flex;
+    gap: 1.5rem;
   }
 
   .footer-menus ul {
+    width: 50%;
+  }
+
+  /* content-section CTAs stretch full width on mobile (not the nav button) */
+  .hero-buttons,
+  .plan-footer .btn-group,
+  .success-actions {
+    flex-direction: column;
+    align-items: stretch;
     width: 100%;
+  }
+
+  .hero-buttons .btn,
+  .plan-footer .btn-group .btn,
+  .success-actions .btn {
+    width: 100%;
+  }
+
+  /* the showreel fills the full width on mobile (no scroll-grow) */
+  .hero-reel-row {
+    width: 100%;
+  }
+
+  .hero-reel {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* the guide quote's hanging quotation mark ate the top spacing, so the block
+     sat too close to the section top; give it room to match other sections. */
+  .guide-empathy {
+    margin-top: 0.9em;
   }
 
   .cloud-cta {
@@ -3196,7 +3292,8 @@ button.nav-link {
   }
 
   .hero-reel {
-    width: 58.333333%;
+    width: 100%;
+    max-width: 100%;
   }
 
   .cloud-cta {
@@ -3456,12 +3553,15 @@ button.nav-link {
 }
 
 /* fine print under the hero buttons */
-.hero-support {
-  margin-top: 1rem;
-  max-width: 30rem;
-  color: color-mix(in srgb, var(--mid) 75%, var(--white));
-  font-size: 0.8rem;
+/* Scoped under .hero-copy so it outranks the `.hero-copy p` body-size rule -
+   otherwise this fine print inherits the 20px paragraph size. */
+.hero-copy .hero-support {
+  margin-top: 0.9rem;
+  max-width: 27rem;
+  color: color-mix(in srgb, var(--mid) 88%, transparent);
+  font-size: 0.875rem;
   line-height: 1.5;
+  letter-spacing: 0.005em;
 }
 
 /* Header, scorecard transitional link */
@@ -4137,6 +4237,24 @@ button.nav-link {
   inset: 0;
 }
 
+/* Designer-supplied Lottie fills the card and fades in once its SVG mounts. */
+.solution-row-vignette .sv-lottie {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.solution-row-vignette .sv-lottie.is-loaded {
+  opacity: 1;
+}
+
+.solution-row-vignette .sv-lottie svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 @media (min-width: 768px) {
   .solution-row-body {
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
@@ -4566,21 +4684,49 @@ button.nav-link {
 }
 
 .proof-attribution {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
   color: var(--black);
   font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-size: var(--h4);
-  font-weight: 500;
 }
 
 .proof-avatar {
-  width: 2.25rem;
-  height: 2.25rem;
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 50%;
   background: color-mix(in srgb, var(--primary), var(--white) 12%);
   box-shadow: inset 0 0 0 2px var(--white);
+}
+
+.proof-person {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.proof-name {
+  font-size: var(--h4);
+  font-weight: 600;
+}
+
+.proof-role {
+  color: var(--body);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.proof-logo {
+  height: 2rem;
+  width: auto;
+}
+
+.proof-divider {
+  align-self: stretch;
+  width: 1px;
+  margin-inline: 0.15rem;
+  background: rgb(29 28 26 / 12%);
 }
 
 .proof-case {
@@ -4688,11 +4834,35 @@ button.nav-link {
 /* Section 9, Success statement */
 .success-section {
   position: relative;
-  overflow: hidden;
+  padding-block: 0;
   background: var(--work-black);
 }
 
-.success-section::before {
+/* Static fallback: one screen, media pinned inside, copy centred and readable.
+   The pinned scroll-scrub only turns on once JS confirms a usable video. */
+.success-sticky {
+  position: relative;
+  min-height: min(100vh, 720px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Enhanced: the section grows tall and the media band pins for the scrub.
+   ~260vh gives a short clip enough scroll travel to scrub smoothly (video plays
+   through the first ~72%, copy reveals over the rest) without dragging. */
+.success-section.is-scrub {
+  height: 260vh;
+}
+
+.success-section.is-scrub .success-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 0;
+}
+
+.success-sticky::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -4710,6 +4880,37 @@ button.nav-link {
   inset: 0;
   z-index: 0;
   overflow: hidden;
+}
+
+.success-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.success-video.is-ready {
+  opacity: 1;
+}
+
+/* Transparency layer that fades in over the footage once it has played
+   through. Inline opacity is driven by scroll; 0 by default. */
+.success-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--work-black);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.success-copy {
+  position: relative;
+  z-index: 2;
+  width: 100%;
 }
 
 .success-booth {
@@ -4732,20 +4933,11 @@ button.nav-link {
   fill: color-mix(in srgb, var(--primary) 13%, transparent);
 }
 
-.success-pending {
-  position: absolute;
-  left: 1rem;
-  top: 1rem;
-  z-index: 3;
-  padding: 0.25rem 0.6rem;
-  border-radius: 0.4rem;
-  background: rgb(0 0 0 / 45%);
-  color: rgb(255 255 255 / 70%);
-  font-size: 0.7rem;
-  letter-spacing: 0.02em;
-}
-
 .success-inner {
+  /* Fully visible by default (static fallback / no-JS). In scrub mode JS drives
+     --reveal 0 -> 1 as the copy rises in over the finished footage. */
+  --reveal: 1;
+  --reveal-cta: 1;
   position: relative;
   z-index: 2;
   display: flex;
@@ -4765,10 +4957,17 @@ button.nav-link {
   line-height: 1.35;
   letter-spacing: -0.02em;
   text-wrap: balance;
+  opacity: var(--reveal);
+  transform: translateY(calc((1 - var(--reveal)) * 2.2rem));
+  filter: blur(calc((1 - var(--reveal)) * 6px));
+  will-change: opacity, transform, filter;
 }
 
 .success-actions {
   justify-content: center;
+  opacity: var(--reveal-cta);
+  transform: translateY(calc((1 - var(--reveal-cta)) * 1.4rem));
+  will-change: opacity, transform;
 }
 
 @keyframes success-spot-breathe {
@@ -4868,7 +5067,7 @@ button.nav-link {
 /* Section 12, Footer sign-off */
 .footer-signoff {
   margin-bottom: 0.5rem;
-  color: var(--black);
+  color: var(--white);
   font-family: "Helvetica Now Display", Arial, sans-serif;
   font-size: var(--p-lg);
   font-weight: 500;
@@ -4986,14 +5185,15 @@ button.nav-link {
   background: center / cover no-repeat;
 }
 
+/* The designer's building mark carries its own disc + colours, so the node is
+   just a transparent frame and the SVG fills it. */
 .vm-client {
-  background: color-mix(in srgb, var(--black) 20%, var(--surface));
-  color: color-mix(in srgb, var(--black) 62%, var(--surface));
+  background: transparent;
 }
 
 .vm-client svg {
-  width: 6cqw;
-  height: 6cqw;
+  width: 100%;
+  height: 100%;
 }
 
 .vm-react {
@@ -5292,14 +5492,12 @@ button.nav-link {
 .vt-client {
   width: 14cqw;
   height: 14cqw;
-  background: color-mix(in srgb, var(--black) 20%, var(--surface));
-  color: color-mix(in srgb, var(--black) 62%, var(--surface));
   box-shadow: 0 1.4cqw 3.5cqw rgb(0 0 0 / 12%);
 }
 
 .vt-client svg {
-  width: 7cqw;
-  height: 7cqw;
+  width: 100%;
+  height: 100%;
 }
 
 .vt-hub {
@@ -5391,6 +5589,23 @@ button.nav-link {
   50% { box-shadow: 0 1.8cqw 4.5cqw color-mix(in srgb, var(--primary) 55%, transparent); }
 }
 
+/* Tree idle: a red glow rolls across the team, one member lit at a time - the
+   "team is live" echo of the roaming speaker in Step 1. Kept bold so the loop
+   reads clearly at a glance: a solid ring + outer bloom + a real lift. */
+@keyframes vt-member-glow {
+  0%, 100% {
+    box-shadow: 0 1.2cqw 3cqw rgb(0 0 0 / 14%);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  40%, 60% {
+    box-shadow:
+      0 0 0 1.3cqw color-mix(in srgb, var(--primary) 62%, transparent),
+      0 0 6cqw 1.2cqw color-mix(in srgb, var(--primary) 55%, transparent),
+      0 2cqw 4cqw rgb(0 0 0 / 18%);
+    transform: translate(-50%, -50%) scale(1.16);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   /* Meet: tiles + controls pop in once, then the speaking glow flips */
   .vm-tile,
@@ -5462,8 +5677,11 @@ button.nav-link {
   .plan-card.is-inview .vt-wire-bus { animation: vt-wire-draw 0.6s ease forwards 1.5s; }
   .plan-card.is-inview .vt-wire-drops { animation: vt-wire-draw 0.5s ease forwards 2s; }
   .plan-card.is-inview .vt-member {
-    animation: vt-node-pop 0.5s cubic-bezier(0.34, 1.4, 0.5, 1) forwards;
-    animation-delay: calc(2.2s + var(--i) * 0.13s);
+    animation:
+      vt-node-pop 0.5s cubic-bezier(0.34, 1.4, 0.5, 1) forwards
+        calc(2.2s + var(--i) * 0.13s),
+      vt-member-glow 3.6s ease-in-out infinite
+        calc(3s + var(--i) * 0.36s);
   }
 }
 
@@ -6184,7 +6402,7 @@ button.nav-link {
 
 .vv-pile {
   position: absolute;
-  top: 42%;
+  top: 37%;
   height: 34cqw;
 }
 
@@ -6239,7 +6457,7 @@ button.nav-link {
 .vv-flyer {
   position: absolute;
   left: 9cqw;
-  top: 42%;
+  top: 37%;
   z-index: 6;
   opacity: 0;
   transform: translate(0, -50%);
@@ -6248,7 +6466,7 @@ button.nav-link {
 .vv-arrow {
   position: absolute;
   left: 43cqw;
-  top: 42%;
+  top: 47%;
   z-index: 5;
   width: 6cqw;
   height: 6cqw;
@@ -6294,10 +6512,20 @@ button.nav-link {
 .vg-launch {
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 4.5cqw;
   height: 100%;
   padding: 7cqw;
+}
+
+/* The checklist rows are full-width with ragged (short) lines, so the content
+   reads as left-heavy. Constraining the stack to its content and centring it
+   sits the whole visual in the middle of the tile like the other two. */
+.vv-launch-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4.5cqw;
+  width: 80%;
 }
 
 .vv-published {
@@ -6366,8 +6594,15 @@ button.nav-link {
   justify-content: center;
 }
 
+/* category glyph is charcoal (it only shows on the light unchecked badge) */
 .vv-icon-glyph {
   opacity: 0;
+  color: #1d1c1a;
+}
+
+/* the tick is white (it only shows on the red completed badge) */
+.vv-icon-check {
+  color: var(--white);
 }
 
 .vv-icon-glyph svg {
@@ -6376,8 +6611,8 @@ button.nav-link {
 }
 
 .vv-icon-check svg {
-  width: 56%;
-  height: 56%;
+  width: 60%;
+  height: 60%;
 }
 
 .vv-check-lines {
@@ -6398,19 +6633,29 @@ button.nav-link {
 /* 01 worth (6s): the branded card settles, then lifts and wins */
 @keyframes vv-worth-lift {
   0%, 18% {
-    transform: translateY(0);
+    transform: translateY(0) rotate(0deg);
     box-shadow:
       0 2cqw 5cqw rgb(29 28 26 / 9%),
       inset 0 0 0 0.3cqw rgb(29 28 26 / 4%);
   }
-  44%, 74% {
-    transform: translateY(-3cqw);
+  44% {
+    transform: translateY(-3cqw) rotate(0deg);
+    box-shadow:
+      0 9cqw 18cqw color-mix(in srgb, var(--primary) 24%, transparent),
+      inset 0 0 0 0.3cqw rgb(29 28 26 / 4%);
+  }
+  /* a very subtle jiggle while it hovers, like it's proud to be up there */
+  52% { transform: translateY(-3cqw) rotate(-0.9deg); }
+  60% { transform: translateY(-3.1cqw) rotate(0.9deg); }
+  68% { transform: translateY(-3cqw) rotate(-0.4deg); }
+  74% {
+    transform: translateY(-3cqw) rotate(0deg);
     box-shadow:
       0 9cqw 18cqw color-mix(in srgb, var(--primary) 24%, transparent),
       inset 0 0 0 0.3cqw rgb(29 28 26 / 4%);
   }
   92%, 100% {
-    transform: translateY(0);
+    transform: translateY(0) rotate(0deg);
     box-shadow:
       0 2cqw 5cqw rgb(29 28 26 / 9%),
       inset 0 0 0 0.3cqw rgb(29 28 26 / 4%);
@@ -6430,21 +6675,26 @@ button.nav-link {
 }
 
 /* 02 output (2.9s per trip): a card ferries left -> right, the ring fills, resets */
+/* the flyer arcs across and settles onto the pile's front card position (same
+   rotation + offset as .vv-r1 at rest), holds a beat, then fades while r1 gives
+   a little "received it" pop underneath - so the card joins the stack instead
+   of popping out of existence. */
 @keyframes vv-flyer-trip {
-  0% { transform: translate(0, -50%) rotate(0) scale(1); opacity: 0; }
-  6% { transform: translate(0, -54%) rotate(0) scale(1); opacity: 1; }
-  16% { transform: translate(4cqw, -63%) rotate(-3deg) scale(1.03); opacity: 1; }
-  50% { transform: translate(30cqw, -66%) rotate(2deg) scale(1.03); opacity: 1; }
-  78% { transform: translate(60cqw, -52%) rotate(8deg) scale(1); opacity: 1; }
-  86% { transform: translate(60cqw, -46%) rotate(9deg) scale(0.97); opacity: 1; }
-  90% { transform: translate(60cqw, -46%) rotate(9deg) scale(0.97); opacity: 0; }
-  100% { transform: translate(0, -50%) rotate(0) scale(1); opacity: 0; }
+  0% { transform: translate(0, -50%) rotate(0) scale(0.98); opacity: 0; }
+  5% { transform: translate(0, -52%) rotate(0) scale(1); opacity: 1; }
+  16% { transform: translate(6cqw, -60%) rotate(-3deg) scale(1.03); opacity: 1; }
+  48% { transform: translate(32cqw, -62%) rotate(2deg) scale(1.03); opacity: 1; }
+  72% { transform: translate(58cqw, -54%) rotate(1deg) scale(1.01); opacity: 1; }
+  82% { transform: translate(60cqw, -50%) rotate(0deg) scale(1); opacity: 1; }
+  89% { transform: translate(60cqw, -50%) rotate(0deg) scale(1); opacity: 1; }
+  95% { transform: translate(60cqw, -50%) rotate(0deg) scale(1); opacity: 0; }
+  100% { transform: translate(0, -50%) rotate(0) scale(0.98); opacity: 0; }
 }
 
 @keyframes vv-r1-land {
-  0%, 74% { transform: translate(0, -50%) scale(1); }
-  84% { transform: translate(0, -50%) scale(1.06); }
-  92%, 100% { transform: translate(0, -50%) scale(1); }
+  0%, 80% { transform: translate(0, -50%) scale(1); }
+  88% { transform: translate(0, -50%) scale(1.05); }
+  94%, 100% { transform: translate(0, -50%) scale(1); }
 }
 
 @keyframes vv-lf-refill {
@@ -6471,44 +6721,79 @@ button.nav-link {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* 03 launch (6s): icons complete into checks in sequence, then Published fires */
+/* 03 launch (8.5s): each row ticks off in turn, then Published fires and resets.
+   Rows share this timeline; a per-row animation-delay walks the tick down the
+   list. The reset sits late enough that even the last (delayed) row finishes
+   before the loop restarts, so it reads as one clean reset. */
 @keyframes vv-glyph-cycle {
-  0%, 8% { opacity: 1; transform: scale(1); }
-  20%, 84% { opacity: 0; transform: scale(0.55); }
-  94%, 100% { opacity: 1; transform: scale(1); }
+  0%, 6% { opacity: 1; transform: scale(1); }
+  10%, 76% { opacity: 0; transform: scale(0.6); }
+  82%, 100% { opacity: 1; transform: scale(1); }
 }
 
 @keyframes vv-check-cycle {
-  0%, 8% { opacity: 0; transform: scale(0.4); }
-  20% { opacity: 1; transform: scale(1.15); }
-  26%, 84% { opacity: 1; transform: scale(1); }
-  94%, 100% { opacity: 0; transform: scale(0.4); }
+  0%, 6% { opacity: 0; transform: scale(0.4); }
+  10% { opacity: 1; transform: scale(1.18); }
+  14%, 76% { opacity: 1; transform: scale(1); }
+  82%, 100% { opacity: 0; transform: scale(0.4); }
 }
 
 @keyframes vv-icon-fill {
-  0%, 8% { background: #d8d8d8; }
-  20%, 84% { background: var(--primary); }
-  94%, 100% { background: #d8d8d8; }
+  0%, 6% {
+    background: #e4e4e4;
+    box-shadow: 0 1.2cqw 2.4cqw rgb(29 28 26 / 8%);
+    transform: scale(1);
+  }
+  /* the badge grows as it ticks, then settles back to its prior size */
+  10% {
+    background: var(--primary);
+    box-shadow: 0 1.4cqw 3cqw color-mix(in srgb, var(--primary) 34%, transparent);
+    transform: scale(1.18);
+  }
+  15%, 76% {
+    background: var(--primary);
+    box-shadow: 0 1.4cqw 3cqw color-mix(in srgb, var(--primary) 34%, transparent);
+    transform: scale(1);
+  }
+  82%, 100% {
+    background: #e4e4e4;
+    box-shadow: 0 1.2cqw 2.4cqw rgb(29 28 26 / 8%);
+    transform: scale(1);
+  }
 }
 
+/* Published pill: stays charcoal while the list fills, flips red once the last
+   row is ticked, gives a quick "press" dip + bounce, holds, then resets. */
 @keyframes vv-pill-cycle {
-  0%, 34% {
-    background: #4a4a4a;
+  0%, 30% {
+    background: #3c3c3a;
     box-shadow: 0 2.5cqw 6cqw rgb(15 15 15 / 14%);
+    transform: scale(1);
   }
-  50%, 84% {
+  33% {
     background: var(--primary);
-    box-shadow: 0 2.5cqw 6cqw color-mix(in srgb, var(--primary) 26%, transparent);
+    box-shadow: 0 1.2cqw 3cqw color-mix(in srgb, var(--primary) 30%, transparent);
+    transform: scale(0.9);
   }
-  94%, 100% {
-    background: #4a4a4a;
+  38% {
+    background: var(--primary);
+    transform: scale(1.06);
+  }
+  42%, 78% {
+    background: var(--primary);
+    box-shadow: 0 2.5cqw 6cqw color-mix(in srgb, var(--primary) 30%, transparent);
+    transform: scale(1);
+  }
+  84%, 100% {
+    background: #3c3c3a;
     box-shadow: 0 2.5cqw 6cqw rgb(15 15 15 / 14%);
+    transform: scale(1);
   }
 }
 
 @keyframes vv-shine-sweep {
-  0%, 46% { transform: translateX(-130%); }
-  62%, 100% { transform: translateX(130%); }
+  0%, 40% { transform: translateX(-130%); }
+  56%, 100% { transform: translateX(130%); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -6541,22 +6826,23 @@ button.nav-link {
     animation: vv-ring-fill 2.9s linear infinite;
   }
 
-  /* 03 launch - baseline is the finished state; the loop replays completion */
-  .value-tile.is-inview .vv-icon { animation: vv-icon-fill 6s ease infinite; }
-  .value-tile.is-inview .vv-icon-glyph { animation: vv-glyph-cycle 6s ease infinite; }
-  .value-tile.is-inview .vv-icon-check { animation: vv-check-cycle 6s ease infinite; }
+  /* 03 launch - baseline is the finished state; the loop replays completion.
+     Each row is offset by 0.5s so the ticks walk down the list one at a time. */
+  .value-tile.is-inview .vv-icon { animation: vv-icon-fill 8.5s ease-in-out infinite; }
+  .value-tile.is-inview .vv-icon-glyph { animation: vv-glyph-cycle 8.5s ease-in-out infinite; }
+  .value-tile.is-inview .vv-icon-check { animation: vv-check-cycle 8.5s ease-in-out infinite; }
   .value-tile.is-inview .vv-check-row:nth-child(2) .vv-icon,
   .value-tile.is-inview .vv-check-row:nth-child(2) .vv-icon-glyph,
-  .value-tile.is-inview .vv-check-row:nth-child(2) .vv-icon-check { animation-delay: 0.32s; }
+  .value-tile.is-inview .vv-check-row:nth-child(2) .vv-icon-check { animation-delay: 0.5s; }
   .value-tile.is-inview .vv-check-row:nth-child(3) .vv-icon,
   .value-tile.is-inview .vv-check-row:nth-child(3) .vv-icon-glyph,
-  .value-tile.is-inview .vv-check-row:nth-child(3) .vv-icon-check { animation-delay: 0.64s; }
+  .value-tile.is-inview .vv-check-row:nth-child(3) .vv-icon-check { animation-delay: 1s; }
   .value-tile.is-inview .vv-check-row:nth-child(4) .vv-icon,
   .value-tile.is-inview .vv-check-row:nth-child(4) .vv-icon-glyph,
-  .value-tile.is-inview .vv-check-row:nth-child(4) .vv-icon-check { animation-delay: 0.96s; }
-  .vv-published { background: #4a4a4a; }
-  .value-tile.is-inview .vv-published { animation: vv-pill-cycle 6s ease infinite; }
-  .value-tile.is-inview .vv-shine { animation: vv-shine-sweep 6s ease-in-out infinite; }
+  .value-tile.is-inview .vv-check-row:nth-child(4) .vv-icon-check { animation-delay: 1.5s; }
+  .vv-published { background: #3c3c3a; transform-origin: center; }
+  .value-tile.is-inview .vv-published { animation: vv-pill-cycle 8.5s ease-in-out infinite; }
+  .value-tile.is-inview .vv-shine { animation: vv-shine-sweep 8.5s ease-in-out infinite; }
 }
 
 /* =========================================================================
@@ -6570,13 +6856,16 @@ button.nav-link {
    ALL TIMING LIVES HERE. Change --vs-loop for overall speed; the phase map
    below is the single source of truth for every keyframe percentage:
 
-     0-30 %  PAIN     cursor deliberates, Sales full (78%)
-     30 %    CLICK    competitor clicked: neutral flash + "Picked on price"
-     30-58 % LOSS     Sales drained to 14%, pill held
-     52-62 % FLIP     Your Product reddens: art, star, CTA, glow draw in
-     60-64 % CLICK    Your Product clicked
-     64-90 % WIN      Sales fills to 100%, held
-     90-100% RESET    eases back to the PAIN baseline for a seamless loop
+     0-16 %  START    both plain, Your Sales half-full (50%), cursor enters
+     16-24 % HOVER    cursor reaches Competitor: white border + lift, pill pops
+     24 %    CLICK    Competitor grows + jiggles as if clicked
+     24-40 % LOSS     Your Sales drains to 12%
+     40-45 % RELEASE  competitor highlight + pill let go
+     50-58 % FLIP     Your Product reddens: art, name, €€, star, CTA, glow
+     60 %    CLICK    Your Product grows + jiggles as if clicked
+     60-78 % WIN      Your Sales fills to 100%
+     78-90 % HOLD     win state held
+     90-100% RESET    eases back to the START baseline for a seamless loop
 
    The base (no-animation) styles render the WIN state, so reduced-motion
    shows the resolved after-image (per the brief).
@@ -6588,7 +6877,7 @@ button.nav-link {
 }
 
 .stakes-scene {
-  --vs-loop: 11s;
+  --vs-loop: 12s;
   --vs-card: #141414;
   --vs-panel: #1e1e1e;
   --vs-block: #2a2a2a;
@@ -6597,14 +6886,21 @@ button.nav-link {
   --vs-red: var(--primary);
 
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: auto auto;
-  gap: 1.1rem 1rem;
-  align-items: start;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(1rem, 4vw, 3rem);
   width: 100%;
-  max-width: 760px;
   margin: var(--s-5) 0 0;
+}
+
+/* left group: Your Product card tucked beside its own Sales bar */
+.vs-left {
+  display: flex;
+  gap: clamp(0.55rem, 1.6vw, 1rem);
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 56%;
 }
 
 /* ---- cards ------------------------------------------------------------- */
@@ -6617,17 +6913,20 @@ button.nav-link {
   border-radius: 16px;
   background: var(--vs-card);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+  transform-origin: center;
+  will-change: transform;
 }
 
 .vs-card-you {
-  grid-column: 1;
-  grid-row: 1;
+  flex: 1 1 0;
+  min-width: 0;
   --vs-art: var(--vs-red); /* base = WIN */
 }
 
 .vs-card-comp {
-  grid-column: 1;
-  grid-row: 2;
+  flex: 0 1 40%;
+  min-width: 0;
+  align-self: start;
 }
 
 /* product image panel + valve line-art (recoloured via --vs-art) */
@@ -6642,9 +6941,12 @@ button.nav-link {
   overflow: hidden;
 }
 
+/* the valve is portrait and the panel landscape, so size it by HEIGHT to keep
+   the whole illustration inside the panel (no cropped wheel/flange) */
 .vs-valve {
-  width: 66%;
-  height: auto;
+  width: auto;
+  height: 86%;
+  max-width: 90%;
   color: var(--vs-art);
 }
 
@@ -6655,23 +6957,29 @@ button.nav-link {
   stroke-linejoin: round;
 }
 
-/* bookmark badge: grey ribbon (PAIN) -> red ribbon + white star (WIN) */
+/* bookmark badge: hidden until Your Product turns red, then it unfurls down from
+   the top (sleek scaleY reveal) with the white Nexubis mark, and shrinks away
+   again when the card goes back to normal. Base = resolved WIN (visible). */
 .vs-badge {
   position: absolute;
   top: 0;
   right: 9%;
-  width: clamp(1.5rem, 4.4vw, 2rem);
-  height: clamp(1.9rem, 5.5vw, 2.5rem);
-  background: var(--vs-red); /* base = WIN */
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
-  display: grid;
-  place-items: center;
-  align-content: start;
-  padding-top: 14%;
+  width: clamp(1.3rem, 3.4vw, 1.6rem);
+  height: clamp(1.4rem, 3.6vw, 1.65rem);
+  background: var(--vs-red);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+  transform-origin: top center; /* unfurls downward from the top edge */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Nudge the mark up off the bottom notch. Must be a fixed length, NOT a % -
+     padding-% resolves against the panel's WIDTH, which pushed the N clean out
+     the top of the ribbon. */
+  padding-bottom: 0.3rem;
 }
 
-.vs-badge-star {
-  width: 52%;
+.vs-badge-mark {
+  width: 56%;
   height: auto;
   color: var(--white);
   opacity: 1; /* base = WIN */
@@ -6755,38 +7063,51 @@ button.nav-link {
   pointer-events: none;
 }
 
-/* neutral (never red) flash when the competitor is wrongly clicked */
+/* neutral (never red) highlight when the competitor is hovered + clicked:
+   the card lifts with a white border and a soft light wash */
 .vs-pick-flash {
   position: absolute;
   inset: 0;
   border-radius: 16px;
-  background: rgb(255 255 255 / 7%);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 12%);
+  background: rgb(255 255 255 / 9%);
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 85%);
   opacity: 0;
   pointer-events: none;
 }
 
+/* squared tag that pops just to the right of the cursor on the bad click */
 .vs-pill {
   position: absolute;
-  top: 42%;
-  right: 0.5rem;
-  padding: 0.22rem 0.6rem;
-  border-radius: 999px;
-  background: var(--vs-red);
+  top: 50%;
+  padding: 0.34rem 0.72rem;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--vs-red) 88%, transparent);
   color: var(--white);
   font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-size: clamp(0.6rem, 1.7vw, 0.72rem);
+  font-size: clamp(0.66rem, 1.7vw, 0.8rem);
   font-weight: 500;
   white-space: nowrap;
-  box-shadow: 0 6px 16px rgb(255 65 65 / 35%), 0 0 22px rgb(255 65 65 / 30%);
-  opacity: 0; /* hidden unless PAIN loss is playing */
+  box-shadow: 0 6px 16px rgb(0 0 0 / 32%);
+  transform-origin: left center;
+  opacity: 0; /* hidden unless its click beat is playing */
   pointer-events: none;
+  z-index: 5;
 }
 
-/* ---- Sales bar (fixed size/position; only the fill moves) -------------- */
+/* "Picked on price" sits by the Competitor (right); "Branded for ICP" by Your
+   Product (left). Each is timed to its own click in the loop. */
+.vs-pill-pain {
+  left: 68%;
+}
+
+.vs-pill-win {
+  left: 22%;
+  top: 52%;
+}
+
+/* ---- Your Sales bar (fixed size/position; only the fill moves) --------- */
 .vs-sales {
-  grid-column: 2;
-  grid-row: 1;
+  flex: 0 0 auto;
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -6824,122 +7145,270 @@ button.nav-link {
   box-shadow: 0 0 18px color-mix(in srgb, var(--vs-red) 30%, transparent);
 }
 
-/* ---- cursor (one, travels the whole loop) ------------------------------ */
-.vs-cursor {
+/* ---- cursor (one red outline pointer, travels the whole loop) ----------
+   .vs-pointer carries the travel (top/left); the arrow inside does the click
+   "punch" scale, and .vs-ripple rings out from the tip on each click. */
+.vs-pointer {
   position: absolute;
-  top: 20%;
+  top: 12%;
   left: 60%;
-  width: clamp(0.9rem, 2.4vw, 1.25rem);
-  height: auto;
-  color: var(--white);
-  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 55%));
+  width: clamp(1.05rem, 2.6vw, 1.45rem);
   opacity: 0; /* base = hidden (static after-image is calm) */
   z-index: 6;
+  pointer-events: none;
 }
 
-@media (max-width: 560px) {
+.vs-cursor {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--vs-red);
+  filter: drop-shadow(0 2px 5px rgb(0 0 0 / 60%));
+  transform-origin: 20% 12%; /* scale toward the arrow tip */
+}
+
+.vs-cursor path {
+  fill: color-mix(in srgb, var(--work-black) 55%, transparent);
+  stroke: currentColor;
+  stroke-width: 1.6px;
+  stroke-linejoin: miter; /* sharp, square corners (not rounded) */
+  stroke-linecap: butt;
+}
+
+/* click ripple: a thin red ring that expands + fades from the pointer tip */
+.vs-ripple {
+  position: absolute;
+  top: 0.18rem;
+  left: 0.28rem; /* sits on the arrow tip */
+  width: 1.3rem;
+  height: 1.3rem;
+  border: 2px solid var(--vs-red);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.2);
+  pointer-events: none;
+}
+
+/* stack on narrow screens: Your Product + Sales on top, Competitor below */
+@media (max-width: 720px) {
   .stakes-scene {
-    gap: 0.8rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .vs-left,
+  .vs-card-comp {
+    max-width: none;
+    flex: 1 1 auto;
   }
   .vs-card {
     gap: 0.8rem;
   }
+  /* the click cursor + pills are choreographed for the side-by-side layout, so
+     they land off the cards once stacked; hide them on mobile. The story still
+     reads through the card colour-flip and the Sales bar. */
+  .vs-pointer,
   .vs-pill {
-    top: auto;
-    bottom: 0.5rem;
+    display: none;
   }
 }
 
 /* ---- the loop: only under no-preference, only once in view ------------- */
+
+/* Your Product upgrades to red BEFORE the cursor arrives (~54%), so the story
+   reads "proper branding -> more sales", not "the click did it". */
+
+/* Your Product line-art / €€ colour: plain grey at START, red once it FLIPs */
 @keyframes vs-your-art {
-  0%, 52% { --vs-art: var(--vs-plain); }
-  62%, 88% { --vs-art: var(--vs-red); }
-  96%, 100% { --vs-art: var(--vs-plain); }
+  0%, 42% { --vs-art: var(--vs-plain); }
+  48%, 90% { --vs-art: var(--vs-red); }
+  100% { --vs-art: var(--vs-plain); }
 }
 
+/* Your Product name: white at START, red once it FLIPs */
+@keyframes vs-you-name {
+  0%, 42% { color: var(--vs-ink); }
+  48%, 90% { color: var(--vs-red); }
+  100% { color: var(--vs-ink); }
+}
+
+/* ribbon unfurls down from the top as the card turns red, then shrinks away */
 @keyframes vs-badge {
-  0%, 52% { background: #4a4a4a; }
-  62%, 88% { background: var(--vs-red); }
-  96%, 100% { background: #4a4a4a; }
+  0%, 44% { transform: scaleY(0); opacity: 0; }
+  47% { opacity: 1; }
+  54%, 88% { transform: scaleY(1); opacity: 1; }
+  93%, 100% { transform: scaleY(0); opacity: 0; }
 }
 
+/* the Nexubis mark fades + pops in just after the ribbon has dropped */
 @keyframes vs-star {
-  0%, 54% { opacity: 0; transform: scale(0.4); }
-  63%, 88% { opacity: 1; transform: scale(1); }
-  96%, 100% { opacity: 0; transform: scale(0.4); }
+  0%, 54% { opacity: 0; transform: scale(0.3); }
+  60%, 88% { opacity: 1; transform: scale(1); }
+  92%, 100% { opacity: 0; transform: scale(0.3); }
 }
 
 @keyframes vs-cta {
-  0%, 54% {
+  0%, 43% {
     background: var(--vs-block);
     box-shadow: none;
   }
-  63%, 88% {
+  50%, 90% {
     background: var(--vs-red);
     box-shadow: 0 0 18px color-mix(in srgb, var(--vs-red) 40%, transparent);
   }
-  96%, 100% {
+  100% {
     background: var(--vs-block);
     box-shadow: none;
   }
 }
 
 @keyframes vs-glow {
-  0%, 54% { opacity: 0; }
-  63%, 88% { opacity: 1; }
-  96%, 100% { opacity: 0; }
+  0%, 43% { opacity: 0; }
+  50%, 90% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
+/* Your Sales: starts half-full, drains on the bad click, fills on the good one */
 @keyframes vs-sales {
-  0%, 30% { height: 78%; }
-  40% { height: 14%; }
-  58% { height: 14%; }
-  76% { height: 100%; }
+  0%, 22% { height: 50%; }
+  40% { height: 12%; }
+  58% { height: 12%; }
+  78% { height: 100%; }
   90% { height: 100%; }
-  100% { height: 78%; }
+  100% { height: 50%; }
 }
 
+/* Competitor card: hover-lift, then a punchy grow + jiggle on the click */
+/* Competitor card: hover-lift, then THREE quick clicks (jiggle on each) */
+@keyframes vs-comp-card {
+  0%, 18% { transform: scale(1) rotate(0deg); }
+  22% { transform: scale(1.05) rotate(0deg); }
+  24% { transform: scale(1.09) rotate(-0.7deg); } /* click 1 */
+  26% { transform: scale(1.06) rotate(0.6deg); }
+  27% { transform: scale(1.09) rotate(-0.5deg); } /* click 2 */
+  29% { transform: scale(1.06) rotate(0.5deg); }
+  30% { transform: scale(1.09) rotate(-0.45deg); } /* click 3 */
+  33% { transform: scale(1.05) rotate(0deg); }
+  42% { transform: scale(1.04) rotate(0deg); }
+  46%, 100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Your Product card: hover-lift, then FIVE quick clicks (jiggle on each) */
+@keyframes vs-you-card {
+  0%, 55% { transform: scale(1) rotate(0deg); }
+  60% { transform: scale(1.05) rotate(0deg); }
+  62% { transform: scale(1.09) rotate(0.7deg); } /* click 1 */
+  63.7% { transform: scale(1.06) rotate(-0.6deg); }
+  64.5% { transform: scale(1.09) rotate(0.6deg); } /* click 2 */
+  66.2% { transform: scale(1.06) rotate(-0.5deg); }
+  67% { transform: scale(1.09) rotate(0.5deg); } /* click 3 */
+  68.7% { transform: scale(1.06) rotate(-0.45deg); }
+  69.5% { transform: scale(1.09) rotate(0.45deg); } /* click 4 */
+  71.2% { transform: scale(1.06) rotate(-0.4deg); }
+  72% { transform: scale(1.09) rotate(0.4deg); } /* click 5 */
+  75% { transform: scale(1.05) rotate(0deg); }
+  88% { transform: scale(1.05) rotate(0deg); }
+  93%, 100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Competitor highlight (white border + light wash) during the hover/click */
 @keyframes vs-pickflash {
-  0%, 29% { opacity: 0; }
-  31% { opacity: 1; }
-  46% { opacity: 0; }
+  0%, 15% { opacity: 0; }
+  22% { opacity: 1; }
+  40% { opacity: 1; }
+  45% { opacity: 0; }
   100% { opacity: 0; }
 }
 
 @keyframes vs-pill {
-  0%, 30% { opacity: 0; transform: translateY(5px) scale(0.9); }
-  33%, 52% { opacity: 1; transform: translateY(0) scale(1); }
-  57%, 100% { opacity: 0; transform: translateY(0) scale(0.96); }
+  0%, 12% { opacity: 0; transform: translateY(6px) scale(0.9); }
+  19%, 40% { opacity: 1; transform: translateY(0) scale(1); }
+  45%, 100% { opacity: 0; transform: translateY(0) scale(0.96); }
 }
 
-@keyframes vs-cursor {
-  0% { top: 17%; left: 56%; opacity: 0; transform: scale(1); }
-  6% { opacity: 1; }
-  14% { top: 20%; left: 60%; transform: scale(1); }
-  20% { top: 47%; left: 63%; }
-  25% { top: 36%; left: 61%; }
-  30% { top: 67%; left: 64%; opacity: 1; transform: scale(1); }
-  32% { transform: scale(0.78); }
-  35% { transform: scale(1); }
-  52% { top: 67%; left: 64%; opacity: 1; }
-  60% { top: 20%; left: 61%; transform: scale(1); }
-  62% { transform: scale(0.78); }
-  65% { transform: scale(1); }
-  84% { top: 20%; left: 61%; opacity: 1; }
-  93% { opacity: 0; }
-  100% { top: 17%; left: 56%; opacity: 0; }
+/* the win pill pops as the Your Product clicks start (~58%) and holds */
+@keyframes vs-pill-win {
+  0%, 50% { opacity: 0; transform: translateY(6px) scale(0.9); }
+  57%, 82% { opacity: 1; transform: translateY(0) scale(1); }
+  88%, 100% { opacity: 0; transform: translateY(0) scale(0.96); }
+}
+
+/* pointer travel: enters, rests on Competitor (right), then on Your Product (left) */
+@keyframes vs-pointer {
+  0% { top: 10%; left: 60%; opacity: 0; }
+  8% { opacity: 1; }
+  20% { top: 55%; left: 64%; opacity: 1; }
+  42% { top: 55%; left: 64%; opacity: 1; }
+  54% { top: 54%; left: 20%; opacity: 1; }
+  86% { top: 54%; left: 20%; opacity: 1; }
+  94% { opacity: 0; }
+  100% { top: 10%; left: 60%; opacity: 0; }
+}
+
+/* the arrow's own "press" punch on each click - 3 on Competitor, 5 on Your Product */
+@keyframes vs-click {
+  0%, 23% { transform: scale(1); }
+  24% { transform: scale(0.8); }
+  25.5% { transform: scale(1); }
+  27% { transform: scale(0.8); }
+  28.5% { transform: scale(1); }
+  30% { transform: scale(0.8); }
+  31.5%, 61% { transform: scale(1); }
+  62% { transform: scale(0.8); }
+  63.2% { transform: scale(1); }
+  64.5% { transform: scale(0.8); }
+  65.7% { transform: scale(1); }
+  67% { transform: scale(0.8); }
+  68.2% { transform: scale(1); }
+  69.5% { transform: scale(0.8); }
+  70.7% { transform: scale(1); }
+  72% { transform: scale(0.8); }
+  73.5%, 100% { transform: scale(1); }
+}
+
+/* a quick ripple ring on every click */
+@keyframes vs-ripple {
+  0%, 23.5% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  24% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.3); }
+  26% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+  26.5% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  27% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.3); }
+  29% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+  29.5% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  30% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.3); }
+  32% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+  32.5%, 61.5% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  62% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.3); }
+  64% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+  64.3% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  64.5% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.3); }
+  66.5% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+  66.8% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  67% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.3); }
+  69% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+  69.3% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  69.5% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.3); }
+  71.5% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+  71.8% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  72% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.3); }
+  74% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+  74.5%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .stakes-scene.is-inview .vs-card-you { animation: vs-your-art var(--vs-loop) ease-in-out infinite; }
-  .stakes-scene.is-inview .vs-badge { animation: vs-badge var(--vs-loop) ease-in-out infinite; }
-  .stakes-scene.is-inview .vs-badge-star { animation: vs-star var(--vs-loop) cubic-bezier(0.34, 1.4, 0.5, 1) infinite; }
+  .stakes-scene.is-inview .vs-card-you .vs-name { animation: vs-you-name var(--vs-loop) ease-in-out infinite; }
+  .stakes-scene.is-inview .vs-badge { animation: vs-badge var(--vs-loop) cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+  .stakes-scene.is-inview .vs-badge-mark { animation: vs-star var(--vs-loop) cubic-bezier(0.34, 1.4, 0.5, 1) infinite; }
   .stakes-scene.is-inview .vs-cta { animation: vs-cta var(--vs-loop) ease-in-out infinite; }
   .stakes-scene.is-inview .vs-glow { animation: vs-glow var(--vs-loop) ease-in-out infinite; }
   .stakes-scene.is-inview .vs-sales-fill { animation: vs-sales var(--vs-loop) cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+  .stakes-scene.is-inview .vs-card-comp { animation: vs-comp-card var(--vs-loop) cubic-bezier(0.34, 1.4, 0.5, 1) infinite; }
+  .stakes-scene.is-inview .vs-card-you { animation: vs-your-art var(--vs-loop) ease-in-out infinite, vs-you-card var(--vs-loop) cubic-bezier(0.34, 1.4, 0.5, 1) infinite; }
   .stakes-scene.is-inview .vs-pick-flash { animation: vs-pickflash var(--vs-loop) ease-out infinite; }
-  .stakes-scene.is-inview .vs-pill { animation: vs-pill var(--vs-loop) cubic-bezier(0.34, 1.4, 0.5, 1) infinite; }
-  .stakes-scene.is-inview .vs-cursor { animation: vs-cursor var(--vs-loop) ease-in-out infinite; }
+  .stakes-scene.is-inview .vs-pill-pain { animation: vs-pill var(--vs-loop) cubic-bezier(0.34, 1.4, 0.5, 1) infinite; }
+  .stakes-scene.is-inview .vs-pill-win { animation: vs-pill-win var(--vs-loop) cubic-bezier(0.34, 1.4, 0.5, 1) infinite; }
+  .stakes-scene.is-inview .vs-pointer { animation: vs-pointer var(--vs-loop) ease-in-out infinite; }
+  .stakes-scene.is-inview .vs-cursor { animation: vs-click var(--vs-loop) ease-out infinite; }
+  .stakes-scene.is-inview .vs-ripple { animation: vs-ripple var(--vs-loop) ease-out infinite; }
 }
 
 /* ============================================================
