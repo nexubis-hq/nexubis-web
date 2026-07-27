@@ -25,7 +25,22 @@ const plans = [
   },
 ] as const;
 
-const logos = ["altify.svg", "merkle_logo.svg", "cordial-logo.svg", "sofi-logo.svg", "Ox-Logo.svg", "sataya.svg", "oxipack.svg", "ciruit.svg", "blueknight.svg", "usably.svg", "lathyrus.svg", "view-16.svg", "design-focus.svg", "emprise-digital.svg"];
+const logos = [
+  { file: "altify.svg", href: "https://altify.app/" },
+  { file: "merkle_logo.svg", href: "https://www.merklescience.com/" },
+  { file: "cordial-logo.svg", href: "https://cordialsystems.com/" },
+  { file: "sofi-logo.svg", href: "https://www.sofi.com/" },
+  { file: "Ox-Logo.svg", href: "https://www.ox.security/" },
+  { file: "sataya.svg", href: "https://sataya.io/" },
+  { file: "oxipack.svg", href: "https://www.oxipack.com/" },
+  { file: "ciruit.svg", href: "https://circuitprotect.com/" },
+  { file: "blueknight.svg", href: "https://www.blueknight.io/" },
+  { file: "usably.svg", href: "https://www.usably.studio/" },
+  { file: "lathyrus.svg", href: "https://www.lathyrus.io/" },
+  { file: "view-16.svg", href: "https://www.lathyrus.io/" },
+  { file: "design-focus.svg", href: "https://www.designfocus.io/" },
+  { file: "emprise-digital.svg", href: "https://www.emprise.co.za/" },
+] as const;
 
 function CheckIcon() {
   return <svg viewBox="0 0 24 25" aria-hidden="true"><path d="M2.5 12.3c0-4.478 0-6.717 1.391-8.108C5.282 2.801 7.522 2.801 12 2.801s6.718 0 8.109 1.391C21.5 5.583 21.5 7.822 21.5 12.3s0 6.718-1.391 8.109C18.718 21.801 16.478 21.801 12 21.801s-6.718 0-8.109-1.392C2.5 19.018 2.5 16.779 2.5 12.3Z"/><path opacity=".4" d="m8 12.801 2.5 2.5 5.5-6"/></svg>;
@@ -137,7 +152,18 @@ export function PackagesPricing() {
       <div className="trusted-logos">
         <p>The trusted design partner for...</p>
         <div className="trusted-logo-row">
-          {logos.map((logo) => <div className="trusted-logo" key={logo}><img src={`/assets/images/${logo}`} alt="" /></div>)}
+          {[...logos, ...logos].map((logo, index) => (
+            <a
+              className="trusted-logo"
+              href={logo.href}
+              target="_blank"
+              rel="noreferrer"
+              key={`${logo.file}-${index}`}
+              aria-label={`Visit ${new URL(logo.href).hostname.replace(/^www\./, "")}`}
+            >
+              <img src={`/assets/images/${logo.file}`} alt="" />
+            </a>
+          ))}
         </div>
       </div>
     </section>
