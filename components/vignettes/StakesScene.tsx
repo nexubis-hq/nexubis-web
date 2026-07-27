@@ -1,18 +1,20 @@
 /**
  * Stakes scene — "A great product with a weak brand pays for it every day."
  *
- * A single decorative (aria-hidden) illustration that loops one story from the
- * designer's three states:
- *   1. PAIN   — Your Product (€€) and a Competitor (€) look identical. A cursor
- *               hesitates, then clicks the CHEAPER competitor. Its card gets a
- *               brief NEUTRAL (never red) highlight and the Sales bar drains.
- *   2. FLIP   — Your Product upgrades its branding: red line-art, star badge,
- *               a red CTA and a red glowing border draw in.
- *   3. WIN    — the cursor comes back and clicks Your Product despite the €€,
- *               and the Sales bar fills back up past where it started.
+ * A single decorative (aria-hidden) illustration that loops one story. It opens
+ * with both products looking identical and Your Sales sitting half-full (centre):
+ *   1. START — Your Product (€€) and a Competitor (€) look the same, plain grey.
+ *   2. PAIN  — the cursor moves to the Competitor. That card lights up (white
+ *              border + lift), grows and "jiggles" as if clicked, a "Picked on
+ *              price" pill pops, and Your Sales drains downward.
+ *   3. FLIP  — a beat later, Your Product upgrades to red branding: red line-art,
+ *              star badge, red €€/name, a red CTA and a red glowing border.
+ *   4. WIN   — the cursor clicks Your Product (it grows + jiggles too) and Your
+ *              Sales fills all the way up.
+ * Then it eases back to the START state for a seamless loop.
  *
  * Red is our brand colour and only ever means GOOD: it appears on Your Product's
- * upgrade and the Sales bar, never on the competitor or the bad click.
+ * upgrade and Your Sales, never on the competitor or the bad click.
  *
  * The baseline markup (no animation) renders the resolved WIN state, so under
  * `prefers-reduced-motion` the static after-image is what shows. The loop is a
@@ -74,29 +76,40 @@ function Valve() {
 export function StakesScene() {
   return (
     <div className="stakes-scene" data-reveal data-reveal-delay={0.2} aria-hidden="true">
-      {/* Your Product — upgrades from plain to branded across the loop */}
-      <article className="vs-card vs-card-you">
-        <div className="vs-panel">
-          <Valve />
-          {/* badge: grey bookmark (pain) reddens and gains a white star (win) */}
-          <span className="vs-badge">
-            <svg className="vs-badge-star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 3.6l2.32 4.7 5.18.76-3.75 3.65.885 5.16L12 15.43l-4.635 2.44.885-5.16L4.5 9.06l5.18-.76L12 3.6z" />
-            </svg>
-          </span>
-        </div>
-        <div className="vs-meta">
-          <span className="vs-name">Your Product</span>
-          <span className="vs-price">€€</span>
-          <span className="vs-chip" />
-          <span className="vs-cta" />
-          <span className="vs-line" />
-          <span className="vs-line vs-line-sm" />
-        </div>
-        <span className="vs-glow" />
-      </article>
+      {/* left group: Your Product sits right beside its own Sales bar */}
+      <div className="vs-left">
+        {/* Your Product — upgrades from plain to branded across the loop */}
+        <article className="vs-card vs-card-you">
+          <div className="vs-panel">
+            <Valve />
+            {/* badge: grey bookmark (start) reddens and gains the white Nexubis mark (win) */}
+            <span className="vs-badge">
+              <svg className="vs-badge-mark" viewBox="0 0 54 36" fill="currentColor" aria-hidden="true">
+                <path d="M40.4813 3.19513L34.0866 17.6124C29.4126 15.194 26.2036 10.3107 26.2036 4.68336C26.2036 4.17178 26.2269 3.6602 26.2734 3.17188H25.9944H13.0886H13.0421C12.8328 8.84575 14.1118 14.0081 16.8557 18.7053H6.15903L0.0898438 32.4249H13.0421L18.2044 20.7749C23.1807 27.7509 31.3194 32.3319 40.4813 32.4249L53.4336 3.19513H40.4813Z" />
+              </svg>
+            </span>
+          </div>
+          <div className="vs-meta">
+            <span className="vs-name">Your Product</span>
+            <span className="vs-price">€€</span>
+            <span className="vs-chip" />
+            <span className="vs-cta" />
+            <span className="vs-line" />
+            <span className="vs-line vs-line-sm" />
+          </div>
+          <span className="vs-glow" />
+        </article>
 
-      {/* Competitor — never changes; only ever gets a neutral "picked" flash */}
+        {/* Your Sales — same size and position always; only the fill level moves */}
+        <div className="vs-sales">
+          <span className="vs-sales-label">Your Sales</span>
+          <div className="vs-sales-track">
+            <div className="vs-sales-fill" />
+          </div>
+        </div>
+      </div>
+
+      {/* Competitor — never changes; only ever gets a neutral "picked" highlight */}
       <article className="vs-card vs-card-comp">
         <div className="vs-panel">
           <Valve />
@@ -110,21 +123,21 @@ export function StakesScene() {
           <span className="vs-line vs-line-sm" />
         </div>
         <span className="vs-pick-flash" />
-        <span className="vs-pill">Picked on price</span>
       </article>
 
-      {/* Sales — same size and position always; only the fill level animates */}
-      <div className="vs-sales">
-        <span className="vs-sales-label">Sales</span>
-        <div className="vs-sales-track">
-          <div className="vs-sales-fill" />
-        </div>
-      </div>
+      {/* Two pills sit in scene space, each popping on its own click:
+          "Picked on price" on the Competitor, "Branded for ICP" on Your Product. */}
+      <span className="vs-pill vs-pill-pain">Picked on price</span>
+      <span className="vs-pill vs-pill-win">Branded for ICP</span>
 
-      {/* one cursor travels the whole story: deliberate, click cheap, then click us */}
-      <svg className="vs-cursor" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M5 3l6.5 15.5 2-6 6-2L5 3z" />
-      </svg>
+      {/* one red cursor travels the whole story: click cheap, then click us.
+          A ripple rings at the tip on each click for a tactile "click" beat. */}
+      <span className="vs-pointer">
+        <svg className="vs-cursor" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 3l6.5 15.5 2-6 6-2L5 3z" />
+        </svg>
+        <span className="vs-ripple" />
+      </span>
     </div>
   );
 }

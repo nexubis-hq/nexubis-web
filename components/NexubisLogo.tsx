@@ -1,7 +1,7 @@
 type NexubisLogoProps = {
   className?: string;
   markOnly?: boolean;
-  color?: "black" | "red";
+  color?: "black" | "red" | "white";
 };
 
 export function NexubisLogo({
@@ -9,7 +9,8 @@ export function NexubisLogo({
   markOnly = false,
   color = "black",
 }: NexubisLogoProps) {
-  const textColor = color === "red" ? "#ff4141" : "#292d32";
+  const textColor =
+    color === "red" ? "#ff4141" : color === "white" ? "#ffffff" : "#292d32";
 
   return (
     <svg

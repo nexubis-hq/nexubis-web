@@ -131,7 +131,8 @@ export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
               <RocketIcon />
             </span>
             <span className="nav-cta-text rocket-button-text">
-              Book an application call
+              <span className="nav-cta-label-full">Book an application call</span>
+              <span className="nav-cta-label-short">Book a Call</span>
             </span>
           </Link>
 

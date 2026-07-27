@@ -55,15 +55,15 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <FooterAnimations />
-      <div className="site-container footer-inner">
-        <div className="footer-top">
-          <FooterWordmark />
-        </div>
+      <div className="site-container footer-top">
+        <FooterWordmark />
+      </div>
 
-        <div className="footer-bottom">
+      <div className="footer-bottom">
+        <div className="site-container">
           <div className="footer-row">
             <div className="footer-column footer-logo-column">
-              <NexubisLogo className="footer-logo" />
+              <NexubisLogo className="footer-logo" color="white" />
             </div>
             <div className="footer-column footer-links-column">
               <div className="footer-menus">

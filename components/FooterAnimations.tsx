@@ -1,80 +1,58 @@
 "use client";
 
-import { useLayoutEffect } from "react";
-import gsap from "gsap";
+import { useEffect } from "react";
+
+/**
+ * Scroll-linked footer wordmark. As the footer scrolls into view the giant
+ * "nexubis" rises up from behind the (opaque) nav block, its playhead tied to
+ * scroll position for a smooth, sleek reveal rather than a one-shot pop.
+ * Under reduced motion it just rests in its finished position.
+ */
+
+const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+const smoothstep = (n: number) => n * n * (3 - 2 * n);
 
 export function FooterAnimations() {
-  useLayoutEffect(() => {
+  useEffect(() => {
     const footer = document.querySelector<HTMLElement>(".site-footer");
-    const wordmark = footer?.querySelector<SVGElement>(".footer-wordmark");
-    const photos = footer
-      ? gsap.utils.toArray<HTMLImageElement>(".footer-media img", footer)
-      : [];
-
+    const wordmark = footer?.querySelector<HTMLElement>(".footer-wordmark");
     if (!footer || !wordmark) return;
 
-    const media = gsap.matchMedia();
-    const context = gsap.context(() => {
-      media.add("(prefers-reduced-motion: no-preference)", () => {
-        let wordmarkTween: gsap.core.Tween | undefined;
-        const wordmarkObserver = new IntersectionObserver(
-          (entries) => {
-            if (!entries.some((entry) => entry.isIntersecting)) return;
-            wordmarkTween = gsap.from(wordmark, {
-              y: "100%",
-              opacity: 0,
-              duration: 0.8,
-              ease: "power2.out",
-              clearProps: "all",
-            });
-            wordmarkObserver.disconnect();
-          },
-          { rootMargin: "0px 0px -40% 0px", threshold: 0 },
-        );
-        wordmarkObserver.observe(footer);
+    // On phones the wordmark is small and the "rise from behind the nav" effect
+    // reads as broken, so (like reduced motion) it just rests in place.
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      window.matchMedia("(max-width: 767px)").matches
+    ) {
+      wordmark.style.transform = "none";
+      wordmark.style.opacity = "1";
+      return;
+    }
 
-        return () => {
-          wordmarkTween?.kill();
-          wordmarkObserver.disconnect();
-        };
-      });
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const rect = footer.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // Begin as the footer's top edge nears the bottom of the viewport, finish
+      // once it has travelled up to ~30% - a comfortable reveal window.
+      const start = vh * 0.95;
+      const end = vh * 0.3;
+      const eased = smoothstep(clamp01((start - rect.top) / (start - end)));
+      wordmark.style.transform = `translate3d(0, ${((1 - eased) * 100).toFixed(2)}%, 0)`;
+      wordmark.style.opacity = eased.toFixed(3);
+    };
+    const request = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
 
-      media.add(
-        "(prefers-reduced-motion: no-preference) and (min-width: 480px) and (hover: hover) and (pointer: fine)",
-        () => {
-          const moveX = photos.map((photo) =>
-            gsap.quickTo(photo, "x", { duration: 0.3, ease: "power2.out" }),
-          );
-          const moveY = photos.map((photo) =>
-            gsap.quickTo(photo, "y", { duration: 0.3, ease: "power2.out" }),
-          );
-          const handlePointerMove = (event: PointerEvent) => {
-            const xPercent = event.clientX / window.innerWidth - 0.5;
-            const yPercent = event.clientY / window.innerHeight - 0.5;
-
-            photos.forEach((photo, index) => {
-              moveX[index](xPercent * photo.offsetWidth * 0.1);
-              moveY[index](yPercent * photo.offsetHeight * 0.1);
-            });
-          };
-
-          window.addEventListener("pointermove", handlePointerMove, { passive: true });
-          return () => {
-            window.removeEventListener("pointermove", handlePointerMove);
-            gsap.killTweensOf(photos);
-            gsap.set(photos, { clearProps: "transform" });
-          };
-        },
-      );
-
-      media.add("(prefers-reduced-motion: reduce)", () => {
-        gsap.set([wordmark, ...photos], { clearProps: "opacity,transform" });
-      });
-    }, footer);
-
+    update();
+    window.addEventListener("scroll", request, { passive: true });
+    window.addEventListener("resize", request);
     return () => {
-      media.revert();
-      context.revert();
+      window.removeEventListener("scroll", request);
+      window.removeEventListener("resize", request);
+      if (frame) cancelAnimationFrame(frame);
     };
   }, []);
 
