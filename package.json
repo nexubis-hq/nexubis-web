@@ -13,6 +13,7 @@
     "test": "vitest run",
     "funnelr:inspect": "tsx scripts/funnelr-inspect.ts",
     "funnelr:verify:nexubis": "tsx scripts/funnelr-verify-nexubis-readonly.ts",
+    "funnelr:verify:lekkeweb": "tsx scripts/funnelr-verify-lekkeweb-readonly.ts",
     "test:funnelr": "npm run funnelr:inspect",
     "test:funnelr:write": "tsx scripts/test-funnelr-write.ts",
     "test:watch": "vitest"

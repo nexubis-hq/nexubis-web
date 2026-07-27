@@ -11,7 +11,7 @@ export function CompetitorComparisonLottie() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const media = window.matchMedia("(max-width: 479px)");
+    const media = window.matchMedia("(max-width: 767px)");
     const update = () => setMobile(media.matches);
     update();
     media.addEventListener("change", update);

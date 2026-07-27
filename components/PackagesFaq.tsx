@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 const faqs = [
   {
     question: "Why does Nexubis use a subscription model instead of hourly billing?",
@@ -70,6 +74,8 @@ function FaqArrow() {
 }
 
 export function PackagesFaq() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
   return (
     <section className="packages-faq-section section">
       <div className="site-container packages-faq-container">
@@ -80,9 +86,19 @@ export function PackagesFaq() {
 
           <div className="packages-faq-column">
             <div className="packages-faq-group">
-              {faqs.map((faq) => (
-                <details className="packages-faq-item" key={faq.question}>
-                  <summary className="packages-faq-header">
+              {faqs.map((faq, index) => (
+                <details
+                  className="packages-faq-item"
+                  key={faq.question}
+                  open={openIndex === index}
+                >
+                  <summary
+                    className="packages-faq-header"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      setOpenIndex((current) => (current === index ? null : index));
+                    }}
+                  >
                     <span>{faq.question}</span>
                     <FaqArrow />
                   </summary>

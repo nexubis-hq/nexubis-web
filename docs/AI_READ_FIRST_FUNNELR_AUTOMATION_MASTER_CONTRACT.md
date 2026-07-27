@@ -1,8 +1,8 @@
 # AI READ FIRST: Funnelr Automation Master Contract
 
-Last updated: 2026-07-24
+Last updated: 2026-07-27
 
-This document is the single permanent source of truth for Nexubis Funnelr automation behaviour in this repository. Future AI agents and human maintainers must read this file before changing Funnelr lists, sequences, tags, automations, contact-routing code, or related scripts.
+This document is the single permanent source of truth for Nexubis and LekkeWeb Funnelr automation behaviour in this repository. Future AI agents and human maintainers must read this file before changing Funnelr lists, sequences, tags, automations, contact-routing code, or related scripts.
 
 Any future change to Funnelr tags, lists, sequences, custom fields, automation conditions, automation actions, Scorecard capture logic or booking logic is incomplete until this document is updated in the same code change.
 
@@ -10,7 +10,7 @@ Do not create competing Funnelr automation explanation files. Update this master
 
 ## Purpose
 
-The Nexubis Scorecard integration captures qualified Scorecard leads, stores the permanent report URL on the Funnelr contact, and requests campaign routing through temporary trigger tags. Funnelr owns campaign membership, sequence enrolment, exit handling, and history safeguards.
+The Nexubis Scorecard integration captures qualified Scorecard leads, stores the permanent report URL on the Funnelr contact, and requests campaign routing through temporary trigger tags. The LekkeWeb website already applies its Brand tag to website contacts, and Funnelr owns LekkeWeb master-list visibility, manual intake routing, campaign membership, sequence enrolment, exit handling, and history safeguards.
 
 The Scorecard website/server integration is tag-only. Any reintroduction of direct Scorecard campaign-list or sequence handling in website code is a regression.
 
@@ -292,22 +292,183 @@ Do not assume a timeout means the write failed. Before retrying, search by inter
 
 The endpoint `GET /api/v1/query/option/automationActionTypes` currently returns HTTP 500 in this account and must not block automation work.
 
-## LekkeWeb Boundary
+## LekkeWeb Contract
 
-Do not edit, rename, recreate, disable, delete, or repurpose any LekkeWeb resource for Nexubis.
+Do not edit, rename, recreate, disable, delete, or repurpose any LekkeWeb resource for Nexubis. LekkeWeb resources may be changed only by an explicit LekkeWeb task.
 
-Known protected LekkeWeb resources:
+The LekkeWeb website already applies `Brand: LekkeWeb` to LekkeWeb website contacts. No website code change is required for master-list population.
 
-- `Brand: LekkeWeb`
-- `Source: Stoep Audit`
-- `Source: Manual - LW`
-- `Trigger: LekkeWeb | Start Stoep Audit Sales - Full Report`
-- `Trigger: LekkeWeb | Start Stoep Audit Sales - No Full Report`
-- `Trigger: LekkeWeb | Start Stoep Tip Nurture`
-- `Pipeline: LekkeWeb | Call Booked`
-- `Pipeline: LekkeWeb | Replied`
-- `History: LekkeWeb | Stoep Audit Sales Started`
-- `History: LekkeWeb | Stoep Tip Nurture Started`
+### LekkeWeb Tags
+
+| Tag | ID | Purpose |
+| --- | --- | --- |
+| `Brand: LekkeWeb` | `D7F84530-6722-4BEB-B0DD-D99A749DC731` | Marks the contact as owned by LekkeWeb. |
+| `Source: LekkeWeb | Manual` | `E09C8B71-D6EF-434F-B928-625761821C7C` | Marks manually created LekkeWeb contacts. |
+| `Source: Stoep Audit` | `9C2FB5A0-0879-4D49-BC13-E88A6E580853` | Existing Stoep Audit source tag. |
+| `Source: Manual - LW` | `DD21EE5F-CC61-4116-9EE3-344128CC2098` | Legacy manual source tag retained unchanged. |
+| `Trigger: LekkeWeb | Start Stoep Audit Sales - Full Report` | `51EE549A-F2C3-4944-928E-96AF31FCA561` | Requests full-report sales routing. |
+| `Trigger: LekkeWeb | Start Stoep Audit Sales - No Full Report` | `84DEC5B3-0FB1-4114-B233-3FA37FBB80D5` | Requests no-full-report sales routing. |
+| `Trigger: LekkeWeb | Start Stoep Tip Nurture` | `F2BA90FD-0B59-4B88-BE74-EA0B3E41CAF0` | Existing trigger reused for Stoep Tip nurture entry. |
+| `Pipeline: LekkeWeb | Call Booked` | `9D957D17-E269-45D5-832B-48B8FFFC3F54` | Durable booked state. |
+| `Pipeline: LekkeWeb | Replied` | `484E5078-56E2-4F8B-B4D8-D4AC7AD5835F` | Durable replied state. |
+| `History: LekkeWeb | Stoep Audit Sales Started` | `B95326E5-E79C-4B29-A72A-BB38C235A1D6` | Existing sales history tag. |
+| `History: LekkeWeb | Stoep Tip Nurture Started` | `0025546D-8E1D-458D-864C-3A16BD078B16` | Prevents duplicate Stoep Tip nurture entry. |
+
+### LekkeWeb Lists
+
+| List | ID | Notes |
+| --- | --- | --- |
+| `LekkeWeb | All Contacts` | `0A17B990-A8DF-49AC-B2FA-F2C2BEE459CB` | Visibility-only master list for all LekkeWeb contacts. Not a campaign-recipient list and must not be attached to any sequence. |
+| `LekkeWeb | Manual Leads - Holding` | `8549B002-C386-4809-864D-B38723B48663` | Temporary one-time intake point for manually created LekkeWeb contacts. Not attached to any sequence. |
+| `LekkeWeb | Stoep Audit Leads - Full Report` | `82EA6A5C-0E17-4D18-BA32-D7D4D71C7534` | Existing full-report sales campaign list. |
+| `LekkeWeb | Stoep Audit Leads - No Full Report` | `D1262321-6D89-4C75-B7E3-8B88845DDBD2` | Existing no-full-report sales campaign list. |
+| `LekkeWeb | Stoep Tip Nurture` | `199E6A23-EC82-47E2-AD3D-A64A99BBA35E` | Existing Stoep Tip nurture campaign list. |
+| `LekkeWeb | Call Booked` | `DF97E786-2F16-435A-8C2E-D4A2421A00B7` | Existing booked contacts list. |
+
+`LekkeWeb | All Contacts` is populated automatically when `Brand: LekkeWeb` is applied. It is a durable visibility list and must persist when contacts enter a sales campaign, enter Stoep Tip nurture, book a call, reply, exit campaigns, or move between campaign states. Campaign-state automations must not remove contacts from this list.
+
+### LekkeWeb Sequences
+
+| Sequence | ID | Recipient list |
+| --- | --- | --- |
+| `LekkeWeb | Stoep Audit Sales - Full Report` | `A586ACA7-7A67-45F9-9972-CC6A95B256FE` | `LekkeWeb | Stoep Audit Leads - Full Report` |
+| `LekkeWeb | Stoep Audit Sales - No Full Report` | `5BB36DBF-3F1F-4390-A54C-09818BFB2840` | `LekkeWeb | Stoep Audit Leads - No Full Report` |
+| `LekkeWeb | Stoep Tip Nurture` | `B2FC5E91-FAD0-433C-A735-7A2D27B46CFD` | `LekkeWeb | Stoep Tip Nurture` |
+
+`LekkeWeb | All Contacts` and `LekkeWeb | Manual Leads - Holding` must not be attached to these or any other sequences.
+
+### LekkeWeb | Brand Tag - Add to All Contacts
+
+ID: `301AD7BD-F256-4F81-90FB-966BF345AFB4`
+Enabled: yes
+
+Trigger:
+
+- contact has tag `Brand: LekkeWeb`
+
+Actions:
+
+1. Add to list `LekkeWeb | All Contacts`
+
+This automation must do nothing else. It must not apply Source, Trigger, Pipeline, or History tags; add campaign-recipient lists; add sequences; or remove contacts from any list or sequence.
+
+### LekkeWeb | Manual Holding - Apply Contact Tags
+
+ID: `8977A9AF-0E3E-4FB1-9417-5B946C6476ED`
+Enabled: yes
+
+Trigger:
+
+- contact belongs to list `LekkeWeb | Manual Leads - Holding`
+
+Actions:
+
+1. Apply tag `Brand: LekkeWeb`
+2. Apply tag `Source: LekkeWeb | Manual`
+3. Apply tag `Trigger: LekkeWeb | Start Stoep Tip Nurture`
+
+A LekkeWeb team member should only need to create the contact and add it to `LekkeWeb | Manual Leads - Holding`. This automation communicates intent through tags. It must not directly add the contact to `LekkeWeb | All Contacts`, the Stoep Tip nurture list, the Stoep Tip nurture sequence, either sales list, either sales sequence, any Pipeline tag, or any History tag.
+
+### LekkeWeb | Start Stoep Tip Nurture
+
+ID: `96441BD0-AD7F-4A5F-AD8C-7DF5E38697A3`
+Enabled: yes
+
+Trigger:
+
+- contact has tag `Trigger: LekkeWeb | Start Stoep Tip Nurture`
+
+Conditions:
+
+- contact does not have `History: LekkeWeb | Stoep Tip Nurture Started`
+- contact does not have `Pipeline: LekkeWeb | Call Booked`
+- contact does not have `Pipeline: LekkeWeb | Replied`
+
+Actions:
+
+1. Remove from list `LekkeWeb | Stoep Audit Leads - Full Report`
+2. Remove tag `Trigger: LekkeWeb | Start Stoep Tip Nurture`
+3. Remove from sequence `LekkeWeb | Stoep Audit Sales - No Full Report`
+4. Add to list `LekkeWeb | Stoep Tip Nurture`
+5. Apply tag `History: LekkeWeb | Stoep Tip Nurture Started`
+6. Add to sequence `LekkeWeb | Stoep Tip Nurture`
+7. Remove from sequence `LekkeWeb | Stoep Audit Sales - Full Report`
+8. Remove from list `LekkeWeb | Manual Leads - Holding`
+
+Manual Holding is removed when nurture entry succeeds. `LekkeWeb | All Contacts` must not be removed by this automation.
+
+### LekkeWeb | Start Stoep Audit Sales - Full Report
+
+ID: `48B6CCE0-BAB2-4871-B392-68B7CADE1B4F`
+Enabled: yes
+
+Trigger:
+
+- contact has tag `Trigger: LekkeWeb | Start Stoep Audit Sales - Full Report`
+
+Conditions:
+
+- contact does not have `History: LekkeWeb | Stoep Audit Sales Started`
+- contact does not have `Pipeline: LekkeWeb | Call Booked`
+- contact does not have `Pipeline: LekkeWeb | Replied`
+
+This automation must not exclude contacts with `History: LekkeWeb | Stoep Tip Nurture Started`. A contact who previously entered Stoep Tip nurture remains eligible for first-time full-report sales. The Stoep Tip nurture History tag is permanent and must not be removed or reset.
+
+Actions:
+
+1. Remove from sequence `LekkeWeb | Stoep Tip Nurture`
+2. Remove from list `LekkeWeb | Stoep Audit Leads - No Full Report`
+3. Remove from list `LekkeWeb | Stoep Tip Nurture`
+4. Add to sequence `LekkeWeb | Stoep Audit Sales - Full Report`
+5. Add to list `LekkeWeb | Stoep Audit Leads - Full Report`
+6. Remove from list `LekkeWeb | Manual Leads - Holding`
+7. Apply tag `History: LekkeWeb | Stoep Audit Sales Started`
+8. Remove tag `Trigger: LekkeWeb | Start Stoep Audit Sales - Full Report`
+
+`LekkeWeb | All Contacts` must not be removed by this automation. The automation must not add the contact to `LekkeWeb | Stoep Audit Sales - No Full Report`.
+
+### LekkeWeb | Call Booked - Exit Campaigns
+
+ID: `25457BA6-554C-488A-9E17-0B516D06E215`
+Enabled: yes
+
+Trigger:
+
+- contact has tag `Pipeline: LekkeWeb | Call Booked`
+
+This automation removes active LekkeWeb sales and Stoep Tip nurture campaign lists/sequences, removes temporary LekkeWeb Trigger tags, adds the contact to `LekkeWeb | Call Booked`, and removes `LekkeWeb | Manual Leads - Holding`. It must not remove `LekkeWeb | All Contacts` or the `Pipeline: LekkeWeb | Call Booked` tag.
+
+### LekkeWeb | Replied - Exit Campaigns
+
+ID: `D8424132-9ECB-4FF1-AFD7-CF3462DBD9BD`
+Enabled: yes
+
+Trigger:
+
+- contact has tag `Pipeline: LekkeWeb | Replied`
+
+This automation removes active LekkeWeb sales and Stoep Tip nurture campaign lists/sequences, removes temporary LekkeWeb Trigger tags, and removes `LekkeWeb | Manual Leads - Holding`. It must not remove `LekkeWeb | All Contacts` or the `Pipeline: LekkeWeb | Replied` tag.
+
+### LekkeWeb Manual Contact Journey
+
+1. Team member creates the contact in Funnelr.
+2. Team member adds the contact only to `LekkeWeb | Manual Leads - Holding`.
+3. `LekkeWeb | Manual Holding - Apply Contact Tags` applies Brand, Manual Source, and the existing Stoep Tip nurture Trigger.
+4. `LekkeWeb | Brand Tag - Add to All Contacts` adds the contact to `LekkeWeb | All Contacts`.
+5. `LekkeWeb | Start Stoep Tip Nurture` adds the contact to the existing Stoep Tip nurture list and sequence, applies nurture History, removes the temporary nurture Trigger, and removes Manual Holding.
+
+### LekkeWeb Nurture-to-Full-Report Sales Journey
+
+1. Existing contact has Brand, belongs to `LekkeWeb | All Contacts`, belongs to the Stoep Tip nurture list and sequence, and has `History: LekkeWeb | Stoep Tip Nurture Started`.
+2. Contact completes the LekkeWeb audit unlock for the first time and receives `Trigger: LekkeWeb | Start Stoep Audit Sales - Full Report`.
+3. `LekkeWeb | Start Stoep Audit Sales - Full Report` removes the contact from the Stoep Tip nurture list and sequence.
+4. The same automation adds the contact to `LekkeWeb | Stoep Audit Leads - Full Report` and `LekkeWeb | Stoep Audit Sales - Full Report`.
+5. The automation applies `History: LekkeWeb | Stoep Audit Sales Started` and removes the temporary full-report sales Trigger.
+6. The contact remains in `LekkeWeb | All Contacts`, keeps the permanent Stoep Tip nurture History tag, and is not added to the no-full-report sales sequence.
+
+Website-side Last Name report-URL mirroring remains a separate LekkeWeb developer task. This Funnelr correction did not change website code, report-generation code, contact creation, report URL custom-field writing, `LekkeWeb | Report URL`, Last Name mirroring, or any `street` / Alternative Address behaviour.
+
+Use stable tag, list, and sequence IDs for contact-level read-back because Funnelr contact membership endpoints may return valid IDs with `name: null`.
 
 Deferred LekkeWeb cleanup:
 
@@ -341,7 +502,12 @@ Do not delete or rename these without separate approval:
 - Nurture transition removes sales, adds nurture list/sequence, applies nurture History, and removes nurture Trigger.
 - Booked and replied contacts do not enter nurture when the nurture Trigger is applied.
 - Existing list membership, sequence progress, unsubscribe status, and email history are preserved by resource renames.
-- LekkeWeb resource names, IDs, statuses, and automation configuration remain unchanged.
+- LekkeWeb website contacts that receive `Brand: LekkeWeb` are automatically added to `LekkeWeb | All Contacts` with no campaign Source, Trigger, Pipeline, History, campaign-list, or sequence changes.
+- LekkeWeb manual contacts added only to `LekkeWeb | Manual Leads - Holding` receive Brand, Manual Source, and the existing Stoep Tip nurture Trigger, then enter the existing Stoep Tip nurture journey.
+- LekkeWeb Stoep Tip nurture entry removes `LekkeWeb | Manual Leads - Holding` and never removes `LekkeWeb | All Contacts`.
+- LekkeWeb nurture-to-full-report sales removes the Stoep Tip nurture list and sequence, adds the full-report sales list and sequence, applies full-report sales History, removes the temporary full-report Trigger, keeps Stoep Tip nurture History, keeps `LekkeWeb | All Contacts`, and does not add the no-full-report sequence.
+- LekkeWeb Call Booked and Replied exits remove `LekkeWeb | Manual Leads - Holding`, preserve their durable Pipeline tags, clean up campaign lists/sequences, and never remove `LekkeWeb | All Contacts`.
+- LekkeWeb `All Contacts` and `Manual Leads - Holding` are not sequence recipient lists.
 
 ## Rollback Information
 
@@ -369,8 +535,23 @@ Rollback steps:
 
 ## Change Log
 
+2026-07-27:
+
+- Corrected `LekkeWeb | Start Stoep Audit Sales - Full Report` (`48B6CCE0-BAB2-4871-B392-68B7CADE1B4F`) by adding the missing removal actions for `LekkeWeb | Stoep Tip Nurture` list (`199E6A23-EC82-47E2-AD3D-A64A99BBA35E`) and sequence (`B2FC5E91-FAD0-433C-A735-7A2D27B46CFD`).
+- Verified the full-report sales conditions exclude only existing full-report sales History (`B95326E5-E79C-4B29-A72A-BB38C235A1D6`), Call Booked (`9D957D17-E269-45D5-832B-48B8FFFC3F54`), and Replied (`484E5078-56E2-4F8B-B4D8-D4AC7AD5835F`), while allowing permanent Stoep Tip nurture History (`0025546D-8E1D-458D-864C-3A16BD078B16`).
+- Controlled Funnelr test passed with contact `lekkeweb.funnelr.final.202607271257@lekkeweb.co.za`, user ID `67`: direct full-report Trigger application removed Stoep Tip nurture list/sequence, added full-report sales list/sequence, applied full-report sales History, removed the temporary Trigger, preserved Stoep Tip nurture History, preserved `LekkeWeb | All Contacts`, left Manual Holding absent, and did not add the no-full-report sequence.
+- Website-side Last Name report-URL mirroring remains a separate LekkeWeb developer task and is not completed by this Funnelr-side correction.
+
 2026-07-24:
 
+- Created `LekkeWeb | All Contacts` as the visibility-only master list for LekkeWeb contacts.
+- Reused `LekkeWeb | Manual Leads - Holding` as the temporary manual intake list.
+- Created `Source: LekkeWeb | Manual` and left the legacy `Source: Manual - LW` tag unchanged.
+- Created and enabled `LekkeWeb | Brand Tag - Add to All Contacts`.
+- Created and enabled `LekkeWeb | Manual Holding - Apply Contact Tags`.
+- Updated `LekkeWeb | Start Stoep Tip Nurture` to remove `LekkeWeb | Manual Leads - Holding` when nurture entry succeeds.
+- Verified existing `LekkeWeb | Call Booked - Exit Campaigns` and `LekkeWeb | Replied - Exit Campaigns` remove Manual Holding and do not remove All Contacts.
+- Documented stable-ID contact read-back for LekkeWeb tests because contact-level tag/list endpoints can return `name: null`.
 - Replaced the failed `Telephone` / `telephone` Messenger workaround with the built-in `Last name` field, represented by the contact `lastName` API property.
 - Confirmed the custom `Nexubis | Scorecard Report URL` field remains the permanent source of truth and both the custom field and `Last name` must be updated on new and existing unlocks with a valid HTTPS report URL.
 - Created `Nexubis | All Contacts` as the visibility-only master list for Nexubis contacts.

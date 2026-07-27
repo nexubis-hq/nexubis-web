@@ -85,6 +85,7 @@ The command performs only GET requests and prints sanitized endpoint availabilit
 
 ## Documented Gaps
 
+- Contact-level list and tag read-back can return valid stable `listId` / `tagId` values while returning `name: null`. Live LekkeWeb automation testing on 2026-07-24 confirmed that contact-level verification should compare stable IDs from the resource definitions, not display names from membership rows.
 - Rate limits: not documented.
 - Pagination: `Page`, `Size`, and sometimes `PageDate` are documented on user/list/tag/sequence membership endpoints; response pagination metadata is not documented.
 - Update behavior: update endpoints are documented as `PUT`; the spec does not state whether they are partial updates, full replacements, merges, or upserts.
