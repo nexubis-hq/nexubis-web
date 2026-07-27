@@ -3232,7 +3232,8 @@ button.nav-link {
   }
 
   .hero-reel {
-    width: 58.333333%;
+    width: 100%;
+    max-width: 100%;
   }
 
   .cloud-cta {
