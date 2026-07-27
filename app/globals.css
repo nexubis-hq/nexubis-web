@@ -252,7 +252,7 @@ ul {
 .billing-option b { position:relative; z-index:1; border-radius:.25rem; background:#f7f7f7; color:var(--body); padding:.3125rem .625rem; font-size:1rem; line-height:1.6; font-weight:700; }
 .billing-option:nth-child(2) b { width:5.0635rem; }
 .billing-option:nth-child(3) b { width:8.084rem; }
-.billing-option.selected b { background:rgb(255 255 255 / 20%); }
+.billing-option.selected b { background:rgb(255 255 255 / 20%); color:#fff; }
 /* the billing selector has fixed rem widths that overflow small screens; let it
    fit the viewport and wrap the options instead of clipping "Annually". */
 @media (max-width: 600px) {
@@ -10073,6 +10073,10 @@ button.nav-link {
     width: 88%;
     max-width: var(--container);
   }
+}
+
+.packages-section .billing-option.selected b {
+  color: #fff;
 }
 
 
