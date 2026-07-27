@@ -17,7 +17,9 @@ Swagger UI: `https://ab513.gappstack.com/api/swagger/index.html`
 
 The server-only client is in `lib/funnelr/client.ts`.
 
-Scorecard routing note: `/api/leads/scorecard` and `submitScorecardLeadToFunnelr()` must not call list or sequence endpoints. They are limited to contact create/update, `GET /api/v1/system/formFields`, custom profile update, and tag assignment. Funnelr automation triggered by `Trigger: Nexubis | Start Scorecard Sales` owns campaign-list and sequence movement.
+Scorecard routing note: `/api/leads/scorecard` and `submitScorecardLeadToFunnelr()` must not call list or sequence endpoints. They are limited to contact create/update, `GET /api/v1/system/formFields`, custom profile update, custom profile read-back, and tag assignment. Funnelr automation triggered by `Trigger: Nexubis | Start Scorecard Sales` owns campaign-list and sequence movement.
+
+Messenger compatibility note: Funnelr Messenger cannot currently merge the custom Scorecard report URL field. The permanent Nexubis Scorecard report URL is still written to the custom `Nexubis | Scorecard Report URL` profile field. The same trimmed HTTPS URL is also mirrored into the built-in `Last name` contact field. Swagger verification on 2026-07-24 confirmed that this value is represented in `POST /api/v1/user/users`, `PUT /api/v1/user/users`, and `GET /api/v1/user/users` as the standard `lastName` property. The failed `Alternative Address` / `street` and `Telephone` / `telephone` mirrors are no longer used; existing `street` or `telephone` values are cleared only when they contain a previous Nexubis Scorecard report URL written by this integration.
 
 Implemented read-only functions:
 
@@ -45,6 +47,7 @@ The command performs only GET requests and prints sanitized endpoint availabilit
 | Find contact by email | `GET /api/v1/user/users` | Query: `Email`, plus required `Page`, `Size`. |
 | Create contact/user | `POST /api/v1/user/users` | Body: `CreateUserRequest`; required `email`, `isAgent`, `isStaff`, `isUnsubscribed`. |
 | Update contact/user | `PUT /api/v1/user/users` | Body: `UpdateUserRequest`; required `currencyCode`, `email`, `isAgent`, `userId`. |
+| Mirror Scorecard report URL to Messenger Last name | `POST` / `PUT /api/v1/user/users` | Use the standard contact `lastName` property. The value must exactly match `Nexubis | Scorecard Report URL`. |
 | Read custom contact fields | `GET /api/v1/user/users/{id}/custom` | Path `id` is integer user id. |
 | Update custom contact fields | `PUT /api/v1/user/users/{id}/profile` | Body: `UpdateUserProfileRequest` with `userProfiles[]` of `{ formFieldId, value }`. |
 | List contact field options | `GET /api/v1/user/option/contactFields` | No required params. |
@@ -75,6 +78,8 @@ The command performs only GET requests and prints sanitized endpoint availabilit
 | Read/delete automation | `GET` / `DELETE /api/v1/query/automations/{id}` | Path `id` automation UUID. |
 | List automation filters | `GET /api/v1/query/filters` | Query by `automationId`. |
 | Create/update/delete automation filter | `POST` / `PUT /api/v1/query/filters`, `DELETE /api/v1/query/filters/{id}` | Used for automation trigger/condition rules. |
+| List filter templates | `GET /api/v1/query/filterTemplates` | Used to discover filter template IDs such as `Contact:Tag` and `Contact:List`. |
+| List filter operators | `GET /api/v1/query/option/filterOperators` | Used to discover operator IDs such as `FilterOperator_User_TagIs` and `FilterOperator_User_ListIs`. |
 | List automation actions | `GET /api/v1/query/automations/{aid}/actions` | Path `aid` automation UUID. |
 | Create/update/delete automation action | `POST` / `PUT /api/v1/query/automations/{aid}/actions`, `DELETE /api/v1/query/automations/{aid}/actions/{id}` | Used for list, sequence and tag actions. |
 

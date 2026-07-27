@@ -1,0 +1,108 @@
+Nexubis Funnelr Contact-Management Update Report
+Date: 2026-07-24
+
+Completed locally. Nothing was pushed or deployed.
+
+1. Master list created or reused
+Created: Nexubis | All Contacts
+
+2. Master-list internal ID
+C4AF8E82-8363-4AC5-9B93-D28D1385C75E
+
+3. Master-list archived state
+false
+
+4. Confirmation no sequence uses the master list
+Verified. Nexubis | All Contacts is not attached to any sequence.
+
+5. Brand-to-master-list automation created
+Created: Nexubis | Brand Tag - Add to All Contacts
+
+6. Brand-to-master-list automation internal ID
+7C635FEF-2DDB-4EF0-ABB6-8A306B1322B7
+
+7. Brand-to-master-list automation enabled state
+true
+
+8. Manual Holding automation created
+Created: Nexubis | Manual Holding - Apply Contact Tags
+
+9. Manual Holding automation internal ID
+601EA06F-412D-480E-A612-D033F964EB88
+
+10. Manual Holding automation enabled state
+true
+
+11. Confirmation that the manual automation applies
+- Brand: Nexubis
+- Source: Nexubis | Manual
+- Trigger: Nexubis | Start Credibility Brief Nurture
+
+12. Confirmation that nurture entry removes Manual Holding
+Verified. Nexubis | Start Credibility Brief Nurture now removes Nexubis | Manual Leads - Holding.
+
+13. Complete read-back results
+- Nexubis | All Contacts exists, ID C4AF8E82-8363-4AC5-9B93-D28D1385C75E, archived false, not attached to any sequence.
+- Nexubis | Brand Tag - Add to All Contacts exists, ID 7C635FEF-2DDB-4EF0-ABB6-8A306B1322B7, enabled true.
+- Brand automation trigger: contact has tag Brand: Nexubis.
+- Brand automation action list: add contact to list Nexubis | All Contacts.
+- Nexubis | Manual Holding - Apply Contact Tags exists, ID 601EA06F-412D-480E-A612-D033F964EB88, enabled true.
+- Manual automation trigger: contact belongs to list Nexubis | Manual Leads - Holding.
+- Manual automation action list: apply Brand: Nexubis, Source: Nexubis | Manual, and Trigger: Nexubis | Start Credibility Brief Nurture.
+- Nexubis | Start Credibility Brief Nurture exists, ID AB866C24-8D72-42AB-8D4A-AC97281FE5F0, enabled true.
+- Nurture trigger: contact has tag Trigger: Nexubis | Start Credibility Brief Nurture.
+- Nurture conditions preserved: contact does not have Pipeline: Nexubis | Call Booked, Pipeline: Nexubis | Replied, or History: Nexubis | Credibility Brief Nurture Started.
+- Nurture actions verified: remove Nexubis | Scorecard Sales sequence, remove Nexubis | Scorecard Leads - Sales list, add Nexubis | The Credibility Brief - Nurture list, add Nexubis | The Credibility Brief sequence, apply History: Nexubis | Credibility Brief Nurture Started, remove Trigger: Nexubis | Start Credibility Brief Nurture, remove Nexubis | Manual Leads - Holding.
+- Confirmed Nexubis | All Contacts is not removed by the nurture automation.
+
+14. Controlled test results
+- TEST 1 Brand tag to master list: passed. A clean test contact with only Brand: Nexubis was automatically added to Nexubis | All Contacts with no Source, sales Trigger, nurture Trigger, Pipeline, History, campaign-recipient list, or sequence enrolment side effects.
+- TEST 2 Manual contact routing: passed. A clean test contact initially added only to Nexubis | Manual Leads - Holding received Brand: Nexubis, Source: Nexubis | Manual, and Trigger: Nexubis | Start Credibility Brief Nurture, then entered nurture through the existing nurture automation.
+- TEST 3 Master-list durability: passed. The manual-routing test contact remained in Nexubis | All Contacts after nurture entry.
+- During one rerun, the test script reintroduced Manual Holding and the temporary nurture Trigger on the already-routed manual test contact. That test-only state was cleaned up on the test contact only; final read-back matched the intended production contract.
+
+15. Documentation changes
+- Renamed docs/FUNNELR_AUTOMATION_CONTRACT.md to docs/AI_READ_FIRST_FUNNELR_AUTOMATION_MASTER_CONTRACT.md.
+- Marked the renamed file as the single master Funnelr automation contract for future AI agents and maintainers.
+- Documented Nexubis | All Contacts, its visibility-only purpose, and the rule that it must not be attached to a sequence.
+- Documented Nexubis | Brand Tag - Add to All Contacts.
+- Documented Nexubis | Manual Holding - Apply Contact Tags.
+- Documented manual-first and Scorecard-first journeys.
+- Documented that nurture History must not be reset when a nurtured contact later runs the Scorecard.
+- Documented that only Scorecard-first contacts who have never received nurture should later move from Scorecard sales into nurture.
+- Updated docs/FUNNELR_API.md only for Funnelr filter metadata endpoints discovered during this task.
+- Deleted obsolete txt handoff/report files that could confuse future work.
+
+16. Verification-script results
+- npm run funnelr:verify:nexubis: passed.
+- npm test: passed, 23 test files and 169 tests.
+- npm run typecheck: passed.
+- npm run lint: passed with existing warnings only.
+
+17. Any slow or timed-out Funnelr requests
+- Funnelr automation execution took several minutes during controlled tests.
+- TEST 1 initially passed after about 246 seconds.
+- Polling encountered transient fetch/network failures, including timeout-style failures. Retry-safe read-back was added and final verification passed.
+- No write was blindly retried after an uncertain timeout.
+
+18. Confirmation that no History reset was implemented
+Confirmed. No action was added to remove or reset History: Nexubis | Credibility Brief Nurture Started.
+
+19. Confirmation that no Scorecard code changed
+Confirmed. No Scorecard code changed in this update.
+
+20. Confirmation that no Cal.com code changed
+Confirmed. No Cal.com code changed in this update.
+
+21. Confirmation that no sequence content or schedule changed
+Confirmed. No sequence content, schedule, or activation state changed.
+
+22. Confirmation that no LekkeWeb resource changed
+Confirmed. No LekkeWeb list, sequence, tag, automation, custom field, routing configuration, API integration, or documentation was changed.
+
+23. Local commit hash
+Final shannah branch commit: see git rev-parse HEAD on branch shannah, or the assistant response after this file was committed.
+Original local main commit before moving branches: 539dbe3550352f3659958e6faa814c75ef13152a
+
+24. Confirmation that nothing was pushed or deployed
+Confirmed. Nothing was pushed and nothing was deployed.

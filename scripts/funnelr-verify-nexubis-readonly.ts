@@ -15,8 +15,11 @@ const ids = {
     nurture: "AB866C24-8D72-42AB-8D4A-AC97281FE5F0",
     booked: "5DC71700-3E79-42DB-92EE-04BDADC3BA83",
     replied: "5249EFD5-5193-4C73-9EF7-E8FD1E63A558",
+    brandToAllContacts: "7C635FEF-2DDB-4EF0-ABB6-8A306B1322B7",
+    manualHoldingTags: "601EA06F-412D-480E-A612-D033F964EB88",
   },
   lists: {
+    allContacts: "C4AF8E82-8363-4AC5-9B93-D28D1385C75E",
     sales: "984BD709-F993-498A-B5BF-0ED86CFA7AAB",
     nurture: "A8A408CE-DB84-415B-9FC1-8EABC2A391A6",
     booked: "3169E25F-3B23-4E75-8E48-5AC4673E966F",
@@ -29,6 +32,7 @@ const ids = {
   },
   tags: {
     brand: "4B527D4D-3540-401D-A0B1-A1BBDF0FADFF",
+    sourceManual: "A23C221E-A548-4268-9223-B1DFC688823A",
     sourceScorecard: "AA47260F-59B0-4D4A-999F-4D571382658D",
     triggerSales: "6B9DA797-9A52-4F4F-9854-66FFA1935C07",
     triggerNurture: "E654E2FA-B55E-4904-9336-9D45AA6837AB",
@@ -42,6 +46,7 @@ const ids = {
 
 const expectedNames = {
   lists: {
+    [ids.lists.allContacts]: "Nexubis | All Contacts",
     [ids.lists.sales]: "Nexubis | Scorecard Leads - Sales",
     [ids.lists.nurture]: "Nexubis | The Credibility Brief - Nurture",
     [ids.lists.booked]: "Nexubis | Call Booked",
@@ -54,6 +59,7 @@ const expectedNames = {
   },
   tags: {
     [ids.tags.brand]: "Brand: Nexubis",
+    [ids.tags.sourceManual]: "Source: Nexubis | Manual",
     [ids.tags.sourceScorecard]: "Source: Nexubis | Scorecard",
     [ids.tags.triggerSales]: "Trigger: Nexubis | Start Scorecard Sales",
     [ids.tags.triggerNurture]: "Trigger: Nexubis | Start Credibility Brief Nurture",
@@ -67,6 +73,7 @@ const expectedNames = {
 
 const TAG_IS = "676AB9D4-C9EA-4186-928F-A02C23478CBB";
 const TAG_IS_NOT = "6E8EE938-52BE-4103-AC51-EF5876B19567";
+const LIST_IS = "2B60D6D4-7D5B-4D66-973A-5F9665F14469";
 
 async function request(path: string, query: Record<string, string | number | boolean> = {}) {
   const url = new URL(path, baseUrl);
@@ -103,6 +110,10 @@ function hasFilter(filters: Array<Record<string, unknown>>, tagId: string, opera
   return filters.some((filter) => String(filter.primaryValue).toLowerCase() === tagId.toLowerCase() && filter.primaryFilterOperatorId === operatorId);
 }
 
+function hasExactFilter(filters: Array<Record<string, unknown>>, value: string, operatorId: string) {
+  return filters.some((filter) => String(filter.primaryValue).toLowerCase() === value.toLowerCase() && filter.primaryFilterOperatorId === operatorId);
+}
+
 async function verifyAutomation(id: string, name: string, checks: (filters: Array<Record<string, unknown>>, actions: Array<Record<string, unknown>>) => void) {
   const automation = (await request(`/api/v1/query/automations/${id}`)) as Record<string, unknown>;
   requireName(automation, name);
@@ -127,6 +138,29 @@ async function main() {
   if (!salesLists.some((list) => list.listId === ids.lists.sales)) throw new Error("Sales sequence recipient list mismatch.");
   if (!nurtureLists.some((list) => list.listId === ids.lists.nurture)) throw new Error("Nurture sequence recipient list mismatch.");
   if (bookingLists.length !== 0) throw new Error("Booking Confirmation still has recipient lists.");
+  for (const sequence of sequences) {
+    const sequenceLists = (await request(`/api/v1/messenger/sequences/${String(sequence.sequenceId)}/lists`)) as Array<Record<string, unknown>>;
+    if (sequenceLists.some((list) => String(list.listId).toLowerCase() === ids.lists.allContacts.toLowerCase())) {
+      throw new Error(`Nexubis | All Contacts is attached to sequence: ${String(sequence.name)}`);
+    }
+  }
+
+  await verifyAutomation(ids.automations.brandToAllContacts, "Nexubis | Brand Tag - Add to All Contacts", (filters, actions) => {
+    if (!hasExactFilter(filters, ids.tags.brand, TAG_IS)) throw new Error("Brand-to-All trigger filter missing.");
+    if (!hasAction(actions, "listId", ids.lists.allContacts, false)) throw new Error("Brand-to-All list action missing.");
+    if (actions.length !== 1) throw new Error("Brand-to-All automation must have exactly one action.");
+  });
+
+  await verifyAutomation(ids.automations.manualHoldingTags, "Nexubis | Manual Holding - Apply Contact Tags", (filters, actions) => {
+    if (!hasExactFilter(filters, ids.lists.manual, LIST_IS)) throw new Error("Manual Holding list trigger filter missing.");
+    for (const tagId of [ids.tags.brand, ids.tags.sourceManual, ids.tags.triggerNurture]) {
+      if (!hasAction(actions, "tagId", tagId, false)) throw new Error(`Manual Holding tag action missing: ${tagId}`);
+    }
+    if (actions.length !== 3) throw new Error("Manual Holding automation must have exactly three actions.");
+    if (hasAction(actions, "listId", ids.lists.allContacts, false)) throw new Error("Manual Holding automation must not add All Contacts directly.");
+    if (hasAction(actions, "listId", ids.lists.nurture, false)) throw new Error("Manual Holding automation must not add the nurture list directly.");
+    if (hasAction(actions, "sequenceId", ids.sequences.nurture, false)) throw new Error("Manual Holding automation must not add the nurture sequence directly.");
+  });
 
   await verifyAutomation(ids.automations.sales, "Nexubis | Start Scorecard Sales", (filters, actions) => {
     if (!hasFilter(filters, ids.tags.triggerSales, TAG_IS)) throw new Error("Sales trigger filter missing.");
@@ -152,7 +186,9 @@ async function main() {
       ["sequenceId", ids.sequences.nurture, false],
       ["tagId", ids.tags.historyNurture, false],
       ["tagId", ids.tags.triggerNurture, true],
+      ["listId", ids.lists.manual, true],
     ] as const) if (!hasAction(actions, action[0], action[1], action[2])) throw new Error(`Nurture action missing: ${action.join(" ")}`);
+    if (hasAction(actions, "listId", ids.lists.allContacts, true)) throw new Error("Nurture automation removes All Contacts.");
   });
 
   await verifyAutomation(ids.automations.booked, "Nexubis | Call Booked - Exit Campaigns", (filters, actions) => {
