@@ -51,7 +51,22 @@ export function PackagesTrial() {
         </div>
 
         <div className="trial-background" aria-hidden="true">
-          <img src="/assets/images/trial-background-poster.jpg" alt="" />
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="/assets/videos/3D-Abstract-Waves-Black-Background-2023-11-27-04-58-03-Utc-poster-00001.jpg"
+          >
+            <source
+              src="/assets/videos/3D-Abstract-Waves-Black-Background-2023-11-27-04-58-03-Utc-transcode.mp4"
+              type="video/mp4"
+            />
+            <source
+              src="/assets/videos/3D-Abstract-Waves-Black-Background-2023-11-27-04-58-03-Utc-transcode.webm"
+              type="video/webm"
+            />
+          </video>
           <div className="trial-background-blur" />
         </div>
       </div>

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Cycle = "monthly" | "quarterly" | "annually";
 
@@ -30,6 +31,58 @@ function CheckIcon() {
   return <svg viewBox="0 0 24 25" aria-hidden="true"><path d="M2.5 12.3c0-4.478 0-6.717 1.391-8.108C5.282 2.801 7.522 2.801 12 2.801s6.718 0 8.109 1.391C21.5 5.583 21.5 7.822 21.5 12.3s0 6.718-1.391 8.109C18.718 21.801 16.478 21.801 12 21.801s-6.718 0-8.109-1.392C2.5 19.018 2.5 16.779 2.5 12.3Z"/><path opacity=".4" d="m8 12.801 2.5 2.5 5.5-6"/></svg>;
 }
 
+function FlameFallback() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 2.5c.4 3.1-1.3 4.5-2.7 5.8-1.2 1.1-2.2 2.1-2.2 3.8 0 1.2.7 2.2 1.7 2.8-.1-1.7.8-3 2.1-4.2.1 2 1.8 2.9 2.5 4.5.8 1.8.1 4-1.5 5.1 3.9-.7 6.3-3.5 6.3-7.2 0-4.4-3.2-8.1-6.2-10.6Z"/><path opacity=".4" d="M7.8 7.8C5.6 9.7 4.2 12 4.2 15a6.8 6.8 0 0 0 6.8 6.8c.9 0 1.8-.2 2.5-.5-3.5-.2-6.1-2.8-6.1-6.2 0-2.5 1.8-4.2.4-7.3Z"/></svg>;
+}
+
+function RequestsIcon() {
+  return (
+    <PackageLottieIcon
+      className="requests-icon"
+      path="/assets/lotties/PackageInfinity.json"
+      fallback={<svg viewBox="-270 -130 540 260" aria-hidden="true"><path d="M0 0C0 0-98.645 100-159.333 100C-220.021 100-245 55.228-245 0C-245-55.229-220.021-100-159.333-100C-98.645-100 0 0 0 0C0 0 98.645 100 159.333 100C220.021 100 245 55.228 245 0C245-55.229 220.021-100 159.333-100C98.645-100 0 0 0 0Z" /></svg>}
+    />
+  );
+}
+
+function PackageLottieIcon({ className, path, fallback }: { className: string; path: string; fallback: ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!container || reduceMotion) return;
+
+    let animation: import("lottie-web").AnimationItem | undefined;
+    let cancelled = false;
+
+    import("lottie-web").then((module) => {
+      if (cancelled || !container) return;
+      animation = module.default.loadAnimation({
+        autoplay: true,
+        container,
+        loop: true,
+        path,
+        renderer: "svg",
+      });
+      animation.addEventListener("DOMLoaded", () => setLoaded(true));
+    });
+
+    return () => {
+      cancelled = true;
+      animation?.destroy();
+    };
+  }, [path]);
+
+  return (
+    <span className={`package-lottie-icon ${className}`} aria-hidden="true">
+      <span className={loaded ? "package-lottie-fallback package-lottie-fallback-hidden" : "package-lottie-fallback"}>{fallback}</span>
+      <span className="package-lottie-canvas" ref={containerRef} />
+    </span>
+  );
+}
+
 export function PackagesPricing() {
   const [cycle, setCycle] = useState<Cycle>("annually");
   return (
@@ -56,12 +109,17 @@ export function PackagesPricing() {
         <div className="packages-cards">
           {plans.map((plan) => (
             <article className={`package-card package-${plan.tone}`} key={plan.name}>
-              <div className="package-name-row"><h4>{plan.name}</h4>{plan.name === "Scale" && <span className="popular-pill"><svg className="popular-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 2.5c.4 3.1-1.3 4.5-2.7 5.8-1.2 1.1-2.2 2.1-2.2 3.8 0 1.2.7 2.2 1.7 2.8-.1-1.7.8-3 2.1-4.2.1 2 1.8 2.9 2.5 4.5.8 1.8.1 4-1.5 5.1 3.9-.7 6.3-3.5 6.3-7.2 0-4.4-3.2-8.1-6.2-10.6Z"/><path opacity=".4" d="M7.8 7.8C5.6 9.7 4.2 12 4.2 15a6.8 6.8 0 0 0 6.8 6.8c.9 0 1.8-.2 2.5-.5-3.5-.2-6.1-2.8-6.1-6.2 0-2.5 1.8-4.2.4-7.3Z"/></svg><span>Popular</span></span>}</div>
+              <div className="package-name-row"><h4>{plan.name}</h4>{plan.name === "Scale" && <span className="popular-pill"><PackageLottieIcon className="popular-icon" path="/assets/lotties/PackagePopularFlame.json" fallback={<FlameFallback />} /><span>Popular</span></span>}</div>
               <div className="package-price"><h2>{plan.prices[cycle]}</h2><strong>/month</strong></div>
               <div className={cycle === "monthly" ? "saving saving-neutral" : "saving"}>{plan.savings[cycle]}</div>
               <div className="package-audience">{plan.audience}</div>
               <ul className="package-benefits">
-                {plan.benefits.map((benefit, index) => <li key={benefit} className={index === 0 && plan.name === "Scale" ? "benefit-emphasis" : ""}><CheckIcon/><span>{benefit === "All design services included" ? <Link href="#services">{benefit}</Link> : benefit}</span></li>)}
+                {plan.benefits.map((benefit, index) => (
+                  <li key={benefit} className={index === 0 && plan.name === "Scale" ? "benefit-emphasis" : ""}>
+                    {benefit === "Unlimited design requests" ? <RequestsIcon /> : <CheckIcon />}
+                    <span>{benefit === "All design services included" ? <Link href="#services">{benefit}</Link> : benefit}</span>
+                  </li>
+                ))}
               </ul>
             </article>
           ))}
@@ -98,10 +156,16 @@ export function PackagesServices() {
   return (
     <section id="services" className="services-section">
       <div className="services-media" aria-hidden="true">
-        <img
-          src="/assets/images/Website-Packages-video-poster-00001.jpg"
-          alt=""
-        />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/assets/videos/Website-Packages-video-poster-00001.jpg"
+        >
+          <source src="/assets/videos/Website-Packages-video-transcode.mp4" type="video/mp4" />
+          <source src="/assets/videos/Website-Packages-video-transcode.webm" type="video/webm" />
+        </video>
         <div className="services-media-overlay" />
       </div>
       <div className="site-container services-container">
