@@ -13,6 +13,7 @@ const ids = {
   automations: {
     brandToAllContacts: "301AD7BD-F256-4F81-90FB-966BF345AFB4",
     manualHoldingTags: "8977A9AF-0E3E-4FB1-9417-5B946C6476ED",
+    auditFull: "48B6CCE0-BAB2-4871-B392-68B7CADE1B4F",
     nurture: "96441BD0-AD7F-4A5F-AD8C-7DF5E38697A3",
     booked: "25457BA6-554C-488A-9E17-0B516D06E215",
     replied: "D8424132-9ECB-4FF1-AFD7-CF3462DBD9BD",
@@ -201,6 +202,29 @@ async function main() {
       if (!hasAction(actions, action[0], action[1], action[2])) throw new Error(`Stoep Tip nurture action missing: ${actionSummary(action)}`);
     }
     if (hasAction(actions, "listId", ids.lists.allContacts, true)) throw new Error("Stoep Tip nurture automation removes All Contacts.");
+  });
+
+  await verifyAutomation(ids.automations.auditFull, "LekkeWeb | Start Stoep Audit Sales - Full Report", (filters, actions) => {
+    if (!hasFilter(filters, ids.tags.triggerAuditFull, TAG_IS)) throw new Error("Full Report sales trigger missing.");
+    for (const tagId of [ids.tags.booked, ids.tags.replied, ids.tags.historyAudit]) {
+      if (!hasFilter(filters, tagId, TAG_IS_NOT)) throw new Error(`Full Report sales exclusion missing: ${tagId}`);
+    }
+    if (hasFilter(filters, ids.tags.historyNurture, TAG_IS_NOT)) {
+      throw new Error("Full Report sales must not exclude contacts with Stoep Tip nurture History.");
+    }
+    for (const action of [
+      ["sequenceId", ids.sequences.nurture, true],
+      ["listId", ids.lists.nurture, true],
+      ["listId", ids.lists.manual, true],
+      ["listId", ids.lists.auditFull, false],
+      ["sequenceId", ids.sequences.auditFull, false],
+      ["tagId", ids.tags.historyAudit, false],
+      ["tagId", ids.tags.triggerAuditFull, true],
+    ] as const) {
+      if (!hasAction(actions, action[0], action[1], action[2])) throw new Error(`Full Report sales action missing: ${actionSummary(action)}`);
+    }
+    if (hasAction(actions, "listId", ids.lists.allContacts, true)) throw new Error("Full Report sales automation removes All Contacts.");
+    if (hasAction(actions, "sequenceId", ids.sequences.auditNoFull, false)) throw new Error("Full Report sales automation adds No Full Report sequence.");
   });
 
   await verifyAutomation(ids.automations.booked, "LekkeWeb | Call Booked - Exit Campaigns", (filters, actions) => {
