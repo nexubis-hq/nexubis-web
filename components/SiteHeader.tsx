@@ -9,8 +9,8 @@ import { BOOKING_URL, PACKAGES_URL } from "@/lib/site-config";
 // the single featured case in the homepage Proof section, so it is named once,
 // there, and never in nav link text.
 const caseStudies = [
-  { label: "Circuit", href: "https://www.nexubis.io/work/circuit" },
-  { label: "Altify", href: "https://www.nexubis.io/work/altify" },
+  { label: "Circuit", href: "/work/circuit" },
+  { label: "Altify", href: "/work/altify" },
 ];
 
 const desktopLinks = [

@@ -7,25 +7,25 @@ const work = [
     name: "Circuit",
     image: "circuit.png",
     tags: ["Webflow Development", "Product design"],
-    href: "https://www.nexubis.io/work/circuit",
+    href: "/work/circuit",
   },
   {
     name: "Oxipack",
     image: "oxipack.webp",
     tags: ["Webflow Development", "Design"],
-    href: "https://www.nexubis.io/work/oxipack",
+    href: "/work/oxipack",
   },
   {
     name: "Altify",
     image: "altify.webp",
     tags: ["Webflow Development", "Product Design"],
-    href: "https://www.nexubis.io/work/altify",
+    href: "/work/altify",
   },
   {
     name: "Sataya",
     image: "sataya.webp",
     tags: ["Webflow Development", "Visual Brand"],
-    href: "https://www.nexubis.io/work/sataya",
+    href: "https://sataya.io/",
   },
 ];
 
