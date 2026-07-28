@@ -520,10 +520,6 @@ ul {
   white-space: nowrap;
 }
 
-.contact-turnstile {
-  min-height: 4.0625rem;
-}
-
 .contact-form-result {
   min-height: 0;
 }
