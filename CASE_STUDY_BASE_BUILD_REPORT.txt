@@ -230,3 +230,58 @@ Sources Used
 - https://www.nexubis.io/work/circuit
 - https://www.nexubis.io/work/oxipack
 - https://www.nexubis.io/sitemap.xml
+CASE STUDY VISUAL PARITY PASS REPORT
+Date: 2026-07-28
+
+Completed the strict case-study parity pass for /work/altify, with the shared template carrying the fixes through /work/circuit and /work/oxipack.
+
+Files changed:
+- components/work/CaseStudyTemplate.tsx
+- components/work/CaseStudyVideo.tsx
+- app/globals.css
+
+What was fixed:
+- Removed the invented red/pink hero gradient and restored the neutral Webflow hero background.
+- Removed the incorrect desktop "Case Studies / AltifyCircuitOxipack" selector from the hero.
+- Rebuilt the hero geometry from Webflow source classes:
+  - project-header_section
+  - container
+  - row
+  - col col-lg-6
+  - project_tags
+  - hero_reel
+  - reel_wrap
+  - reel_video
+  - reel_player
+- Restored the desktop Altify hero measurements:
+  - Hero: 736px tall at 1440px
+  - Heading: 60px, 72px line-height, 500 weight, one line
+  - Reel: 400px x 233px
+  - Video inner: 382px x 215px
+  - Mute control: 28px x 28px
+- Added the custom red mute/unmute video button with accessible labels.
+- Restored the scroll-grow hero video behavior using GSAP/ScrollTrigger.
+- Reworked the first content section to match the Webflow row/column layout.
+- Replaced the incorrect sidebar link pills with compact share icons.
+- Rebuilt the testimonial section closer to Webflow: left absolute portrait, right quote column, story card sizing.
+- Confirmed no required Webflow runtime dependency in production app, components, or lib.
+
+Root cause:
+The previous build inferred layout from a generic case-study structure instead of reconstructing the Webflow template. That introduced the wrong hero gradient, wrong breadcrumb/selector, oversized heading, simplified video card, missing mute control, missing scroll-grow animation, and incorrect content/testimonial grids.
+
+Validation:
+- Tested /work/altify, /work/circuit, and /work/oxipack.
+- Breakpoints checked: 1440, 1280, 1024, 992, 991, 768, 767, 480, 479, 390, and 375.
+- No horizontal overflow found.
+- No Webflow runtime requests found.
+- Screenshots captured for live/local Altify desktop, full page, tablet, mobile, plus Circuit/Oxipack desktop checks.
+
+Checks:
+- npm run lint: passed with existing warnings only.
+- npm run typecheck: passed.
+- npm run test: passed, 223 tests.
+- npm run build: passed.
+
+Remaining intentional differences:
+- The repo still uses the signed-off shared header/footer, so it does not exactly match the old live Webflow header CTA/footer treatment.
+- Those shared components were left untouched as instructed.

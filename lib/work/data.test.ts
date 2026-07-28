@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getAllCaseStudies, getCaseStudyBySlug, getRelatedCaseStudies } from "./data";
+import { WORK_SLUGS } from "./slugs";
 
 describe("case-study data", () => {
   it("exposes the recovered Webflow CMS slugs only", () => {
@@ -8,6 +9,10 @@ describe("case-study data", () => {
       "circuit",
       "oxipack",
     ]);
+  });
+
+  it("keeps the shared work slug list aligned to the case-study records", () => {
+    expect(WORK_SLUGS).toEqual(getAllCaseStudies().map((caseStudy) => caseStudy.slug));
   });
 
   it("returns case studies by slug and rejects unknown slugs", () => {

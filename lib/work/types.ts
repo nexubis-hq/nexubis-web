@@ -1,4 +1,6 @@
-export type WorkSlug = "altify" | "circuit" | "oxipack";
+import { WORK_SLUGS } from "@/lib/work/slugs";
+
+export type WorkSlug = (typeof WORK_SLUGS)[number];
 
 export type CaseStudyImage = {
   src: string;
