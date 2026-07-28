@@ -7,18 +7,6 @@ import { CAL_LINK } from "@/lib/booking";
 
 type ContactTab = "book" | "message";
 type FormState = "idle" | "submitting" | "success" | "error";
-type TurnstileApi = {
-  render: (
-    el: HTMLElement,
-    opts: {
-      sitekey: string;
-      callback: (token: string) => void;
-      "error-callback"?: () => void;
-      "expired-callback"?: () => void;
-    },
-  ) => string;
-  reset?: (widgetId?: string) => void;
-};
 
 declare global {
   interface Window {
@@ -158,56 +146,14 @@ function ContactForm() {
   const [packageValue, setPackageValue] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
   const [honeypot, setHoneypot] = useState("");
-  const [spamToken, setSpamToken] = useState("");
   const [state, setState] = useState<FormState>("idle");
   const [message, setMessage] = useState("");
   const startedAt = useRef(0);
   const resultRef = useRef<HTMLParagraphElement>(null);
-  const turnstileRef = useRef<HTMLDivElement>(null);
-  const widgetIdRef = useRef<string | null>(null);
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-  const formReady = Boolean(siteKey);
 
   useEffect(() => {
     startedAt.current = Date.now();
   }, []);
-
-  useEffect(() => {
-    if (!siteKey || !turnstileRef.current || widgetIdRef.current) return;
-
-    const getTurnstile = () =>
-      (window as typeof window & { turnstile?: TurnstileApi }).turnstile;
-    const render = () => {
-      const turnstile = getTurnstile();
-      if (!turnstile || !turnstileRef.current || widgetIdRef.current) return;
-      widgetIdRef.current = turnstile.render(turnstileRef.current, {
-        sitekey: siteKey,
-        callback: (token) => setSpamToken(token),
-        "error-callback": () => setSpamToken(""),
-        "expired-callback": () => setSpamToken(""),
-      });
-    };
-
-    if (getTurnstile()) {
-      render();
-      return;
-    }
-
-    const existing = document.getElementById("turnstile-api-script") as HTMLScriptElement | null;
-    if (existing) {
-      existing.addEventListener("load", render, { once: true });
-      return () => existing.removeEventListener("load", render);
-    }
-
-    const script = document.createElement("script");
-    script.id = "turnstile-api-script";
-    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-    script.async = true;
-    script.defer = true;
-    script.addEventListener("load", render, { once: true });
-    document.head.appendChild(script);
-    return () => script.removeEventListener("load", render);
-  }, [siteKey]);
 
   useEffect(() => {
     if (state === "success" || state === "error") {
@@ -215,15 +161,9 @@ function ContactForm() {
     }
   }, [state]);
 
-  function resetTurnstile() {
-    const turnstile = (window as typeof window & { turnstile?: TurnstileApi }).turnstile;
-    turnstile?.reset?.(widgetIdRef.current ?? undefined);
-    setSpamToken("");
-  }
-
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (state === "submitting" || !formReady) return;
+    if (state === "submitting") return;
 
     setState("submitting");
     setMessage("");
@@ -239,7 +179,6 @@ function ContactForm() {
           websiteLink,
           package: packageValue,
           additionalNotes,
-          spamToken,
           honeypot,
           elapsedMs: Date.now() - startedAt.current,
         }),
@@ -248,12 +187,11 @@ function ContactForm() {
       if (!res.ok || !body?.ok) {
         setState("error");
         setMessage(body?.error ?? "Message delivery is temporarily unavailable. Try again later.");
-        resetTurnstile();
         return;
       }
 
       setState("success");
-      setMessage("Thank you for your submission!");
+      setMessage("Thanks  your message has been received. Well get back to you shortly.");
       setName("");
       setEmail("");
       setCompanyName("");
@@ -261,12 +199,10 @@ function ContactForm() {
       setPackageValue("");
       setAdditionalNotes("");
       setHoneypot("");
-      resetTurnstile();
       startedAt.current = Date.now();
     } catch {
       setState("error");
       setMessage("Message delivery is temporarily unavailable. Try again later.");
-      resetTurnstile();
     }
   }
 
@@ -391,14 +327,6 @@ function ContactForm() {
           />
         </label>
 
-        {siteKey ? (
-          <div ref={turnstileRef} className="contact-turnstile" />
-        ) : (
-          <div className="contact-spam-note" id="contact-form-unavailable" role="note">
-            Message submissions are not connected yet. Turnstile keys are required before this form can go live.
-          </div>
-        )}
-
         <div className="contact-form-result" aria-live="polite" aria-atomic="true">
           {message ? (
             <p
@@ -415,8 +343,7 @@ function ContactForm() {
         <button
           className="contact-submit"
           type="submit"
-          disabled={state === "submitting" || !formReady || !spamToken}
-          aria-describedby={!formReady ? "contact-form-unavailable" : undefined}
+          disabled={state === "submitting"}
         >
           {state === "submitting" ? "Sending..." : "Empower Your Dream"}
         </button>

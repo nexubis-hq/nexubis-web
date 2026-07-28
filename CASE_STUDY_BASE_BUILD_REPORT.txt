@@ -1,0 +1,287 @@
+Nexubis Case Study Base-Build Pass Report
+
+Implemented the first base-build pass for /work/[slug].
+
+What changed
+
+- Added dynamic route:
+  - app/work/[slug]/page.tsx
+
+- Added reusable template:
+  - components/work/CaseStudyTemplate.tsx
+
+- Added local content boundary:
+  - lib/work/types.ts
+  - lib/work/data.ts
+  - lib/work/data.test.ts
+
+- Added local work assets under:
+  - public/assets/work/*
+
+- Added case-study CSS in:
+  - app/globals.css
+
+- Updated real case-study links away from Webflow URLs:
+  - components/SiteHeader.tsx
+  - components/WorkSection.tsx
+
+
+Slug Inventory
+
+Recovered confirmed live/CMS slugs:
+
+- /work/altify
+- /work/circuit
+- /work/oxipack
+
+/work/sataya is not in the Webflow CMS CSV or live sitemap, and the live URL returns 404, so I did not create a fake Sataya case-study page.
+
+
+Sources Used
+
+- Live pages:
+  - https://www.nexubis.io/work/altify
+  - https://www.nexubis.io/work/circuit
+  - https://www.nexubis.io/work/oxipack
+
+- Live sitemap:
+  - https://www.nexubis.io/sitemap.xml
+
+- Webflow CMS export:
+  - webflow-export/cms/Nexubis Next - Works - 679b7683dd06dbd924b4966f.csv
+
+- Webflow template:
+  - webflow-export/detail_work.html
+
+
+Implementation Notes
+
+- /work/[slug] uses generateStaticParams(), generateMetadata(), and notFound().
+- The route renders the existing shared SiteHeader and SiteFooter.
+- R2 videos from the CMS export are reused.
+- No Webflow CDN URLs are used in production case-study code.
+- I did not add Sanity.
+- I did not hard-code one page per case study.
+
+
+Known Missing Media
+
+The CMS gallery images, hero poster frames, and Oxipack testimonial portrait were only found as Webflow CDN URLs in the CMS CSV, not as local exported assets.
+
+I did not leave those Webflow URLs in production code.
+
+The base page uses existing local preview/portrait assets where available and reports those missing assets for a later media recovery pass.
+
+
+Validation
+
+- /work/altify: 200
+- /work/circuit: 200
+- /work/oxipack: 200
+- Unknown slug: 404
+
+Breakpoints tested on all three work pages:
+
+- 1440px
+- 1280px
+- 1024px
+- 992px
+- 991px
+- 768px
+- 767px
+- 480px
+- 479px
+- 390px
+- 375px
+
+Regression sweep also checked:
+
+- /
+- /packages
+- /contact
+
+Results:
+
+- Horizontal overflow: none found.
+- Runtime external domain observed during work-page sweep: approved R2 video host only.
+- Preview console: no errors.
+
+
+Checks
+
+- npm run lint: passed with existing warnings only.
+- npm run typecheck: passed.
+- npm run test: passed, 29 files / 223 tests.
+- npm run build: passed.
+
+Existing unrelated build warning remains:
+
+- Nexubis build warning: placeholder proof content is present in a production build.
+- Replace the DMN quote before shipping: [DMN quote to collect: Before Nexubis, X. Now Y.]
+
+
+Case Study Media Recovery and Visual Parity Pass Report
+
+Completed the Case Study media recovery and parity pass.
+
+
+Recovered Media
+
+Downloaded and wired exact CMS media from Webflow CDN into local assets.
+
+Altify:
+
+- thumbnail.avif
+- hero-poster.webp
+- testimonial.avif
+- gallery-1.avif
+- gallery-2.avif
+- gallery-3.avif
+
+Circuit:
+
+- thumbnail.png
+- hero-poster.webp
+- testimonial.avif
+- gallery-1.avif
+- gallery-2.avif
+- gallery-3.avif
+- gallery-4.avif
+
+Oxipack:
+
+- thumbnail.avif
+- hero-poster.webp
+- testimonial.avif
+- gallery-1.avif
+- gallery-2.avif
+- gallery-3.avif
+
+The full original URL-to-local-path mapping is documented in:
+
+- docs/CASE_STUDY_MEDIA_MAPPING.md
+
+
+Changes Made
+
+- Replaced temporary homepage preview/fallback media in lib/work/data.ts.
+- Added local hero posters to all R2 videos.
+- Restored gallery image order and grid proportions from the Webflow template.
+- Added the live-style top case-study selector: Altify / Circuit / Oxipack.
+- Updated OG images to use recovered local thumbnail assets.
+- Removed temporary substitute files from public/assets/work/*.
+- Confirmed Sataya does not point to missing /work/sataya; it remains a portfolio item linking to https://sataya.io/.
+
+
+R2 Videos
+
+Verified all three routes render:
+
+- 1 hero R2 video.
+- 2 gallery R2 videos.
+- Local poster frame.
+- autoplay, muted, loop, playsInline.
+- No video files committed to Git.
+
+
+Validation
+
+Routes:
+
+- /work/altify: 200
+- /work/circuit: 200
+- /work/oxipack: 200
+- Unknown slug: 404
+
+Breakpoints checked across /, /packages, /contact, and all three work pages:
+
+- 1440px
+- 1280px
+- 1024px
+- 992px
+- 991px
+- 768px
+- 767px
+- 480px
+- 479px
+- 390px
+- 375px
+
+Results:
+
+- No horizontal overflow found.
+- Shared header/footer still render once per page.
+- No Webflow runtime dependency found in production case-study paths.
+- Browser sweep external domain: approved R2 video host only.
+- Console errors: none.
+
+
+Commands
+
+- npm run lint: passed with existing warnings only.
+- npm run typecheck: passed.
+- npm run test: passed, 29 files / 223 tests.
+- npm run build: passed, with existing unrelated DMN placeholder warning.
+
+
+Sources Used
+
+- https://www.nexubis.io/work/altify
+- https://www.nexubis.io/work/circuit
+- https://www.nexubis.io/work/oxipack
+- https://www.nexubis.io/sitemap.xml
+CASE STUDY VISUAL PARITY PASS REPORT
+Date: 2026-07-28
+
+Completed the strict case-study parity pass for /work/altify, with the shared template carrying the fixes through /work/circuit and /work/oxipack.
+
+Files changed:
+- components/work/CaseStudyTemplate.tsx
+- components/work/CaseStudyVideo.tsx
+- app/globals.css
+
+What was fixed:
+- Removed the invented red/pink hero gradient and restored the neutral Webflow hero background.
+- Removed the incorrect desktop "Case Studies / AltifyCircuitOxipack" selector from the hero.
+- Rebuilt the hero geometry from Webflow source classes:
+  - project-header_section
+  - container
+  - row
+  - col col-lg-6
+  - project_tags
+  - hero_reel
+  - reel_wrap
+  - reel_video
+  - reel_player
+- Restored the desktop Altify hero measurements:
+  - Hero: 736px tall at 1440px
+  - Heading: 60px, 72px line-height, 500 weight, one line
+  - Reel: 400px x 233px
+  - Video inner: 382px x 215px
+  - Mute control: 28px x 28px
+- Added the custom red mute/unmute video button with accessible labels.
+- Restored the scroll-grow hero video behavior using GSAP/ScrollTrigger.
+- Reworked the first content section to match the Webflow row/column layout.
+- Replaced the incorrect sidebar link pills with compact share icons.
+- Rebuilt the testimonial section closer to Webflow: left absolute portrait, right quote column, story card sizing.
+- Confirmed no required Webflow runtime dependency in production app, components, or lib.
+
+Root cause:
+The previous build inferred layout from a generic case-study structure instead of reconstructing the Webflow template. That introduced the wrong hero gradient, wrong breadcrumb/selector, oversized heading, simplified video card, missing mute control, missing scroll-grow animation, and incorrect content/testimonial grids.
+
+Validation:
+- Tested /work/altify, /work/circuit, and /work/oxipack.
+- Breakpoints checked: 1440, 1280, 1024, 992, 991, 768, 767, 480, 479, 390, and 375.
+- No horizontal overflow found.
+- No Webflow runtime requests found.
+- Screenshots captured for live/local Altify desktop, full page, tablet, mobile, plus Circuit/Oxipack desktop checks.
+
+Checks:
+- npm run lint: passed with existing warnings only.
+- npm run typecheck: passed.
+- npm run test: passed, 223 tests.
+- npm run build: passed.
+
+Remaining intentional differences:
+- The repo still uses the signed-off shared header/footer, so it does not exactly match the old live Webflow header CTA/footer treatment.
+- Those shared components were left untouched as instructed.

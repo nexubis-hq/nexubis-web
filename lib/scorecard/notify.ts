@@ -8,6 +8,7 @@
 import { TEAM_EMAIL, shouldSendEmail1 } from "./env";
 import { EMAIL_1 } from "./copy";
 import type { LeadRecord } from "./leads";
+import { sendResendEmail } from "@/lib/resend";
 
 const FROM = process.env.SCORECARD_EMAIL_FROM || "Nexubis <hello@nexubis.io>";
 const SENDER_FIRST_NAME = process.env.SCORECARD_SENDER_FIRST_NAME || "Hannes";
@@ -29,11 +30,6 @@ export function leadNotifyRecipients(): string[] {
 }
 
 async function sendEmail(args: { to: string | string[]; subject: string; text: string; replyTo?: string }): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.warn("[scorecard-notify] RESEND_API_KEY not set; email skipped:", args.subject);
-    return false;
-  }
   const to = (Array.isArray(args.to) ? args.to : [args.to]).map((a) => a.trim()).filter(Boolean);
   if (!to.length) {
     // All-blank recipients would 422 the whole send and lose the alert. Refuse
@@ -41,27 +37,7 @@ async function sendEmail(args: { to: string | string[]; subject: string; text: s
     console.error(`[scorecard-notify] no valid recipients for "${args.subject}"; send skipped`);
     return false;
   }
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from: FROM,
-        to,
-        subject: args.subject,
-        text: args.text,
-        ...(args.replyTo ? { reply_to: args.replyTo } : {}),
-      }),
-    });
-    if (!res.ok) {
-      console.error(`[scorecard-notify] Resend ${res.status} for "${args.subject}"`);
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error("[scorecard-notify] send failed:", err instanceof Error ? err.message : err);
-    return false;
-  }
+  return sendResendEmail({ from: FROM, to, subject: args.subject, text: args.text, replyTo: args.replyTo });
 }
 
 // Internal notification: new Scorecard lead, the working details, links to the

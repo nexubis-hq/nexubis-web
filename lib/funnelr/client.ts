@@ -46,7 +46,7 @@ export interface FunnelrUser {
 export interface CreateFunnelrContactInput {
   email: string;
   firstName?: string;
-  lastName?: string;
+  lastName?: string | null;
   company?: string;
   telephone?: string | null;
   hasAcceptedMarketing?: boolean;
@@ -239,7 +239,7 @@ export class FunnelrClient {
     return this.request<FunnelrUser>("POST", "/api/v1/user/users", {
       email,
       firstName: input.firstName?.trim() || null,
-      lastName: input.lastName?.trim() || null,
+      ...(input.lastName !== undefined ? { lastName: input.lastName?.trim() || null } : {}),
       company: input.company?.trim() || null,
       telephone: input.telephone?.trim() || null,
       isAgent: false,
@@ -268,7 +268,7 @@ export class FunnelrClient {
       isPlaced: input.isPlaced ?? false,
       rating: input.rating ?? 0,
       firstName: input.firstName?.trim() || null,
-      lastName: input.lastName?.trim() || null,
+      ...(input.lastName !== undefined ? { lastName: input.lastName?.trim() || null } : {}),
       company: input.company?.trim() || null,
       cultureCode: input.cultureCode ?? null,
       countryCode: input.countryCode ?? null,

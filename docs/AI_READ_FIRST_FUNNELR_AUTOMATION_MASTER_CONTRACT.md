@@ -1,6 +1,6 @@
 # AI READ FIRST: Funnelr Automation Master Contract
 
-Last updated: 2026-07-27
+Last updated: 2026-07-28
 
 This document is the single permanent source of truth for Nexubis and LekkeWeb Funnelr automation behaviour in this repository. Future AI agents and human maintainers must read this file before changing Funnelr lists, sequences, tags, automations, contact-routing code, or related scripts.
 
@@ -10,9 +10,9 @@ Do not create competing Funnelr automation explanation files. Update this master
 
 ## Purpose
 
-The Nexubis Scorecard integration captures qualified Scorecard leads, stores the permanent report URL on the Funnelr contact, and requests campaign routing through temporary trigger tags. The LekkeWeb website already applies its Brand tag to website contacts, and Funnelr owns LekkeWeb master-list visibility, manual intake routing, campaign membership, sequence enrolment, exit handling, and history safeguards.
+The Nexubis Scorecard integration captures qualified Scorecard leads, stores the permanent report URL on the Funnelr contact, and requests campaign routing through temporary trigger tags. The Nexubis Contact form captures general enquiries as neutral Funnelr contacts by applying only Brand and Contact Form Source tags. The LekkeWeb website already applies its Brand tag to website contacts, and Funnelr owns LekkeWeb master-list visibility, manual intake routing, campaign membership, sequence enrolment, exit handling, and history safeguards.
 
-The Scorecard website/server integration is tag-only. Any reintroduction of direct Scorecard campaign-list or sequence handling in website code is a regression.
+The Scorecard and Contact Form website/server integrations are tag-only. Any reintroduction of direct Scorecard or Contact campaign-list or sequence handling in website code is a regression.
 
 ## Responsibility Split
 
@@ -24,6 +24,15 @@ The Nexubis website/server only:
 - applies `Brand: Nexubis`
 - applies `Source: Nexubis | Scorecard`
 - applies `Trigger: Nexubis | Start Scorecard Sales`
+
+For Contact form submissions only, the Nexubis website/server:
+
+- creates or safely updates the Funnelr contact by email
+- applies `Brand: Nexubis`
+- applies `Source: Nexubis | Contact Form`
+- sends the Resend internal notification
+
+The Contact form must not write `Last name`, custom Scorecard fields, lists, sequences, Trigger tags, Pipeline tags, or History tags. If an existing contact already has `Last name` populated by Scorecard report URL mirroring or any other value, Contact must preserve it byte-for-byte.
 
 The website/server must not:
 
@@ -60,6 +69,7 @@ Funnelr automations own:
 | `Brand: Nexubis` | `4B527D4D-3540-401D-A0B1-A1BBDF0FADFF` | Marks the contact as owned by Nexubis. |
 | `Source: Nexubis | Scorecard` | `AA47260F-59B0-4D4A-999F-4D571382658D` | Marks Scorecard as the lead source. |
 | `Source: Nexubis | Manual` | `A23C221E-A548-4268-9223-B1DFC688823A` | Reserved for manually entered Nexubis leads. |
+| `Source: Nexubis | Contact Form` | `B398BEA3-1E76-410D-AA8B-50F83F283684` | Identifies an enquiry submitted through the Nexubis Contact form; does not trigger a campaign. |
 | `Trigger: Nexubis | Start Scorecard Sales` | `6B9DA797-9A52-4F4F-9854-66FFA1935C07` | Requests Scorecard sales routing. |
 | `Trigger: Nexubis | Start Credibility Brief Nurture` | `E654E2FA-B55E-4904-9336-9D45AA6837AB` | Requests nurture routing. Scheduler pending. |
 | `Pipeline: Nexubis | Call Booked` | `93347D55-1901-4A2D-90A2-0FCBB6B8A492` | Durable booked state from Cal.com. |
@@ -211,6 +221,20 @@ Manual Holding is removed when nurture entry succeeds. `Nexubis | All Contacts` 
 4. A future timed handoff may later apply the nurture Trigger only for Scorecard-first contacts who have never received nurture.
 
 Do not reset or remove `History: Nexubis | Credibility Brief Nurture Started`. The nurture History tag distinguishes manual-first contacts from Scorecard-first contacts for future handoff logic.
+
+### Contact-Form Lead
+
+1. Visitor submits the Contact form.
+2. Website finds or creates the Funnelr contact by email.
+3. Website applies `Brand: Nexubis`.
+4. Website applies `Source: Nexubis | Contact Form`.
+5. `Nexubis | Brand Tag - Add to All Contacts` adds the contact to `Nexubis | All Contacts`.
+6. No Trigger tag is applied.
+7. No campaign list or sequence is started.
+8. Resend sends the internal notification.
+9. `Last name` and Scorecard report data remain untouched.
+
+If an existing Scorecard, nurture, booked, replied, unsubscribed, or manually entered contact submits the Contact form, the website only adds the Contact Form Source tag if absent and preserves all existing campaign state. The Contact form must not remove an existing contact from any sequence or list.
 
 ### Nexubis | Call Booked - Exit Campaigns
 
@@ -493,6 +517,9 @@ Do not delete or rename these without separate approval:
 
 - New Scorecard contact creates one contact, saves report URL to `Nexubis | Scorecard Report URL`, mirrors the same URL to `Last name`, applies brand/source/sales trigger, then Funnelr applies sales history, sales list, sales sequence, and removes trigger.
 - Brand-tagged Nexubis contact is automatically added to `Nexubis | All Contacts` with no campaign Source, Trigger, Pipeline, History, list, or sequence changes.
+- Contact-form lead creates or updates one Funnelr contact by email, applies only `Brand: Nexubis` and `Source: Nexubis | Contact Form`, and relies on the Brand automation for `Nexubis | All Contacts`.
+- Contact-form lead never applies Scorecard sales Trigger, nurture Trigger, Pipeline, History, Manual Source, Manual Holding membership, any list operation, any sequence operation, or any Scorecard custom-field update.
+- Contact-form lead preserves existing `Last name` byte-for-byte, including Scorecard report URL mirrors and ordinary surname values.
 - Manual contact added to `Nexubis | Manual Leads - Holding` receives Brand, Manual Source, and nurture Trigger tags, then enters nurture through the existing nurture automation.
 - Existing contact submission updates the same contact and report URL without duplicating contact or sequence enrolment.
 - Existing contact submission writes the latest permanent report URL to `Last name` and removes stale `street` or `telephone` values only when they contain a previous Nexubis Scorecard report URL.
@@ -534,6 +561,14 @@ Rollback steps:
 6. Do not delete contacts, contact profile values, sequence users, email history, automation history, unsubscribe records, or test evidence.
 
 ## Change Log
+
+2026-07-28:
+
+- Created and verified `Source: Nexubis | Contact Form` with stable ID `B398BEA3-1E76-410D-AA8B-50F83F283684`.
+- Documented the Contact-Form Lead journey as a neutral tag-only Funnelr path.
+- Confirmed Contact form routing applies only `Brand: Nexubis` and `Source: Nexubis | Contact Form`.
+- Confirmed Contact form routing does not apply Trigger, Pipeline, or History tags; does not add lists or sequences; does not touch Manual Holding; and does not update Scorecard custom fields or `Last name`.
+- Documented Resend as the secondary internal-notification layer for Contact form submissions after Funnelr capture succeeds.
 
 2026-07-27:
 

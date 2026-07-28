@@ -1,17 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { NexubisLogo } from "@/components/NexubisLogo";
 import { BOOKING_URL, PACKAGES_URL } from "@/lib/site-config";
+import { WORK_SLUGS } from "@/lib/work/slugs";
 
-// Case studies featured in the nav. Oxipack is intentionally omitted here: it is
-// the single featured case in the homepage Proof section, so it is named once,
-// there, and never in nav link text.
-const caseStudies = [
-  { label: "Circuit", href: "https://www.nexubis.io/work/circuit" },
-  { label: "Altify", href: "https://www.nexubis.io/work/altify" },
-];
+const caseStudies = WORK_SLUGS.map((slug) => ({
+  label: slug.charAt(0).toUpperCase() + slug.slice(1),
+  href: `/work/${slug}`,
+}));
 
 const desktopLinks = [
   { label: "Packages", href: PACKAGES_URL, icon: "wallet" },
@@ -29,12 +27,28 @@ export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+  const closeDropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const closeMenus = () => {
+  const cancelDesktopDropdownClose = useCallback(() => {
+    if (!closeDropdownTimeoutRef.current) return;
+    clearTimeout(closeDropdownTimeoutRef.current);
+    closeDropdownTimeoutRef.current = null;
+  }, []);
+
+  const scheduleDesktopDropdownClose = useCallback(() => {
+    cancelDesktopDropdownClose();
+    closeDropdownTimeoutRef.current = setTimeout(() => {
+      setDesktopDropdownOpen(false);
+      closeDropdownTimeoutRef.current = null;
+    }, 160);
+  }, [cancelDesktopDropdownClose]);
+
+  const closeMenus = useCallback(() => {
+    cancelDesktopDropdownClose();
     setMenuOpen(false);
     setDesktopDropdownOpen(false);
     setMobileSubmenuOpen(false);
-  };
+  }, [cancelDesktopDropdownClose]);
 
   useEffect(() => {
     const onPointerDown = (event: PointerEvent) => {
@@ -52,8 +66,9 @@ export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("resize", onResize);
+      cancelDesktopDropdownClose();
     };
-  }, []);
+  }, [cancelDesktopDropdownClose, closeMenus]);
 
   return (
     <header className="site-header" ref={headerRef}>
@@ -70,8 +85,11 @@ export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
           <div className="nav-menu-links">
             <div
               className="desktop-case-studies"
-              onMouseEnter={() => setDesktopDropdownOpen(true)}
-              onMouseLeave={() => setDesktopDropdownOpen(false)}
+              onMouseEnter={() => {
+                cancelDesktopDropdownClose();
+                setDesktopDropdownOpen(true);
+              }}
+              onMouseLeave={scheduleDesktopDropdownClose}
               onBlur={(event) => {
                 if (!event.currentTarget.contains(event.relatedTarget)) {
                   setDesktopDropdownOpen(false);

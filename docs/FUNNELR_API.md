@@ -19,6 +19,8 @@ The server-only client is in `lib/funnelr/client.ts`.
 
 Scorecard routing note: `/api/leads/scorecard` and `submitScorecardLeadToFunnelr()` must not call list or sequence endpoints. They are limited to contact create/update, `GET /api/v1/system/formFields`, custom profile update, custom profile read-back, and tag assignment. Funnelr automation triggered by `Trigger: Nexubis | Start Scorecard Sales` owns campaign-list and sequence movement.
 
+Contact form routing note: `/api/contact` and `submitContactLeadToFunnelr()` are stricter tag-only helpers. They may find a contact by email, create a contact, safely update standard contact identity fields while preserving `lastName`, and apply only `Brand: Nexubis` (`4B527D4D-3540-401D-A0B1-A1BBDF0FADFF`) plus `Source: Nexubis | Contact Form` (`B398BEA3-1E76-410D-AA8B-50F83F283684`). They must not write `Last name`, Scorecard custom fields, lists, sequences, Trigger tags, Pipeline tags, or History tags. `Nexubis | Brand Tag - Add to All Contacts` owns All Contacts list membership.
+
 Messenger compatibility note: Funnelr Messenger cannot currently merge the custom Scorecard report URL field. The permanent Nexubis Scorecard report URL is still written to the custom `Nexubis | Scorecard Report URL` profile field. The same trimmed HTTPS URL is also mirrored into the built-in `Last name` contact field. Swagger verification on 2026-07-24 confirmed that this value is represented in `POST /api/v1/user/users`, `PUT /api/v1/user/users`, and `GET /api/v1/user/users` as the standard `lastName` property. The failed `Alternative Address` / `street` and `Telephone` / `telephone` mirrors are no longer used; existing `street` or `telephone` values are cleared only when they contain a previous Nexubis Scorecard report URL written by this integration.
 
 Implemented read-only functions:
@@ -30,6 +32,7 @@ Implemented read-only functions:
 - `listTags()` -> `GET /api/v1/user/tags`
 - `listSequences()` -> `GET /api/v1/messenger/sequences`
 - `listSystemFormFields()` -> `GET /api/v1/system/formFields`
+- `submitContactLeadToFunnelr()` -> server-only Contact form helper using `findContactByEmail`, `createContact`/safe `updateContact`, `PUT /api/v1/user/users/{id}/tags`, and `GET /api/v1/user/users/{id}/tags`
 
 Run:
 
@@ -93,3 +96,4 @@ The command performs only GET requests and prints sanitized endpoint availabilit
 - `GET /api/v1/query/option/automationActionTypes` currently returns HTTP 500 in this account: `Could not find stored procedure 'query.v1_OptionAutomationActionTypes'.` Do not let this block automation work.
 - Funnelr commonly responds slowly. Use a timeout of at least 180 seconds for Funnelr API work. For writes, issue one write at a time and read the target resource back before continuing.
 - Never blindly retry create requests after timeout or transport failure. First search by internal ID, old name and target name because a timed-out request may have succeeded server-side.
+- Contact form integrations must not directly call list or sequence endpoints. Brand-tag application is the only routing request for `Nexubis | All Contacts`, and the Brand automation may complete asynchronously after the visitor receives a success response.
