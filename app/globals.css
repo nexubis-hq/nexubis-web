@@ -54,6 +54,11 @@
   --button-radius: 0.25rem;
   --surface: #f2f2f2;
   --work-black: #0f0f0f;
+  /* Muted blue-grey for hairlines and mono labels: the InfoTip glyph uses it so
+     eighteen of them read as quiet technical marks, not a rash of accent red.
+     #5a6672 clears WCAG AA (5.8:1) on white at the glyph's size. Added for the
+     packages rebuild. */
+  --steel: #5a6672;
   --container: 87.5rem;
   --grid-gap: 2rem;
   --h1: clamp(2.75rem, 1.9892rem + 3.17vw, 4.5rem);
@@ -11203,7 +11208,275 @@ button.nav-link {
 }
 
 
+.pkg-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
 
+/* --- Controls row: currency left, billing cycle right --- */
+.pkg-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 0 0 1.9375rem;
+}
 
+/* The billing-cycle toggle reuses .billing-selector as-is; drop its auto centering
+   margin so it sits at the right, and keep it from shrinking (which would wrap the
+   "2 Months Free" badge onto two lines and make the control taller). On narrow
+   screens it wraps to its own line at full width instead. */
+.pkg-controls .billing-selector {
+  margin: 0;
+  flex: 0 0 auto;
+}
 
+.pkg-controls .billing-option b {
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .pkg-controls {
+    justify-content: center;
+  }
+}
+
+/* Currency toggle: the same segmented-pill look, sized to its two options. */
+.pkg-toggle {
+  display: inline-flex;
+  gap: 0.75rem;
+}
+
+.pkg-toggle-option {
+  position: relative;
+  border: 0;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--white);
+  color: var(--body);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pkg-toggle-option::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--black), transparent 80%);
+  border-radius: 0.25rem;
+  pointer-events: none;
+}
+
+.pkg-toggle-option.selected {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.pkg-toggle-option.selected::before {
+  border: 0;
+}
+
+.pkg-toggle-option:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Saving pill under the price: reuses .saving (green) / .saving-neutral (grey). */
+.package-saving {
+  display: inline-block;
+  margin: 0.75rem 0 0;
+}
+
+.partner-terms {
+  margin: 0.6rem 0 0;
+  color: var(--body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* --- Card additions: descriptor quote, unlock spacing, tabular price, CTA --- */
+.package-descriptor {
+  margin: 0 0 1.1rem;
+  color: var(--body);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.package-unlock {
+  margin: 0.5rem 0 1rem;
+}
+
+/* Let the label take the row so the info button sits at the right edge. */
+.package-benefits li .benefit-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* CTA pinned to the bottom so the three cards line up despite different heights. */
+.package-v2 {
+  justify-content: flex-start;
+}
+
+.package-v2 .package-benefits {
+  margin-top: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.package-cta {
+  width: 100%;
+  margin-top: auto;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+/* Outline CTAs (Momentum, Scale) fill red on hover, matching the primary button. */
+.package-cta.btn-secondary:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+/* Primary CTA (Partner) deepens slightly on hover. */
+.package-cta.btn-primary:hover {
+  background: color-mix(in srgb, var(--primary), var(--black) 12%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .package-cta {
+    transition: none;
+  }
+}
+
+/* Never leave an orphan word alone on the last line of a paragraph or heading. */
+p,
+li,
+h1,
+h2,
+h3,
+h4,
+summary {
+  text-wrap: pretty;
+}
+
+/* --- InfoTip --- */
+.pkg-infotip-trigger {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin: -3px -4px -3px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--steel);
+  cursor: pointer;
+}
+
+.pkg-infotip-trigger:hover {
+  color: var(--black);
+}
+
+.pkg-infotip-trigger:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.pkg-infotip-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 10px;
+  font-style: italic;
+  line-height: 1;
+}
+
+.pkg-infotip-panel {
+  max-width: 260px;
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.4rem;
+  background: var(--black);
+  color: var(--white);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+  z-index: 200;
+  animation: pkg-tip-in 0.12s ease-out;
+}
+
+.pkg-infotip-arrow {
+  fill: var(--black);
+}
+
+@keyframes pkg-tip-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pkg-infotip-panel {
+    animation: none;
+  }
+}
+
+/* --- Reassurance band --- */
+.pkg-reassure {
+  background: var(--surface);
+}
+
+.pkg-reassure-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 48rem) {
+  .pkg-reassure-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.pkg-reassure-title {
+  margin: 0 0 0.4rem;
+  color: var(--black);
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.pkg-reassure-body {
+  margin: 0;
+  color: var(--body);
+  line-height: 1.6;
+}
+
+.pkg-reassure-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--s-4);
+}
+
+/* --- FAQ: keep the h3 visually identical to the old summary span --- */
+.packages-faq-q {
+  margin: 0;
+  font: inherit;
+}
 
