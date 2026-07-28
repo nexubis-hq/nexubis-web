@@ -412,33 +412,6 @@ ul {
 }
 
 /* Packages page - cloud CTA */
-.packages-cloud-cta { position:relative; height:48rem; padding-top:5rem; color:#fff; background:linear-gradient(180deg,var(--primary),#fff 77%); overflow:hidden; overflow-x:clip; }
-.packages-cloud-container { position:relative; z-index:2; max-width:87.5rem; }
-.packages-cloud-row { display:flex; flex-flow:row wrap; height:12.7998rem; margin:0 -1rem -2rem; }
-.packages-cloud-row-end { justify-content:flex-end; margin-top:-4rem; }
-.packages-cloud-column { flex:0 0 50%; max-width:50%; margin-bottom:2rem; padding-inline:1rem; }
-.packages-cloud-column h2 { margin:0 0 2rem; color:#fff; font-size:8rem; font-weight:500; line-height:1.1; letter-spacing:-.02em; }
-.packages-cloud-row-end h2 { text-align:right; }
-.packages-clouds { position:relative; z-index:1; inset:-15.625rem 0 auto; width:100%; max-width:100%; height:auto; min-height:18.75rem; overflow:hidden; overflow-x:clip; transform:scale(1.5); transform-origin:center top; }
-.packages-cloud-image { position:absolute; width:90%; height:auto; opacity:.7; filter:blur(1px); }
-.packages-cloud-image:nth-child(1) { left:-124.77%; top:5%; }
-.packages-cloud-image:nth-child(2) { left:91.2%; top:20%; }
-.packages-cloud-image:nth-child(3) { left:-37.64%; top:8%; }
-.packages-cloud-image:nth-child(4) { left:4.07%; top:32%; }
-.packages-cloud-image:nth-child(5) { left:49.49%; top:2%; }
-.packages-cloud-image:nth-child(6) { left:-83.06%; top:15%; }
-/* mobile: the 8rem headings and off-canvas scaled clouds were widening the whole
-   page (horizontal scroll). Shrink the type, stack full-width, and clip the
-   decorative cloud bleed horizontally so the page fits the viewport. */
-@media (max-width: 900px) {
-  .packages-cloud-cta { height:auto; padding:3rem 0 5rem; overflow-x:clip; }
-  .packages-cloud-row { height:auto; margin:0; }
-  .packages-cloud-row-end { margin-top:0; }
-  .packages-cloud-column { flex:0 0 100%; max-width:100%; padding-inline:0; margin-bottom:0; }
-  .packages-cloud-column h2 { font-size:clamp(2.5rem, 12vw, 5rem); margin-bottom:0.5rem; }
-  .packages-clouds { transform:scale(1); min-height:12rem; }
-}
-
 .nav-container {
   display: flex;
   align-items: center;
@@ -9754,9 +9727,8 @@ button.nav-link {
   .package-price h2 { font-size:2.25rem; line-height:1.15; }
   .package-price strong { font-size:1.25rem; margin-bottom:.65em; }
   .package-benefits li span { min-width:0; overflow-wrap:anywhere; }
-  .services-tags, .packages-faq-row, .packages-cloud-row { margin-inline:0; }
-  .packages-faq-column, .packages-cloud-column { padding-inline:0; }
-  .packages-clouds { transform:scale(1); }
+  .services-tags, .packages-faq-row { margin-inline:0; }
+  .packages-faq-column { padding-inline:0; }
 }
 
 /* Packages page parity overrides. These sit after the generic homepage mobile
@@ -9811,18 +9783,6 @@ button.nav-link {
     max-width: 100%;
   }
 
-  .packages-cloud-cta {
-    height: 40rem;
-  }
-
-  .packages-clouds {
-    inset: -60px 0 auto;
-    transform: scale(2.5);
-  }
-
-  .packages-cloud-cta + .site-footer {
-    padding-block: 67.4364px;
-  }
 }
 
 @media (max-width: 767px) {
@@ -9830,8 +9790,7 @@ button.nav-link {
   .services-container,
   .why-nexubis-container,
   .trial-cta-wrapper,
-  .packages-faq-container,
-  .packages-cloud-container {
+  .packages-faq-container {
     width: 88%;
     max-width: var(--container);
   }
@@ -9912,18 +9871,6 @@ button.nav-link {
     padding-inline: 1rem;
   }
 
-  .packages-cloud-cta {
-    height: 40rem;
-  }
-
-  .packages-clouds {
-    inset: 0 0 auto;
-    transform: scale(3.5);
-  }
-
-  .packages-cloud-cta + .site-footer {
-    padding-block: 45.8646px;
-  }
 }
 
 @media (min-width: 480px) and (max-width: 767px) {
@@ -9939,9 +9886,6 @@ button.nav-link {
     line-height: 1.2;
   }
 
-  .packages-cloud-column h2 {
-    font-size: clamp(4rem, 14vw, 8rem);
-  }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
@@ -9974,10 +9918,6 @@ button.nav-link {
   .packages-faq-sidebar h2 {
     font-size: 2rem;
     line-height: 1.2;
-  }
-
-  .packages-cloud-column h2 {
-    font-size: clamp(3.75rem, 17vw, 5rem);
   }
 
   .trial-cta-section,
@@ -10013,18 +9953,6 @@ button.nav-link {
     padding-left: 1.5rem;
   }
 
-  .packages-cloud-cta {
-    height: 25rem;
-  }
-
-  .packages-clouds {
-    inset: 144px 0 auto;
-    transform: scale(4);
-  }
-
-  .packages-cloud-cta + .site-footer {
-    padding-block: calc(3.62vw + 18.0992px);
-  }
 }
 
 /* Final Packages-only breakpoint locks. Keep these last so shared page rules
