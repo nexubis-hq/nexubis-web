@@ -6,6 +6,19 @@ import { useEffect, useId, useRef, useState } from "react";
 import { CAL_LINK } from "@/lib/booking";
 
 type ContactTab = "book" | "message";
+type FormState = "idle" | "submitting" | "success" | "error";
+type TurnstileApi = {
+  render: (
+    el: HTMLElement,
+    opts: {
+      sitekey: string;
+      callback: (token: string) => void;
+      "error-callback"?: () => void;
+      "expired-callback"?: () => void;
+    },
+  ) => string;
+  reset?: (widgetId?: string) => void;
+};
 
 declare global {
   interface Window {
@@ -138,9 +151,128 @@ function CalInlineEmbed({ active }: { active: boolean }) {
 }
 
 function ContactForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [websiteLink, setWebsiteLink] = useState("");
+  const [packageValue, setPackageValue] = useState("");
+  const [additionalNotes, setAdditionalNotes] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [spamToken, setSpamToken] = useState("");
+  const [state, setState] = useState<FormState>("idle");
+  const [message, setMessage] = useState("");
+  const startedAt = useRef(0);
+  const resultRef = useRef<HTMLParagraphElement>(null);
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const formReady = Boolean(siteKey);
+
+  useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
+
+  useEffect(() => {
+    if (!siteKey || !turnstileRef.current || widgetIdRef.current) return;
+
+    const getTurnstile = () =>
+      (window as typeof window & { turnstile?: TurnstileApi }).turnstile;
+    const render = () => {
+      const turnstile = getTurnstile();
+      if (!turnstile || !turnstileRef.current || widgetIdRef.current) return;
+      widgetIdRef.current = turnstile.render(turnstileRef.current, {
+        sitekey: siteKey,
+        callback: (token) => setSpamToken(token),
+        "error-callback": () => setSpamToken(""),
+        "expired-callback": () => setSpamToken(""),
+      });
+    };
+
+    if (getTurnstile()) {
+      render();
+      return;
+    }
+
+    const existing = document.getElementById("turnstile-api-script") as HTMLScriptElement | null;
+    if (existing) {
+      existing.addEventListener("load", render, { once: true });
+      return () => existing.removeEventListener("load", render);
+    }
+
+    const script = document.createElement("script");
+    script.id = "turnstile-api-script";
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.async = true;
+    script.defer = true;
+    script.addEventListener("load", render, { once: true });
+    document.head.appendChild(script);
+    return () => script.removeEventListener("load", render);
+  }, [siteKey]);
+
+  useEffect(() => {
+    if (state === "success" || state === "error") {
+      resultRef.current?.focus();
+    }
+  }, [state]);
+
+  function resetTurnstile() {
+    const turnstile = (window as typeof window & { turnstile?: TurnstileApi }).turnstile;
+    turnstile?.reset?.(widgetIdRef.current ?? undefined);
+    setSpamToken("");
+  }
+
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (state === "submitting" || !formReady) return;
+
+    setState("submitting");
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          companyName,
+          websiteLink,
+          package: packageValue,
+          additionalNotes,
+          spamToken,
+          honeypot,
+          elapsedMs: Date.now() - startedAt.current,
+        }),
+      });
+      const body = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!res.ok || !body?.ok) {
+        setState("error");
+        setMessage(body?.error ?? "Message delivery is temporarily unavailable. Try again later.");
+        resetTurnstile();
+        return;
+      }
+
+      setState("success");
+      setMessage("Thank you for your submission!");
+      setName("");
+      setEmail("");
+      setCompanyName("");
+      setWebsiteLink("");
+      setPackageValue("");
+      setAdditionalNotes("");
+      setHoneypot("");
+      resetTurnstile();
+      startedAt.current = Date.now();
+    } catch {
+      setState("error");
+      setMessage("Message delivery is temporarily unavailable. Try again later.");
+      resetTurnstile();
+    }
+  }
+
   return (
     <div className="contact-form-card">
-      <form className="contact-form" onSubmit={(event) => event.preventDefault()}>
+      <form className="contact-form" onSubmit={submit}>
         <div className="contact-field">
           <label htmlFor="contact-name">
             Name<span>*</span>
@@ -153,6 +285,8 @@ function ContactForm() {
             autoComplete="name"
             maxLength={256}
             required
+            value={name}
+            onChange={(event) => setName(event.target.value)}
           />
         </div>
 
@@ -168,6 +302,8 @@ function ContactForm() {
             autoComplete="email"
             maxLength={256}
             required
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
           />
         </div>
 
@@ -184,6 +320,8 @@ function ContactForm() {
               autoComplete="organization"
               maxLength={256}
               required
+              value={companyName}
+              onChange={(event) => setCompanyName(event.target.value)}
             />
           </div>
 
@@ -196,6 +334,8 @@ function ContactForm() {
               placeholder="e.g. Nexubis.io"
               autoComplete="url"
               maxLength={256}
+              value={websiteLink}
+              onChange={(event) => setWebsiteLink(event.target.value)}
             />
           </div>
         </div>
@@ -207,7 +347,13 @@ function ContactForm() {
           <label htmlFor="contact-package">
             Package<span>*</span>
           </label>
-          <select id="contact-package" name="Package-Select" required defaultValue="">
+          <select
+            id="contact-package"
+            name="Package-Select"
+            required
+            value={packageValue}
+            onChange={(event) => setPackageValue(event.target.value)}
+          >
             <option value="" disabled>
               Select one...
             </option>
@@ -225,20 +371,54 @@ function ContactForm() {
             name="Comment"
             placeholder="Tell us more about what you're looking to achieve"
             maxLength={5000}
+            value={additionalNotes}
+            onChange={(event) => setAdditionalNotes(event.target.value)}
           />
         </div>
 
-        <div className="contact-spam-note" id="contact-form-unavailable" role="note">
-          Message submissions are not connected yet. Use Book a Call for now.
+        <label className="contact-honeypot" aria-hidden="true">
+          Leave this field empty
+          <input
+            type="text"
+            name="nx_extra_field"
+            tabIndex={-1}
+            autoComplete="off"
+            data-lpignore="true"
+            data-1p-ignore
+            data-form-type="other"
+            value={honeypot}
+            onChange={(event) => setHoneypot(event.target.value)}
+          />
+        </label>
+
+        {siteKey ? (
+          <div ref={turnstileRef} className="contact-turnstile" />
+        ) : (
+          <div className="contact-spam-note" id="contact-form-unavailable" role="note">
+            Message submissions are not connected yet. Turnstile keys are required before this form can go live.
+          </div>
+        )}
+
+        <div className="contact-form-result" aria-live="polite" aria-atomic="true">
+          {message ? (
+            <p
+              ref={resultRef}
+              className={state === "success" ? "contact-form-status contact-form-success" : "contact-form-status"}
+              tabIndex={-1}
+              role={state === "success" ? "status" : "alert"}
+            >
+              {message}
+            </p>
+          ) : null}
         </div>
 
         <button
           className="contact-submit"
           type="submit"
-          disabled
-          aria-describedby="contact-form-unavailable"
+          disabled={state === "submitting" || !formReady || !spamToken}
+          aria-describedby={!formReady ? "contact-form-unavailable" : undefined}
         >
-          Empower Your Dream
+          {state === "submitting" ? "Sending..." : "Empower Your Dream"}
         </button>
       </form>
     </div>

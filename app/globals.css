@@ -510,6 +510,24 @@ ul {
   padding: 1rem;
 }
 
+.contact-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.contact-turnstile {
+  min-height: 4.0625rem;
+}
+
+.contact-form-result {
+  min-height: 0;
+}
+
 .contact-submit {
   position: relative;
   min-height: 3rem;
@@ -550,6 +568,14 @@ ul {
   color: var(--mid);
   font-size: .875rem;
   line-height: 1.5;
+}
+
+.contact-form-status:focus {
+  outline: none;
+}
+
+.contact-form-success {
+  color: var(--sc-valid);
 }
 
 .contact-cal-error {
