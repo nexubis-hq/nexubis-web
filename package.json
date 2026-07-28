@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",
+    "@radix-ui/react-popover": "^1.1.23",
     "@upstash/redis": "^1.38.0",
     "agentation": "^3.0.1",
     "cheerio": "^1.2.0",
