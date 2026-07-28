@@ -3,10 +3,12 @@
 // from here, so one edit here changes every figure on the page and the two can
 // never drift.
 //
+// EUR is the base currency; USD is the higher converted figure (~EUR x 1.10, set to
+// clean round numbers). Partner's base is divisible by 12 so every prepayment figure
+// lands on a round number: yearly is 5,000 a month, a 12,000 saving, 60,000 up front.
+//
 // Rounding rule: per-month prices round for display, but period totals (up front,
 // saving) are computed from the EXACT per-month value and rounded once at the end.
-// That is why yearly up front is a clean 59,000 (ten months) rather than 59,004
-// (twelve times the rounded 4,917).
 
 export type BillingCycle = "monthly" | "quarterly" | "yearly";
 export type Currency = "EUR" | "USD";
@@ -36,18 +38,18 @@ export const TIERS: Tier[] = [
     unlockLine: "Your website, fully handled:",
     highlighted: false,
     discountsAvailable: false,
-    monthly: { EUR: 3500, USD: 3800 },
+    monthly: { EUR: 3500, USD: 3900 },
     features: [
       {
-        label: "A dedicated 2-person team",
+        label: "Dedicated 2-person team",
         tip: "Your own developer and designer, the same two people every month. You learn their names, they learn your product, and nothing goes into an anonymous ticket queue.",
       },
       {
-        label: "Website development and maintenance",
+        label: "Website build & maintenance",
         tip: "Full Webflow development, plus every update, new page and bug fix after launch. Your site never goes stale in the gap between projects.",
       },
       {
-        label: "SEO built in and monitored",
+        label: "SEO built in & monitored",
         tip: "On-page SEO handled as we build rather than bolted on afterwards, then tracked every month so you can see what is moving. No separate SEO retainer to buy.",
       },
       {
@@ -55,11 +57,11 @@ export const TIERS: Tier[] = [
         tip: "Any website or brand design task counts as one request, with two rounds of feedback on every deliverable. Most partners never come close to using all thirty.",
       },
       {
-        label: "Social, email and document design",
+        label: "Social, email & document design",
         tip: "Social templates, email headers, letterheads, proposals and internal documents. The everyday assets that usually end up being made badly in PowerPoint.",
       },
       {
-        label: "72-hour turnaround, 3 meetings a month",
+        label: "72-hour turnaround, 3 meetings/mo",
         tip: "Most requests come back inside three working days. You get your own Slack channel, daily Loom updates, weekly progress notes and a monthly report.",
       },
     ],
@@ -69,13 +71,12 @@ export const TIERS: Tier[] = [
     name: "Scale",
     descriptor: "Everything we put out needs to look like one company.",
     unlockLine: "Everything in Momentum, plus:",
-    highlighted: true,
-    highlightLabel: "Most chosen",
+    highlighted: false,
     discountsAvailable: false,
     monthly: { EUR: 4200, USD: 4600 },
     features: [
       {
-        label: "A dedicated 3-person team",
+        label: "Dedicated 3-person team",
         tip: "A third specialist joins your team, usually design or motion, so more work can run in parallel instead of queueing. Four meetings a month instead of three.",
       },
       {
@@ -83,7 +84,7 @@ export const TIERS: Tier[] = [
         tip: "No monthly cap and nobody counting. Submit as much as your team can review.",
       },
       {
-        label: "48-hour turnaround, your work skips the queue",
+        label: "48-hour turnaround, queue priority",
         tip: "Most requests come back inside two working days, and your tasks are picked up ahead of Momentum work. Three feedback rounds per deliverable instead of two.",
       },
       {
@@ -91,7 +92,7 @@ export const TIERS: Tier[] = [
         tip: "Print, presentations, pitch decks, brochures, spec sheets and sales collateral. Everything that lives beyond the screen.",
       },
       {
-        label: "3D renders and video, up to 5 a month",
+        label: "3D & video, up to 5 a month",
         tip: "Product renders and short-form video for social and sales, up to five pieces a month. Custom website animations and motion graphics are included on top of that.",
       },
       {
@@ -105,28 +106,29 @@ export const TIERS: Tier[] = [
     name: "Partner",
     descriptor: "We need to look completely different, and be actively marketing.",
     unlockLine: "Everything in Scale, plus:",
-    highlighted: false,
+    highlighted: true,
+    highlightLabel: "Most chosen",
     discountsAvailable: true,
-    monthly: { EUR: 5900, USD: 6500 },
+    monthly: { EUR: 6000, USD: 6600 },
     features: [
       {
         label: "All hands on deck",
         tip: "The whole team is available to you rather than a fixed headcount, and meetings happen as often as the work needs them. This is the level where we operate as your creative department.",
       },
       {
-        label: "A dedicated creative director",
+        label: "Dedicated creative director",
         tip: "One named senior person owns your brand end to end and is your single point of contact. They hold the standard across everything that goes out.",
       },
       {
-        label: "Brand refresh or full CI, once a year",
+        label: "Brand refresh or full CI, yearly",
         tip: "A complete identity rebuild or corporate identity guide, included every twelve months. On its own this is a project most agencies quote separately.",
       },
       {
-        label: "Campaign design and execution",
+        label: "Campaign design & execution",
         tip: "Social, email and digital campaigns designed, built and shipped. This is the difference between looking ready to go to market and actually being in it.",
       },
       {
-        label: "Unlimited 3D, plus scripted brand video",
+        label: "Unlimited 3D & scripted video",
         tip: "No cap on product renders or video work. Includes a fully scripted product or brand film produced for you.",
       },
       {
@@ -194,8 +196,10 @@ export function currencySymbol(currency: Currency): string {
 }
 
 export function formatNumber(amount: number): string {
-  // Deterministic thousands grouping, no locale dependence (SSR-safe).
-  return amount.toLocaleString("en-US");
+  // Thousands grouped with a space to match the site's house style ("5 900", never
+  // "5,900"), and with a non-breaking space so a price never wraps mid-number.
+  // Deterministic, no locale dependence (SSR-safe).
+  return amount.toLocaleString("en-US").replace(/,/g, " ");
 }
 
 export function formatMoney(currency: Currency, amount: number): string {
@@ -230,4 +234,3 @@ for (const tier of TIERS) {
     }
   }
 }
-</content>

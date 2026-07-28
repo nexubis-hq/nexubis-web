@@ -58,4 +58,3 @@ Available: `--primary #ff4141`, `--black #1d1c1a`, `--body #5a5a5a`, `--mid #888
 - `app/packages/page.tsx` — rewired: header block + currency control + cards + reassurance band + closing CTA + new FAQ. Old `PackagesPricing` billing toggle and Flex card gone.
 - CSS additions scoped under a `pkg-` prefix in globals.css; `--steel` token added to `:root`.
 - Gates in Step 10 run before "done"; outputs in PACKAGES_V2.md + SITE.md.
-</content>
