@@ -1,0 +1,78 @@
+Completed the Contact production-readiness pass.
+
+What changed:
+- Hardened components/ContactTabs.tsx:
+  - Cal.com script is guarded with a stable script id.
+  - Tab switching does not create duplicate iframes.
+  - Cal iframe gets title="Nexubis Cal.com booking calendar".
+  - Added keyboard tab switching with arrow/home/end behavior.
+  - Added Cal load-failure messaging.
+  - Prevented dead form submission.
+  - Disabled the submit button until a real backend is provided.
+
+- Updated app/globals.css:
+  - Removed the misleading recaptcha class/text.
+  - Replaced undefined --dark usage with existing --black.
+  - Added disabled submit styling and Cal error styling.
+
+- Verified components/PackagesPricing.tsx:
+  - Its only intended change is replacing duplicated logo-wall markup with TrustedLogos.
+  - Pricing cards, billing logic, prices, and layout were not changed.
+
+Webflow audit:
+- Production code searched: app/, components/, lib/, public/, package.json, next.config.ts.
+- No Webflow runtime dependency remains in /contact.
+- No data-wf-*, w-form, w-input, w-select, w-button, Webflow scripts, Webflow form endpoints, or Webflow CDN requests on /contact.
+- No Webflow-hosted assets needed moving; Contact/logo assets are already local.
+
+External runtime domains on /contact:
+- app.cal.com: approved Cal.com embed script and iframe.
+- cal.com: Cal.com avatar/API asset inside the iframe.
+- o574544.ingest.us.sentry.io: Cal.com iframe-owned Sentry request.
+- connect.facebook.net: existing project Meta Pixel from MetaPixel, not Contact-specific.
+
+Browser network verification found zero Webflow requests.
+
+Form status:
+- Existing endpoints inspected: scorecard lead capture, scorecard unlock, Cal webhook, reply webhook.
+- No suitable general Contact submission endpoint exists.
+- The form is now safely non-production: no action, no native submit, no fake success, no fake reCAPTCHA.
+- Blockers needed to finish form submission:
+  - Destination: recipient inbox or CRM/list/tag.
+  - Notification rules.
+  - Spam protection choice.
+  - Required env vars/secrets.
+
+Cal.com:
+- Event remains nexubis/30min.
+- Layout remains month_view.
+- Brand remains #FF4141.
+- Verified iframe loads, tab switching preserves one iframe, and selecting a date/time advances to the Cal booking details form.
+
+QA:
+Tested both Contact tabs at:
+1440, 1280, 1024, 992, 991, 768, 767, 480, 479, 390, 375.
+
+Confirmed:
+- No horizontal overflow.
+- One H1.
+- Accessible tab state and keyboard switching.
+- Form labels/required fields/autocomplete are present.
+- Logo wall renders.
+- No old Empowering Dreams section.
+- / and /contact use the same SiteFooter.
+- Homepage footer unchanged.
+- Packages pricing logic still works.
+
+Checks:
+- npm run lint: passed with existing warnings.
+- npm run build: passed.
+- Existing proof placeholder build warning remains.
+
+Files changed:
+- app/contact/page.tsx
+- components/ContactTabs.tsx
+- components/TrustedLogos.tsx
+- components/PackagesPricing.tsx
+- app/globals.css
+- CONTACT_PAGE_BASE_BUILD_REPORT.txt
