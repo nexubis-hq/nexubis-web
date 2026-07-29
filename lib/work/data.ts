@@ -1,5 +1,7 @@
 import type { CaseStudy, WorkSlug } from "@/lib/work/types";
 
+const GALLERY_VIDEO_POSTER = "/assets/images/reel_draft.jpg";
+
 const caseStudies: CaseStudy[] = [
   {
     slug: "altify",
@@ -61,12 +63,39 @@ const caseStudies: CaseStudy[] = [
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/altify/TEMPLATE%20LONG.mp4",
         title: "Altify wide campaign motion",
+        poster: GALLERY_VIDEO_POSTER,
         aspect: "wide",
       },
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/altify/BTC%20MOON%202.mp4",
         title: "Altify square campaign motion",
+        poster: GALLERY_VIDEO_POSTER,
         aspect: "square",
+      },
+    ],
+    mediaItems: [
+      { type: "image", image: { src: "/assets/work/altify/gallery-1.avif", alt: "Altify brand and platform design", width: 1206, height: 575 }, span: "wide" },
+      { type: "image", image: { src: "/assets/work/altify/gallery-2.avif", alt: "Altify mobile interface design", width: 403, height: 575 }, span: "narrow" },
+      {
+        type: "video",
+        video: {
+          src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/altify/TEMPLATE%20LONG.mp4",
+          title: "Altify wide campaign motion",
+          poster: GALLERY_VIDEO_POSTER,
+          aspect: "wide",
+        },
+        span: "wide",
+      },
+      { type: "image", image: { src: "/assets/work/altify/gallery-3.avif", alt: "Altify digital product screens", width: 803, height: 575 }, span: "half" },
+      {
+        type: "video",
+        video: {
+          src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/altify/BTC%20MOON%202.mp4",
+          title: "Altify square campaign motion",
+          poster: GALLERY_VIDEO_POSTER,
+          aspect: "square",
+        },
+        span: "half",
       },
     ],
     testimonial: {
@@ -80,6 +109,8 @@ const caseStudies: CaseStudy[] = [
         height: 2128,
       },
       storyTitle: "Altify: Empowering Nexubis",
+      storyHref: "/post/altify-empowering-nexubis",
+      storyThumbnail: "/assets/work/altify/story-thumbnail.avif",
     },
     links: [
       { label: "LinkedIn", href: "https://www.linkedin.com/company/altifyinvest/" },
@@ -97,7 +128,7 @@ const caseStudies: CaseStudy[] = [
   },
   {
     slug: "circuit",
-    title: "Circuit Rebrand and Website launch",
+    title: "Circuit Rebrand and  Website launch",
     services: [
       "Website Design",
       "Creative Direction",
@@ -159,13 +190,41 @@ const caseStudies: CaseStudy[] = [
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/circuit/01.mp4",
         title: "Circuit wide campaign motion",
+        poster: GALLERY_VIDEO_POSTER,
         aspect: "wide",
       },
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/circuit/02.mp4",
         title: "Circuit square campaign motion",
+        poster: GALLERY_VIDEO_POSTER,
         aspect: "square",
       },
+    ],
+    mediaItems: [
+      { type: "image", image: { src: "/assets/work/circuit/gallery-1.avif", alt: "Circuit brand system and interface work", width: 1206, height: 575 }, span: "wide" },
+      { type: "image", image: { src: "/assets/work/circuit/gallery-2.avif", alt: "Circuit brand application detail", width: 403, height: 575 }, span: "narrow" },
+      {
+        type: "video",
+        video: {
+          src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/circuit/01.mp4",
+          title: "Circuit wide campaign motion",
+          poster: GALLERY_VIDEO_POSTER,
+          aspect: "wide",
+        },
+        span: "wide",
+      },
+      { type: "image", image: { src: "/assets/work/circuit/gallery-3.avif", alt: "Circuit digital design system", width: 803, height: 575 }, span: "half" },
+      {
+        type: "video",
+        video: {
+          src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/circuit/02.mp4",
+          title: "Circuit square campaign motion",
+          poster: GALLERY_VIDEO_POSTER,
+          aspect: "square",
+        },
+        span: "half",
+      },
+      { type: "image", image: { src: "/assets/work/circuit/gallery-4.avif", alt: "Circuit launch artwork", width: 1640, height: 1169 }, span: "full" },
     ],
     testimonial: {
       quote: "Working with Nexubis felt less like hiring an agency and more like adding an extension to our own team. They understood the nuance of what we were building - translating complex security concepts into something clear, visual, and credible. The result wasn't just great design; it was real alignment between message, mission, and impact.",
@@ -178,6 +237,8 @@ const caseStudies: CaseStudy[] = [
         height: 2128,
       },
       storyTitle: "Circuit: Securing Nexubis",
+      storyHref: "/post/circuit-securing-nexubis",
+      storyThumbnail: "/assets/work/circuit/story-thumbnail.avif",
     },
     links: [
       { label: "LinkedIn", href: "https://www.linkedin.com/company/circuitsecurity/" },
@@ -251,12 +312,39 @@ const caseStudies: CaseStudy[] = [
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/oxipack/TEMPLATE%20LONG.mp4",
         title: "Oxipack wide campaign motion",
+        poster: GALLERY_VIDEO_POSTER,
         aspect: "wide",
       },
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/oxipack/TEMPLATE%20SQUARE.mp4",
         title: "Oxipack square campaign motion",
+        poster: GALLERY_VIDEO_POSTER,
         aspect: "square",
+      },
+    ],
+    mediaItems: [
+      { type: "image", image: { src: "/assets/work/oxipack/gallery-1.avif", alt: "Oxipack website and brand system", width: 1206, height: 575 }, span: "wide" },
+      { type: "image", image: { src: "/assets/work/oxipack/gallery-2.avif", alt: "Oxipack brand application detail", width: 403, height: 575 }, span: "narrow" },
+      {
+        type: "video",
+        video: {
+          src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/oxipack/TEMPLATE%20LONG.mp4",
+          title: "Oxipack wide campaign motion",
+          poster: GALLERY_VIDEO_POSTER,
+          aspect: "wide",
+        },
+        span: "wide",
+      },
+      { type: "image", image: { src: "/assets/work/oxipack/gallery-3.avif", alt: "Oxipack digital design screens", width: 803, height: 575 }, span: "half" },
+      {
+        type: "video",
+        video: {
+          src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/oxipack/TEMPLATE%20SQUARE.mp4",
+          title: "Oxipack square campaign motion",
+          poster: GALLERY_VIDEO_POSTER,
+          aspect: "square",
+        },
+        span: "half",
       },
     ],
     testimonial: {
@@ -269,7 +357,9 @@ const caseStudies: CaseStudy[] = [
         width: 2018,
         height: 2128,
       },
-      storyTitle: "Oxipack: Funding Nexubis",
+      storyTitle: "Oxipack: Empowering Nexubis",
+      storyHref: "/post/oxipack-empowering-nexubis",
+      storyThumbnail: "/assets/work/oxipack/story-thumbnail.avif",
     },
     links: [
       { label: "LinkedIn", href: "https://www.linkedin.com/company/oxipack/" },

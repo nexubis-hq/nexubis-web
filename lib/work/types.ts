@@ -16,6 +16,18 @@ export type CaseStudyVideo = {
   aspect: "wide" | "square" | "hero";
 };
 
+export type CaseStudyMediaItem =
+  | {
+      type: "image";
+      image: CaseStudyImage;
+      span: "wide" | "narrow" | "half" | "full";
+    }
+  | {
+      type: "video";
+      video: CaseStudyVideo;
+      span: "wide" | "half";
+    };
+
 export type CaseStudyLink = {
   label: string;
   href: string;
@@ -37,6 +49,7 @@ export type CaseStudy = {
   heroVideo: CaseStudyVideo;
   galleryImages: CaseStudyImage[];
   galleryVideos: CaseStudyVideo[];
+  mediaItems: CaseStudyMediaItem[];
   testimonial: {
     quote: string;
     name: string;
@@ -44,6 +57,7 @@ export type CaseStudy = {
     image?: CaseStudyImage;
     storyTitle?: string;
     storyHref?: string;
+    storyThumbnail?: string;
   };
   links: CaseStudyLink[];
   relatedSlugs: WorkSlug[];

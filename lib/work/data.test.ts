@@ -16,7 +16,7 @@ describe("case-study data", () => {
   });
 
   it("returns case studies by slug and rejects unknown slugs", () => {
-    expect(getCaseStudyBySlug("circuit")?.title).toBe("Circuit Rebrand and Website launch");
+    expect(getCaseStudyBySlug("circuit")?.title).toBe("Circuit Rebrand and  Website launch");
     expect(getCaseStudyBySlug("sataya")).toBeUndefined();
   });
 

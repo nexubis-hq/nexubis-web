@@ -13,18 +13,22 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
   const relatedStudies = getRelatedCaseStudies(caseStudy.relatedSlugs);
 
   return (
-    <main className="case-study-page">
+    <main className={`case-study-page case-study-${caseStudy.slug}`}>
       <section className="case-study-hero">
         <div className="site-container case-study-hero-inner">
           <div className="case-study-hero-grid">
-            <div>
-              <h1>{caseStudy.title}</h1>
+            <div className="case-study-hero-title-col">
+              <h1 className="case-study-title">{caseStudy.title}</h1>
             </div>
-            <ul className="case-study-tags" aria-label="Services">
-              {caseStudy.services.map((service) => (
-                <li key={service}>{service}</li>
-              ))}
-            </ul>
+            <div className="case-study-hero-tags-col">
+              <ul className="case-study-tags" aria-label="Services">
+                {caseStudy.services.map((service) => (
+                  <li key={service}>
+                    <span>{service}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
           <div className="case-study-hero-reel-row">
             <CaseStudyVideo video={caseStudy.heroVideo} className="case-study-hero-video" isHero />
@@ -42,28 +46,31 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
             </aside>
 
             <div className="case-study-gallery" aria-label={`${caseStudy.title} media`}>
-              {(caseStudy.galleryImages.length ? caseStudy.galleryImages : [caseStudy.coverImage]).map((image, index) => (
-                <Image
-                  key={image.src}
-                  className={`case-study-gallery-image case-study-gallery-image-${index + 1}`}
-                  src={image.src}
-                  alt={image.alt}
-                  width={image.width}
-                  height={image.height}
-                  sizes="(max-width: 991px) 100vw, 33vw"
-                />
-              ))}
-              {caseStudy.galleryVideos.map((video) => (
-                <CaseStudyVideo
-                  key={video.src}
-                  video={video}
-                  className={
-                    video.aspect === "wide"
-                      ? "case-study-gallery-video case-study-gallery-video-wide"
-                      : "case-study-gallery-video"
-                  }
-                />
-              ))}
+              {caseStudy.mediaItems.map((item, index) => {
+                const className = `case-study-gallery-item case-study-gallery-item-${index + 1} case-study-gallery-${item.span}`;
+
+                if (item.type === "image") {
+                  return (
+                    <Image
+                      key={item.image.src}
+                      className={`${className} case-study-gallery-image`}
+                      src={item.image.src}
+                      alt={item.image.alt}
+                      width={item.image.width}
+                      height={item.image.height}
+                      sizes="(max-width: 991px) 100vw, 33vw"
+                    />
+                  );
+                }
+
+                return (
+                  <CaseStudyVideo
+                    key={item.video.src}
+                    video={item.video}
+                    className={`${className} case-study-gallery-video case-study-gallery-video-${item.video.aspect}`}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
@@ -80,19 +87,32 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
               <span>{caseStudy.testimonial.role}</span>
             </div>
             {caseStudy.testimonial.storyTitle ? (
-              <div className="case-study-story-card">
-                <Image
-                  src={caseStudy.coverImage.src}
-                  alt=""
-                  width={caseStudy.coverImage.width}
-                  height={caseStudy.coverImage.height}
-                  sizes="12rem"
-                />
+              <Link
+                href={caseStudy.testimonial.storyHref ?? "#"}
+                className="case-study-story-card"
+              >
+                {caseStudy.testimonial.storyThumbnail ? (
+                  <Image
+                    src={caseStudy.testimonial.storyThumbnail}
+                    alt=""
+                    width={384}
+                    height={192}
+                    sizes="12rem"
+                  />
+                ) : (
+                  <Image
+                    src={caseStudy.coverImage.src}
+                    alt=""
+                    width={caseStudy.coverImage.width}
+                    height={caseStudy.coverImage.height}
+                    sizes="12rem"
+                  />
+                )}
                 <div>
                   <span>{caseStudy.testimonial.storyTitle}</span>
                   <span>Read the full story here -&gt;</span>
                 </div>
-              </div>
+              </Link>
             ) : null}
           </div>
         </div>
