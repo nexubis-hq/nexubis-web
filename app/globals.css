@@ -11340,7 +11340,7 @@ summary {
 }
 
 .work-index-hero {
-  padding: clamp(8rem, 16vw, 15rem) 0 clamp(4rem, 8vw, 7rem);
+  padding: 7rem 0;
   background: var(--surface);
 }
 
@@ -11355,68 +11355,132 @@ summary {
 }
 
 .work-index-hero h1 {
-  margin: 0;
-  max-width: 9ch;
-  font-size: clamp(5rem, 14vw, 13rem);
+  margin: 0 0 0.375em;
+  max-width: none;
+  font-size: 4.5rem;
   font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
 .work-index-list-section {
-  padding: clamp(3rem, 7vw, 7rem) 0 clamp(5rem, 10vw, 9rem);
+  padding: 7rem 0;
   background: #fff;
 }
 
 .work-index-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-content: stretch;
+  margin: 0 -1rem -2rem;
+}
+
+.work-index-item {
+  flex: 0 0 50%;
+  max-width: 50%;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
 }
 
 .work-index-card {
-  display: flex;
+  display: inline-flex;
   min-width: 0;
   flex-direction: column;
+  width: 100%;
   color: inherit;
   text-decoration: none;
 }
 
 .work-index-card-media {
   display: block;
+  position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: var(--work-black);
+  background: transparent;
 }
 
 .work-index-card-media img {
   display: block;
   width: 100%;
   height: 100%;
+  border: 1px solid rgb(0 0 0 / 10%);
+  border-radius: 8px;
   object-fit: cover;
-  transition: transform 500ms ease;
+  object-position: 50% 50%;
 }
 
 .work-index-card-body {
   display: block;
-  padding: 1.25rem 0 0;
+  padding-top: 1.5rem;
 }
 
 .work-index-card-title {
   display: block;
   font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-size: clamp(1.35rem, 2vw, 2rem);
+  font-size: 1.5rem;
   font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: 0;
-}
-
-.work-index-card:hover .work-index-card-media img,
-.work-index-card:focus-visible .work-index-card-media img {
-  transform: scale(1.035);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.6em;
 }
 
 .work-index-card:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 0.4rem;
+}
+
+@media (min-width: 992px) and (max-width: 1279px) {
+  .work-index-hero,
+  .work-index-list-section {
+    padding: calc(2rem + 6.3vw) 0;
+  }
+
+  .work-index-hero h1 {
+    font-size: calc(31.8px + 3.17vw);
+  }
+
+  .work-index-card-title {
+    font-size: calc(18.25px + 0.45vw);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .work-index-hero,
+  .work-index-list-section {
+    padding: calc(22.59px + 4.525vw) 0;
+  }
+
+  .work-index-hero h1 {
+    font-size: calc(31.91px + 3.16vw);
+  }
+
+  .work-index-card-title {
+    font-size: calc(11.87px + 1.095vw);
+  }
+}
+
+@media (max-width: 767px) {
+  .work-index-hero,
+  .work-index-list-section {
+    padding: 2rem 0;
+  }
+
+  .work-index-hero h1 {
+    font-size: 2.75rem;
+  }
+
+  .work-index-item {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .work-index-card-title {
+    font-size: 1.25rem;
+  }
+
+  .work-index-card-body {
+    padding-top: 1.125rem;
+  }
 }
 
 .about-hero-section {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -21,7 +22,11 @@ export const metadata: Metadata = {
 };
 
 export default function WorkIndexPage() {
-  const caseStudies = getAllCaseStudies();
+  const caseStudyOrder = ["circuit", "altify", "oxipack"];
+  const allCaseStudies = getAllCaseStudies();
+  const caseStudies = caseStudyOrder
+    .map((slug) => allCaseStudies.find((caseStudy) => caseStudy.slug === slug))
+    .filter((caseStudy): caseStudy is (typeof allCaseStudies)[number] => Boolean(caseStudy));
 
   return (
     <>
@@ -37,25 +42,25 @@ export default function WorkIndexPage() {
           <div className="site-container">
             <div className="work-index-grid">
               {caseStudies.map((caseStudy) => (
-                <Link
-                  key={caseStudy.slug}
-                  href={`/work/${caseStudy.slug}`}
-                  className="work-index-card"
-                >
-                  <span className="work-index-card-media">
-                    <img
-                      src={caseStudy.coverImage.src}
-                      alt={caseStudy.coverImage.alt}
-                      width={caseStudy.coverImage.width}
-                      height={caseStudy.coverImage.height}
-                    />
-                  </span>
-                  <span className="work-index-card-body">
-                    <span className="work-index-card-title">
-                      {caseStudy.title.replace(/\s+/g, " ")}
+                <div key={caseStudy.slug} className="work-index-item">
+                  <Link href={`/work/${caseStudy.slug}`} className="work-index-card">
+                    <span className="work-index-card-media">
+                      <Image
+                        src={caseStudy.coverImage.src}
+                        alt={caseStudy.coverImage.alt}
+                        width={caseStudy.coverImage.width}
+                        height={caseStudy.coverImage.height}
+                        sizes="(max-width: 767px) 88vw, 44vw"
+                        quality={95}
+                      />
                     </span>
-                  </span>
-                </Link>
+                    <span className="work-index-card-body">
+                      <span className="work-index-card-title">
+                        {caseStudy.title.replace(/\s+/g, " ")}
+                      </span>
+                    </span>
+                  </Link>
+                </div>
               ))}
             </div>
           </div>
