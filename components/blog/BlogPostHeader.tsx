@@ -21,7 +21,7 @@ export function BlogPostHeader({ post }: BlogPostHeaderProps) {
     <header className={styles.articleHeader}>
       <ol className={styles.breadcrumbList} aria-label="Breadcrumb">
         <li>Dreamlab</li>
-        <li aria-hidden="true">›</li>
+        <li aria-hidden="true">&rsaquo;</li>
         <li>{post.category}</li>
       </ol>
 
@@ -37,4 +37,3 @@ export function BlogPostHeader({ post }: BlogPostHeaderProps) {
     </header>
   );
 }
-

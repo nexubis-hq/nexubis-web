@@ -34,7 +34,7 @@
 }
 
 .articleHeader {
-  padding: 0 1rem;
+  padding: 0;
 }
 
 .breadcrumbList {
@@ -45,16 +45,16 @@
   margin: 0 0 1rem;
   padding: 0;
   color: var(--black);
-  font-size: 0.6875rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  line-height: 1;
+  line-height: 1.2;
   list-style: none;
   text-transform: uppercase;
 }
 
 .title {
-  margin: 0 0 0.25em;
+  margin: 0 0 1.25rem;
   color: var(--black);
   font-family: "Helvetica Now Display", Arial, sans-serif;
   font-size: 2.5rem;
@@ -65,10 +65,10 @@
 }
 
 .authorBlock {
-  margin-bottom: 1.5rem;
-  color: var(--body);
-  font-size: 0.875rem;
-  line-height: 1.6;
+  margin-bottom: 0.8125rem;
+  color: var(--black);
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
 .authorBlock p {
@@ -131,34 +131,58 @@
 
 .richText :global(h2),
 .richText :global(h3) {
-  margin: 2rem 0 1rem;
+  scroll-margin-top: 7rem;
+  margin: 2.25rem 0 0.75rem;
   color: var(--black);
   font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-size: var(--p-lg);
+  font-size: 1.5rem;
   font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.6;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .richText :global(h4),
 .richText :global(h5),
 .richText :global(h6) {
-  margin: 1.5rem 0 0.75rem;
+  scroll-margin-top: 7rem;
+  margin: 1.75rem 0 0.75rem;
   color: var(--black);
   font-family: "Helvetica Now Display", Arial, sans-serif;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.6;
 }
 
 .richText :global(ul),
 .richText :global(ol) {
   margin: 0 0 1rem;
-  padding-left: 1.75rem;
+  padding-left: 2.2rem;
+  color: var(--body);
+  list-style-position: outside;
+}
+
+.richText :global(ul) {
+  list-style-type: disc;
+}
+
+.richText :global(ol) {
+  list-style-type: decimal;
 }
 
 .richText :global(li) {
-  margin-bottom: 0.25rem;
+  display: list-item;
+  margin-bottom: 0.3rem;
+}
+
+.richText :global(li::marker) {
+  color: var(--body);
+  font-size: 1rem;
+}
+
+.richText :global(li > ul),
+.richText :global(li > ol) {
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
 }
 
 .richText :global(a),
@@ -213,30 +237,43 @@
   margin: 0;
 }
 
-.tocLink {
+.tocLink,
+.tocLinkActive {
   display: inline-flex;
   width: 100%;
   border-left: 1px solid #dfddd6;
   padding: 0.75rem 2rem 0.75rem 1rem;
   color: #888680;
-  font-size: 0.875rem;
+  font-size: 1rem;
   line-height: 1.6;
   text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .tocLink:hover,
-.tocLink:focus-visible {
+.tocLink:focus-visible,
+.tocLinkActive {
   color: var(--black);
   border-left-color: var(--primary);
 }
 
-.tocLink[data-level="3"] {
+.tocLinkActive {
+  font-weight: 400;
+}
+
+.tocLink[data-level="3"],
+.tocLinkActive[data-level="3"] {
   padding-left: 2rem;
 }
 
 .tocLink[data-level="4"],
 .tocLink[data-level="5"],
-.tocLink[data-level="6"] {
+.tocLink[data-level="6"],
+.tocLinkActive[data-level="4"],
+.tocLinkActive[data-level="5"],
+.tocLinkActive[data-level="6"] {
   padding-left: 3rem;
 }
 

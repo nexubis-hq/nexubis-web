@@ -210,3 +210,267 @@ Git Index Note
 
 The Task 2A implementation files were staged explicitly so generated fixture
 data is tracked in the Git index. No commit was created in this task.
+
+
+BLOG POST TYPOGRAPHY AND TOC PARITY PASS
+
+Scope
+
+Completed the focused Blog post typography and table-of-contents parity pass for:
+- /post/circuit-securing-nexubis
+
+Regression checked:
+- /post/how-it-all-started-and-almost-didnt
+
+No Sanity setup was started.
+No additional Blog posts were migrated.
+No /blog index changes were made.
+No routing, metadata, fixture data, Lottie source, showreel source, SiteHeader
+or SiteFooter changes were made.
+
+Root Cause
+
+The article column width was already close to the live Webflow page. The page
+felt compressed because:
+- The article header had an extra 16px inset.
+- Breadcrumb and meta typography were smaller than live.
+- Rich-text headings used the smaller Blog-index rhythm.
+- List indentation did not match Webflow.
+- The TOC had no scrollspy active state.
+
+Files Changed
+
+- components/blog/BlogPost.module.css
+- components/blog/BlogPostHeader.tsx
+- components/blog/BlogTableOfContents.tsx
+
+Breadcrumb Corrections
+
+Adjusted the Blog-post-specific breadcrumb typography and spacing:
+- x/y position aligned to live
+- font size corrected to 14px
+- line-height corrected to 16.8px
+- uppercase treatment preserved
+- spacing before title aligned to live
+- separator normalised to an HTML entity
+
+Title And Meta Corrections
+
+The article title now matches live at desktop:
+- font size: 40px
+- line-height: 48px
+- font weight: 500
+- letter spacing: -0.8px
+- width: 834px
+
+Author/date block corrected to:
+- font size: 16px
+- line-height: 22.4px
+- dark text
+- live-height rhythm before the hero media
+
+Body Typography Corrections
+
+Body text remains matched to live:
+- font size: 16px
+- line-height: 25.6px
+- colour: rgb(90, 90, 90)
+- article/body width: 834px at 1440px
+
+Heading And List Spacing Corrections
+
+Rich-text headings corrected to:
+- font size: 24px
+- line-height: 28.8px
+- font weight: 500
+- letter spacing: -0.48px
+
+List indentation was adjusted to match the live bullet blocks.
+
+TOC Styling Corrections
+
+TOC entries corrected to:
+- font size: 16px
+- line-height: 25.6px
+- muted grey inactive state
+- dark active state
+- red active vertical indicator
+
+Scrollspy Implementation
+
+Added a client-side scrollspy to components/blog/BlogTableOfContents.tsx using:
+- IntersectionObserver
+- one active section at a time
+- cleanup on unmount
+- resize and scroll recalculation
+- 112px sticky-header offset
+
+Clicking a TOC entry now scrolls to the correct heading and accounts for the
+sticky header. Verified click target:
+- active entry: How They Helped Nexubis Grow
+- heading top after click: 112px
+
+Active TOC States Verified
+
+Verified active state changes at scroll positions:
+- y 0: What Circuit Actually Does
+- y 950: What Circuit Actually Does
+- y 1650: How They Helped Nexubis Grow
+- y 2450: The Hard Problem We Solved
+- y 3250: Gratitude
+
+Responsive Results
+
+Checked both fixture posts at:
+- 1440
+- 1280
+- 1024
+- 992
+- 991
+- 768
+- 767
+- 480
+- 479
+- 390
+- 375
+
+Total route/viewport checks:
+- 22
+
+Horizontal overflow count:
+- 0
+
+Screenshots Compared
+
+Final local screenshots and measurements:
+- .shipstudio/screenshots/blog-post-typography-pass-final
+
+Live/local before comparison:
+- .shipstudio/screenshots/blog-post-typography-pass-before
+
+Validation Results
+
+npm run lint:
+- passed with existing warnings only
+
+npm run typecheck:
+- passed
+
+npm run test:
+- passed
+- 30 test files passed
+- 233 tests passed
+
+npm run build:
+- passed
+
+Remaining Measurable Difference
+
+Circuit hero top measured:
+- local: 293px
+- live: 294px
+
+This is a 1px variance.
+
+
+BLOG RICH-TEXT LIST PARITY FIX
+
+Scope
+
+Fixed the Blog rich-text list parity issue for the reusable /post/[slug]
+template.
+
+No Sanity setup was started.
+No additional Blog posts were migrated.
+No Lottie, showreel, TOC, article data, header, footer, route or metadata
+changes were made.
+
+Root Cause
+
+The sanitizer was not the issue. The fixture body HTML still preserved semantic:
+- ul
+- ol
+- li
+
+The root cause was the global reset in app/globals.css:
+- ul { list-style: none; }
+
+The Blog rich-text scoped CSS restored list indentation but did not restore
+semantic marker styles, so list items rendered without visible bullets.
+
+Files Changed
+
+- components/blog/BlogPost.module.css
+- lib/blog/post-fixtures.test.ts
+
+CSS Correction
+
+Restored scoped Blog rich-text list styling:
+- unordered lists use list-style-type: disc
+- ordered lists use list-style-type: decimal
+- list-style-position: outside
+- list item display: list-item
+- marker colour: var(--body)
+- marker size: 1rem
+- nested lists keep semantic indentation and spacing
+
+Recovered Live Measurements
+
+Measured live Webflow list styling:
+- list-style-type: disc
+- list-style-position: outside
+- left padding: 35.2px
+- list margin-bottom: 16px
+- list item line-height: 25.6px
+- list item font-size: 16px
+- list item margin-bottom: 4.8px
+- marker colour: rgb(90, 90, 90)
+- marker font-size: 16px
+
+Fixture Sections Checked
+
+/post/circuit-securing-nexubis:
+- What We Built Together
+- Press And Proof
+
+/post/how-it-all-started-and-almost-didnt:
+- The Numbers
+
+Widths checked:
+- 1440px
+- 991px
+- 390px
+
+Verification
+
+Confirmed:
+- The Numbers displays visible bullets.
+- Circuit lists display visible bullets.
+- Ordered lists retain numbering support.
+- Wrapped list lines align correctly.
+- Nested lists remain semantic.
+- Rich-text typography remains unchanged.
+- TOC scrollspy still works.
+- Lottie and showreel still work.
+- No global list styling was changed.
+- No horizontal overflow appears.
+
+Screenshots And Measurements
+
+Saved under:
+- .shipstudio/screenshots/blog-rich-text-list-parity
+
+Validation Results
+
+npm run lint:
+- passed with existing warnings only
+
+npm run typecheck:
+- passed
+
+npm run test:
+- passed
+- 234 tests passed
+
+npm run build:
+- passed

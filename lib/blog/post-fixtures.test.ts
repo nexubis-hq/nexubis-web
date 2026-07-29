@@ -72,6 +72,23 @@ describe("Blog post fixtures", () => {
     expect(sanitized.toc.map((item) => item.id)).toContain("extra-heading");
   });
 
+  it("preserves semantic list markup in sanitized rich text", () => {
+    const standard = getPostBySlug(STANDARD_SLUG);
+    const lottie = getPostBySlug(LOTTIE_SLUG);
+
+    expect(standard).toBeTruthy();
+    expect(lottie).toBeTruthy();
+
+    const standardHtml = sanitizeBlogPostHtml(standard!.bodyHtml).html;
+    const lottieHtml = sanitizeBlogPostHtml(lottie!.bodyHtml).html;
+
+    expect(standardHtml).toContain("<ul");
+    expect(standardHtml).toContain("<li");
+    expect(lottieHtml.match(/<ul/g)).toHaveLength(2);
+    expect(lottieHtml.match(/<li/g)).toHaveLength(8);
+    expect(lottieHtml).toContain("A principle-driven brand system");
+  });
+
   it("maps metadata to the exact /post/[slug] canonical path", () => {
     const post = getPostBySlug(STANDARD_SLUG);
     expect(post).toBeTruthy();
