@@ -11,12 +11,17 @@ export function BlogCard({ post }: BlogCardProps) {
 
   return (
     <article className={styles.card}>
-      <Link className={styles.mediaLink} href={href} aria-label={post.title}>
+      <Link className={styles.mediaLink} href={href} aria-label={post.title} prefetch={false}>
         {post.featured ? (
           <span className={styles.featuredTag}>Featured</span>
         ) : null}
         {post.thumbnail ? (
-          <img className={styles.cardImage} src={post.thumbnail} alt="" loading="lazy" />
+          <img
+            className={styles.cardImage}
+            src={post.thumbnail}
+            alt={post.thumbnailAlt ?? ""}
+            loading="lazy"
+          />
         ) : null}
       </Link>
 
@@ -29,10 +34,12 @@ export function BlogCard({ post }: BlogCardProps) {
 
       <div className={styles.cardBody}>
         <h2 className={styles.cardTitle}>
-          <Link href={href}>{post.title}</Link>
+          <Link href={href} prefetch={false}>
+            {post.title}
+          </Link>
         </h2>
         <p className={styles.excerpt}>{post.excerpt}</p>
-        <Link className={styles.readLink} href={href}>
+        <Link className={styles.readLink} href={href} prefetch={false}>
           <span className={styles.readText}>Read full article</span>
           <span className={styles.readArrow} aria-hidden="true">
             &rarr;

@@ -168,6 +168,7 @@ function generateBlogIndexData(): BlogIndexData {
         publishedAt: record["Published On"],
         thumbnail: record.Thumbnail || null,
         featured: record.Featured === "true",
+        source: "generated",
       };
     });
 

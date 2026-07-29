@@ -1,13 +1,20 @@
 # Blog Index Media Pending
 
-This task keeps Webflow-hosted thumbnails in place for the `/blog` layout pass where no exact local Blog thumbnail is already available. These assets still need local replacements before the Blog is Webflow-independent.
+The `/blog` index now uses published Sanity summaries and Sanity thumbnail assets first when an exact slug match exists. The four priority Blog cards are migrated to Sanity; the remaining 84 generated cards still use temporary Webflow-hosted thumbnails until their archive content and media are migrated.
+
+Migrated to Sanity:
+
+- `circuit-securing-nexubis`
+- `oxipack-empowering-nexubis`
+- `altify-empowering-nexubis`
+- `rethinking-the-nexubis-trial`
 
 | Slug | Current thumbnail URL | Local replacement status |
 | --- | --- | --- |
 | the-nexubis-effect | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/6971d8e2e5cd1c7c42921be0_The%20Nexubis%20Effect_Company.png | Unresolved - using current Webflow URL temporarily |
-| circuit-securing-nexubis | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/690c57e7ba3e964b48906644_Nexubis%20Blogs-Our%20Clients_Circuit%20(1).png | Unresolved - using current Webflow URL temporarily |
-| oxipack-empowering-nexubis | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/690320e5e451e74a9ca99709_Nexubis%20Blogs-Our%20Clients_Oxipack.png | Unresolved - using current Webflow URL temporarily |
-| altify-empowering-nexubis | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/68f8b0f139b941dcd0b02fa3_Nexubis%20Blogs-Our%20Clients_Altify.png | Unresolved - using current Webflow URL temporarily |
+| circuit-securing-nexubis | https://cdn.sanity.io/images/tu3u3e8c/production/b8102ff4630768d410473a86139e02f0fe1e2639-1921x1081.png?auto=format&q=90 | Migrated - `/blog` uses the published Sanity thumbnail |
+| oxipack-empowering-nexubis | https://cdn.sanity.io/images/tu3u3e8c/production/3ac385dc931150b8f6a6b6f87d3eadf030966eee-1921x1081.png?auto=format&q=90 | Migrated - `/blog` uses the published Sanity thumbnail |
+| altify-empowering-nexubis | https://cdn.sanity.io/images/tu3u3e8c/production/b064fddf63f9b1e0c85a4ef85e91e78f9756c871-1921x1081.png?auto=format&q=90 | Migrated - `/blog` uses the published Sanity thumbnail |
 | ai-is-not-a-phase-its-an-era | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/6a155d08faa1903bd21df06a_AI%20Is%20Not%20a%20Phase.%20It%27s%20an%20Era_Startup%20Stack.png | Unresolved - using current Webflow URL temporarily |
 | metamorphosis | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/69fb4f70ac94470e88c3a979_Metamorphosis_Founders%20Diary.png | Unresolved - using current Webflow URL temporarily |
 | beyond-the-eu30-000 | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/69e9d9d47608b9a33a982afa_Beyond%20the%20%E2%82%AC30%20000_FoundersDiary.png | Unresolved - using current Webflow URL temporarily |
@@ -60,7 +67,7 @@ This task keeps Webflow-hosted thumbnails in place for the `/blog` layout pass w
 | resentment-is-a-symptom-of-poor-process | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/68493f3b30847f1770a28391_Resentment%20Is%20a%20Symptom%20of%20Poor%20Process_FoundersDiary(plain).png | Unresolved - using current Webflow URL temporarily |
 | sell-the-slice-not-the-sauce | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/6847ef1b9bdfdf4fe9abec38_Sell%20the%20Slice%2C%20Not%20the%20Sauce_FoundersDiary(plain).png | Unresolved - using current Webflow URL temporarily |
 | just-start-the-damn-thing | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/68469550e88b98ce5ac706d5_Just%20Start%20the%20Damn%20Thing_FoundersDiary(plain).png | Unresolved - using current Webflow URL temporarily |
-| rethinking-the-nexubis-trial | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/6842d23e14b62d7a14d22868_Rethinking%20the%20Nexubis%20Trial_PackagesPage.png | Unresolved - using current Webflow URL temporarily |
+| rethinking-the-nexubis-trial | https://cdn.sanity.io/images/tu3u3e8c/production/5f79da9e7b814cc626576230ae426f590faf2936-1920x1080.png?auto=format&q=90 | Migrated - `/blog` uses the published Sanity thumbnail |
 | dont-turn-into-a-robot | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/68429d2cb828bb4c487a6a7b_Don%E2%80%99t%20Turn%20Into%20a%20Robot_FoundersDiary(plain).png | Unresolved - using current Webflow URL temporarily |
 | the-butterfly-effect | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/684151454f3d1b99cf204e21_The%20Butterfly%20Effect_FoundersDiary(plain).png | Unresolved - using current Webflow URL temporarily |
 | fire-faster-promote-faster | https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/683ffc078d5b68a3bdc5ae40_Fire%20Faster.%20Promote%20Faster_FoundersDiary(plain).png | Unresolved - using current Webflow URL temporarily |

@@ -111,10 +111,11 @@ describe("Blog post fixtures", () => {
     ]);
   });
 
-  it("keeps the approved Blog index summary data unchanged", () => {
-    const { posts, categories, stats } = getBlogIndexPosts();
+  it("keeps the approved Blog index summary data unchanged", async () => {
+    const { posts, categories, stats } = await getBlogIndexPosts(async () => []);
 
     expect(posts).toHaveLength(88);
+    expect(posts.every((post) => post.source === "generated")).toBe(true);
     expect(stats.excludedRecords).toBe(3);
     expect(categories.map((category) => category.slug)).toEqual([
       "empowering-dreams",

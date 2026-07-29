@@ -44,15 +44,25 @@ export const publishedPostSlugsQuery = groq`
 `;
 
 export const allPublishedPostSummariesQuery = groq`
-  *[_type == "post" && defined(publishedAt)] | order(featured desc, publishedAt desc) {
+  *[
+    _type == "post" &&
+    defined(slug.current) &&
+    defined(publishedAt) &&
+    !(_id in path("drafts.**")) &&
+    !(_id in path("versions.**")) &&
+    !(_id in path("releases.**")) &&
+    !(_id in path("_.releases.**")) &&
+    _type != "system.release"
+  ] | order(publishedAt desc) {
+    _id,
     title,
     "slug": slug.current,
     excerpt,
     publishedAt,
     featured,
-    "category": category->title,
-    "categorySlug": category->slug.current,
-    thumbnail
+    thumbnail,
+    "thumbnailAlt": thumbnail.alt,
+    "category": category->{title, "slug": slug.current, icon}
   }
 `;
 

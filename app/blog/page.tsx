@@ -22,8 +22,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
-  const { posts, categories } = getBlogIndexPosts();
+export const revalidate = 60;
+
+export default async function BlogPage() {
+  const { posts, categories } = await getBlogIndexPosts();
 
   return (
     <>
