@@ -26,7 +26,7 @@ export function getPackagesFaq(currency: Currency): FaqEntry[] {
     },
     {
       q: "What is the difference between Momentum, Scale and Partner?",
-      a: "Momentum handles your website: development, maintenance, SEO, and the everyday design that goes with it. Scale adds the rest of your brand, so print, presentations, pitch decks, 3D and video all come from the same team and finally look like one company. Partner adds the brand itself, a refresh or full CI each year, campaigns going out the door, and a creative director who owns the whole picture.",
+      a: "Momentum handles your website: development, maintenance, SEO, and the everyday design that goes with it. Scale adds the rest of your brand, so print, presentations, pitch decks, 3D and video all come from the same team and finally look like one company. Partner adds the brand itself, developed and kept consistent over time, campaigns going out the door, and a creative director who owns the whole picture.",
     },
     {
       q: "Is there anything cheaper than Momentum?",
