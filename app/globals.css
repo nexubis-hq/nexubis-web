@@ -11227,7 +11227,7 @@ button.nav-link {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1.25rem;
-  margin: 0 0 1.9375rem;
+  margin: 3rem 0 1.9375rem;
 }
 
 /* The billing-cycle toggle reuses .billing-selector as-is; drop its auto centering
@@ -11311,7 +11311,7 @@ button.nav-link {
 
 /* Description now sits below the price and discount, above the line items. */
 .package-v2 .package-descriptor {
-  margin: 0.9rem 0 1.1rem;
+  margin: 1.35rem 0 1.75rem;
 }
 
 .partner-terms {
@@ -11324,8 +11324,8 @@ button.nav-link {
 /* --- Card additions: descriptor quote, unlock spacing, tabular price, CTA --- */
 .package-descriptor {
   margin: 0 0 1.1rem;
-  color: var(--body);
-  font-style: italic;
+  color: var(--black);
+  font-weight: 600;
   line-height: 1.5;
 }
 
