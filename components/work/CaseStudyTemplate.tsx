@@ -58,7 +58,8 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
                       alt={item.image.alt}
                       width={item.image.width}
                       height={item.image.height}
-                      sizes="(max-width: 991px) 100vw, 33vw"
+                      sizes={getGalleryImageSizes(item.span)}
+                      quality={95}
                     />
                   );
                 }
@@ -157,6 +158,24 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
       ) : null}
     </main>
   );
+}
+
+function getGalleryImageSizes(span: "wide" | "narrow" | "half" | "full") {
+  const desktop = {
+    wide: "44vw",
+    narrow: "15vw",
+    half: "30vw",
+    full: "59vw",
+  }[span];
+
+  const tablet = {
+    wide: "66vw",
+    narrow: "22vw",
+    half: "44vw",
+    full: "88vw",
+  }[span];
+
+  return `(max-width: 479px) 88vw, (max-width: 991px) ${tablet}, ${desktop}`;
 }
 
 function CaseStudySummary({ title, body }: { title: string; body: string }) {

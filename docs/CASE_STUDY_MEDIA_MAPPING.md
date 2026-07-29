@@ -13,6 +13,8 @@ Recovered from `webflow-export/cms/Nexubis Next - Works - 679b7683dd06dbd924b496
 | Gallery image 1 | `https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/691d40fd813a2166501e93a0_altify-1.avif` | `public/assets/work/altify/gallery-1.avif` |
 | Gallery image 2 | `https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/691d40fd289c6ddf9b107e4b_altify-2.avif` | `public/assets/work/altify/gallery-2.avif` |
 | Gallery image 3 | `https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/691d40fdd7a8496f2ea7fd62_altify-3.avif` | `public/assets/work/altify/gallery-3.avif` |
+| Gallery video 1 | `https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/altify/TEMPLATE%20LONG.mp4` | R2 video, poster `public/assets/work/altify/gallery-video-1-poster.png` |
+| Gallery video 2 | `https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/altify/BTC%20MOON%202.mp4` | R2 video, poster `public/assets/work/altify/gallery-video-2-poster.png` |
 
 ## Circuit
 
@@ -26,6 +28,8 @@ Recovered from `webflow-export/cms/Nexubis Next - Works - 679b7683dd06dbd924b496
 | Gallery image 2 | `https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/691d40eb7c0ed36383a698fa_circuit-2.avif` | `public/assets/work/circuit/gallery-2.avif` |
 | Gallery image 3 | `https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/691d40eb33a3bdb6de72ea29_circuit-3.avif` | `public/assets/work/circuit/gallery-3.avif` |
 | Gallery image 4 | `https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/691d40ebccb75173cfe2f7c8_circuit-4.avif` | `public/assets/work/circuit/gallery-4.avif` |
+| Gallery video 1 | `https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/circuit/01.mp4` | R2 video, poster `public/assets/work/circuit/gallery-video-1-poster.png` |
+| Gallery video 2 | `https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/circuit/02.mp4` | R2 video, poster `public/assets/work/circuit/gallery-video-2-poster.png` |
 
 ## Oxipack
 
@@ -38,3 +42,5 @@ Recovered from `webflow-export/cms/Nexubis Next - Works - 679b7683dd06dbd924b496
 | Gallery image 1 | `https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/691d410aa1556dfcc1163258_oxipack-1.avif` | `public/assets/work/oxipack/gallery-1.avif` |
 | Gallery image 2 | `https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/691d410a7a634a173217174c_oxipack-2.avif` | `public/assets/work/oxipack/gallery-2.avif` |
 | Gallery image 3 | `https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/691d410af71a6fbcdea840bf_oxipack-3.avif` | `public/assets/work/oxipack/gallery-3.avif` |
+| Gallery video 1 | `https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/oxipack/TEMPLATE%20LONG.mp4` | R2 video, poster `public/assets/work/oxipack/gallery-video-1-poster.png` |
+| Gallery video 2 | `https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/oxipack/TEMPLATE%20SQUARE.mp4` | R2 video, poster `public/assets/work/oxipack/gallery-video-2-poster.png` |

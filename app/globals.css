@@ -1205,6 +1205,23 @@ button.nav-link {
   .hero-reel-fullscreen {
     display: block;
   }
+
+  .case-study-video-control .hero-reel-unmute {
+    display: block;
+  }
+
+  .case-study-video-control .hero-reel-mute,
+  .case-study-video-control .hero-reel-fullscreen {
+    display: none;
+  }
+
+  .case-study-video-control.is-unmuted .hero-reel-unmute {
+    display: none;
+  }
+
+  .case-study-video-control.is-unmuted .hero-reel-mute {
+    display: block;
+  }
 }
 
 .hero-reel-control.is-unmuted .hero-reel-mute {
@@ -10788,23 +10805,6 @@ summary {
   object-fit: cover;
 }
 
-.case-study-page .case-study-video-toggle {
-  position: absolute;
-  left: 2.5%;
-  bottom: 2.5%;
-  z-index: 2;
-  display: inline-flex;
-  width: 1.75rem;
-  height: 1.75rem;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  border-radius: 4px;
-  background: var(--primary);
-  color: var(--white);
-  cursor: pointer;
-}
-
 .case-study-page .case-study-sidebar {
   position: sticky;
   top: 8rem;
@@ -10906,12 +10906,14 @@ summary {
   border: 0;
   padding: 0;
   background: transparent;
+  aspect-ratio: inherit;
 }
 
 .case-study-page .case-study-gallery-video .case-study-video-inner {
   height: 100%;
   border: 1px solid var(--cs-border);
   border-radius: 8px;
+  aspect-ratio: inherit;
 }
 
 .case-study-page .case-study-gallery-video-wide {
@@ -11184,19 +11186,8 @@ summary {
     line-height: 1.2;
   }
 
-  .case-study-page .case-study-gallery {
-    display: flex;
-    flex-direction: column;
-  }
-
   .case-study-page .case-study-hero-video {
     width: 100%;
-  }
-
-  .case-study-page .case-study-gallery-item,
-  .case-study-page .case-study-gallery-video-wide,
-  .case-study-page .case-study-gallery-video-square {
-    aspect-ratio: 4 / 3;
   }
 
   .case-study-page .case-study-testimonial {
@@ -11220,6 +11211,47 @@ summary {
   .case-study-page .case-study-story-card {
     width: 100%;
     min-width: 0;
+  }
+}
+
+@media (max-width: 479px) {
+  .case-study-page .case-study-gallery {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .case-study-page .case-study-gallery-image,
+  .case-study-page .case-study-gallery-item {
+    aspect-ratio: auto;
+  }
+
+  .case-study-page .case-study-gallery-video-wide {
+    aspect-ratio: 820 / 324;
+  }
+
+  .case-study-page .case-study-gallery-video-square {
+    aspect-ratio: 400 / 287;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .case-study-page .case-study-gallery {
+    display: grid;
+    flex-direction: row;
+  }
+
+  .case-study-page .case-study-gallery-item,
+  .case-study-page .case-study-gallery-video-wide,
+  .case-study-page .case-study-gallery-video-square {
+    aspect-ratio: auto;
+  }
+
+  .case-study-page .case-study-gallery-video-wide {
+    aspect-ratio: 820 / 324;
+  }
+
+  .case-study-page .case-study-gallery-video-square {
+    aspect-ratio: 400 / 287;
   }
 }
 
