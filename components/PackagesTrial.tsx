@@ -40,11 +40,7 @@ export function PackagesTrial() {
           </div>
 
           <div className="trial-button-group">
-            <a
-              href="https://www.nexubis.io/post/rethinking-the-nexubis-trial"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href="/post/rethinking-the-nexubis-trial">
               Learn More
             </a>
           </div>

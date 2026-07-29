@@ -1,0 +1,157 @@
+Nexubis Blog Migration - Task 1 Blog Index Report
+=================================================
+
+Scope Completed
+---------------
+Implemented /blog only, using the approved SiteHeader and SiteFooter unchanged.
+
+Changed Files
+-------------
+- app/blog/page.tsx
+- components/blog/BlogIndex.tsx
+- components/blog/BlogFilters.tsx
+- components/blog/BlogCard.tsx
+- components/blog/BlogIndex.module.css
+- lib/blog/types.ts
+- lib/blog/get-blog-index-posts.ts
+- docs/BLOG_INDEX_MEDIA_PENDING.md
+
+Migration Report
+----------------
+- Published Blog summaries loaded: 88
+- Excluded records: 3 total, all drafts; archived 0; those 3 also have no valid published date.
+- Category list recovered: Empowering Dreams, Founders Diary, Artificial Intelligence, Startup Stack, Company, For Professionals
+- Blog card route format: every card links to /post/[exact-existing-slug]
+- React filtering works in-place; tested Artificial Intelligence, which reduced visible cards to 8 without navigation.
+- Screenshot comparisons performed at 1440, 991, 390, saved under qa/blog-index.
+- Local breakpoint metrics were also checked at 1440, 1280, 1024, 991, 768, 767, 480, 390, 375.
+- Unresolved Webflow thumbnails: 88, documented in docs/BLOG_INDEX_MEDIA_PENDING.md
+- Remaining measurable visual difference: header/footer intentionally differ from Webflow because the rebuilt approved components are used.
+- Some thumbnails remain Webflow-hosted and are not yet local assets.
+
+Validation
+----------
+- npm run lint: passed with warnings only, including existing <img> warnings and the new blog image warnings.
+- npm run typecheck: passed
+- npm run test: 29 files, 224 tests passed
+- npm run build: passed; /blog is statically generated.
+- Build still reports the existing homepage DMN placeholder proof warning.
+
+Source Checked
+--------------
+- Live Webflow page: https://www.nexubis.io/blog
+- Exported page: webflow-export/blog.html
+- Exported CSS: webflow-export/css/nexubis-next.webflow.css
+- Blog CMS CSV: webflow-export/cms/Nexubis Next - Blogs - 67fc1a17eb59624612330057.csv
+- Blog Categories CSV: webflow-export/cms/Nexubis Next - Blog Categories - 680b4edded78e7991b9732ec.csv
+
+
+Nexubis Blog Migration - Blog Index Visual Correction Pass
+==========================================================
+
+Scope Completed
+---------------
+Completed the focused /blog visual correction pass.
+
+Only edited:
+- components/blog/BlogIndex.module.css
+
+No individual /post/[slug] template work was started.
+No Sanity setup was started.
+No redirects were created.
+No Blog media localisation pass was started.
+
+Root Cause
+----------
+The first Blog index pass recreated the Webflow checkbox/card structure too loosely.
+
+The visible filter shell had:
+- Wrong active border treatment
+- Wrong active background treatment
+- Wrong radius
+- Incorrect perceived button sizing
+
+The Blog cards looked compressed because the migrated card text stack was missing Webflow's title, excerpt, and CTA margins.
+
+Filter Corrections
+------------------
+- Filters now match the live measured height: 38px
+- Filter padding corrected to preserve the live-size button footprint
+- Filter text set to normal visible weight, with Webflow-like wrapper sizing
+- Inactive state now uses pale neutral background, grey border, grey icon, and grey text
+- Active state now uses red text/icon, red outline, and light red active background
+- Active border remains visible
+- Category icons continue to use the recovered category icon URLs
+- Multiple active filters verified with Empowering Dreams + Artificial Intelligence
+
+Card Grid Corrections
+---------------------
+- Desktop grid restored to 3 columns
+- Column gap restored to 32px
+- Row gap restored to 32px
+- 1440px local card width measured at 401px
+- 1440px local image height measured at 226px
+- These match the live measured 1440px card/image geometry
+
+Card Internal Spacing Corrections
+---------------------------------
+- Thumbnail-to-category gap restored to 16px
+- Category-to-title gap restored to 16px
+- Title-to-excerpt gap restored to approximately 20px
+- Excerpt-to-CTA gap restored to 32px
+- Excerpts remain clamped
+- CTA remains visible
+- Existing article text was not changed
+- Existing card ordering was not changed
+- Existing /post/[slug] links were preserved
+
+Responsive QA
+-------------
+Breakpoints checked:
+- 1440px
+- 1280px
+- 1024px
+- 991px
+- 768px
+- 767px
+- 480px
+- 390px
+- 375px
+
+Confirmed:
+- No horizontal overflow
+- Filter controls wrap without text clipping
+- Active borders remain visible
+- Icons stay aligned
+- Card image ratio is retained
+- Card grid columns match the live breakpoint behaviour
+- Mobile cards stack correctly
+
+Screenshot Comparisons
+----------------------
+Screenshots saved under:
+- qa/blog-index-visual-pass
+
+Required comparisons captured:
+- Filters inactive at 1440px
+- Multiple filters active at 1440px
+- Featured card row at 1440px
+- Full Blog grid at 1440px
+- Filters and cards at 991px
+- Filters and cards at 390px
+
+Validation
+----------
+- npm run lint: passed with warnings only
+- npm run typecheck: passed
+- npm run test: passed, 29 files / 224 tests
+- npm run build: passed
+
+Build Notes
+-----------
+The existing homepage DMN placeholder proof warning still appears during build.
+
+Remaining Measurable Differences
+--------------------------------
+- The approved rebuilt SiteHeader and SiteFooter intentionally differ from the old Webflow header/footer.
+- Blog thumbnails remain temporarily Webflow-hosted where no exact local Blog thumbnail exists yet.

@@ -10937,6 +10937,7 @@ summary {
 }
 
 .case-study-page .case-study-testimonial-inner {
+  display: flex;
   justify-content: flex-end;
   margin-right: auto;
   margin-left: auto;
@@ -10956,27 +10957,30 @@ summary {
   margin: 0 0 2rem;
 }
 
-.case-study-page .case-study-testimonial blockquote::before,
-.case-study-page .case-study-testimonial blockquote::after {
+.case-study-page .case-study-testimonial-mark {
   position: absolute;
-  color: rgb(255 65 65 / 32%);
-  font-size: 6rem;
-  line-height: 1;
+  z-index: 0;
+  width: 5rem;
+  max-width: 5rem;
+  color: var(--primary);
+  pointer-events: none;
 }
 
-.case-study-page .case-study-testimonial blockquote::before {
-  content: "\201C";
-  top: -2.75rem;
-  left: -3rem;
+.case-study-page .case-study-testimonial-mark-start {
+  top: -20%;
+  left: -6rem;
 }
 
-.case-study-page .case-study-testimonial blockquote::after {
-  content: "\201D";
-  right: -1rem;
-  bottom: -4rem;
+.case-study-page .case-study-testimonial-mark-end {
+  top: auto;
+  left: auto;
+  right: -5rem;
+  bottom: 0;
 }
 
 .case-study-page .case-study-testimonial blockquote p {
+  position: relative;
+  z-index: 1;
   margin: 0;
   color: var(--cs-body);
   font-size: 1.25rem;
@@ -11157,6 +11161,19 @@ summary {
     padding-top: 5rem;
   }
 
+  .case-study-page .case-study-testimonial-mark {
+    width: 2rem;
+    max-width: 2rem;
+  }
+
+  .case-study-page .case-study-testimonial-mark-start {
+    left: -1rem;
+  }
+
+  .case-study-page .case-study-testimonial-mark-end {
+    right: 0;
+  }
+
   .case-study-page .case-study-testimonial-image {
     position: relative;
     bottom: 0;
@@ -11273,6 +11290,11 @@ summary {
   .case-study-page .case-study-testimonial-copy {
     padding-right: 0;
     padding-left: 0;
+  }
+
+  .case-study-page .case-study-testimonial-mark-start {
+    top: -10%;
+    left: auto;
   }
 
   .case-study-page .case-study-story-card {

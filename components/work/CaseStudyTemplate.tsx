@@ -42,7 +42,7 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
             <aside className="case-study-sidebar" aria-label="Project summary">
               <CaseStudySummary title={caseStudy.problem.title} body={caseStudy.problem.body} />
               <CaseStudySummary title={caseStudy.solution.title} body={caseStudy.solution.body} />
-              <CaseStudyShareLinks slug={caseStudy.slug} title={caseStudy.title} />
+              <CaseStudyClientLinks caseStudy={caseStudy} />
             </aside>
 
             <div className="case-study-gallery" aria-label={`${caseStudy.title} media`}>
@@ -81,7 +81,9 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
         <div className="site-container case-study-testimonial-inner">
           <div className="case-study-testimonial-copy">
             <blockquote>
+              <TestimonialQuoteMark className="case-study-testimonial-mark case-study-testimonial-mark-start" />
               <p>{caseStudy.testimonial.quote}</p>
+              <TestimonialQuoteMark className="case-study-testimonial-mark case-study-testimonial-mark-end" end />
             </blockquote>
             <div className="case-study-testimonial-person">
               <strong>{caseStudy.testimonial.name}</strong>
@@ -187,41 +189,82 @@ function CaseStudySummary({ title, body }: { title: string; body: string }) {
   );
 }
 
-function CaseStudyShareLinks({ slug, title }: { slug: string; title: string }) {
-  const url = `https://www.nexubis.io/work/${slug}`;
-  const encodedUrl = encodeURIComponent(url);
-  const encodedTitle = encodeURIComponent(title);
+function CaseStudyClientLinks({ caseStudy }: { caseStudy: CaseStudy }) {
+  const linkOrder = ["Website", "LinkedIn", "X", "Facebook"];
+  const clientName = getClientName(caseStudy);
+  const links = linkOrder
+    .map((label) => caseStudy.links.find((link) => link.label === label))
+    .filter((link): link is NonNullable<typeof link> => Boolean(link));
 
   return (
-    <div className="case-study-share" aria-label="Share this case study">
-      <a href={url} aria-label="Copy case study link">
-        <ShareLinkIcon />
-      </a>
-      <a
-        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Share on LinkedIn"
-      >
-        <LinkedInIcon />
-      </a>
-      <a
-        href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Share on X"
-      >
-        <XIcon />
-      </a>
-      <a
-        href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Share on Facebook"
-      >
-        <FacebookIcon />
-      </a>
+    <div className="case-study-share" aria-label={`${caseStudy.title} links`}>
+      {links.map((link) => (
+        <a
+          key={`${link.label}-${link.href}`}
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Visit ${clientName} ${link.label === "Website" ? "website" : `on ${link.label}`}`}
+        >
+          <CaseStudyClientIcon label={link.label} />
+        </a>
+      ))}
     </div>
+  );
+}
+
+function getClientName(caseStudy: CaseStudy) {
+  const clientNames: Record<CaseStudy["slug"], string> = {
+    altify: "Altify",
+    circuit: "Circuit",
+    oxipack: "Oxipack",
+  };
+
+  return clientNames[caseStudy.slug];
+}
+
+function CaseStudyClientIcon({ label }: { label: string }) {
+  if (label === "LinkedIn") {
+    return <LinkedInIcon />;
+  }
+
+  if (label === "X") {
+    return <XIcon />;
+  }
+
+  if (label === "Facebook") {
+    return <FacebookIcon />;
+  }
+
+  return <ShareLinkIcon />;
+}
+
+function TestimonialQuoteMark({ className, end = false }: { className: string; end?: boolean }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="100%"
+      viewBox="0 0 113 91"
+      fill="none"
+      className={className}
+      aria-hidden="true"
+    >
+      {end ? (
+        <path
+          opacity="0.5"
+          d="M102.909 77.4501C95.0231 86.0438 83.0904 90.3999 67.4481 90.3999H61.8274V74.4726L66.3464 73.5629C74.0467 72.0148 79.4032 68.9695 82.2698 64.5003C83.7659 62.0929 84.6143 59.3361 84.7316 56.4999H67.4481C65.9574 56.4999 64.5277 55.9047 63.4737 54.8451C62.4196 53.7855 61.8274 52.3484 61.8274 50.8499V11.3C61.8274 5.06804 66.8691 0 73.0687 0H106.793C108.283 0 109.713 0.595261 110.767 1.65484C111.821 2.71442 112.413 4.15152 112.413 5.64999V33.9L112.397 50.3923C112.447 51.0194 113.515 65.8789 102.909 77.4501ZM11.2414 0H44.9654C46.4561 0 47.8857 0.595261 48.9398 1.65484C49.9939 2.71442 50.5861 4.15152 50.5861 5.64999V33.9L50.5692 50.3923C50.6198 51.0194 51.6877 65.8789 41.0815 77.4501C33.1957 86.0438 21.263 90.3999 5.62074 90.3999H6.86646e-05V74.4726L4.5191 73.5629C12.2194 72.0148 17.5759 68.9695 20.4424 64.5003C21.9386 62.0929 22.7869 59.3361 22.9043 56.4999H5.62074C4.13004 56.4999 2.7004 55.9047 1.64632 54.8451C0.592247 53.7855 6.86646e-05 52.3484 6.86646e-05 50.8499V11.3C6.86646e-05 5.06804 5.04182 0 11.2414 0Z"
+          fill="currentColor"
+          fillOpacity="0.5"
+        />
+      ) : (
+        <path
+          opacity="0.5"
+          d="M9.53989 12.9498C17.4257 4.35614 29.3584 0 45.0007 0H50.6213V15.9273L46.1023 16.837C38.402 18.3851 33.0455 21.4304 30.179 25.8996C28.6828 28.307 27.8345 31.0638 27.7171 33.9H45.0007C46.4914 33.9 47.921 34.4952 48.9751 35.5548C50.0292 36.6144 50.6213 38.0515 50.6213 39.55V79.0999C50.6213 85.3319 45.5796 90.3999 39.38 90.3999H5.65601C4.16531 90.3999 2.73568 89.8046 1.6816 88.7451C0.627517 87.6855 0.0353418 86.2484 0.0353418 84.7499V56.4999L0.0522039 40.0076C0.00161793 39.3805 -1.06631 24.521 9.53989 12.9498ZM101.207 90.3999H67.4833C65.9926 90.3999 64.563 89.8046 63.5089 88.7451C62.4548 87.6855 61.8627 86.2484 61.8627 84.7499V56.4999L61.8795 40.0076C61.8289 39.3805 60.761 24.521 71.3672 12.9498C79.253 4.35614 91.1857 0 106.828 0H112.449V15.9273L107.93 16.837C100.229 18.3851 94.8728 21.4304 92.0063 25.8996C90.5101 28.307 89.6618 31.0638 89.5444 33.9H106.828C108.319 33.9 109.748 34.4952 110.802 35.5548C111.856 36.6144 112.449 38.0515 112.449 39.55V79.0999C112.449 85.3319 107.407 90.3999 101.207 90.3999Z"
+          fill="currentColor"
+          fillOpacity="0.5"
+        />
+      )}
+    </svg>
   );
 }
 

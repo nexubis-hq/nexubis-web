@@ -355,7 +355,7 @@ const caseStudies: CaseStudy[] = [
         width: 2018,
         height: 2128,
       },
-      storyTitle: "Oxipack: Empowering Nexubis",
+      storyTitle: "Oxipack: Funding Nexubis",
       storyHref: "/post/oxipack-empowering-nexubis",
       storyThumbnail: "/assets/work/oxipack/story-thumbnail.avif",
     },
