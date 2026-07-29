@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { BlogPostTemplate } from "@/components/blog/BlogPostTemplate";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { getBlogPostFixtureSlugs, getPostBySlug } from "@/lib/blog/get-post-by-slug";
+import { getBlogPostStaticSlugs, getPostBySlug } from "@/lib/blog/get-post-by-slug";
 import { buildBlogPostMetadata } from "@/lib/blog/post-metadata";
 
 type BlogPostPageProps = {
@@ -12,15 +12,20 @@ type BlogPostPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return getBlogPostFixtureSlugs().map((slug) => ({
+export const dynamicParams = true;
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const slugs = await getBlogPostStaticSlugs();
+
+  return slugs.map((slug) => ({
     slug,
   }));
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) return {};
 
@@ -29,7 +34,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     notFound();

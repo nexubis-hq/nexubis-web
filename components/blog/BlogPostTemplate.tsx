@@ -1,5 +1,6 @@
 import { getRelatedPostSummaries } from "@/lib/blog/related-posts";
 import { sanitizeBlogPostHtml } from "@/lib/blog/sanitize-post-html";
+import { collectPortableTextHeadings } from "@/lib/blog/heading-ids";
 import type { BlogPost } from "@/lib/blog/types";
 import { BlogPostHeader } from "./BlogPostHeader";
 import { BlogPostMedia } from "./BlogPostMedia";
@@ -14,7 +15,10 @@ type BlogPostTemplateProps = {
 };
 
 export function BlogPostTemplate({ post }: BlogPostTemplateProps) {
-  const { html, toc } = sanitizeBlogPostHtml(post.bodyHtml);
+  const portableText = post.bodyPortableText;
+  const { html, toc } = portableText
+    ? { html: undefined, toc: collectPortableTextHeadings(portableText) }
+    : sanitizeBlogPostHtml(post.bodyHtml ?? "");
   const relatedPosts = getRelatedPostSummaries(post);
 
   return (
@@ -25,7 +29,7 @@ export function BlogPostTemplate({ post }: BlogPostTemplateProps) {
             <article className={styles.articleColumn}>
               <BlogPostHeader post={post} />
               <BlogPostMedia post={post} />
-              <BlogRichText html={html} />
+              <BlogRichText html={html} portableText={portableText} />
               <BlogShowreel
                 enabled={post.showreelEnabled}
                 url={post.showreelUrl}

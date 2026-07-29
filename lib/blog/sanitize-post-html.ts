@@ -1,10 +1,6 @@
 import * as cheerio from "cheerio";
-
-export type TableOfContentsItem = {
-  id: string;
-  text: string;
-  level: 2 | 3 | 4 | 5 | 6;
-};
+import { createHeadingId } from "@/lib/blog/heading-ids";
+import type { TableOfContentsItem } from "@/lib/blog/types";
 
 export type SanitizedPostHtml = {
   html: string;
@@ -12,24 +8,6 @@ export type SanitizedPostHtml = {
 };
 
 const INTERNAL_ORIGIN = "https://www.nexubis.io";
-
-function slugifyHeading(value: string) {
-  return value
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[’']/g, "")
-    .replace(/&/g, " and ")
-    .replace(/[^a-zA-Z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .toLowerCase();
-}
-
-function uniqueId(base: string, seen: Map<string, number>) {
-  const normalized = base || "section";
-  const count = seen.get(normalized) ?? 0;
-  seen.set(normalized, count + 1);
-  return count === 0 ? normalized : `${normalized}-${count + 1}`;
-}
 
 function rewriteHref(href: string) {
   const trimmed = href.trim();
@@ -88,7 +66,7 @@ export function sanitizeBlogPostHtml(sourceHtml: string): SanitizedPostHtml {
     const text = node.text().trim();
     if (!text) return;
 
-    const id = uniqueId(slugifyHeading(text), headingIds);
+    const id = createHeadingId(text, headingIds);
     node.attr("id", id);
     toc.push({
       id,
@@ -102,4 +80,3 @@ export function sanitizeBlogPostHtml(sourceHtml: string): SanitizedPostHtml {
     toc,
   };
 }
-

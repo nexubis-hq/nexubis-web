@@ -4,6 +4,12 @@ export type BlogCategory = {
   icon: string | null;
 };
 
+export type TableOfContentsItem = {
+  id: string;
+  text: string;
+  level: 2 | 3 | 4 | 5 | 6;
+};
+
 export type BlogPostSummary = {
   title: string;
   slug: string;
@@ -23,13 +29,19 @@ export type BlogPost = {
   author: string;
   category: string;
   categorySlug: string;
+  categoryIcon?: string | null;
   publishedAt: string;
   updatedAt?: string;
-  bodyHtml: string;
+  bodyHtml?: string;
+  bodyPortableText?: unknown[];
   thumbnail?: string | null;
+  thumbnailAlt?: string | null;
+  heroImage?: string | null;
+  heroImageAlt?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
   ogImage?: string | null;
+  canonicalOverride?: string | null;
   showreelEnabled: boolean;
   showreelUrl?: string | null;
   lottieThumbnail?: string | null;
