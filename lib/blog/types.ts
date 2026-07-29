@@ -16,6 +16,28 @@ export type BlogPostSummary = {
   featured: boolean;
 };
 
+export type BlogPost = {
+  title: string;
+  slug: string;
+  excerpt: string;
+  author: string;
+  category: string;
+  categorySlug: string;
+  publishedAt: string;
+  updatedAt?: string;
+  bodyHtml: string;
+  thumbnail?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  ogImage?: string | null;
+  showreelEnabled: boolean;
+  showreelUrl?: string | null;
+  lottieThumbnail?: string | null;
+  lottieJson?: unknown | null;
+  relatedSlugs?: string[];
+  source: "fixture" | "sanity" | "legacy";
+};
+
 export type BlogIndexData = {
   posts: BlogPostSummary[];
   categories: BlogCategory[];

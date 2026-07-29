@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AboutReel } from "@/components/AboutReel";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -74,11 +75,6 @@ const team = [
     role: "Graphic and Web Designer",
     image: "/assets/images/chloe.png",
   },
-  {
-    name: "Will",
-    role: "Head of Design",
-    image: "/assets/images/hannes.webp",
-  },
 ] as const;
 
 export const metadata: Metadata = {
@@ -131,25 +127,7 @@ export default function AboutPage() {
           </div>
 
           <div className="about-reel">
-            <img
-              src="/assets/images/reel_draft.jpg"
-              alt=""
-              width="1920"
-              height="1080"
-            />
-            <video
-              playsInline
-              autoPlay
-              muted
-              loop
-              poster="/assets/images/reel_draft.jpg"
-            >
-              <source
-                src="https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/reel.mp4"
-                type="video/mp4"
-              />
-              Your browser does not support the video tag.
-            </video>
+            <AboutReel />
           </div>
         </section>
 
@@ -202,23 +180,6 @@ export default function AboutPage() {
                 </article>
               ))}
             </div>
-          </div>
-        </section>
-
-        <section className="about-dreams-section">
-          <div className="site-container">
-            <h2>
-              <span>Empowering</span>
-              <span>Dreams.</span>
-            </h2>
-          </div>
-          <div className="about-clouds" aria-hidden="true">
-            <img src="/assets/images/clouds_1.avif" alt="" />
-            <img src="/assets/images/clouds_1.avif" alt="" />
-            <img src="/assets/images/clouds_1.avif" alt="" />
-            <img src="/assets/images/clouds_1.avif" alt="" />
-            <img src="/assets/images/clouds_1.avif" alt="" />
-            <img src="/assets/images/clouds_1.avif" alt="" />
           </div>
         </section>
       </main>

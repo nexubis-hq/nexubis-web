@@ -11347,11 +11347,10 @@ summary {
 .work-index-hero h1,
 .about-hero-copy h1,
 .about-values-heading h2,
-.about-team-heading h2,
-.about-dreams-section h2 {
+.about-team-heading h2 {
   font-family: "Helvetica Now Display", Arial, sans-serif;
   letter-spacing: 0;
-  line-height: 0.95;
+  line-height: 1.1;
 }
 
 .work-index-hero h1 {
@@ -11484,106 +11483,117 @@ summary {
 }
 
 .about-hero-section {
-  padding: clamp(8rem, 14vw, 12rem) 0 0;
+  padding: 7rem 0 0;
   background: var(--surface);
 }
 
 .about-hero-copy {
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(18rem, 0.66fr);
-  gap: clamp(2rem, 6vw, 7rem);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 1.5rem;
+  row-gap: 5rem;
   align-items: end;
 }
 
 .about-hero-copy h1 {
+  grid-column: 1 / 9;
   margin: 0;
-  max-width: 11ch;
-  font-size: clamp(4rem, 9.5vw, 9rem);
+  max-width: 52rem;
+  font-size: clamp(3.4rem, 5vw, 4.5rem);
   font-weight: 500;
 }
 
 .about-hero-copy h1 span {
+  display: block;
   color: var(--mid);
 }
 
 .about-hero-copy p {
-  margin: 0 0 0.8rem;
-  max-width: 34rem;
+  grid-column: 6 / 13;
+  margin: 0 0 1.25rem;
+  max-width: 52rem;
   color: var(--body);
-  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
-  line-height: 1.5;
+  font-size: 1.25rem;
+  line-height: 1.6;
 }
 
 .about-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
-  margin-top: clamp(3rem, 6vw, 5rem);
-  background: color-mix(in srgb, var(--black) 16%, transparent);
+  column-gap: clamp(2rem, 4vw, 4rem);
+  margin-top: 5rem;
 }
 
 .about-stat {
-  min-height: 12rem;
-  padding: clamp(1.25rem, 2vw, 2rem);
-  background: var(--surface);
+  min-height: 11rem;
+  padding-top: 2rem;
+  border-top: 1px solid color-mix(in srgb, var(--black) 15%, transparent);
+  background: transparent;
 }
 
 .about-stat strong {
   display: block;
   font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  font-size: clamp(2.65rem, 3.35vw, 3.75rem);
   font-weight: 500;
-  line-height: 0.95;
+  line-height: 1;
   letter-spacing: 0;
 }
 
 .about-stat span {
   display: block;
-  max-width: 14rem;
-  margin-top: 1.1rem;
+  max-width: 14.5rem;
+  margin-top: 0.875rem;
   color: var(--body);
-  font-size: clamp(1rem, 1.3vw, 1.2rem);
-  line-height: 1.35;
+  font-size: 1rem;
+  line-height: 1.45;
 }
 
 .about-reel {
   position: relative;
-  aspect-ratio: 16 / 9;
   width: 100%;
-  margin-top: clamp(3rem, 6vw, 5rem);
+  height: min(56.25vw, 51rem);
+  min-height: 34rem;
+  margin-top: 5rem;
   overflow: hidden;
-  background: var(--work-black);
+  background:
+    radial-gradient(circle at 52% 48%, rgb(247 247 247 / 88%) 0 15%, rgb(223 223 223 / 74%) 34%, transparent 52%),
+    linear-gradient(132deg, #5e5e5e 0%, #e6e6e6 41%, #f7f7f7 54%, #747474 100%);
 }
 
-.about-reel img,
 .about-reel video {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.about-reel video {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  top: 50%;
+  width: clamp(20rem, 36vw, 30rem);
+  height: clamp(20rem, 36vw, 30rem);
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  object-position: 50% 50%;
 }
 
 .about-values-section {
-  padding: clamp(5rem, 10vw, 9rem) 0;
+  padding: 7rem 0;
   background: var(--work-black);
   color: #fff;
 }
 
 .about-values-heading {
-  max-width: 58rem;
+  max-width: 59rem;
 }
 
 .about-eyebrow {
   display: inline-flex;
   align-items: center;
-  margin-bottom: 1.5rem;
-  color: color-mix(in srgb, #fff 76%, transparent);
-  font-size: 0.875rem;
+  gap: 0.35rem;
+  margin-bottom: 1.4rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 4%);
+  color: rgb(255 255 255 / 82%);
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   line-height: 1;
@@ -11592,94 +11602,119 @@ summary {
 
 .about-values-heading h2 {
   margin: 0;
-  font-size: clamp(2.6rem, 6vw, 6.4rem);
+  font-size: clamp(2.6rem, 4.15vw, 3.75rem);
   font-weight: 500;
+  color: #fff !important;
 }
 
 .about-values-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  margin-top: clamp(2.5rem, 5vw, 5rem);
-  background: color-mix(in srgb, #fff 18%, transparent);
+  gap: 1rem;
+  margin-top: 5rem;
+  background: transparent;
 }
 
 .about-value-card {
-  min-height: 18rem;
-  padding: clamp(1.5rem, 2.8vw, 2.5rem);
-  background: var(--work-black);
+  display: grid;
+  grid-template-rows: 4.625rem minmax(16rem, 1fr);
+  padding: 0;
+  background: transparent;
 }
 
 .about-value-card h3 {
   margin: 0;
   font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-size: clamp(1.35rem, 2vw, 2rem);
-  font-weight: 500;
-  line-height: 1;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
   letter-spacing: 0;
+  padding: 1.25rem 0.875rem;
+  border: 1px solid rgb(255 255 255 / 5%);
+  border-radius: 6px;
+  background: rgb(245 245 245 / 2%);
+  color: #fff;
+}
+
+.about-page .about-value-card h3 {
+  color: #fff !important;
 }
 
 .about-value-card p {
-  margin: clamp(3rem, 6vw, 6rem) 0 0;
-  color: color-mix(in srgb, #fff 74%, transparent);
+  display: flex;
+  align-items: flex-end;
+  min-height: 16rem;
+  margin: 0.5rem 0 0;
+  padding: 1.25rem 0.875rem;
+  border: 1px solid rgb(255 255 255 / 5%);
+  border-radius: 6px;
+  background: rgb(245 245 245 / 2%);
+  color: rgb(255 255 255 / 88%);
   font-size: 1rem;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .about-team-section {
-  padding: clamp(5rem, 10vw, 9rem) 0;
+  padding: 7rem 0;
   background: #fff;
 }
 
 .about-team-heading {
-  max-width: 58rem;
+  max-width: 52rem;
   margin: 0 auto;
   text-align: center;
 }
 
 .about-team-heading h2 {
   margin: 0;
-  font-size: clamp(2.8rem, 7vw, 7.5rem);
+  font-size: clamp(2.8rem, 4.15vw, 3.75rem);
   font-weight: 500;
 }
 
 .about-team-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1rem, 2vw, 1.5rem);
-  margin-top: clamp(3rem, 6vw, 5rem);
+  gap: 1.5rem;
+  margin-top: 5rem;
 }
 
 .about-team-card {
   position: relative;
   isolation: isolate;
-  aspect-ratio: 1 / 1.18;
-  min-height: 28rem;
+  aspect-ratio: 401 / 448;
+  min-height: 0;
   overflow: hidden;
-  background: var(--primary);
+  background: #f5f5f5;
   color: #fff;
 }
 
-.about-team-card-copy {
+.about-page .about-team-card-copy {
   position: absolute;
-  left: clamp(1.2rem, 2vw, 1.75rem);
-  right: clamp(1.2rem, 2vw, 1.75rem);
-  bottom: clamp(1.2rem, 2vw, 1.75rem);
+  left: 5%;
+  right: 5%;
+  bottom: 5%;
   z-index: 3;
+  min-height: 5.7rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: var(--primary);
+  color: var(--surface);
 }
 
-.about-team-card-copy h3 {
+.about-page .about-team-card-copy h3 {
   margin: 0;
   font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-size: clamp(1.8rem, 3vw, 3rem);
+  font-size: 1.35rem;
   font-weight: 500;
-  line-height: 0.95;
+  line-height: 1;
   letter-spacing: 0;
+  color: var(--surface);
 }
 
-.about-team-card-copy p {
+.about-page .about-team-card-copy p {
   margin: 0.5rem 0 0;
-  font-size: 1rem;
+  color: var(--surface);
+  font-size: 0.875rem;
   line-height: 1.25;
 }
 
@@ -11702,71 +11737,7 @@ summary {
   object-position: center top;
 }
 
-.about-dreams-section {
-  position: relative;
-  min-height: clamp(34rem, 70vw, 58rem);
-  overflow: hidden;
-  background: var(--surface);
-}
-
-.about-dreams-section h2 {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  margin: 0;
-  padding: clamp(4rem, 9vw, 7rem) 0;
-  font-size: clamp(4rem, 14vw, 13rem);
-  font-weight: 500;
-}
-
-.about-dreams-section h2 span:last-child {
-  justify-self: end;
-}
-
-.about-clouds {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.about-clouds img {
-  position: absolute;
-  width: clamp(14rem, 28vw, 30rem);
-  opacity: 0.74;
-}
-
-.about-clouds img:nth-child(1) {
-  left: -4rem;
-  top: 30%;
-}
-
-.about-clouds img:nth-child(2) {
-  left: 14%;
-  bottom: 8%;
-}
-
-.about-clouds img:nth-child(3) {
-  left: 36%;
-  top: 18%;
-}
-
-.about-clouds img:nth-child(4) {
-  right: 18%;
-  bottom: 6%;
-}
-
-.about-clouds img:nth-child(5) {
-  right: -5rem;
-  top: 28%;
-}
-
-.about-clouds img:nth-child(6) {
-  left: 58%;
-  top: 52%;
-}
-
 @media (max-width: 991px) {
-  .work-index-grid,
   .about-values-grid,
   .about-team-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -11774,64 +11745,64 @@ summary {
 
   .about-hero-copy {
     grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .about-hero-copy h1,
+  .about-hero-copy p {
+    grid-column: auto;
   }
 
   .about-stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 2rem;
   }
 }
 
 @media (max-width: 767px) {
-  .work-index-grid,
   .about-values-grid,
   .about-team-grid,
   .about-stats-grid {
     grid-template-columns: 1fr;
   }
 
-  .work-index-hero {
-    padding-top: 7rem;
-  }
-
-  .work-index-card-body {
-    padding-top: 0.85rem;
-  }
-
   .about-hero-section {
-    padding-top: 7rem;
+    padding-top: 5rem;
+  }
+
+  .about-hero-copy h1 {
+    max-width: 100%;
+    font-size: clamp(3rem, 13vw, 4.5rem);
+  }
+
+  .about-hero-copy p {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .about-stats-grid {
+    margin-top: 3.5rem;
   }
 
   .about-stat {
-    min-height: 9rem;
+    min-height: 8rem;
   }
 
   .about-reel {
-    aspect-ratio: 4 / 3;
+    height: 30rem;
+    min-height: 0;
   }
 
   .about-value-card {
-    min-height: 14rem;
+    grid-template-rows: auto auto;
   }
 
   .about-value-card p {
-    margin-top: 2rem;
+    min-height: 12rem;
   }
 
   .about-team-card {
-    min-height: 24rem;
-  }
-
-  .about-dreams-section {
-    min-height: 28rem;
-  }
-
-  .about-dreams-section h2 {
-    gap: 0.2em;
-    padding-top: 4rem;
-  }
-
-  .about-dreams-section h2 span:last-child {
-    justify-self: start;
+    aspect-ratio: 1 / 1.12;
   }
 }
 

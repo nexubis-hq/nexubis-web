@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "blog:generate-index": "tsx scripts/generate-blog-index-data.ts",
+    "blog:generate-fixtures": "tsx scripts/generate-blog-post-fixtures.ts",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
