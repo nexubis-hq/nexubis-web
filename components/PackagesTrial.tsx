@@ -7,7 +7,7 @@ const benefitColumns = [
     "A benchmark against the competitors buyers weigh you against",
   ],
   [
-    "The first thing to fix, explained in a short personal video",
+    "The first things to fix, clearly explained",
     "Free, on the spot, and no call required",
   ],
 ];
