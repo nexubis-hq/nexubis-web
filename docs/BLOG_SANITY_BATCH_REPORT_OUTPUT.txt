@@ -1,68 +1,96 @@
 Blog Sanity Batch Report
 
-Last updated: 2026-07-29T18:43:00.000Z
-Batch ID: batch-2026-07-29-archive-06
+Last updated: 2026-07-29T19:05:00.000Z
+Batch ID: batch-2026-07-29-archive-07
 
-Preflight
+Batch 06 Commit And Deployment
 
-- /blog before Batch 06: 88 unique cards, 54 Sanity cards, 34 generated fallback cards.
-- Authenticated command path confirmed: npm run blog:migrate-batch -> sanity exec scripts/migrate-blog-sanity-batch.ts --with-user-token --.
-- Published Sanity summaries override generated records by exact slug; drafts, versions and release documents remain excluded.
-- All 54 pre-batch Sanity cards used cdn.sanity.io thumbnails; all six filter/category icons used Sanity assets; shared Blog interface graphics contained no Webflow dependency.
-- No public/client-side Sanity write token was found; only public project/dataset IDs are exposed.
-- Manifest preflight marked 54 posts complete and 34 pending; no completed manifest entries were reset, recreated or reordered.
+- Batch 06 commit: 260db6f9e82172329a35fbcb5d1bdd215393ffbf.
+- Branch: shannah.
+- Push status: pushed to origin/shannah.
+- Production deployment: dpl_13ebu2sGdpSCQk28Brr5Fo4wL4sZ, Ready, aliased to https://nexubis.vercel.app.
+- Production commit SHA was not exposed by Vercel inspect or response headers, but deployed behavior reflected Batch 06 with 88 cards, 64 Sanity cards and 24 fallback cards before Batch 07.
 
-Selected Posts
+Sanity Counts And 48-Document Explanation
 
-- 54. Resentment Is a Symptom of Poor Process | resentment-is-a-symptom-of-poor-process | https://www.nexubis.io/post/resentment-is-a-symptom-of-poor-process | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 55. Sell the Slice, Not the Sauce | sell-the-slice-not-the-sauce | https://www.nexubis.io/post/sell-the-slice-not-the-sauce | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 56. Just Start the Damn Thing | just-start-the-damn-thing | https://www.nexubis.io/post/just-start-the-damn-thing | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 58. Don’t Turn Into a Robot | dont-turn-into-a-robot | https://www.nexubis.io/post/dont-turn-into-a-robot | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 59. The Butterfly Effect | the-butterfly-effect | https://www.nexubis.io/post/the-butterfly-effect | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 60. Fire Faster. Promote Faster. | fire-faster-promote-faster | https://www.nexubis.io/post/fire-faster-promote-faster | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 61. Scale Responsibly | scale-responsibly | https://www.nexubis.io/post/scale-responsibly | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 62. The Secret Third Option | the-secret-third-option | https://www.nexubis.io/post/the-secret-third-option | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 63. The Biggest Risk? Playing It Safe | the-biggest-risk-playing-it-safe | https://www.nexubis.io/post/the-biggest-risk-playing-it-safe | Hannes Oosthuizen | Founders Diary | Fri Sep 05 2025 11:08:10 GMT+0000
-- 64. Press Pause | press-pause | https://www.nexubis.io/post/press-pause | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
+- Published post documents before Batch 07: 64.
+- Draft post documents: 0.
+- Author documents: 1.
+- Category documents: 6.
+- Version/release documents: 0.
+- Other schema documents before Batch 07: 70 sanity.imageAsset documents.
+- Published post slugs: 64 unique, 0 duplicates.
+- The earlier 48 valid documents output was validator status, not Blog post count: 48 documents had no warnings, 23 had warnings, 71 schema documents were validated, and there were 0 errors.
 
-Structured-Field Whitespace
+Position 57
 
-- Selected Batch 06 source structured fields had no accidental leading or trailing whitespace.
-- Existing narrow normalisation remained limited to title, author name, category title, excerpt, SEO title and SEO description.
+- Title: Rethinking the Nexubis Trial.
+- Slug: rethinking-the-nexubis-trial.
+- Status: complete.
+- Batch: priority-3c2.
+- Published Sanity ID: post-rethinking-the-nexubis-trial.
+- Draft/archive: false / false.
+- Body: non-empty.
+- Source conflict: none.
+- Route: https://nexubis.vercel.app/post/rethinking-the-nexubis-trial returned HTTP 200.
+- Conclusion: legitimately skipped by Batch 06 because it was already complete.
 
-Publication Results
+Manifest Reconciliation
+
+- Inventory records: 88.
+- Manifest records: 88.
+- Complete before Batch 07: 64.
+- Pending before Batch 07: 24.
+- Validation-failed: 0.
+- Duplicate manifest slugs: 0.
+- Missing inventory slugs: 0.
+- Extra manifest slugs: 0.
+- Published Sanity slugs missing from manifest: 0.
+- Completed manifest slugs missing from Sanity: 0.
+
+Batch 07 Selection
+
+- 65. Manifestation: From Impossible to Probable | manifestation-from-impossible-to-probable | https://www.nexubis.io/post/manifestation-from-impossible-to-probable
+- 66. Stop Selling Time. Start Delivering Value. | stop-selling-time-start-delivering-value | https://www.nexubis.io/post/stop-selling-time-start-delivering-value
+- 67. The Nexubis Referral Program | the-nexubis-referral-program | https://www.nexubis.io/post/the-nexubis-referral-program
+- 68. Overcoming Imposter Syndrome | overcoming-imposter-syndrome | https://www.nexubis.io/post/overcoming-imposter-syndrome
+- 69. Dragonborn | dragonborn | https://www.nexubis.io/post/dragonborn
+- 70. Building a Leadership Team | building-a-leadership-team | https://www.nexubis.io/post/building-a-leadership-team
+- 71. Not Everyone Wants the Gold Bar | not-everyone-wants-the-gold-bar | https://www.nexubis.io/post/not-everyone-wants-the-gold-bar
+- 72. The Process or People Problem | the-process-or-people-problem | https://www.nexubis.io/post/the-process-or-people-problem
+- 73. Most of My Job Sucks | most-of-my-job-sucks | https://www.nexubis.io/post/most-of-my-job-sucks
+- 74. Empowering Clients | empowering-clients | https://www.nexubis.io/post/empowering-clients
+
+Batch 07 Results
 
 - Drafts created: drafts.post-[exact-slug] for all ten selected posts.
 - Posts published: all ten selected posts.
 - Posts left as drafts: none.
-- Authors/categories: reused author-hannes-oosthuizen and category-founders-diary.
-- Portable Text preserved expected paragraphs, headings, lists, blockquotes and links per source. Counts are recorded in docs/BLOG_SANITY_BATCH_REPORT.md.
-- Excerpt/SEO-description normalisation: excerpts and SEO descriptions are within configured limits; SEO title warnings remained non-blocking.
-- Media: 30 mappings, 11 uploaded assets, 19 reused mappings/assets. All thumbnails and OG images now use Sanity assets.
-- Lottie/showreel: not present for the ten selected posts.
-
-Audits
-
+- Authors/categories reused: author-hannes-oosthuizen; category-founders-diary, category-company and category-empowering-dreams.
+- Structured whitespace: trailing source-title whitespace was removed only for Manifestation: From Impossible to Probable.
+- Portable Text: preserved headings, paragraphs, list items, blockquotes and links. Counts are recorded in docs/BLOG_SANITY_BATCH_REPORT.md.
+- Excerpt/SEO-description normalisation: all excerpts <= 300 chars and SEO descriptions <= 170 chars.
+- Media: 30 mappings, 12 uploaded assets, 18 reused mappings/assets.
+- Lottie/showreel: not present for selected posts.
 - Stored-data Webflow audit: zero selected stored Webflow URLs.
-- Blog DOM/hydration audit: 88 unique cards, 64 Sanity cards, 24 generated fallback cards. All ten selected cards use Sanity thumbnails and contain no Webflow URL.
-- Rendered route/network audit: every selected route returned 200, contained zero Webflow URLs, made zero Webflow requests, and had no console/page errors.
-- Related-post media audit: selected routes rendered no Webflow related-post media.
-- Exact slug/canonical verification: exact /post/[slug] path preserved; canonical remains https://www.nexubis.io/post/[exact-slug].
-- Public route results: all 64 completed routes return HTTP 200.
-- Blog-card results: exactly one selected card per slug, Sanity-sourced, no duplicates.
+- Blog DOM/hydration audit: 88 cards, 74 Sanity cards, 14 fallback cards; selected card DOM has zero Webflow URLs.
+- Route/network audit: selected routes returned 200, made zero Webflow requests, contained zero Webflow URLs, and had no console/page errors.
+- Related-post audit: selected routes rendered no Webflow related-post media.
+- Exact slug/canonical: exact /post/[slug] paths preserved; canonicals remain https://www.nexubis.io/post/[exact-slug].
+- Public route/card results: all 74 completed routes return 200; exactly one selected card per slug.
 
 Counts And Idempotency
 
-- Previous source split: 54 Sanity / 34 generated fallback.
-- New source split: 64 Sanity / 24 generated fallback.
-- Remaining generated fallback count: 24.
-- Verify-only/idempotency passed with no duplicate posts, cards, authors, categories, references, Portable Text blocks, unnecessary asset uploads, slug changes or category icon regressions.
+- Previous source split: 64 Sanity / 24 generated fallback.
+- New source split: 74 Sanity / 14 generated fallback.
+- Remaining generated fallback count: 14.
+- Verify-only passed with no duplicate posts, authors, categories, references, cards, repeated Portable Text blocks, changed slugs, unnecessary duplicate uploads or category-icon regressions.
 
 Validation Commands
 
-- Batch dry-run: passed.
+- Batch 07 dry-run: passed.
 - Batch execute/publish: passed.
-- Sanity document validation: passed, 48 valid documents, 0 errors, 23 non-blocking SEO-title warnings.
+- Sanity document validation: passed, 0 errors, 25 non-blocking SEO-title warnings.
 - npm run lint: passed with 29 existing warnings and 0 errors.
 - npm run typecheck: passed.
 - npm run test: passed, 35 files / 270 tests.
@@ -71,5 +99,5 @@ Validation Commands
 Remaining Work
 
 - Failed posts: 0.
-- Posts requiring repair: none for Batch 06.
-- Stop after batch-2026-07-29-archive-06; Batch 07 not started.
+- Posts requiring repair: none for Batch 07.
+- Stop after batch-2026-07-29-archive-07; Batch 08 not started.
