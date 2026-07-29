@@ -26,6 +26,10 @@ export const OXIPACK_CASE_URL = "/work/oxipack";
 // "Learn more" micro-CTAs on the Solutions accordion route to contact for now.
 export const LEARN_MORE_URL = CONTACT_URL;
 
+// Main Nexubis agency showreel.
+export const NEXUBIS_SHOWREEL_URL =
+  "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/nexubis-showreel-2026-07.mp4";
+
 /**
  * Feature flag for everything Scorecard-related (hero transitional CTA + support
  * line, the full lead-generator block, the header link, and the footer link).

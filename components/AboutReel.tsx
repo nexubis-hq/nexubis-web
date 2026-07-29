@@ -1,3 +1,5 @@
+import { NEXUBIS_SHOWREEL_URL } from "@/lib/site-config";
+
 export function AboutReel() {
   return (
     <video
@@ -9,7 +11,7 @@ export function AboutReel() {
       poster="/assets/images/about-reel-poster.jpg"
     >
       <source
-        src="https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/reel.mp4"
+        src={NEXUBIS_SHOWREEL_URL}
         type="video/mp4"
       />
       Your browser does not support the video tag.

@@ -25,6 +25,7 @@ import {
 } from "@/components/vignettes/GuideVignettes";
 import {
   BOOKING_URL,
+  NEXUBIS_SHOWREEL_URL,
   SCORECARD_URL,
   OXIPACK_CASE_URL,
   LEARN_MORE_URL,
@@ -300,7 +301,7 @@ function Hero() {
                   poster="/assets/images/reel_draft.jpg"
                 >
                   <source
-                    src="https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/reel.mp4"
+                    src={NEXUBIS_SHOWREEL_URL}
                     type="video/mp4"
                   />
                 </video>
