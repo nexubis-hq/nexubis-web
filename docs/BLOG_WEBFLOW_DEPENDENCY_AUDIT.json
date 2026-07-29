@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-29T16:36:27.985Z",
+  "generatedAt": "2026-07-29T17:01:45.592Z",
   "webflowPatterns": [
     "cdn.prod.website-files.com",
     "assets-global.website-files.com",
@@ -11,7 +11,7 @@
   ],
   "selected": [
     {
-      "slug": "the-nexubis-effect",
+      "slug": "the-power-of-linkedin",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -24,7 +24,7 @@
       }
     },
     {
-      "slug": "ai-is-not-a-phase-its-an-era",
+      "slug": "how-to-not-suck-at-job-applications",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -37,7 +37,7 @@
       }
     },
     {
-      "slug": "metamorphosis",
+      "slug": "momentum-fever",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -50,7 +50,7 @@
       }
     },
     {
-      "slug": "beyond-the-eu30-000",
+      "slug": "keep-positioning-yourself",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -63,7 +63,7 @@
       }
     },
     {
-      "slug": "the-cost-of-refusing-to-adapt",
+      "slug": "new-years-resolutions",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -76,7 +76,7 @@
       }
     },
     {
-      "slug": "the-gold-bar-theory",
+      "slug": "goals-vs-movement",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -89,7 +89,7 @@
       }
     },
     {
-      "slug": "partnership-over-transaction",
+      "slug": "2025-in-retrospect",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -102,7 +102,7 @@
       }
     },
     {
-      "slug": "impact-builds-network",
+      "slug": "long-term-greed",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -115,7 +115,7 @@
       }
     },
     {
-      "slug": "just-do-it",
+      "slug": "dick-proves-the-agency-stereotype",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -128,7 +128,7 @@
       }
     },
     {
-      "slug": "my-1st-biggest-mistake",
+      "slug": "striving-for-culinary-perfection",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -143,7 +143,7 @@
   ],
   "counts": {
     "inventory": 88,
-    "complete": 14,
-    "pending": 74
+    "complete": 24,
+    "pending": 64
   }
 }

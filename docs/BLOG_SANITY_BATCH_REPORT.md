@@ -1,7 +1,7 @@
 # Blog Sanity Batch Report
 
-Last updated: 2026-07-29T16:36:27.984Z
-Batch ID: batch-2026-07-29-archive-01
+Last updated: 2026-07-29T17:01:45.591Z
+Batch ID: batch-2026-07-29-archive-02
 
 ## Task 3C2 Preflight
 
@@ -39,58 +39,24 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 
 ## Selected Posts
 
-- 1. The Nexubis Effect | the-nexubis-effect | https://www.nexubis.io/post/the-nexubis-effect
-- 5. AI Is Not a Phase. It's an Era. | ai-is-not-a-phase-its-an-era | https://www.nexubis.io/post/ai-is-not-a-phase-its-an-era
-- 6. Metamorphosis | metamorphosis | https://www.nexubis.io/post/metamorphosis
-- 7. Beyond the €30 000  | beyond-the-eu30-000 | https://www.nexubis.io/post/beyond-the-eu30-000
-- 8. The Cost of Refusing to Adapt | the-cost-of-refusing-to-adapt | https://www.nexubis.io/post/the-cost-of-refusing-to-adapt
-- 9. The Gold Bar Theory | the-gold-bar-theory | https://www.nexubis.io/post/the-gold-bar-theory
-- 10. Partnership Over Transaction | partnership-over-transaction | https://www.nexubis.io/post/partnership-over-transaction
-- 11. Impact Builds Network | impact-builds-network | https://www.nexubis.io/post/impact-builds-network
-- 12. Just Do It | just-do-it | https://www.nexubis.io/post/just-do-it
-- 13. My 1st Biggest Mistake | my-1st-biggest-mistake | https://www.nexubis.io/post/my-1st-biggest-mistake
+- 14. The Power of LinkedIn | the-power-of-linkedin | https://www.nexubis.io/post/the-power-of-linkedin
+- 15. How to not suck at job applications | how-to-not-suck-at-job-applications | https://www.nexubis.io/post/how-to-not-suck-at-job-applications
+- 16. Momentum Fever | momentum-fever | https://www.nexubis.io/post/momentum-fever
+- 17. Keep positioning yourself | keep-positioning-yourself | https://www.nexubis.io/post/keep-positioning-yourself
+- 18. New Year’s Resolutions | new-years-resolutions | https://www.nexubis.io/post/new-years-resolutions
+- 19. Goals vs. Movement | goals-vs-movement | https://www.nexubis.io/post/goals-vs-movement
+- 20. 2025 In Retrospect | 2025-in-retrospect | https://www.nexubis.io/post/2025-in-retrospect
+- 21. Long-Term Greed | long-term-greed | https://www.nexubis.io/post/long-term-greed
+- 22. Dick Proves the Agency Stereotype | dick-proves-the-agency-stereotype | https://www.nexubis.io/post/dick-proves-the-agency-stereotype
+- 23. Striving for “Culinary” Perfection | striving-for-culinary-perfection | https://www.nexubis.io/post/striving-for-culinary-perfection
 
 ## Results
 
-### The Nexubis Effect
+### The Power of LinkedIn
 
-- Slug: `the-nexubis-effect`
-- Draft: `drafts.post-the-nexubis-effect`
-- Published: `post-the-nexubis-effect`
-- Author/category: `author-hannes-oosthuizen` / `category-company`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-
-### AI Is Not a Phase. It's an Era.
-
-- Slug: `ai-is-not-a-phase-its-an-era`
-- Draft: `drafts.post-ai-is-not-a-phase-its-an-era`
-- Published: `post-ai-is-not-a-phase-its-an-era`
-- Author/category: `author-hannes-oosthuizen` / `category-ai-x-nexubis`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-
-### Metamorphosis
-
-- Slug: `metamorphosis`
-- Draft: `drafts.post-metamorphosis`
-- Published: `post-metamorphosis`
+- Slug: `the-power-of-linkedin`
+- Draft: `drafts.post-the-power-of-linkedin`
+- Published: `post-the-power-of-linkedin`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -103,11 +69,28 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
 
-### Beyond the €30 000 
+### How to not suck at job applications
 
-- Slug: `beyond-the-eu30-000`
-- Draft: `drafts.post-beyond-the-eu30-000`
-- Published: `post-beyond-the-eu30-000`
+- Slug: `how-to-not-suck-at-job-applications`
+- Draft: `drafts.post-how-to-not-suck-at-job-applications`
+- Published: `post-how-to-not-suck-at-job-applications`
+- Author/category: `author-hannes-oosthuizen` / `category-for-professionals`
+- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
+- Excerpt: 0 -> 0
+- SEO description: 0 -> 0
+- Media records: 0
+- Lottie: not present; Webflow URLs: 0
+- Validation errors: none
+- Route verified: true
+- Blog card verified: true
+- Stored zero-Webflow check: passed
+- Rendered zero-Webflow verified: true
+
+### Momentum Fever
+
+- Slug: `momentum-fever`
+- Draft: `drafts.post-momentum-fever`
+- Published: `post-momentum-fever`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -120,11 +103,11 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
 
-### The Cost of Refusing to Adapt
+### Keep positioning yourself
 
-- Slug: `the-cost-of-refusing-to-adapt`
-- Draft: `drafts.post-the-cost-of-refusing-to-adapt`
-- Published: `post-the-cost-of-refusing-to-adapt`
+- Slug: `keep-positioning-yourself`
+- Draft: `drafts.post-keep-positioning-yourself`
+- Published: `post-keep-positioning-yourself`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -137,11 +120,11 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
 
-### The Gold Bar Theory
+### New Year’s Resolutions
 
-- Slug: `the-gold-bar-theory`
-- Draft: `drafts.post-the-gold-bar-theory`
-- Published: `post-the-gold-bar-theory`
+- Slug: `new-years-resolutions`
+- Draft: `drafts.post-new-years-resolutions`
+- Published: `post-new-years-resolutions`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -154,11 +137,11 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
 
-### Partnership Over Transaction
+### Goals vs. Movement
 
-- Slug: `partnership-over-transaction`
-- Draft: `drafts.post-partnership-over-transaction`
-- Published: `post-partnership-over-transaction`
+- Slug: `goals-vs-movement`
+- Draft: `drafts.post-goals-vs-movement`
+- Published: `post-goals-vs-movement`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -171,11 +154,11 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
 
-### Impact Builds Network
+### 2025 In Retrospect
 
-- Slug: `impact-builds-network`
-- Draft: `drafts.post-impact-builds-network`
-- Published: `post-impact-builds-network`
+- Slug: `2025-in-retrospect`
+- Draft: `drafts.post-2025-in-retrospect`
+- Published: `post-2025-in-retrospect`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -188,11 +171,11 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
 
-### Just Do It
+### Long-Term Greed
 
-- Slug: `just-do-it`
-- Draft: `drafts.post-just-do-it`
-- Published: `post-just-do-it`
+- Slug: `long-term-greed`
+- Draft: `drafts.post-long-term-greed`
+- Published: `post-long-term-greed`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -205,11 +188,28 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
 
-### My 1st Biggest Mistake
+### Dick Proves the Agency Stereotype
 
-- Slug: `my-1st-biggest-mistake`
-- Draft: `drafts.post-my-1st-biggest-mistake`
-- Published: `post-my-1st-biggest-mistake`
+- Slug: `dick-proves-the-agency-stereotype`
+- Draft: `drafts.post-dick-proves-the-agency-stereotype`
+- Published: `post-dick-proves-the-agency-stereotype`
+- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
+- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
+- Excerpt: 0 -> 0
+- SEO description: 0 -> 0
+- Media records: 0
+- Lottie: not present; Webflow URLs: 0
+- Validation errors: none
+- Route verified: true
+- Blog card verified: true
+- Stored zero-Webflow check: passed
+- Rendered zero-Webflow verified: true
+
+### Striving for “Culinary” Perfection
+
+- Slug: `striving-for-culinary-perfection`
+- Draft: `drafts.post-striving-for-culinary-perfection`
+- Published: `post-striving-for-culinary-perfection`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0

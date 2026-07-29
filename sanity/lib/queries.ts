@@ -73,3 +73,16 @@ export const authorsQuery = groq`
 export const categoriesQuery = groq`
   *[_type == "category"] | order(title asc)
 `;
+
+export const allBlogCategoryIconsQuery = groq`
+  *[
+    _type == "category" &&
+    defined(slug.current) &&
+    !(_id in path("drafts.**")) &&
+    !(_id in path("versions.**"))
+  ] {
+    title,
+    "slug": slug.current,
+    icon
+  }
+`;

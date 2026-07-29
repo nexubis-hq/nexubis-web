@@ -549,6 +549,49 @@ function lottieWebflowUrls(value: unknown) {
   return [...urls];
 }
 
+async function migrateSharedCategoryIcons(
+  client: ReturnType<typeof getCliClient>,
+  sourceCategories: CsvRecord[],
+  execute: boolean,
+) {
+  const media: MediaMapping[] = [];
+  const categories = sourceCategories
+    .filter((category) => category.Draft !== "true" && category.Archived !== "true" && category.Slug && category.Icon)
+    .sort((a, b) => a.Name.localeCompare(b.Name));
+
+  for (const category of categories) {
+    const categoryId = `category-${category.Slug}`;
+    const icon = await uploadImage(
+      client,
+      `category-${category.Slug}`,
+      category.Icon,
+      "category.icon",
+      category.Name,
+      media,
+      execute,
+    );
+
+    if (!execute) continue;
+
+    await client.createIfNotExists({
+      _id: categoryId,
+      _type: "category",
+      title: category.Name,
+      slug: { _type: "slug", current: category.Slug },
+    });
+    await client
+      .patch(categoryId)
+      .set({
+        title: category.Name,
+        slug: { _type: "slug", current: category.Slug },
+        ...(icon ? { icon } : {}),
+      })
+      .commit();
+  }
+
+  return media;
+}
+
 function loadManifest(): Manifest {
   if (existsSync(MANIFEST_PATH)) return JSON.parse(readFileSync(MANIFEST_PATH, "utf8")) as Manifest;
   const posts = (generatedPosts as Array<{ title: string; slug: string }>).map((post, index) => ({
@@ -808,10 +851,11 @@ async function importPost(
   };
 }
 
-function upsertMediaMappings(results: BatchResult[]) {
+function upsertMediaMappings(results: BatchResult[], sharedMedia: MediaMapping[] = []) {
   let existing: MediaMapping[] = [];
   if (existsSync(MEDIA_MAPPING_PATH)) existing = JSON.parse(readFileSync(MEDIA_MAPPING_PATH, "utf8")) as MediaMapping[];
   const byKey = new Map(existing.map((item) => [`${item.slug}:${item.field}:${item.sourceUrl}`, item]));
+  for (const mapping of sharedMedia) byKey.set(`${mapping.slug}:${mapping.field}:${mapping.sourceUrl}`, mapping);
   for (const result of results) {
     for (const mapping of result.media) byKey.set(`${mapping.slug}:${mapping.field}:${mapping.sourceUrl}`, mapping);
   }
@@ -960,6 +1004,9 @@ async function main() {
   const sourcePosts = parseCsv(readFileSync(BLOG_CSV, "utf8"));
   const sourceCategories = parseCsv(readFileSync(CATEGORIES_CSV, "utf8"));
   const manifest = loadManifest();
+  const sharedCategoryMedia = args.verifyOnly || args.finalAudit
+    ? []
+    : await migrateSharedCategoryIcons(client, sourceCategories, args.execute);
   const existingSanity = await client.fetch<string[]>(
     '*[_type == "post" && defined(slug.current) && !(_id in path("drafts.**"))].slug.current',
   );
@@ -1018,7 +1065,7 @@ async function main() {
     }
   }
 
-  if (args.execute) upsertMediaMappings(results);
+  if (args.execute) upsertMediaMappings(results, sharedCategoryMedia);
   writeManifest(manifest);
 
   if (args.verifyOnly || args.publish) {

@@ -1,81 +1,113 @@
 NEXUBIS BLOG SANITY MIGRATION BATCH REPORT
-Batch ID: batch-2026-07-29-archive-01
+Batch ID: batch-2026-07-29-archive-02
 
-Status: COMPLETED WITH ONE NON-BLOCKING PREFETCH WARNING
+Status: COMPLETED
 
-Authentication correction:
-- Previous package command implementation: no blog:migrate-batch script existed in package.json.
-- Previous direct run used npx tsx scripts/migrate-blog-sanity-batch.ts, which allowed public reads but did not run under the Sanity CLI user-token context for mutations.
-- The importer itself already used getCliClient from sanity/cli with API version 2026-07-29 for document mutations, asset uploads, publishing and verification reads.
-- Working priority importers used the same getCliClient pattern, but were run in the proper Sanity CLI context.
-- package.json now runs:
+Preflight:
+- /blog returned 88 unique cards before Batch 02.
+- Starting source split was 14 Sanity cards / 74 generated fallback cards.
+- All 14 existing Sanity post routes returned 200.
+- The authenticated package command still invokes:
   sanity exec scripts/migrate-blog-sanity-batch.ts --with-user-token --
-- Intended reusable command remains:
-  npm run blog:migrate-batch -- --batch-size=10 --execute --publish
-
-Authenticated write test:
-- Passed.
-- Created and immediately deleted deterministic document:
-  migration-auth-check-blog-batch-2026-07-29-archive-01
-- No token was printed or stored.
+- No public/client-side Sanity write token was found.
+- Existing manifest marked 14 posts complete.
 
 Selected and published posts:
-1. the-nexubis-effect -> post-the-nexubis-effect
-2. ai-is-not-a-phase-its-an-era -> post-ai-is-not-a-phase-its-an-era
-3. metamorphosis -> post-metamorphosis
-4. beyond-the-eu30-000 -> post-beyond-the-eu30-000
-5. the-cost-of-refusing-to-adapt -> post-the-cost-of-refusing-to-adapt
-6. the-gold-bar-theory -> post-the-gold-bar-theory
-7. partnership-over-transaction -> post-partnership-over-transaction
-8. impact-builds-network -> post-impact-builds-network
-9. just-do-it -> post-just-do-it
-10. my-1st-biggest-mistake -> post-my-1st-biggest-mistake
+1. The Power of LinkedIn | the-power-of-linkedin | https://www.nexubis.io/post/the-power-of-linkedin
+2. How to not suck at job applications | how-to-not-suck-at-job-applications | https://www.nexubis.io/post/how-to-not-suck-at-job-applications
+3. Momentum Fever | momentum-fever | https://www.nexubis.io/post/momentum-fever
+4. Keep positioning yourself | keep-positioning-yourself | https://www.nexubis.io/post/keep-positioning-yourself
+5. New Year’s Resolutions | new-years-resolutions | https://www.nexubis.io/post/new-years-resolutions
+6. Goals vs. Movement | goals-vs-movement | https://www.nexubis.io/post/goals-vs-movement
+7. 2025 In Retrospect | 2025-in-retrospect | https://www.nexubis.io/post/2025-in-retrospect
+8. Long-Term Greed | long-term-greed | https://www.nexubis.io/post/long-term-greed
+9. Dick Proves the Agency Stereotype | dick-proves-the-agency-stereotype | https://www.nexubis.io/post/dick-proves-the-agency-stereotype
+10. Striving for “Culinary” Perfection | striving-for-culinary-perfection | https://www.nexubis.io/post/striving-for-culinary-perfection
+
+Drafts created:
+- drafts.post-the-power-of-linkedin
+- drafts.post-how-to-not-suck-at-job-applications
+- drafts.post-momentum-fever
+- drafts.post-keep-positioning-yourself
+- drafts.post-new-years-resolutions
+- drafts.post-goals-vs-movement
+- drafts.post-2025-in-retrospect
+- drafts.post-long-term-greed
+- drafts.post-dick-proves-the-agency-stereotype
+- drafts.post-striving-for-culinary-perfection
+
+Published documents:
+- post-the-power-of-linkedin
+- post-how-to-not-suck-at-job-applications
+- post-momentum-fever
+- post-keep-positioning-yourself
+- post-new-years-resolutions
+- post-goals-vs-movement
+- post-2025-in-retrospect
+- post-long-term-greed
+- post-dick-proves-the-agency-stereotype
+- post-striving-for-culinary-perfection
 
 Failed posts:
 - None.
 
-Sanity verification:
-- Published Sanity Blog posts: 14.
-- Batch published documents: 10.
-- Batch draft documents remaining: 0.
-- Duplicate batch slugs: 0.
+Authors/categories:
+- Reused author-hannes-oosthuizen for all 10 posts.
+- Reused or updated category-founders-diary.
+- Reused or updated category-for-professionals.
 
-/blog verification:
-- /blog status: 200.
-- Total cards: 88.
-- Unique card slugs: 88.
-- Sanity thumbnail cards: 14.
-- Temporary generated/Webflow thumbnail cards: 74.
-- All ten batch cards use cdn.sanity.io thumbnails.
-- All ten batch cards link to /post/[exact-slug].
+Shared category icons:
+- Migrated or reused all six Blog category/filter icons through deterministic Sanity category documents:
+  Empowering Dreams, Founders Diary, Artificial Intelligence, Startup Stack, Company, For Professionals.
+- The /blog loader now overlays generated category/filter icons with published Sanity category icon assets.
+- Visual filter/card markup and CSS were not redesigned.
 
-/post route verification:
-- All ten batch routes returned 200.
-- All ten exact slugs were preserved.
-- All ten routes rendered Sanity media and no Webflow media/runtime requests.
-- No horizontal overflow detected on /blog or the ten routes.
-
-Browser network audit:
-- Batch post routes: zero Webflow requests.
-- Batch Blog cards: cdn.sanity.io thumbnails.
-- /blog overall still requests existing Webflow-hosted filter/category icons and generated fallback assets for the remaining archive cards. This is expected until later batches/final cleanup.
-- One console 404 warning was observed on /post/the-gold-bar-theory from Next prefetching /post/not-everyone-wants-the-gold-bar, which is a legitimate internal archive article still pending migration. It is not a Webflow dependency.
+Media:
+- Every selected post thumbnail was uploaded to or reused from Sanity.
+- Every selected Open Graph image was uploaded to or reused from Sanity.
+- Category icons were uploaded to or reused from Sanity.
+- One AVIF thumbnail/OG image was uploaded for dick-proves-the-agency-stereotype.
 
 Lottie/showreel:
-- No selected batch post had Lottie enabled.
-- No selected batch post had showreel enabled.
+- No selected Batch 02 post had Lottie enabled.
+- No selected Batch 02 post had showreel enabled.
 
-Validation:
-- Batch dry-run: passed.
-- Authenticated execute/publish: passed.
-- Verify-only: passed for the ten completed batch posts.
+Verification:
+- Batch dry-run passed.
+- Authenticated execute/publish passed.
+- Verify-only passed and marked all 10 Batch 02 posts complete.
+- All exact slugs were preserved.
+- All 10 public /post/[slug] routes returned 200.
+- All 10 /blog cards are Sanity-sourced and use cdn.sanity.io thumbnails.
+- Stored-data Webflow audit passed for the completed posts.
+- Rendered route Webflow audit passed for the completed posts.
+
+Expected final source counts after deployment/revalidation:
+- Total Blog cards: 88.
+- Sanity cards: 24.
+- Generated fallback cards: 64.
+- Remaining fallback count: 64.
+
+Validation commands:
 - npm run lint: passed with existing warnings only.
 - npm run typecheck: passed.
 - npm run test: passed, 263 tests.
 - npm run build: passed.
 
-Remaining archive state:
-- Completed Sanity posts: 14.
-- Generated fallback posts remaining: 74.
-- Do not start batch 02 from this task.
+Unrelated dirty files excluded:
+- app/globals.css
+- app/page.tsx
+- lib/scorecard/copy.ts
+- lib/site-config.ts
+- lib/work/data.ts
+- package.json unrelated unstaged hunk
+- .qa/
+- docs/PRE_CUTOVER_CTA_HANDOFF.md
+- docs/PRE_CUTOVER_LINK_FIXES.md
+- docs/PRE_CUTOVER_LINK_PARITY_AUDIT.csv
+- public/assets/work/oxipack/kayleigh-smit-portrait.png
+
+Stop condition:
+- Stopped after batch-2026-07-29-archive-02.
+- Batch 03 was not started.
 
