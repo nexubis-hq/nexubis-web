@@ -1,0 +1,149 @@
+{
+  "generatedAt": "2026-07-29T16:36:27.985Z",
+  "webflowPatterns": [
+    "cdn.prod.website-files.com",
+    "assets-global.website-files.com",
+    "uploads-ssl.webflow.com",
+    "website-files.com",
+    "webflow.io",
+    "webflow.com",
+    "daks2k3a4ib2z.cloudfront.net"
+  ],
+  "selected": [
+    {
+      "slug": "the-nexubis-effect",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "ai-is-not-a-phase-its-an-era",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "metamorphosis",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "beyond-the-eu30-000",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "the-cost-of-refusing-to-adapt",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "the-gold-bar-theory",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "partnership-over-transaction",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "impact-builds-network",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "just-do-it",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "my-1st-biggest-mistake",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    }
+  ],
+  "counts": {
+    "inventory": 88,
+    "complete": 14,
+    "pending": 74
+  }
+}
