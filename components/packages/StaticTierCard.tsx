@@ -33,8 +33,6 @@ export function StaticTierCard({
         )}
       </div>
 
-      <p className="package-descriptor">{tier.descriptor}</p>
-
       <div className="package-price">
         <h2>{formatMoney(currency, tier.monthly[currency])}</h2>
         <strong>/ month</strong>
@@ -42,8 +40,9 @@ export function StaticTierCard({
       {/* Flat rate: no prepayment discount at any cycle, stated plainly. */}
       <div className="saving saving-neutral package-saving">No Discount Applied</div>
 
-      <p className="benefit-emphasis package-unlock">{tier.unlockLine}</p>
-      <FeatureRows features={tier.features} />
+      <p className="package-descriptor">{tier.descriptor}</p>
+
+      <FeatureRows features={tier.features} lead={tier.unlockLine} />
 
       <Link href={BOOKING_URL} className={ctaClass}>
         Book an application call
