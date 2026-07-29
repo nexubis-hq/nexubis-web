@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, RocketIcon } from "@/components/SiteHeader";
@@ -54,6 +55,12 @@ const HERO_SUPPORT =
   "Not ready to book? Run the instant check and see where you're being undersold, on the spot.";
 
 const BOOK_CTA_LABEL = "Book an application call";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://www.nexubis.io/",
+  },
+};
 
 const valueTiles = [
   "Buyers See Your Worth",
