@@ -1,5 +1,6 @@
 {
-  "generatedAt": "2026-07-29T17:33:26.740Z",
+  "generatedAt": "2026-07-29T18:23:25.012Z",
+  "batchId": "batch-2026-07-29-archive-05",
   "webflowPatterns": [
     "cdn.prod.website-files.com",
     "assets-global.website-files.com",
@@ -11,12 +12,14 @@
   ],
   "selected": [
     {
-      "slug": "the-walter-mitty-effect",
+      "slug": "the-new-creative-stack",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
+      "blogCardZeroWebflow": true,
+      "routeStatus": 200,
+      "webflowRequests": [],
       "renderedWebflowUrls": [],
-      "media": [],
       "lottie": {
         "present": false,
         "valid": true,
@@ -24,12 +27,14 @@
       }
     },
     {
-      "slug": "the-discipline-of-quitting",
+      "slug": "solve-the-boring-problem-first",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
+      "blogCardZeroWebflow": true,
+      "routeStatus": 200,
+      "webflowRequests": [],
       "renderedWebflowUrls": [],
-      "media": [],
       "lottie": {
         "present": false,
         "valid": true,
@@ -37,12 +42,14 @@
       }
     },
     {
-      "slug": "empowering-women-with-project-flamingo",
+      "slug": "startups-dont-need-more-features",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
+      "blogCardZeroWebflow": true,
+      "routeStatus": 200,
+      "webflowRequests": [],
       "renderedWebflowUrls": [],
-      "media": [],
       "lottie": {
         "present": false,
         "valid": true,
@@ -50,12 +57,14 @@
       }
     },
     {
-      "slug": "the-legendary-play",
+      "slug": "if-it-aint-broke-refine-it",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
+      "blogCardZeroWebflow": true,
+      "routeStatus": 200,
+      "webflowRequests": [],
       "renderedWebflowUrls": [],
-      "media": [],
       "lottie": {
         "present": false,
         "valid": true,
@@ -63,12 +72,14 @@
       }
     },
     {
-      "slug": "keep-firing-yourself-part-2",
+      "slug": "dont-be-an-idiot-sandwich",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
+      "blogCardZeroWebflow": true,
+      "routeStatus": 200,
+      "webflowRequests": [],
       "renderedWebflowUrls": [],
-      "media": [],
       "lottie": {
         "present": false,
         "valid": true,
@@ -76,12 +87,14 @@
       }
     },
     {
-      "slug": "skip-the-ladder-join-a-startup",
+      "slug": "do-something-useful",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
+      "blogCardZeroWebflow": true,
+      "routeStatus": 200,
+      "webflowRequests": [],
       "renderedWebflowUrls": [],
-      "media": [],
       "lottie": {
         "present": false,
         "valid": true,
@@ -89,12 +102,14 @@
       }
     },
     {
-      "slug": "fresh-out-of-college-now-what",
+      "slug": "eat-the-rich",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
+      "blogCardZeroWebflow": true,
+      "routeStatus": 200,
+      "webflowRequests": [],
       "renderedWebflowUrls": [],
-      "media": [],
       "lottie": {
         "present": false,
         "valid": true,
@@ -102,12 +117,14 @@
       }
     },
     {
-      "slug": "for-professionals-by-professionals",
+      "slug": "startups-arent-a-family",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
+      "blogCardZeroWebflow": true,
+      "routeStatus": 200,
+      "webflowRequests": [],
       "renderedWebflowUrls": [],
-      "media": [],
       "lottie": {
         "present": false,
         "valid": true,
@@ -115,12 +132,14 @@
       }
     },
     {
-      "slug": "pick-your-battles",
+      "slug": "the-flex-package",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
+      "blogCardZeroWebflow": true,
+      "routeStatus": 200,
+      "webflowRequests": [],
       "renderedWebflowUrls": [],
-      "media": [],
       "lottie": {
         "present": false,
         "valid": true,
@@ -128,12 +147,14 @@
       }
     },
     {
-      "slug": "make-it-memorable",
+      "slug": "the-myth-of-the-perfect-hire",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
+      "blogCardZeroWebflow": true,
+      "routeStatus": 200,
+      "webflowRequests": [],
       "renderedWebflowUrls": [],
-      "media": [],
       "lottie": {
         "present": false,
         "valid": true,
@@ -143,7 +164,33 @@
   ],
   "counts": {
     "inventory": 88,
-    "complete": 34,
-    "pending": 54
+    "complete": 54,
+    "pending": 34,
+    "sanityCards": 54,
+    "generatedFallbackCards": 34
+  },
+  "categoryIdentity": {
+    "id": "category-ai-x-nexubis",
+    "title": "Artificial Intelligence",
+    "slug": "ai-x-nexubis",
+    "duplicateCount": 0,
+    "iconAssetId": "image-a7561c0e42db6f97a91f48eef7c0d6e21d825aaf-24x24-svg"
+  },
+  "blogDomAudit": {
+    "cards": 88,
+    "uniqueCards": 88,
+    "sanityCards": 54,
+    "generatedFallbackCards": 34,
+    "selectedCardsZeroWebflow": true,
+    "pendingFallbackWebflowThumbnails": 34
+  },
+  "browserNetworkAudit": {
+    "blogWebflowRequests": 0,
+    "selectedRouteWebflowRequests": 0,
+    "selectedRouteConsoleErrors": 0
+  },
+  "completedRouteAudit": {
+    "checked": 54,
+    "bad": []
   }
 }

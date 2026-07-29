@@ -222,6 +222,10 @@ function normaliseAuthor(author: string) {
   return author.trim();
 }
 
+function trimStructuredField(value: string | undefined) {
+  return value?.trim() ?? "";
+}
+
 function toIsoDate(value: string) {
   if (!value || Number.isNaN(Date.parse(value))) return null;
   return new Date(value).toISOString();
@@ -576,13 +580,13 @@ async function migrateSharedCategoryIcons(
     await client.createIfNotExists({
       _id: categoryId,
       _type: "category",
-      title: category.Name,
+      title: trimStructuredField(category.Name),
       slug: { _type: "slug", current: category.Slug },
     });
     await client
       .patch(categoryId)
       .set({
-        title: category.Name,
+        title: trimStructuredField(category.Name),
         slug: { _type: "slug", current: category.Slug },
         ...(icon ? { icon } : {}),
       })
@@ -698,6 +702,9 @@ async function importPost(
   const authorName = normaliseAuthor(source.Author);
   const authorId = `author-${toSlug(authorName)}`;
   const categoryId = `category-${category.Slug}`;
+  const title = trimStructuredField(source.Name);
+  const categoryTitle = trimStructuredField(category.Name);
+  const seoTitle = trimStructuredField(source["SEO : Title"]);
   const importedAt = new Date().toISOString();
   const warnings: string[] = [];
   const validationErrors: string[] = [];
@@ -716,7 +723,7 @@ async function importPost(
 
   if (source.Slug !== slug) validationErrors.push(`Source slug mismatch: ${source.Slug} != ${slug}`);
   if (existing.published && !execute) warnings.push(`Published document already exists: ${existing.published._id}`);
-  if (!source.Name) validationErrors.push("Missing title.");
+  if (!title) validationErrors.push("Missing title.");
   if (!publishedAt) validationErrors.push("Missing published date.");
   if (!source.Content?.trim()) validationErrors.push("Missing body.");
   if (!source.Thumbnail) validationErrors.push("Missing thumbnail.");
@@ -731,13 +738,13 @@ async function importPost(
   if (!body.length) validationErrors.push("Portable Text body is empty after conversion.");
 
   const thumbnail = source.Thumbnail
-    ? await uploadImage(client, slug, source.Thumbnail, "post.thumbnail", source.Name, media, execute)
+    ? await uploadImage(client, slug, source.Thumbnail, "post.thumbnail", title, media, execute)
     : undefined;
   const ogImage = source["SEO : Open Graph Image"]
-    ? await uploadImage(client, slug, source["SEO : Open Graph Image"], "post.seo.openGraphImage", `${source.Name} open graph image`, media, execute)
+    ? await uploadImage(client, slug, source["SEO : Open Graph Image"], "post.seo.openGraphImage", `${title} open graph image`, media, execute)
     : thumbnail;
   const categoryIcon = category.Icon
-    ? await uploadImage(client, slug, category.Icon, "category.icon", category.Name, media, execute)
+    ? await uploadImage(client, slug, category.Icon, "category.icon", categoryTitle, media, execute)
     : undefined;
 
   const authorDoc = {
@@ -749,14 +756,14 @@ async function importPost(
   const categoryDoc = {
     _id: categoryId,
     _type: "category",
-    title: category.Name,
+    title: categoryTitle,
     slug: { _type: "slug", current: category.Slug },
     ...(categoryIcon ? { icon: categoryIcon } : {}),
   };
   const postDoc = {
     _id: draftId,
     _type: "post",
-    title: source.Name,
+    title,
     slug: { _type: "slug", current: slug },
     excerpt,
     body,
@@ -771,7 +778,7 @@ async function importPost(
     showreelUrl: source["Showreel Link"] || undefined,
     seo: {
       _type: "seo",
-      title: source["SEO : Title"] || undefined,
+      title: seoTitle || undefined,
       description: seoDescription,
       ...(ogImage ? { openGraphImage: ogImage } : {}),
     },
@@ -807,7 +814,7 @@ async function importPost(
   const sanityWebflowUrls = [...collectWebflowStrings(sanityVerification)];
   if (sanityWebflowUrls.length) validationErrors.push(`Sanity document contains Webflow URLs: ${sanityWebflowUrls.join(", ")}`);
 
-  manifestPost.title = source.Name;
+  manifestPost.title = title;
   manifestPost.batchId = batchId;
   manifestPost.sanityDraftId = draftId;
   manifestPost.sanityPublishedId = publish && !validationErrors.length ? publishedId : null;
@@ -823,7 +830,7 @@ async function importPost(
   return {
     batchId,
     slug,
-    title: source.Name,
+    title,
     originalIndex: manifestPost.originalIndex,
     originalLiveUrl: manifestPost.originalLiveUrl,
     status: manifestPost.status,
