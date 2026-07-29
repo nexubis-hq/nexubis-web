@@ -23,7 +23,7 @@ export type Tier = {
   highlightLabel?: string; // "Most chosen"
   discountsAvailable: boolean; // Partner only
   monthly: Record<Currency, number>;
-  features: Feature[]; // 6 for Momentum and Scale, 7 for Partner
+  features: Feature[]; // 5 for Momentum and Scale, 7 for Partner
 };
 
 // Discount factors, applied only where discountsAvailable is true.
@@ -35,14 +35,14 @@ export const TIERS: Tier[] = [
     id: "momentum",
     name: "Momentum",
     descriptor: "Your design and development, fully handled.",
-    unlockLine: "Your website, fully handled:",
+    unlockLine: "", // Momentum is the base tier: no "Everything in X, plus:" lead row.
     highlighted: false,
     discountsAvailable: false,
     monthly: { EUR: 3500, USD: 3900 },
     features: [
       {
-        label: "Dedicated 2-person team",
-        tip: "Your own developer and designer, the same two people every month. You learn their names, they learn your product, and nothing goes into an anonymous ticket queue.",
+        label: "Two dedicated people, two work streams",
+        tip: "Your own developer and designer, the same two people every month, not an anonymous queue. Each person runs one thing at a time, so two move in parallel and the next starts as each is approved. Submit as much as you like, there is no cap.",
       },
       {
         label: "Website build & maintenance",
@@ -53,16 +53,12 @@ export const TIERS: Tier[] = [
         tip: "On-page SEO handled as we build rather than bolted on afterwards, then tracked every month so you can see what is moving. No separate SEO retainer to buy.",
       },
       {
-        label: "Two work streams at a time",
-        tip: "Submit as much as you like, there is no monthly cap. Your two people work on two things at a time and pull the next one forward as each is approved, with two rounds of feedback on every deliverable.",
-      },
-      {
         label: "Social, email & document design",
         tip: "Social templates, email headers, letterheads, proposals and internal documents. The everyday assets that usually end up being made badly in PowerPoint.",
       },
       {
         label: "72-hour turnaround, 3 meetings/mo",
-        tip: "Most requests come back inside three working days. You also get your own Slack channel, daily Loom updates, weekly progress notes and a monthly report.",
+        tip: "Most requests come back inside three working days, with two rounds of feedback on every deliverable. You also get your own Slack channel, daily Loom updates, weekly progress notes and a monthly report.",
       },
     ],
   },
@@ -76,12 +72,8 @@ export const TIERS: Tier[] = [
     monthly: { EUR: 4200, USD: 4600 },
     features: [
       {
-        label: "Dedicated 3-person team",
-        tip: "A third specialist joins your team, usually design or motion, so more work runs in parallel instead of queueing. Four meetings a month instead of three.",
-      },
-      {
-        label: "Three work streams at a time",
-        tip: "A third specialist means three things move in parallel instead of two, so noticeably more leaves the studio each month. Still no cap on what you submit.",
+        label: "Three dedicated people, three work streams",
+        tip: "A third specialist joins, usually design or motion, so three things move in parallel instead of two. Noticeably more leaves the studio each month, and you get four meetings instead of three.",
       },
       {
         label: "48-hour turnaround, queue priority",
@@ -104,7 +96,7 @@ export const TIERS: Tier[] = [
   {
     id: "partner",
     name: "Partner",
-    descriptor: "Your in-house marketing department, embedded with your team.",
+    descriptor: "Your embedded marketing department.",
     unlockLine: "Everything in Scale, plus:",
     highlighted: true,
     highlightLabel: "Most chosen",
@@ -228,7 +220,7 @@ export function currencyFromParam(value: string | null | undefined): Currency {
 // Build-time guard: every tier must carry exactly six features and no feature may
 // ship without a tip. Runs at module load so a future edit that drops a tip or a
 // row fails the build instead of shipping a bare row (Step 10, gate 6).
-const EXPECTED_FEATURE_COUNT: Record<Tier["id"], number> = { momentum: 6, scale: 6, partner: 7 };
+const EXPECTED_FEATURE_COUNT: Record<Tier["id"], number> = { momentum: 5, scale: 5, partner: 7 };
 for (const tier of TIERS) {
   const expected = EXPECTED_FEATURE_COUNT[tier.id];
   if (tier.features.length !== expected) {

@@ -20,8 +20,7 @@ export function FeatureRows({ features, lead }: { features: Feature[]; lead?: st
   return (
     <ul className="package-benefits">
       {lead && (
-        <li>
-          <CheckIcon />
+        <li className="benefit-lead">
           <span className="benefit-label benefit-emphasis">{lead}</span>
         </li>
       )}
