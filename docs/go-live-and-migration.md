@@ -7,7 +7,7 @@
 > checklist of **config + DNS**, not a code change.
 >
 > Deep "why" detail for the funnel lives in [`funnel-audit-checklist.md`](./funnel-audit-checklist.md).
-> Scorecard-tool launch items live in [`../LAUNCH_CHECKLIST.md`](../LAUNCH_CHECKLIST.md).
+> Scorecard-tool launch items live in [`qa/LAUNCH_CHECKLIST.md`](qa/LAUNCH_CHECKLIST.md).
 >
 > Last updated: 2026-07-23. Legend: ✅ done · ⏳ waiting on someone · ⬜ to do · ⚠️ must-not-forget.
 

@@ -1,0 +1,78 @@
+Final Pre-DNS Cutover Audit Response
+Generated: 2026-07-29
+
+Final pre-DNS cutover audit completed. I did not stage, commit, push, deploy,
+change DNS, modify Sanity content, create Funnelr contacts, complete Cal.com
+bookings, or change public media.
+
+Primary handoff:
+docs/qa/pre-dns-cutover/PRE_DNS_CUTOVER_HANDOFF.md
+
+Key counts:
+- Webflow public URL baseline: 99 URLs
+- Previously published Webflow Blog posts: 88
+- Published Sanity posts: 88
+- Count mismatch: 0
+- Vercel parity URLs tested: 99
+- Same-path 200: 98
+- Expected intentional 404: 1, /work/sataya
+- Intentional redirects: 0
+- Unexpected 404: 0
+- Wrong-content / soft-404: 0
+- Sitemap total: 98
+- Static sitemap URLs: 7
+- Case Study sitemap URLs: 3
+- Sanity post sitemap URLs: 88
+- Duplicate sitemap URLs: 0
+- Sitemap non-200 URLs: 0
+- Public noindex errors: 0
+- Private indexing exposure errors found: 0
+- Broken internal links: 0
+- Orphaned posts: 0
+- Required Production env vars missing: 0
+
+Corrections made locally:
+- Added missing canonicals for /, /packages, and /scorecard.
+- Added reusable qa:url-parity script: scripts/qa/verify-public-url-parity.ts.
+- Added pre-DNS audit outputs under docs/qa/pre-dns-cutover/.
+- Updated docs/README.md with one handoff link.
+
+Current deployed Vercel state:
+- https://nexubis.vercel.app is Ready on deployment dpl_BffeN8erVAXCTWWSqpLKs5NjDhc6.
+- Current deployed audit still has 3 canonical errors because the local canonical fix is not deployed yet: /, /packages, /scorecard.
+- https://www.nexubis.io still serves Webflow.
+- Vercel CLI read-only domain inspection says nexubis.io and www.nexubis.io are not found under hello-91244177s-projects.
+
+Remaining references:
+- Webflow source matches: 29 total, classified as REFERENCE_ONLY or MIGRATION_SOURCE; production runtime dependency count is 0.
+- Webflow runtime requests: 0
+- Old duplicate Vercel runtime requests: 0
+- Active production-code nexubis-web.vercel.app dependency: 0
+- Direct Cal.com links outside approved integrations: 0; /contact embed and Scorecard booking helper remain intentional.
+
+Validation:
+- npm run lint: passed, 0 errors, 29 existing warnings
+- npm run typecheck: passed
+- npm run test: passed, 38 files / 281 tests
+- npm run build: passed, 104 static pages generated
+- Local production verification confirmed corrected canonicals and 404 behavior.
+
+Exact new audit outputs:
+- docs/qa/pre-dns-cutover/WEBFLOW_PUBLIC_URL_BASELINE.json
+- docs/qa/pre-dns-cutover/WEBFLOW_PUBLIC_URL_BASELINE.csv
+- docs/qa/pre-dns-cutover/FINAL_SANITY_MIGRATION_AUDIT.md
+- docs/qa/pre-dns-cutover/FINAL_SANITY_POST_INVENTORY.csv
+- docs/qa/pre-dns-cutover/FINAL_URL_PARITY_AUDIT.csv
+- docs/qa/pre-dns-cutover/FINAL_URL_PARITY_SUMMARY.md
+- docs/qa/pre-dns-cutover/FINAL_SITEMAP_AUDIT.md
+- docs/qa/pre-dns-cutover/FINAL_SITEMAP_URLS.csv
+- docs/qa/pre-dns-cutover/FINAL_INDEXING_METADATA_AUDIT.md
+- docs/qa/pre-dns-cutover/FINAL_INTERNAL_LINK_AUDIT.csv
+- docs/qa/pre-dns-cutover/FINAL_WEBFLOW_INDEPENDENCE_AUDIT.md
+- docs/qa/pre-dns-cutover/PRE_DNS_CUTOVER_HANDOFF.md
+
+Deployment is still required. The project is not yet technically ready for the
+human DNS cutover because the canonical fixes are local-only and the intended
+domains are not currently attached to the canonical Vercel project. After
+commit, deploy, domain attachment, and rerunning the same parity/sitemap checks
+against the deployed SHA, the remaining blockers should be clear to resolve.

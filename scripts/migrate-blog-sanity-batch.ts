@@ -20,10 +20,11 @@ const CATEGORIES_CSV = path.join(
   "cms",
   "Nexubis Next - Blog Categories - 680b4edded78e7991b9732ec.csv",
 );
-const MANIFEST_PATH = path.join(process.cwd(), "docs", "BLOG_SANITY_BATCH_MANIFEST.json");
-const REPORT_PATH = path.join(process.cwd(), "docs", "BLOG_SANITY_BATCH_REPORT.md");
-const AUDIT_PATH = path.join(process.cwd(), "docs", "BLOG_WEBFLOW_DEPENDENCY_AUDIT.json");
-const MEDIA_MAPPING_PATH = path.join(process.cwd(), "docs", "BLOG_SANITY_BATCH_MEDIA_MAPPING.json");
+const BLOG_MIGRATION_DOCS_DIR = path.join(process.cwd(), "docs", "migration", "blog");
+const MANIFEST_PATH = path.join(BLOG_MIGRATION_DOCS_DIR, "BLOG_SANITY_BATCH_MANIFEST.json");
+const REPORT_PATH = path.join(BLOG_MIGRATION_DOCS_DIR, "BLOG_SANITY_BATCH_REPORT.md");
+const AUDIT_PATH = path.join(BLOG_MIGRATION_DOCS_DIR, "BLOG_WEBFLOW_DEPENDENCY_AUDIT.json");
+const MEDIA_MAPPING_PATH = path.join(BLOG_MIGRATION_DOCS_DIR, "BLOG_SANITY_BATCH_MEDIA_MAPPING.json");
 const GENERATED_POSTS_ARCHIVE_PATH = path.join(process.cwd(), "docs", "archive", "blog-webflow-generated", "posts.json");
 const PUBLIC_BASE_URL = "https://nexubis.vercel.app";
 const LEGACY_BASE_URL = "https://www.nexubis.io";

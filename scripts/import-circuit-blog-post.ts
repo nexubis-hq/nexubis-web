@@ -25,8 +25,9 @@ const POST_ID = `drafts.post-${SLUG}`;
 const AUTHOR_ID = "author-hannes-oosthuizen";
 const CATEGORY_ID = "category-empowering-dreams";
 const API_VERSION = "2026-07-29";
-const REPORT_PATH = path.join(process.cwd(), "docs", "BLOG_CIRCUIT_SANITY_IMPORT_REPORT.md");
-const MEDIA_MAPPING_PATH = path.join(process.cwd(), "docs", "BLOG_CIRCUIT_MEDIA_MAPPING.json");
+const BLOG_MIGRATION_ARCHIVE_DIR = path.join(process.cwd(), "docs", "archive", "blog-migration");
+const REPORT_PATH = path.join(BLOG_MIGRATION_ARCHIVE_DIR, "BLOG_CIRCUIT_SANITY_IMPORT_REPORT.md");
+const MEDIA_MAPPING_PATH = path.join(BLOG_MIGRATION_ARCHIVE_DIR, "BLOG_CIRCUIT_MEDIA_MAPPING.json");
 const TEMP_DIR = path.join(process.cwd(), ".tmp-sanity-import", SLUG);
 
 type CsvRecord = Record<string, string>;
@@ -704,7 +705,7 @@ async function main() {
         `- Original Webflow URLs replaced: ${mappings.length}`,
         `- Warnings: ${warnings.length ? warnings.join("; ") : "none"}`,
         "",
-        "See docs/BLOG_CIRCUIT_MEDIA_MAPPING.json for old URL to Sanity asset mapping.",
+        "See docs/archive/blog-migration/BLOG_CIRCUIT_MEDIA_MAPPING.json for old URL to Sanity asset mapping.",
       ].join("\n") + "\n",
       "utf8",
     );

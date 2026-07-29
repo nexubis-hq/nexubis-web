@@ -1,0 +1,145 @@
+Packages Mobile Euro Lottie Adaptation Report
+
+Scope
+- Route: /packages.
+- Section: All the Expert Skill, None of the Overhead.
+- Focus: Competitor Comparison animation mobile Euro adaptation.
+- No staging, commit, or push performed.
+- Desktop Euro animation was not modified.
+
+Files changed
+- components/CompetitorComparisonLottie.tsx
+- components/CompetitorComparisonLottie.test.ts
+- scripts/generate-competitor-euro-mobile.mjs
+- public/assets/lotties/CompetitorComparison_Euro_Mobile.json
+
+Composition audit
+- Desktop Euro: 1656x610, 24fps, ip=0, op=216, 38 layers.
+- Old mobile: 686x1424, 24fps, ip=0, op=216, 38 layers.
+- New mobile: 686x1424, 24fps, ip=0, op=216, 38 layers.
+- Duration: 216 / 24 = 9s.
+
+Layer mapping method
+- Used the existing mobile animation as the geometry, stacked layout, parent graph, and composition-size base.
+- Used the Euro desktop animation as the content, text, price, color, vector artwork, and timing source.
+- Generated the new JSON deterministically with scripts/generate-competitor-euro-mobile.mjs.
+- Did not hand-edit the large Lottie JSON.
+
+Layer mapping
+- Layers 1-9: Nexubis role pills. Euro artwork copied, mobile parent 25 preserved.
+- Layers 10-18: In-house role pills. Euro artwork copied, mobile parent 31 preserved.
+- Layers 20-22: Price text layers. Euro values copied/sanitized, mobile price-bar parents preserved.
+- Layer 23: In-House Team heading. Mobile header parent preserved.
+- Layer 24: Nexubis logo. Euro artwork copied, mobile header parent preserved.
+- Layers 25-36: Card backgrounds, header bars, price bars, and outlines. Mobile stacked parent graph preserved.
+- Layers 37-38: vs text and VS circle. Mobile centered placement preserved.
+
+Matte and parent relationships
+- Nexubis role-pill layers use Set Matte layer 25.
+- In-house role-pill layers use Set Matte layer 31.
+- All parent references resolve.
+- All Set Matte references resolve.
+
+Final source mapping
+- > 767px: /assets/lotties/CompetitorComparison_Euro.json
+- <= 767px: /assets/lotties/CompetitorComparison_Euro_Mobile.json
+- Breakpoint remains window.matchMedia("(max-width: 767px)").
+- Single lazy-loaded lottie-web instance behavior preserved.
+- Autoplay, loop, reduced-motion behavior, loading fallback, cleanup, and resize handling preserved.
+
+Final mobile text values
+- €0123456789 /pm
+- €56 300/m
+- €0/m
+- €6 300/m
+- €12 600/m
+- €18 900/m
+- €25 200/m
+- €31 500/m
+- €37 800/m
+- €44 100/m
+- €50 400/m
+- €56 300/m
+- €4 200/m
+- In-House Team
+- vs
+
+Copy and font validation
+- Currency is Euro.
+- No old mobile dollar price values remain in text values.
+- In-House Team heading matches.
+- Nexubis branding/logo treatment is preserved from the Euro source.
+- VS text matches.
+- /m formatting matches the Euro source.
+- Lottie font reference remains HelveticaNowDisplay-Medium / Helvetica Now Display / Medium.
+- Local font asset exists: public/assets/fonts/HelveticaNowDisplay-Medium.woff2.
+
+Role-pill arrangement
+- In-house settled mobile rows:
+  - Project Manager, Creative Director
+  - Marketer, Graphic Designer, Web Developer
+  - UI/UX Designer, 3D Animator, Video Editor
+  - Web Designer
+- Nexubis settled mobile rows:
+  - Project Manager
+  - Creative Director, Marketer
+  - Web Developer, Graphic Designer
+  - UI/UX Designer, Video Editor
+  - Web Designer, 3D Animator
+
+Animation playback and loop QA
+- Mobile playback was observed for 28.5s at 390px, covering more than three complete 9s loops.
+- No Lottie console errors.
+- No failed Lottie JSON requests.
+- No visible loop-boundary crash or duplicate instance.
+- Settled 390px and 375px captures showed stacked layout, all pills visible, readable Euro pricing, centered VS, no clipping, and no overlap.
+
+Responsive QA
+- Tested widths: 1440, 1280, 1100, 1024, 991, 768, 767, 480, 390, 375.
+- 1440px: requested /assets/lotties/CompetitorComparison_Euro.json only.
+- 1280px: requested /assets/lotties/CompetitorComparison_Euro.json only.
+- 1100px: requested /assets/lotties/CompetitorComparison_Euro.json only.
+- 1024px: requested /assets/lotties/CompetitorComparison_Euro.json only.
+- 991px: requested /assets/lotties/CompetitorComparison_Euro.json only.
+- 768px: requested /assets/lotties/CompetitorComparison_Euro.json only.
+- 767px: requested /assets/lotties/CompetitorComparison_Euro_Mobile.json only.
+- 480px: requested /assets/lotties/CompetitorComparison_Euro_Mobile.json only.
+- 390px: requested /assets/lotties/CompetitorComparison_Euro_Mobile.json only.
+- 375px: requested /assets/lotties/CompetitorComparison_Euro_Mobile.json only.
+- One active Lottie SVG instance at every tested width.
+- No horizontal overflow at every tested width.
+- Desktop SVG viewBox remains 0 0 1656 610.
+- Mobile SVG viewBox is 0 0 686 1424.
+
+Desktop regression safety
+- public/assets/lotties/CompetitorComparison_Euro.json was unchanged.
+- git diff -- public/assets/lotties/CompetitorComparison_Euro.json produced 0 changed lines.
+
+Tests added
+- components/CompetitorComparisonLottie.test.ts
+- Verifies desktop path is CompetitorComparison_Euro.json.
+- Verifies mobile path is CompetitorComparison_Euro_Mobile.json.
+- Verifies breakpoint remains max-width: 767px.
+- Verifies desktop, old mobile, and new mobile JSON files parse.
+- Verifies frame ranges and composition dimensions are valid.
+- Verifies mobile file contains updated Euro prices.
+- Verifies old mobile dollar price values are absent.
+- Verifies required text and HelveticaNowDisplay-Medium font reference.
+- Verifies Euro mobile pill artwork matches the Euro source once per mapped layer.
+- Verifies parent and matte references resolve.
+
+Validation results
+- npm run lint: passed with existing warnings.
+- npm run typecheck: failed due unrelated lib/blog/blog-batch-selection.test.ts fixture typing. The fixture status is inferred as string instead of BatchStatus.
+- npm run test: failed due unrelated lib/blog/blog-batch-selection.test.ts importing missing /lib/blog/generated/posts.json through scripts/migrate-blog-sanity-batch.ts. 37 suites and 276 tests passed.
+- npm run test -- CompetitorComparisonLottie.test.ts: passed, 7 tests.
+- npm run build: passed.
+
+Final git status notes
+- Lottie-pass files are unstaged:
+  - M components/CompetitorComparisonLottie.tsx
+  - ?? components/CompetitorComparisonLottie.test.ts
+  - ?? public/assets/lotties/CompetitorComparison_Euro_Mobile.json
+  - ?? scripts/generate-competitor-euro-mobile.mjs
+  - ?? PACKAGES_MOBILE_EURO_LOTTIE_ADAPTATION_REPORT.txt
+- The worktree also contains many unrelated pre-existing docs/blog changes and deletions. They were left untouched.

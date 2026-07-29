@@ -17,6 +17,7 @@
     "funnelr:verify:lekkeweb": "tsx scripts/funnelr-verify-lekkeweb-readonly.ts",
     "test:funnelr": "npm run funnelr:inspect",
     "test:funnelr:write": "tsx scripts/test-funnelr-write.ts",
+    "qa:url-parity": "tsx scripts/qa/verify-public-url-parity.ts",
     "test:watch": "vitest"
   },
   "dependencies": {
