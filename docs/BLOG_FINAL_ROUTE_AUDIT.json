@@ -1,0 +1,1753 @@
+{
+  "generatedAt": "2026-07-29T20:07:52.742Z",
+  "deploymentId": "dpl_2afFew7TajhGQcREEQH49wx4HdzG",
+  "commit": "a16079b",
+  "routesScanned": 88,
+  "missingOriginalRoutes": [],
+  "brokenOriginalRoutes": [],
+  "changedSlugs": [],
+  "extraMigratedRoutes": [],
+  "webflowRouteMatches": 0,
+  "routes": [
+    {
+      "slug": "the-nexubis-effect",
+      "url": "https://nexubis.vercel.app/post/the-nexubis-effect",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "circuit-securing-nexubis",
+      "url": "https://nexubis.vercel.app/post/circuit-securing-nexubis",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "oxipack-empowering-nexubis",
+      "url": "https://nexubis.vercel.app/post/oxipack-empowering-nexubis",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "altify-empowering-nexubis",
+      "url": "https://nexubis.vercel.app/post/altify-empowering-nexubis",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "ai-is-not-a-phase-its-an-era",
+      "url": "https://nexubis.vercel.app/post/ai-is-not-a-phase-its-an-era",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "metamorphosis",
+      "url": "https://nexubis.vercel.app/post/metamorphosis",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "beyond-the-eu30-000",
+      "url": "https://nexubis.vercel.app/post/beyond-the-eu30-000",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-cost-of-refusing-to-adapt",
+      "url": "https://nexubis.vercel.app/post/the-cost-of-refusing-to-adapt",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-gold-bar-theory",
+      "url": "https://nexubis.vercel.app/post/the-gold-bar-theory",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "partnership-over-transaction",
+      "url": "https://nexubis.vercel.app/post/partnership-over-transaction",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "impact-builds-network",
+      "url": "https://nexubis.vercel.app/post/impact-builds-network",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "just-do-it",
+      "url": "https://nexubis.vercel.app/post/just-do-it",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "my-1st-biggest-mistake",
+      "url": "https://nexubis.vercel.app/post/my-1st-biggest-mistake",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-power-of-linkedin",
+      "url": "https://nexubis.vercel.app/post/the-power-of-linkedin",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "how-to-not-suck-at-job-applications",
+      "url": "https://nexubis.vercel.app/post/how-to-not-suck-at-job-applications",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "momentum-fever",
+      "url": "https://nexubis.vercel.app/post/momentum-fever",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "keep-positioning-yourself",
+      "url": "https://nexubis.vercel.app/post/keep-positioning-yourself",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "new-years-resolutions",
+      "url": "https://nexubis.vercel.app/post/new-years-resolutions",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "goals-vs-movement",
+      "url": "https://nexubis.vercel.app/post/goals-vs-movement",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "2025-in-retrospect",
+      "url": "https://nexubis.vercel.app/post/2025-in-retrospect",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "long-term-greed",
+      "url": "https://nexubis.vercel.app/post/long-term-greed",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "dick-proves-the-agency-stereotype",
+      "url": "https://nexubis.vercel.app/post/dick-proves-the-agency-stereotype",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "striving-for-culinary-perfection",
+      "url": "https://nexubis.vercel.app/post/striving-for-culinary-perfection",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-walter-mitty-effect",
+      "url": "https://nexubis.vercel.app/post/the-walter-mitty-effect",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-discipline-of-quitting",
+      "url": "https://nexubis.vercel.app/post/the-discipline-of-quitting",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "empowering-women-with-project-flamingo",
+      "url": "https://nexubis.vercel.app/post/empowering-women-with-project-flamingo",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-legendary-play",
+      "url": "https://nexubis.vercel.app/post/the-legendary-play",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "keep-firing-yourself-part-2",
+      "url": "https://nexubis.vercel.app/post/keep-firing-yourself-part-2",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "skip-the-ladder-join-a-startup",
+      "url": "https://nexubis.vercel.app/post/skip-the-ladder-join-a-startup",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "fresh-out-of-college-now-what",
+      "url": "https://nexubis.vercel.app/post/fresh-out-of-college-now-what",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "for-professionals-by-professionals",
+      "url": "https://nexubis.vercel.app/post/for-professionals-by-professionals",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "pick-your-battles",
+      "url": "https://nexubis.vercel.app/post/pick-your-battles",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "make-it-memorable",
+      "url": "https://nexubis.vercel.app/post/make-it-memorable",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "your-perception-is-your-reality",
+      "url": "https://nexubis.vercel.app/post/your-perception-is-your-reality",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "make-complex-simple",
+      "url": "https://nexubis.vercel.app/post/make-complex-simple",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "10-better-or-dont-bother",
+      "url": "https://nexubis.vercel.app/post/10-better-or-dont-bother",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-disruption",
+      "url": "https://nexubis.vercel.app/post/the-disruption",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-personal-belief-vs-ai-paradox",
+      "url": "https://nexubis.vercel.app/post/the-personal-belief-vs-ai-paradox",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "straight-line-thinking",
+      "url": "https://nexubis.vercel.app/post/straight-line-thinking",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-builders-will-survive",
+      "url": "https://nexubis.vercel.app/post/the-builders-will-survive",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-age-of-agi",
+      "url": "https://nexubis.vercel.app/post/the-age-of-agi",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "youre-not-ready-for-whats-coming",
+      "url": "https://nexubis.vercel.app/post/youre-not-ready-for-whats-coming",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "automation-is-not-the-enemy",
+      "url": "https://nexubis.vercel.app/post/automation-is-not-the-enemy",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-new-creative-stack",
+      "url": "https://nexubis.vercel.app/post/the-new-creative-stack",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "solve-the-boring-problem-first",
+      "url": "https://nexubis.vercel.app/post/solve-the-boring-problem-first",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "startups-dont-need-more-features",
+      "url": "https://nexubis.vercel.app/post/startups-dont-need-more-features",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "if-it-aint-broke-refine-it",
+      "url": "https://nexubis.vercel.app/post/if-it-aint-broke-refine-it",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "dont-be-an-idiot-sandwich",
+      "url": "https://nexubis.vercel.app/post/dont-be-an-idiot-sandwich",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "do-something-useful",
+      "url": "https://nexubis.vercel.app/post/do-something-useful",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "eat-the-rich",
+      "url": "https://nexubis.vercel.app/post/eat-the-rich",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "startups-arent-a-family",
+      "url": "https://nexubis.vercel.app/post/startups-arent-a-family",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-flex-package",
+      "url": "https://nexubis.vercel.app/post/the-flex-package",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-myth-of-the-perfect-hire",
+      "url": "https://nexubis.vercel.app/post/the-myth-of-the-perfect-hire",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "resentment-is-a-symptom-of-poor-process",
+      "url": "https://nexubis.vercel.app/post/resentment-is-a-symptom-of-poor-process",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "sell-the-slice-not-the-sauce",
+      "url": "https://nexubis.vercel.app/post/sell-the-slice-not-the-sauce",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "just-start-the-damn-thing",
+      "url": "https://nexubis.vercel.app/post/just-start-the-damn-thing",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "rethinking-the-nexubis-trial",
+      "url": "https://nexubis.vercel.app/post/rethinking-the-nexubis-trial",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "dont-turn-into-a-robot",
+      "url": "https://nexubis.vercel.app/post/dont-turn-into-a-robot",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-butterfly-effect",
+      "url": "https://nexubis.vercel.app/post/the-butterfly-effect",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "fire-faster-promote-faster",
+      "url": "https://nexubis.vercel.app/post/fire-faster-promote-faster",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "scale-responsibly",
+      "url": "https://nexubis.vercel.app/post/scale-responsibly",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-secret-third-option",
+      "url": "https://nexubis.vercel.app/post/the-secret-third-option",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-biggest-risk-playing-it-safe",
+      "url": "https://nexubis.vercel.app/post/the-biggest-risk-playing-it-safe",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "press-pause",
+      "url": "https://nexubis.vercel.app/post/press-pause",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "manifestation-from-impossible-to-probable",
+      "url": "https://nexubis.vercel.app/post/manifestation-from-impossible-to-probable",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "stop-selling-time-start-delivering-value",
+      "url": "https://nexubis.vercel.app/post/stop-selling-time-start-delivering-value",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-nexubis-referral-program",
+      "url": "https://nexubis.vercel.app/post/the-nexubis-referral-program",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "overcoming-imposter-syndrome",
+      "url": "https://nexubis.vercel.app/post/overcoming-imposter-syndrome",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "dragonborn",
+      "url": "https://nexubis.vercel.app/post/dragonborn",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "building-a-leadership-team",
+      "url": "https://nexubis.vercel.app/post/building-a-leadership-team",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "not-everyone-wants-the-gold-bar",
+      "url": "https://nexubis.vercel.app/post/not-everyone-wants-the-gold-bar",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-process-or-people-problem",
+      "url": "https://nexubis.vercel.app/post/the-process-or-people-problem",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "most-of-my-job-sucks",
+      "url": "https://nexubis.vercel.app/post/most-of-my-job-sucks",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "empowering-clients",
+      "url": "https://nexubis.vercel.app/post/empowering-clients",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "building-fast-vs-building-right",
+      "url": "https://nexubis.vercel.app/post/building-fast-vs-building-right",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "empowering-communities",
+      "url": "https://nexubis.vercel.app/post/empowering-communities",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-work-life-balance-lie",
+      "url": "https://nexubis.vercel.app/post/the-work-life-balance-lie",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "when-branding-does-and-doesnt-matter",
+      "url": "https://nexubis.vercel.app/post/when-branding-does-and-doesnt-matter",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "empowering-founders",
+      "url": "https://nexubis.vercel.app/post/empowering-founders",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "keep-firing-yourself",
+      "url": "https://nexubis.vercel.app/post/keep-firing-yourself",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "how-we-work",
+      "url": "https://nexubis.vercel.app/post/how-we-work",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "the-tech-stack-we-actually-recommend",
+      "url": "https://nexubis.vercel.app/post/the-tech-stack-we-actually-recommend",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "empowering-teams",
+      "url": "https://nexubis.vercel.app/post/empowering-teams",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "ai-isnt-coming-its-already-here",
+      "url": "https://nexubis.vercel.app/post/ai-isnt-coming-its-already-here",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "what-early-stage-founders-spend-way-too-much-time-on",
+      "url": "https://nexubis.vercel.app/post/what-early-stage-founders-spend-way-too-much-time-on",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "how-it-all-started-and-almost-didnt",
+      "url": "https://nexubis.vercel.app/post/how-it-all-started-and-almost-didnt",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "how-we-landed-on-empowering-dreams",
+      "url": "https://nexubis.vercel.app/post/how-we-landed-on-empowering-dreams",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    },
+    {
+      "slug": "welcome-to-dreamlab",
+      "url": "https://nexubis.vercel.app/post/welcome-to-dreamlab",
+      "status": 200,
+      "exactPathPreserved": true,
+      "canonicalOk": true,
+      "titlePresent": true,
+      "bodyNonEmpty": true,
+      "sanityMediaRendered": true,
+      "webflowMatches": 0,
+      "redirected": false
+    }
+  ],
+  "blog": {
+    "status": 200,
+    "cards": 88,
+    "uniqueSlugs": 88,
+    "duplicateCards": 0,
+    "missingCards": [],
+    "extraCards": [],
+    "sanityCards": 88,
+    "generatedFallbackCards": 0,
+    "sanityThumbnails": 88,
+    "webflowMatches": 0,
+    "categoryIconSanityCards": 88,
+    "orderMatchesManifest": true
+  },
+  "sitemap": {
+    "status": 200,
+    "blogRoutes": 88,
+    "uniqueBlogRoutes": 88,
+    "missingBlogSlugs": [],
+    "extraBlogSlugs": [],
+    "duplicateBlogRoutes": 0,
+    "hasBlogSlugRoutes": false,
+    "hasVercelUrls": false,
+    "hasWebflowUrls": false
+  },
+  "browserAudit": {
+    "generatedAt": "2026-07-29T20:09:25.158Z",
+    "blog": {
+      "cards": 88,
+      "uniqueSlugs": 88,
+      "sanityThumbnails": 88,
+      "webflowDomMatches": 0,
+      "orderMatchesManifest": true,
+      "noHorizontalOverflow": true,
+      "filterResults": [
+        {
+          "label": "Empowering Dreams",
+          "visibleCards": 10
+        },
+        {
+          "label": "Founders Diary",
+          "visibleCards": 57
+        },
+        {
+          "label": "Artificial Intelligence",
+          "visibleCards": 8
+        },
+        {
+          "label": "Startup Stack",
+          "visibleCards": 4
+        },
+        {
+          "label": "Company",
+          "visibleCards": 5
+        },
+        {
+          "label": "For Professionals",
+          "visibleCards": 4
+        }
+      ]
+    },
+    "routeResults": [
+      {
+        "slug": "the-nexubis-effect",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "circuit-securing-nexubis",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "oxipack-empowering-nexubis",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "altify-empowering-nexubis",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "ai-is-not-a-phase-its-an-era",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "metamorphosis",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "beyond-the-eu30-000",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-cost-of-refusing-to-adapt",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-gold-bar-theory",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "partnership-over-transaction",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "impact-builds-network",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "just-do-it",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "my-1st-biggest-mistake",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-power-of-linkedin",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "how-to-not-suck-at-job-applications",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "momentum-fever",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "keep-positioning-yourself",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "new-years-resolutions",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "goals-vs-movement",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "2025-in-retrospect",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "long-term-greed",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "dick-proves-the-agency-stereotype",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "striving-for-culinary-perfection",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-walter-mitty-effect",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-discipline-of-quitting",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "empowering-women-with-project-flamingo",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-legendary-play",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "keep-firing-yourself-part-2",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "skip-the-ladder-join-a-startup",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "fresh-out-of-college-now-what",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "for-professionals-by-professionals",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "pick-your-battles",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "make-it-memorable",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "your-perception-is-your-reality",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "make-complex-simple",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "10-better-or-dont-bother",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-disruption",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-personal-belief-vs-ai-paradox",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "straight-line-thinking",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-builders-will-survive",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-age-of-agi",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "youre-not-ready-for-whats-coming",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "automation-is-not-the-enemy",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-new-creative-stack",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "solve-the-boring-problem-first",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "startups-dont-need-more-features",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "if-it-aint-broke-refine-it",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "dont-be-an-idiot-sandwich",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "do-something-useful",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "eat-the-rich",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "startups-arent-a-family",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-flex-package",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-myth-of-the-perfect-hire",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "resentment-is-a-symptom-of-poor-process",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "sell-the-slice-not-the-sauce",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "just-start-the-damn-thing",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "rethinking-the-nexubis-trial",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "dont-turn-into-a-robot",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-butterfly-effect",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "fire-faster-promote-faster",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "scale-responsibly",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-secret-third-option",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-biggest-risk-playing-it-safe",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "press-pause",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "manifestation-from-impossible-to-probable",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "stop-selling-time-start-delivering-value",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-nexubis-referral-program",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "overcoming-imposter-syndrome",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "dragonborn",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "building-a-leadership-team",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "not-everyone-wants-the-gold-bar",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-process-or-people-problem",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "most-of-my-job-sucks",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "empowering-clients",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "building-fast-vs-building-right",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "empowering-communities",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-work-life-balance-lie",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "when-branding-does-and-doesnt-matter",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "empowering-founders",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "keep-firing-yourself",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "how-we-work",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "the-tech-stack-we-actually-recommend",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "empowering-teams",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "ai-isnt-coming-its-already-here",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "what-early-stage-founders-spend-way-too-much-time-on",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "how-it-all-started-and-almost-didnt",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "how-we-landed-on-empowering-dreams",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      },
+      {
+        "slug": "welcome-to-dreamlab",
+        "status": 200,
+        "webflowRequests": 0,
+        "newErrors": 0,
+        "webflowDom": false
+      }
+    ],
+    "brokenRoutes": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "webflowRequests": []
+  }
+}

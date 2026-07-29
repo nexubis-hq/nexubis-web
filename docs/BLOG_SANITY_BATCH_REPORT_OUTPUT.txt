@@ -1,19 +1,17 @@
 Blog Final Sanity Cutover Report Output
 
-Local validation completed before production deployment:
+- Cutover commit: a16079b
+- Push: b664c6e..a16079b to origin/shannah
+- Production deployment: dpl_2afFew7TajhGQcREEQH49wx4HdzG, Ready
 - Published Sanity Blog posts: 88
 - Unique published slugs: 88
-- Manifest complete: 88
-- Manifest pending: 0
-- Manifest validation-failed: 0
-- legacyOrder: 88 unique values, 1 through 88
-- Stored Sanity Webflow media/runtime dependencies: 0
-- Public Blog runtime generated fallback imports in app/components/lib/sanity: 0
-- Retry-selection hardening tests: passed
-- Lint: passed with existing warnings
-- Typecheck: passed
-- Test: passed, 38 files / 281 tests
-- Build: passed
-- Build independence: passed with webflow-export and archived generated Webflow JSON temporarily unavailable
-
-Production deployment and route audit details are recorded in BLOG_FINAL_SANITY_CUTOVER_REPORT.md and BLOG_FINAL_ROUTE_AUDIT.json after deployment.
+- Manifest complete/pending/failed: 88/0/0
+- /blog cards: 88
+- Sanity cards: 88
+- Generated runtime fallbacks: 0
+- Broken original post routes: 0
+- Changed slugs: 0
+- Blog sitemap routes: 88
+- Blog runtime Webflow dependencies: 0
+- Blog Webflow network requests: 0
+- Lint/typecheck/test/build: passed

@@ -1,6 +1,6 @@
 # Blog Final Sanity Cutover Report
 
-Generated: 2026-07-29T20:00:00Z
+Generated: 2026-07-29T20:11:32.030Z
 
 ## Batch 08 Verification
 
@@ -30,16 +30,9 @@ Generated: 2026-07-29T20:00:00Z
 ## Final Batch
 
 - Batch ID: batch-2026-07-29-archive-final.
-- Locked slugs:
-  - what-early-stage-founders-spend-way-too-much-time-on
-  - how-it-all-started-and-almost-didnt
-  - how-we-landed-on-empowering-dreams
-  - welcome-to-dreamlab
-- Published IDs:
-  - post-what-early-stage-founders-spend-way-too-much-time-on
-  - post-how-it-all-started-and-almost-didnt
-  - post-how-we-landed-on-empowering-dreams
-  - post-welcome-to-dreamlab
+- Locked slugs: what-early-stage-founders-spend-way-too-much-time-on, how-it-all-started-and-almost-didnt, how-we-landed-on-empowering-dreams, welcome-to-dreamlab.
+- Draft IDs: drafts.post-[exact-slug] for all four.
+- Published IDs: post-what-early-stage-founders-spend-way-too-much-time-on, post-how-it-all-started-and-almost-didnt, post-how-we-landed-on-empowering-dreams, post-welcome-to-dreamlab.
 - Media reused: 10 assets.
 - Media uploaded: 2 AVIF assets for welcome-to-dreamlab.
 - Validation: no blocking Sanity validation errors; stored-data Webflow dependency count is 0.
@@ -66,6 +59,24 @@ Generated: 2026-07-29T20:00:00Z
 - Migration-only scripts may still read webflow-export and archived generated JSON.
 - Production Blog code Webflow string audit: 0 Blog runtime matches; test-only constants excluded.
 
+## Production Audit
+
+- Production deployment: dpl_2afFew7TajhGQcREEQH49wx4HdzG, Ready, aliased to https://nexubis.vercel.app.
+- Cutover code commit deployed: a16079b.
+- /blog HTTP status: 200.
+- /blog cards: 88.
+- /blog Sanity cards: 88.
+- /blog generated fallback cards: 0.
+- /blog unique slugs: 88.
+- /blog Sanity thumbnails: 88.
+- /blog Webflow HTML/DOM/hydration matches: 0.
+- /blog order matches approved manifest: true.
+- Browser Webflow network requests: 0.
+- Browser console errors: 0.
+- Browser page errors: 0.
+- Browser horizontal overflow: 0.
+- Category filter results: Empowering Dreams=10, Founders Diary=57, Artificial Intelligence=8, Startup Stack=4, Company=5, For Professionals=4.
+
 ## Stored Data Audit
 
 See docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json.
@@ -80,6 +91,25 @@ See docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json.
 - Invalid Lottie payloads: 0.
 - Authors scanned: 1.
 - Categories scanned: 6.
+- Remaining intentional editorial links: none separately flagged as media/runtime dependencies.
+
+## Route And Sitemap Audit
+
+See docs/BLOG_FINAL_ROUTE_AUDIT.json.
+
+- Exact routes scanned: 88.
+- Missing original routes: 0.
+- Broken original routes: 0.
+- Changed slugs: 0.
+- Extra migrated routes: 0.
+- Route Webflow matches: 0.
+- Sitemap Blog routes: 88.
+- Sitemap missing Blog slugs: 0.
+- Sitemap extra Blog slugs: 0.
+- Sitemap duplicate Blog routes: 0.
+- Sitemap /blog/[slug] entries: 0.
+- Sitemap Webflow URLs: 0.
+- Sitemap Vercel URLs: 0.
 
 ## Validation
 
@@ -88,10 +118,26 @@ See docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json.
 - npm run test: passed, 38 files and 281 tests.
 - npm run build: passed.
 - Build-time Webflow independence: passed with webflow-export and archived generated Webflow JSON temporarily unavailable.
+- Idempotency verification: final batch verify-only passed after publish; manifest is 88 complete, 0 pending, 0 failed.
 
-## Deployment
+## Files Changed
 
-Pending final production deployment of this cutover commit.
+- Blog runtime: app/sitemap.ts, components/blog/BlogPostTemplate.tsx, lib/blog/* Sanity boundary modules.
+- Sanity schema/query: sanity/schemaTypes/post.ts, sanity/lib/queries.ts.
+- Migration: scripts/migrate-blog-sanity-batch.ts, manifest/media/audit docs.
+- Tests: Blog cutover, retry locking, Sanity-only index/post/related/sitemap tests.
+- Archive move: lib/blog/generated/* to docs/archive/blog-webflow-generated/*.
+
+## Unrelated Files Excluded
+
+- Existing dirty Contact, Packages, scorecard, homepage, case-study, generated competitor Lottie and unrelated docs changes were not included in the cutover commit.
+
+## Commits And Push
+
+- Cutover commit: a16079b.
+- Branch: shannah.
+- Push result: b664c6e..a16079b pushed to origin/shannah.
+- Deployment ID/status: dpl_2afFew7TajhGQcREEQH49wx4HdzG, Ready.
 
 ## Final Acceptance Counts
 
@@ -100,15 +146,15 @@ Pending final production deployment of this cutover commit.
 - Manifest complete: 88
 - Manifest pending: 0
 - Manifest failed: 0
-- /blog cards: pending production deployment audit
-- Sanity cards: pending production deployment audit
-- Generated runtime fallbacks: 0 in code; pending production deployment audit
-- Broken original post routes: pending production deployment audit
+- /blog cards: 88
+- Sanity cards: 88
+- Generated runtime fallbacks: 0
+- Broken original post routes: 0
 - Changed original slugs: 0
-- Blog sitemap routes: pending production deployment audit
-- Blog runtime Webflow dependencies: 0 in code and stored data; pending production deployment audit
-- Blog Webflow network requests: pending production deployment audit
+- Blog sitemap routes: 88
+- Blog runtime Webflow dependencies: 0
+- Blog Webflow network requests: 0
 
 ## Remaining Launch Blocker
 
-- No Blog data/content blocker known before deployment. Production route and /blog audits must be run after deployment.
+- None for the Blog Sanity cutover scope.
