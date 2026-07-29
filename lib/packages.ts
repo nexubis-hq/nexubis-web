@@ -34,7 +34,7 @@ export const TIERS: Tier[] = [
   {
     id: "momentum",
     name: "Momentum",
-    descriptor: "Our website is outdated and it's nobody's job to fix it.",
+    descriptor: "Your design and development, fully handled.",
     unlockLine: "Your website, fully handled:",
     highlighted: false,
     discountsAvailable: false,
@@ -69,7 +69,7 @@ export const TIERS: Tier[] = [
   {
     id: "scale",
     name: "Scale",
-    descriptor: "Everything we put out needs to look like one company.",
+    descriptor: "More capacity, faster turnaround, more going out the door.",
     unlockLine: "Everything in Momentum, plus:",
     highlighted: false,
     discountsAvailable: false,
@@ -104,7 +104,7 @@ export const TIERS: Tier[] = [
   {
     id: "partner",
     name: "Partner",
-    descriptor: "We need to look completely different, and be actively marketing.",
+    descriptor: "Embedded in your team, strategising with you.",
     unlockLine: "Everything in Scale, plus:",
     highlighted: true,
     highlightLabel: "Most chosen",

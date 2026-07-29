@@ -11295,6 +11295,11 @@ button.nav-link {
   margin: 0.75rem 0 0;
 }
 
+/* A faint grey fill on the "No Discount Applied" pill so it reads as a quiet chip. */
+.package-saving.saving-neutral {
+  background: color-mix(in srgb, var(--black), transparent 94%);
+}
+
 .partner-terms {
   margin: 0.6rem 0 0;
   color: var(--body);
