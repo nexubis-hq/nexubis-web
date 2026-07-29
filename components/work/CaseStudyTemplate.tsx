@@ -51,16 +51,17 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
 
                 if (item.type === "image") {
                   return (
-                    <Image
-                      key={item.image.src}
-                      className={`${className} case-study-gallery-image`}
-                      src={item.image.src}
-                      alt={item.image.alt}
-                      width={item.image.width}
-                      height={item.image.height}
-                      sizes={getGalleryImageSizes(item.span)}
-                      quality={95}
-                    />
+                    <div key={item.image.src} className={`${className} case-study-gallery-frame`}>
+                      <Image
+                        className="case-study-gallery-image"
+                        src={item.image.src}
+                        alt={item.image.alt}
+                        width={item.image.width}
+                        height={item.image.height}
+                        sizes={getGalleryImageSizes(item.span)}
+                        quality={95}
+                      />
+                    </div>
                   );
                 }
 
@@ -68,7 +69,7 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
                   <CaseStudyVideo
                     key={item.video.src}
                     video={item.video}
-                    className={`${className} case-study-gallery-video case-study-gallery-video-${item.video.aspect}`}
+                    className={`${className} case-study-gallery-frame case-study-gallery-video case-study-gallery-video-${item.video.aspect}`}
                   />
                 );
               })}
@@ -99,7 +100,7 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
                     src={caseStudy.testimonial.storyThumbnail}
                     alt=""
                     width={384}
-                    height={192}
+                    height={216}
                     sizes="12rem"
                   />
                 ) : (
@@ -113,7 +114,10 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
                 )}
                 <div>
                   <span>{caseStudy.testimonial.storyTitle}</span>
-                  <span>Read the full story here -&gt;</span>
+                  <span className="case-study-story-link">
+                    <span>Read the full story here</span>
+                    <span aria-hidden="true">→</span>
+                  </span>
                 </div>
               </Link>
             ) : null}
@@ -151,7 +155,10 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
                   />
                   <h3>{related.title}</h3>
                   <p>{related.problem.body}</p>
-                  <span>See More -&gt;</span>
+                  <span className="case-study-related-link">
+                    <span>See More</span>
+                    <span aria-hidden="true">→</span>
+                  </span>
                 </Link>
               ))}
             </div>
