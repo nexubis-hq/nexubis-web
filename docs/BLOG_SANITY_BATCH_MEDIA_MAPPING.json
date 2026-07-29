@@ -2704,5 +2704,137 @@
     "width": 24,
     "height": 24,
     "status": "reused"
+  },
+  {
+    "slug": "what-early-stage-founders-spend-way-too-much-time-on",
+    "field": "post.thumbnail",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/68122143763874402c013590_What%20Early-Stage%20Founders%20Spend%20Way%20Too%20Much%20Time%20On_Startup%20Stack.webp",
+    "contentHash": "c4bb178aa29cc8a319e35f36805a46fdf690ce8d",
+    "sanityAssetId": "image-c4bb178aa29cc8a319e35f36805a46fdf690ce8d-3840x2160-webp",
+    "contentType": "image/webp",
+    "width": 3840,
+    "height": 2160,
+    "status": "reused"
+  },
+  {
+    "slug": "what-early-stage-founders-spend-way-too-much-time-on",
+    "field": "post.seo.openGraphImage",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681221fefce6c8a5223d9780_open-graph-4.png",
+    "contentHash": "ddbdc4b902c6ce948ec4e6052fcf7c636ac4a285",
+    "sanityAssetId": "image-ddbdc4b902c6ce948ec4e6052fcf7c636ac4a285-1200x630-png",
+    "contentType": "image/png",
+    "width": 1200,
+    "height": 630,
+    "status": "reused"
+  },
+  {
+    "slug": "what-early-stage-founders-spend-way-too-much-time-on",
+    "field": "category.icon",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681a2848208c2283ad87a2d8_stack.svg",
+    "contentHash": "53f1ce459b16abe9be2f6fadbefc7431335f5180",
+    "sanityAssetId": "image-53f1ce459b16abe9be2f6fadbefc7431335f5180-24x24-svg",
+    "contentType": "image/svg+xml",
+    "width": 24,
+    "height": 24,
+    "status": "reused"
+  },
+  {
+    "slug": "how-it-all-started-and-almost-didnt",
+    "field": "post.thumbnail",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681220e76fdf3c4be10244f8_How%20It%20All%20Started%20and%20Almost%20Didn%E2%80%99t_Founders%20Diary.webp",
+    "contentHash": "068086ad12f5f538b01a9a0f0a55ca7cddd9ece5",
+    "sanityAssetId": "image-068086ad12f5f538b01a9a0f0a55ca7cddd9ece5-3840x2160-webp",
+    "contentType": "image/webp",
+    "width": 3840,
+    "height": 2160,
+    "status": "reused"
+  },
+  {
+    "slug": "how-it-all-started-and-almost-didnt",
+    "field": "post.seo.openGraphImage",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681222f1ccb28aab65e632d4_open-graph-3.png",
+    "contentHash": "f59db8382886d1198d499660a9d45e09d71f771e",
+    "sanityAssetId": "image-f59db8382886d1198d499660a9d45e09d71f771e-1200x630-png",
+    "contentType": "image/png",
+    "width": 1200,
+    "height": 630,
+    "status": "reused"
+  },
+  {
+    "slug": "how-it-all-started-and-almost-didnt",
+    "field": "category.icon",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681a28508f107856c3bc7ebf_founder.svg",
+    "contentHash": "01b72d472f33560457b6fa7077b45694e1ee0774",
+    "sanityAssetId": "image-01b72d472f33560457b6fa7077b45694e1ee0774-24x24-svg",
+    "contentType": "image/svg+xml",
+    "width": 24,
+    "height": 24,
+    "status": "reused"
+  },
+  {
+    "slug": "how-we-landed-on-empowering-dreams",
+    "field": "post.thumbnail",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681221011aaf53a89d396738_How%20We%20Landed%20on%20Empowering%20Dreams%20and%20Why%20It%20Stuck_Empowering%20Dreams.webp",
+    "contentHash": "7e84688b6fb68987b66f4518634b96482391255e",
+    "sanityAssetId": "image-7e84688b6fb68987b66f4518634b96482391255e-3840x2160-webp",
+    "contentType": "image/webp",
+    "width": 3840,
+    "height": 2160,
+    "status": "reused"
+  },
+  {
+    "slug": "how-we-landed-on-empowering-dreams",
+    "field": "post.seo.openGraphImage",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/6812228dd6f535075ca356a4_open-graph-2.png",
+    "contentHash": "3fd1cd35b2e5ec6bb39af7abcad7313d01457578",
+    "sanityAssetId": "image-3fd1cd35b2e5ec6bb39af7abcad7313d01457578-1200x630-png",
+    "contentType": "image/png",
+    "width": 1200,
+    "height": 630,
+    "status": "reused"
+  },
+  {
+    "slug": "how-we-landed-on-empowering-dreams",
+    "field": "category.icon",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681a285a8ee955f6bfb99596_dreams.svg",
+    "contentHash": "28eab2a2edd357ba311da36827a0ccff1d6e166b",
+    "sanityAssetId": "image-28eab2a2edd357ba311da36827a0ccff1d6e166b-24x24-svg",
+    "contentType": "image/svg+xml",
+    "width": 24,
+    "height": 24,
+    "status": "reused"
+  },
+  {
+    "slug": "welcome-to-dreamlab",
+    "field": "post.thumbnail",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/68122125eb6ad37e23cab742_Welcome%20to%20Dreamlab_Intro.avif",
+    "contentHash": "66f7c197493c0ece261ed6c038e98b5fd39813d3",
+    "sanityAssetId": "image-66f7c197493c0ece261ed6c038e98b5fd39813d3-3840x2160-avif",
+    "contentType": "image/avif",
+    "width": 3840,
+    "height": 2160,
+    "status": "uploaded"
+  },
+  {
+    "slug": "welcome-to-dreamlab",
+    "field": "post.seo.openGraphImage",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/6812222c180549af5791fd43_open-graph-1.avif",
+    "contentHash": "680d76973a1233a2ff3121d82cd32bf956aa4cb0",
+    "sanityAssetId": "image-680d76973a1233a2ff3121d82cd32bf956aa4cb0-1200x630-avif",
+    "contentType": "image/avif",
+    "width": 1200,
+    "height": 630,
+    "status": "uploaded"
+  },
+  {
+    "slug": "welcome-to-dreamlab",
+    "field": "category.icon",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681a285a8ee955f6bfb99596_dreams.svg",
+    "contentHash": "28eab2a2edd357ba311da36827a0ccff1d6e166b",
+    "sanityAssetId": "image-28eab2a2edd357ba311da36827a0ccff1d6e166b-24x24-svg",
+    "contentType": "image/svg+xml",
+    "width": 24,
+    "height": 24,
+    "status": "reused"
   }
 ]

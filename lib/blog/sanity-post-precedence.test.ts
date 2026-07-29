@@ -71,25 +71,24 @@ function sanityPost(overrides: Partial<SanityPostDocument> = {}): SanityPostDocu
   };
 }
 
-describe("Sanity Blog post precedence", () => {
-  it("uses a published Sanity record before a fixture with the same slug", async () => {
+describe("Sanity Blog post lookup", () => {
+  it("uses a published Sanity record for the slug", async () => {
     const post = await getPostBySlug("circuit-securing-nexubis", async () => sanityPost());
 
     expect(post?.source).toBe("sanity");
     expect(post?.title).toBe("Published Sanity Circuit");
   });
 
-  it("uses a fixture when no published Sanity post exists", async () => {
+  it("returns null when no published Sanity post exists", async () => {
     const post = await getPostBySlug("circuit-securing-nexubis", async () => null);
 
-    expect(post?.source).toBe("fixture");
-    expect(post?.title).toBe("Circuit: Securing Nexubis");
+    expect(post).toBeNull();
   });
 
-  it("does not let a draft-only query result override a fixture", async () => {
+  it("does not expose draft-only query misses through a fixture fallback", async () => {
     const post = await getPostBySlug("circuit-securing-nexubis", async () => null);
 
-    expect(post?.source).toBe("fixture");
+    expect(post).toBeNull();
   });
 
   it("returns null for an unknown slug", async () => {

@@ -4,7 +4,6 @@ import path from "node:path";
 import * as cheerio from "cheerio";
 import type { AnyNode, Element } from "domhandler";
 import { getCliClient } from "sanity/cli";
-import generatedPosts from "@/lib/blog/generated/posts.json";
 import { normaliseBlogExcerpt } from "./lib/normalise-blog-excerpt";
 import { normaliseSeoDescription } from "./lib/normalise-seo-description";
 
@@ -25,6 +24,7 @@ const MANIFEST_PATH = path.join(process.cwd(), "docs", "BLOG_SANITY_BATCH_MANIFE
 const REPORT_PATH = path.join(process.cwd(), "docs", "BLOG_SANITY_BATCH_REPORT.md");
 const AUDIT_PATH = path.join(process.cwd(), "docs", "BLOG_WEBFLOW_DEPENDENCY_AUDIT.json");
 const MEDIA_MAPPING_PATH = path.join(process.cwd(), "docs", "BLOG_SANITY_BATCH_MEDIA_MAPPING.json");
+const GENERATED_POSTS_ARCHIVE_PATH = path.join(process.cwd(), "docs", "archive", "blog-webflow-generated", "posts.json");
 const PUBLIC_BASE_URL = "https://nexubis.vercel.app";
 const LEGACY_BASE_URL = "https://www.nexubis.io";
 const COMPLETED_PRIORITY_SLUGS = new Set([
@@ -117,6 +117,17 @@ type Manifest = {
   generatedAt: string;
   inventoryCount: number;
   posts: ManifestPost[];
+  batchSelections?: Array<{
+    batchId: string;
+    batchSize: number;
+    selectedSlugs: string[];
+    lockedAt: string;
+  }>;
+};
+
+type GeneratedPostSummary = {
+  title: string;
+  slug: string;
 };
 type BatchResult = {
   batchId: string;
@@ -339,6 +350,13 @@ function deterministicAssetId(hash: string, contentType: string, width?: number,
   return extension ? `image-${hash}-${width}x${height}-${extension}` : null;
 }
 
+async function findExistingImageAssetId(client: ReturnType<typeof getCliClient>, hash: string) {
+  return client.fetch<string | null>(
+    '*[_type == "sanity.imageAsset" && sha1hash == $hash][0]._id',
+    { hash },
+  );
+}
+
 async function uploadImage(
   client: ReturnType<typeof getCliClient>,
   slug: string,
@@ -352,8 +370,11 @@ async function uploadImage(
   const existingId = deterministicAssetId(media.hash, media.contentType, media.width, media.height);
   const filename = decodeURIComponent(new URL(url).pathname.split("/").pop() || `${field}.png`);
 
-  if (existingId) {
-    const existing = await client.getDocument(existingId);
+  const existingByHash = await findExistingImageAssetId(client, media.hash);
+  const reusableId = existingByHash ?? existingId;
+
+  if (reusableId) {
+    const existing = await client.getDocument(reusableId);
     if (existing?._id) {
       mappings.push({
         slug,
@@ -598,6 +619,7 @@ async function migrateSharedCategoryIcons(
 
 function loadManifest(): Manifest {
   if (existsSync(MANIFEST_PATH)) return JSON.parse(readFileSync(MANIFEST_PATH, "utf8")) as Manifest;
+  const generatedPosts = JSON.parse(readFileSync(GENERATED_POSTS_ARCHIVE_PATH, "utf8")) as GeneratedPostSummary[];
   const posts = (generatedPosts as Array<{ title: string; slug: string }>).map((post, index) => ({
     title: post.title,
     exactSlug: post.slug,
@@ -628,7 +650,7 @@ function writeManifest(manifest: Manifest) {
   writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 }
 
-function selectBatch(
+export function selectBatch(
   manifest: Manifest,
   sourcePosts: CsvRecord[],
   existingSanitySlugs: Set<string>,
@@ -650,7 +672,43 @@ function selectBatch(
     .slice(0, batchSize);
 }
 
-function selectManifestBatch(manifest: Manifest, batchId: string, batchSize: number, explicitSlug?: string) {
+export function lockBatchSelection(
+  manifest: Manifest,
+  sourcePosts: CsvRecord[],
+  existingSanitySlugs: Set<string>,
+  batchId: string,
+  batchSize: number,
+  explicitSlug?: string,
+) {
+  manifest.batchSelections ??= [];
+  const existing = manifest.batchSelections.find((selection) => selection.batchId === batchId);
+  if (existing) {
+    return existing.selectedSlugs
+      .map((slug) => manifest.posts.find((post) => post.exactSlug === slug))
+      .filter((post): post is ManifestPost => Boolean(post))
+      .sort((a, b) => a.originalIndex - b.originalIndex);
+  }
+
+  const selected = selectBatch(manifest, sourcePosts, existingSanitySlugs, batchSize, explicitSlug);
+  manifest.batchSelections.push({
+    batchId,
+    batchSize,
+    selectedSlugs: selected.map((post) => post.exactSlug),
+    lockedAt: new Date().toISOString(),
+  });
+  return selected;
+}
+
+export function selectManifestBatch(manifest: Manifest, batchId: string, batchSize: number, explicitSlug?: string) {
+  const locked = manifest.batchSelections?.find((selection) => selection.batchId === batchId);
+  if (locked && !explicitSlug) {
+    return locked.selectedSlugs
+      .map((slug) => manifest.posts.find((post) => post.exactSlug === slug))
+      .filter((post): post is ManifestPost => Boolean(post))
+      .sort((a, b) => a.originalIndex - b.originalIndex)
+      .slice(0, locked.selectedSlugs.length);
+  }
+
   const inventory = explicitSlug
     ? manifest.posts.filter((post) => post.exactSlug === explicitSlug)
     : manifest.posts.filter((post) => post.batchId === batchId);
@@ -672,6 +730,7 @@ function parseArgs() {
     publish: has("--publish"),
     verifyOnly: has("--verify-only"),
     finalAudit: has("--final-audit"),
+    backfillLegacyOrder: has("--backfill-legacy-order"),
     batchSize: Number(value("--batch-size") ?? 10),
     batchId: value("--batch-id") ?? `batch-${new Date().toISOString().slice(0, 10)}`,
     slug: value("--slug"),
@@ -765,6 +824,7 @@ async function importPost(
     _type: "post",
     title,
     slug: { _type: "slug", current: slug },
+    legacyOrder: manifestPost.originalIndex,
     excerpt,
     body,
     publishedAt,
@@ -984,7 +1044,10 @@ function writeAudit(results: BatchResult[], manifest: Manifest) {
 }
 
 async function oxipackTitleComparison(client: ReturnType<typeof getCliClient>, sourcePosts: CsvRecord[]) {
-  const generated = (generatedPosts as Array<{ title: string; slug: string }>).find((post) => post.slug === "oxipack-empowering-nexubis");
+  const generatedPosts = existsSync(GENERATED_POSTS_ARCHIVE_PATH)
+    ? (JSON.parse(readFileSync(GENERATED_POSTS_ARCHIVE_PATH, "utf8")) as GeneratedPostSummary[])
+    : [];
+  const generated = generatedPosts.find((post) => post.slug === "oxipack-empowering-nexubis");
   const source = sourcePosts.find((post) => post.Slug === "oxipack-empowering-nexubis");
   const sanity = await client.fetch(
     '*[_type == "post" && slug.current == "oxipack-empowering-nexubis"]{_id,title,"slug":slug.current}',
@@ -1005,19 +1068,58 @@ async function oxipackTitleComparison(client: ReturnType<typeof getCliClient>, s
   };
 }
 
+async function backfillLegacyOrder(client: ReturnType<typeof getCliClient>, manifest: Manifest, execute: boolean) {
+  const completed = manifest.posts
+    .filter((post) => post.status === "complete" && post.sanityPublishedId)
+    .sort((a, b) => a.originalIndex - b.originalIndex);
+
+  if (completed.length !== manifest.inventoryCount) {
+    throw new Error(`Cannot backfill legacyOrder until all manifest records are complete: ${completed.length}/${manifest.inventoryCount}`);
+  }
+
+  if (execute) {
+    const transaction = client.transaction();
+    for (const post of completed) {
+      transaction.patch(post.sanityPublishedId as string, (patch) => patch.set({ legacyOrder: post.originalIndex }));
+    }
+    await transaction.commit();
+  }
+
+  const counts = await client.fetch(
+    `{
+      "published": count(*[_type == "post" && defined(slug.current) && !(_id in path("drafts.**")) && !(_id in path("versions.**"))]),
+      "uniqueOrders": count(array::unique(*[_type == "post" && defined(slug.current) && !(_id in path("drafts.**")) && !(_id in path("versions.**"))].legacyOrder)),
+      "missingOrders": count(*[_type == "post" && defined(slug.current) && !(_id in path("drafts.**")) && !(_id in path("versions.**")) && !defined(legacyOrder)]),
+      "orders": *[_type == "post" && defined(slug.current) && !(_id in path("drafts.**")) && !(_id in path("versions.**"))] | order(legacyOrder asc){"slug": slug.current, legacyOrder}
+    }`,
+  );
+  console.log(JSON.stringify({ backfillLegacyOrder: { execute, selected: completed.length, counts } }, null, 2));
+}
+
 async function main() {
   const args = parseArgs();
   const client = getCliClient({ apiVersion: API_VERSION }).withConfig({ useCdn: false, perspective: "raw" });
   const sourcePosts = parseCsv(readFileSync(BLOG_CSV, "utf8"));
   const sourceCategories = parseCsv(readFileSync(CATEGORIES_CSV, "utf8"));
   const manifest = loadManifest();
+  if (args.backfillLegacyOrder) {
+    await backfillLegacyOrder(client, manifest, args.execute);
+    return;
+  }
   const sharedCategoryMedia = args.verifyOnly || args.finalAudit
     ? []
     : await migrateSharedCategoryIcons(client, sourceCategories, args.execute);
   const existingSanity = await client.fetch<string[]>(
     '*[_type == "post" && defined(slug.current) && !(_id in path("drafts.**"))].slug.current',
   );
-  const selected = selectBatch(manifest, sourcePosts, new Set(existingSanity), args.batchSize, args.slug);
+  const selected = lockBatchSelection(
+    manifest,
+    sourcePosts,
+    new Set(existingSanity),
+    args.batchId,
+    args.batchSize,
+    args.slug,
+  );
   const oxipack = await oxipackTitleComparison(client, sourcePosts);
 
   if (!selected.length && !args.verifyOnly && !args.finalAudit) throw new Error("No eligible posts selected.");
@@ -1087,7 +1189,9 @@ async function main() {
   console.log(JSON.stringify({ args, selected: reportSelection, results }, null, 2));
 }
 
-main().catch((error) => {
-  console.error(error instanceof Error ? error.stack || error.message : error);
-  process.exitCode = 1;
-});
+if (process.argv[1]?.replaceAll("\\", "/").endsWith("scripts/migrate-blog-sanity-batch.ts")) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.stack || error.message : error);
+    process.exitCode = 1;
+  });
+}

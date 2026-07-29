@@ -61,6 +61,14 @@ export const post = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "legacyOrder",
+      title: "Legacy order",
+      type: "number",
+      group: "content",
+      readOnly: true,
+      validation: (rule) => rule.integer().min(1),
+    }),
+    defineField({
       name: "updatedAt",
       title: "Updated at",
       type: "datetime",

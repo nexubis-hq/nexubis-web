@@ -1,5 +1,3 @@
-import categoriesData from "@/lib/blog/generated/categories.json";
-import generatedPosts from "@/lib/blog/generated/posts.json";
 import { mapSanityPostSummaryToBlogPostSummary } from "@/lib/blog/sanity-post-mapper";
 import { sanityImageUrl } from "@/lib/blog/sanity-image-url";
 import type { SanityBlogCategoryIconDocument, SanityPostSummaryDocument } from "@/lib/blog/sanity-types";
@@ -38,51 +36,29 @@ function imageUrl(image: SanityBlogCategoryIconDocument["icon"]) {
   return sanityImageUrl(image as { asset?: { _ref?: string } } | null | undefined);
 }
 
-function resolveCategoryIcons(
-  categories: BlogCategory[],
-  sanityCategories: SanityBlogCategoryIconDocument[],
-) {
-  const iconBySlug = new Map<string, string>();
-  const sanityCategoryBySlug = new Map(sanityCategories.filter((category) => category.slug).map((category) => [category.slug as string, category]));
+const CATEGORY_ORDER = [
+  "empowering-dreams",
+  "founders-diary",
+  "ai-x-nexubis",
+  "startup-stack",
+  "company",
+  "for-professionals",
+];
 
-  for (const category of categories) {
-    const sanityCategory = sanityCategoryBySlug.get(category.slug);
-    if (!sanityCategory) {
-      if (sanityCategories.length > 0) {
-        throw new Error(`Published Sanity Blog category is missing for slug: ${category.slug}`);
-      }
-      if (category.icon) iconBySlug.set(category.slug, category.icon);
-      continue;
-    }
+function mapSanityCategories(sanityCategories: SanityBlogCategoryIconDocument[]): BlogCategory[] {
+  const bySlug = new Map(sanityCategories.filter((category) => category.slug).map((category) => [category.slug as string, category]));
 
-    const icon = imageUrl(sanityCategory.icon);
-    if (!icon) {
-      throw new Error(`Published Sanity Blog category is missing a required icon asset: ${category.slug}`);
-    }
-    iconBySlug.set(category.slug, icon);
-  }
-
-  return iconBySlug;
-}
-
-function withGeneratedSource(post: BlogPostSummary): BlogPostSummary {
-  return {
-    ...post,
-    source: post.source ?? "generated",
-  };
-}
-
-export function getGeneratedBlogIndexPosts(): BlogIndexData {
-  return {
-    posts: (generatedPosts as BlogPostSummary[]).map(withGeneratedSource),
-    categories: categoriesData.categories as BlogCategory[],
-    stats: categoriesData.stats,
-  };
-}
-
-function timestamp(post: BlogPostSummary) {
-  const value = new Date(post.publishedAt).getTime();
-  return Number.isFinite(value) ? value : 0;
+  return CATEGORY_ORDER.map((slug) => {
+    const category = bySlug.get(slug);
+    if (!category) throw new Error(`Published Sanity Blog category is missing for slug: ${slug}`);
+    const icon = imageUrl(category.icon);
+    if (!icon) throw new Error(`Published Sanity Blog category is missing a required icon asset: ${slug}`);
+    return {
+      label: category.title ?? "",
+      slug,
+      icon,
+    };
+  });
 }
 
 export async function getBlogIndexPosts(
@@ -93,9 +69,10 @@ export async function getBlogIndexPosts(
     fetchPublishedSanitySummaries(),
     fetchPublishedCategoryIcons(),
   ]);
-  const sanityBySlug = new Map<string, BlogPostSummary>();
-  const generatedCategories = categoriesData.categories as BlogCategory[];
-  const categoryIconBySlug = resolveCategoryIcons(generatedCategories, sanityCategories);
+  const categories = mapSanityCategories(sanityCategories);
+  const categoryIconBySlug = new Map(categories.map((category) => [category.slug, category.icon]));
+  const seen = new Set<string>();
+  const posts: BlogPostSummary[] = [];
 
   for (const sanityPost of sanityPosts) {
     const summary = mapSanityPostSummaryToBlogPostSummary(sanityPost);
@@ -106,41 +83,23 @@ export async function getBlogIndexPosts(
     }
 
     if (!summary) continue;
-    sanityBySlug.set(summary.slug, summary);
+    if (seen.has(summary.slug)) continue;
+    seen.add(summary.slug);
+    posts.push({
+      ...summary,
+      categoryIcon: categoryIconBySlug.get(summary.categorySlug) ?? summary.categoryIcon,
+    });
   }
 
-  const seen = new Set<string>();
-  const generatedSummaries = getGeneratedBlogIndexPosts().posts;
-  const mergedPosts = generatedSummaries
-    .map((post) => {
-      const sanityPost = sanityBySlug.get(post.slug);
-      if (sanityPost) {
-        return {
-          ...sanityPost,
-          categoryIcon: categoryIconBySlug.get(sanityPost.categorySlug) ?? sanityPost.categoryIcon,
-        };
-      }
-      return {
-        ...post,
-        categoryIcon: categoryIconBySlug.get(post.categorySlug) ?? post.categoryIcon,
-      };
-    })
-    .filter((post) => {
-      if (!post.slug || seen.has(post.slug)) return false;
-      seen.add(post.slug);
-      return true;
-    });
-
-  const futureSanityPosts = Array.from(sanityBySlug.values())
-    .filter((post) => !seen.has(post.slug))
-    .sort((a, b) => timestamp(b) - timestamp(a));
-
   return {
-    posts: [...mergedPosts, ...futureSanityPosts],
-    categories: generatedCategories.map((category) => ({
-      ...category,
-      icon: categoryIconBySlug.get(category.slug) ?? category.icon,
-    })),
-    stats: categoriesData.stats,
+    posts,
+    categories,
+    stats: {
+      totalRecords: posts.length,
+      excludedRecords: 0,
+      draftRecords: 0,
+      archivedRecords: 0,
+      invalidPublishedDateRecords: 0,
+    },
   };
 }

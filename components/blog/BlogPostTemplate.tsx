@@ -14,12 +14,12 @@ type BlogPostTemplateProps = {
   post: BlogPost;
 };
 
-export function BlogPostTemplate({ post }: BlogPostTemplateProps) {
+export async function BlogPostTemplate({ post }: BlogPostTemplateProps) {
   const portableText = post.bodyPortableText;
   const { html, toc } = portableText
     ? { html: undefined, toc: collectPortableTextHeadings(portableText) }
     : sanitizeBlogPostHtml(post.bodyHtml ?? "");
-  const relatedPosts = getRelatedPostSummaries(post);
+  const relatedPosts = await getRelatedPostSummaries(post);
 
   return (
     <main className={styles.page}>

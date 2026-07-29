@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -14,12 +16,14 @@ const WEBFLOW_HOSTS = ["cdn.prod.website-files.com", "website-files.com", "uploa
 
 function sanitySummary(
   slug: string,
+  legacyOrder: number,
   overrides: Partial<SanityPostSummaryDocument> = {},
 ): SanityPostSummaryDocument {
   return {
     _id: `post-${slug}`,
     title: `Sanity ${slug}`,
     slug,
+    legacyOrder,
     excerpt: "  Sanity summary \n excerpt  ",
     publishedAt: "2025-11-06T10:44:45.000Z",
     featured: true,
@@ -28,7 +32,7 @@ function sanitySummary(
     category: {
       title: "Empowering Dreams",
       slug: "empowering-dreams",
-      icon: { asset: { _ref: "image-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb-24x24-svg" } },
+      icon: { asset: { _ref: SANITY_CATEGORY_ICON_REF } },
     },
     ...overrides,
   };
@@ -54,120 +58,89 @@ function sanityCategories(
   }));
 }
 
-describe("Blog index Sanity precedence", () => {
-  it("uses published Sanity summaries before generated summaries with the same slug", async () => {
-    const { posts } = await getBlogIndexPosts(async () => [
-      sanitySummary("circuit-securing-nexubis", { title: "Published Sanity Circuit" }),
-    ]);
-    const post = posts.find((summary) => summary.slug === "circuit-securing-nexubis");
-
-    expect(post?.source).toBe("sanity");
-    expect(post?.title).toBe("Published Sanity Circuit");
-    expect(post?.excerpt).toBe("Sanity summary excerpt");
-  });
-
-  it("does not show draft-only Sanity summaries when the published query returns none", async () => {
-    const { posts } = await getBlogIndexPosts(async () => []);
-    const post = posts.find((summary) => summary.slug === "circuit-securing-nexubis");
-
-    expect(post?.source).toBe("generated");
-    expect(post?.title).toBe("Circuit: Securing Nexubis");
-  });
-
-  it("keeps generated summaries when no published Sanity record exists", async () => {
-    const { posts } = await getBlogIndexPosts(async () => [
-      sanitySummary("circuit-securing-nexubis"),
-    ]);
-    const post = posts.find((summary) => summary.slug === "the-nexubis-effect");
-
-    expect(post?.source).toBe("generated");
-    expect(post?.title).toBe("The Nexubis Effect");
-  });
-
-  it("deduplicates exact slugs and keeps the generated-list order stable", async () => {
-    const { posts } = await getBlogIndexPosts(async () => [
-      sanitySummary("circuit-securing-nexubis", { title: "Older duplicate" }),
-      sanitySummary("circuit-securing-nexubis", { title: "Newer duplicate" }),
-    ]);
-
-    expect(posts).toHaveLength(88);
-    expect(posts.map((post) => post.slug).filter((slug) => slug === "circuit-securing-nexubis")).toHaveLength(1);
-    expect(posts.slice(0, 4).map((post) => post.slug)).toEqual([
-      "the-nexubis-effect",
-      "circuit-securing-nexubis",
-      "oxipack-empowering-nexubis",
-      "altify-empowering-nexubis",
-    ]);
-    expect(posts.find((post) => post.slug === "circuit-securing-nexubis")?.title).toBe(
-      "Newer duplicate",
+describe("Blog index Sanity-only data", () => {
+  it("uses only published Sanity summaries", async () => {
+    const { posts } = await getBlogIndexPosts(
+      async () => [sanitySummary("circuit-securing-nexubis", 2)],
+      async () => sanityCategories(),
     );
+
+    expect(posts).toHaveLength(1);
+    expect(posts[0].source).toBe("sanity");
+    expect(posts[0].title).toBe("Sanity circuit-securing-nexubis");
+    expect(posts[0].excerpt).toBe("Sanity summary excerpt");
   });
 
-  it("uses Sanity thumbnails for Sanity summaries and never the generated Webflow thumbnail", async () => {
-    const { posts } = await getBlogIndexPosts(async () => [
-      sanitySummary("circuit-securing-nexubis"),
-    ]);
-    const post = posts.find((summary) => summary.slug === "circuit-securing-nexubis");
+  it("does not show generated summaries when the published query returns none", async () => {
+    const { posts } = await getBlogIndexPosts(async () => [], async () => sanityCategories());
 
-    expect(post?.thumbnail).toContain("cdn.sanity.io");
-    expect(post?.thumbnailAlt).toBe("Exact Sanity thumbnail alt");
+    expect(posts).toHaveLength(0);
+  });
+
+  it("deduplicates exact slugs without pulling generated fallback records", async () => {
+    const { posts } = await getBlogIndexPosts(
+      async () => [
+        sanitySummary("circuit-securing-nexubis", 2, { title: "Older duplicate" }),
+        sanitySummary("circuit-securing-nexubis", 2, { title: "Newer duplicate" }),
+      ],
+      async () => sanityCategories(),
+    );
+
+    expect(posts).toHaveLength(1);
+    expect(posts[0].slug).toBe("circuit-securing-nexubis");
+    expect(posts[0].title).toBe("Older duplicate");
+  });
+
+  it("keeps the Sanity legacyOrder query as the ordering source", () => {
+    const querySource = readFileSync(path.join(process.cwd(), "sanity/lib/queries.ts"), "utf8");
+
+    expect(querySource).toContain("order(legacyOrder asc)");
+    expect(querySource).not.toContain("order(publishedAt desc)");
+  });
+
+  it("uses Sanity thumbnails and never a Webflow thumbnail", async () => {
+    const { posts } = await getBlogIndexPosts(
+      async () => [sanitySummary("circuit-securing-nexubis", 2)],
+      async () => sanityCategories(),
+    );
+    const post = posts[0];
+
+    expect(post.thumbnail).toContain("cdn.sanity.io");
+    expect(post.thumbnailAlt).toBe("Exact Sanity thumbnail alt");
     for (const host of WEBFLOW_HOSTS) {
-      expect(post?.thumbnail).not.toContain(host);
+      expect(post.thumbnail).not.toContain(host);
     }
   });
 
   it("reports a data-validation problem instead of falling back when Sanity thumbnail is missing", async () => {
     await expect(
-      getBlogIndexPosts(async () => [
-        sanitySummary("circuit-securing-nexubis", { thumbnail: null, thumbnailAlt: null }),
-      ]),
+      getBlogIndexPosts(
+        async () => [sanitySummary("circuit-securing-nexubis", 2, { thumbnail: null, thumbnailAlt: null })],
+        async () => sanityCategories(),
+      ),
     ).rejects.toThrow(
       "Published Sanity Blog summary is missing a required thumbnail asset: circuit-securing-nexubis",
     );
   });
 
-  it("filters across Sanity and generated summaries using the shared category slug", async () => {
-    const { posts, categories } = await getBlogIndexPosts(async () => [
-      sanitySummary("circuit-securing-nexubis"),
-    ], async () => sanityCategories());
-    const empoweringDreams = posts.filter((post) => post.categorySlug === "empowering-dreams");
-
-    expect(categories.map((category) => category.label)).toEqual([
-      "Empowering Dreams",
-      "Founders Diary",
-      "Artificial Intelligence",
-      "Startup Stack",
-      "Company",
-      "For Professionals",
-    ]);
-    expect(empoweringDreams.some((post) => post.source === "sanity")).toBe(true);
-    expect(empoweringDreams.some((post) => post.source === "generated")).toBe(true);
-  });
-
-  it("uses Sanity category icons for filter buttons", async () => {
-    const { posts, categories } = await getBlogIndexPosts(async () => [
-      sanitySummary("circuit-securing-nexubis"),
-    ], async () => sanityCategories());
+  it("uses Sanity category icons for filters and cards", async () => {
+    const { posts, categories } = await getBlogIndexPosts(
+      async () => [sanitySummary("circuit-securing-nexubis", 2)],
+      async () => sanityCategories(),
+    );
     const html = renderToStaticMarkup(createElement(BlogIndex, { posts, categories }));
-    const filtersMarkup = html.slice(html.indexOf("<fieldset"), html.indexOf("</fieldset>") + "</fieldset>".length);
 
-    expect(html).toContain("cdn.sanity.io");
+    expect(categories.map((category) => category.slug)).toEqual([
+      "empowering-dreams",
+      "founders-diary",
+      "ai-x-nexubis",
+      "startup-stack",
+      "company",
+      "for-professionals",
+    ]);
     expect(categories.every((category) => category.icon?.includes("cdn.sanity.io"))).toBe(true);
     for (const host of WEBFLOW_HOSTS) {
-      expect(filtersMarkup).not.toContain(host);
-    }
-  });
-
-  it("uses the shared Sanity category icon for generated fallback cards", async () => {
-    const { posts } = await getBlogIndexPosts(async () => [
-      sanitySummary("circuit-securing-nexubis"),
-    ], async () => sanityCategories());
-    const generatedPost = posts.find((post) => post.slug === "the-nexubis-effect");
-
-    expect(generatedPost?.source).toBe("generated");
-    expect(generatedPost?.categoryIcon).toContain("cdn.sanity.io");
-    for (const host of WEBFLOW_HOSTS) {
-      expect(generatedPost?.categoryIcon).not.toContain(host);
+      expect(html).not.toContain(host);
     }
   });
 
@@ -175,14 +148,5 @@ describe("Blog index Sanity precedence", () => {
     await expect(
       getBlogIndexPosts(async () => [], async () => sanityCategories({ icon: null })),
     ).rejects.toThrow("Published Sanity Blog category is missing a required icon asset: empowering-dreams");
-  });
-
-  it("keeps source metadata internal to data and out of BlogIndex markup", async () => {
-    const { posts, categories } = await getBlogIndexPosts(async () => [
-      sanitySummary("circuit-securing-nexubis"),
-    ], async () => sanityCategories());
-    const html = renderToStaticMarkup(createElement(BlogIndex, { posts, categories }));
-
-    expect(html).not.toContain("source");
   });
 });

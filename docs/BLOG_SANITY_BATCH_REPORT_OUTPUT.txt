@@ -1,114 +1,19 @@
-Blog Sanity Batch 08 Final Report
+Blog Final Sanity Cutover Report Output
 
-Batch ID: batch-2026-07-29-archive-08
+Local validation completed before production deployment:
+- Published Sanity Blog posts: 88
+- Unique published slugs: 88
+- Manifest complete: 88
+- Manifest pending: 0
+- Manifest validation-failed: 0
+- legacyOrder: 88 unique values, 1 through 88
+- Stored Sanity Webflow media/runtime dependencies: 0
+- Public Blog runtime generated fallback imports in app/components/lib/sanity: 0
+- Retry-selection hardening tests: passed
+- Lint: passed with existing warnings
+- Typecheck: passed
+- Test: passed, 38 files / 281 tests
+- Build: passed
+- Build independence: passed with webflow-export and archived generated Webflow JSON temporarily unavailable
 
-Batch 07 verification:
-- Commit: 7630ef9e5f97762aac54943bffec1dc2c128cb7e.
-- Branch: shannah.
-- Push result: present on origin/shannah before Batch 08.
-- Vercel deployment: dpl_13ebu2sGdpSCQk28Brr5Fo4wL4sZ, Ready, aliased to https://nexubis.vercel.app.
-- Deployed preflight split: 88 unique cards, 74 Sanity, 14 fallback.
-
-Preflight counts:
-- Published Sanity posts before Batch 08: 74.
-- Published Sanity posts after Batch 08: 84.
-- Unique published slugs after Batch 08: 84.
-- Duplicate published slugs: 0.
-- Draft Blog posts: 0.
-- Manifest after Batch 08: 88 records, 84 complete, 4 pending, 0 validation-failed.
-
-Selected posts:
-1. 75 | Building Fast vs. Building Right | building-fast-vs-building-right | https://www.nexubis.io/post/building-fast-vs-building-right
-2. 76 | Empowering Communities | empowering-communities | https://www.nexubis.io/post/empowering-communities
-3. 77 | The Work-Life Balance Lie | the-work-life-balance-lie | https://www.nexubis.io/post/the-work-life-balance-lie
-4. 78 | When Branding Does (and Doesn’t) Matter | when-branding-does-and-doesnt-matter | https://www.nexubis.io/post/when-branding-does-and-doesnt-matter
-5. 79 | Empowering Founders | empowering-founders | https://www.nexubis.io/post/empowering-founders
-6. 80 | Keep Firing Yourself | keep-firing-yourself | https://www.nexubis.io/post/keep-firing-yourself
-7. 81 | How We Work | how-we-work | https://www.nexubis.io/post/how-we-work
-8. 82 | The Tech Stack We Actually Recommend | the-tech-stack-we-actually-recommend | https://www.nexubis.io/post/the-tech-stack-we-actually-recommend
-9. 83 | Empowering Teams | empowering-teams | https://www.nexubis.io/post/empowering-teams
-10. 84 | AI Isn’t Coming — It’s Already Here | ai-isnt-coming-its-already-here | https://www.nexubis.io/post/ai-isnt-coming-its-already-here
-
-Final four left pending:
-1. 85 | Startup Time Traps | what-early-stage-founders-spend-way-too-much-time-on | https://www.nexubis.io/post/what-early-stage-founders-spend-way-too-much-time-on
-2. 86 | How It All Started (and Almost Didn’t) | how-it-all-started-and-almost-didnt | https://www.nexubis.io/post/how-it-all-started-and-almost-didnt
-3. 87 | How We Landed on Empowering Dreams | how-we-landed-on-empowering-dreams | https://www.nexubis.io/post/how-we-landed-on-empowering-dreams
-4. 88 | Welcome to Dreamlab | welcome-to-dreamlab | https://www.nexubis.io/post/welcome-to-dreamlab
-
-Publication:
-- Draft IDs created/replaced: drafts.post-[exact-slug] for the ten selected posts.
-- Published IDs: post-[exact-slug] for the ten selected posts.
-- Posts published: 10.
-- Posts left as drafts: 0.
-- Posts requiring repair: 0.
-- A timeout retry briefly selected the final four; those four published post documents were deleted, their manifest entries restored to pending, and their mapping rows removed. Final state is 84 complete and 4 pending.
-
-Structured-field whitespace:
-- Only how-we-work had an outer-whitespace source excerpt; it was trimmed by the existing normalizer.
-- No slug, body, heading, punctuation, capitalization, URL or caption changes were made.
-
-Portable Text:
-- Total selected conversion: 421 blocks, 58 headings, 263 paragraphs, 90 unordered list items, 4 ordered items, 6 blockquotes, 6 links, 0 inline images.
-- Content order and supported formatting were preserved.
-
-Excerpt and SEO:
-- All excerpts <= 300 characters.
-- All SEO descriptions <= 170 characters.
-- SEO title warnings stayed non-blocking; SEO titles were not truncated.
-
-Media:
-- Mapping rows: 30.
-- Uploaded assets: 11.
-- Reused assets: 19.
-- Fields covered: post.thumbnail, post.seo.openGraphImage, category.icon.
-- All selected thumbnails use cdn.sanity.io.
-- Lottie/showreel: none present in the selected ten.
-
-Audits:
-- Stored-data Webflow audit: passed for all ten selected posts.
-- Blog card verification: passed for all ten selected cards.
-- Blog DOM/hydration: selected cards are Sanity-backed; four fallback Webflow thumbnails remain pending.
-- Browser network: zero Webflow requests on /blog and every selected article route.
-- Rendered article routes: zero Webflow media/runtime URLs for every selected route.
-- Related posts: zero Webflow URLs on selected routes.
-
-Routes and canonicals:
-- Every selected staging route returned HTTP 200 at https://nexubis.vercel.app/post/[exact-slug].
-- Canonical remains https://www.nexubis.io/post/[exact-slug].
-- No slug, route, redirect, /blog/[slug], or Vercel canonical changes were made.
-
-Validation:
-- Dry-run: passed.
-- Execute/publish: passed after timeout retry repair.
-- Sanity document validation: 0 errors, 27 existing SEO-title warnings.
-- Verify-only/idempotency: passed; no duplicates or changed slugs.
-- Lint: passed, 0 errors, 29 existing warnings.
-- Typecheck: passed.
-- Test: passed, 35 files and 270 tests.
-- Build: passed.
-
-Changed files:
-- docs/BLOG_SANITY_BATCH_MANIFEST.json
-- docs/BLOG_SANITY_BATCH_MEDIA_MAPPING.json
-- docs/BLOG_SANITY_BATCH_REPORT.md
-- docs/BLOG_SANITY_BATCH_REPORT_OUTPUT.txt
-- docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json
-
-Excluded dirty files:
-- app/api/contact/route.ts
-- components/CompetitorComparisonLottie.tsx
-- components/ContactTabs.tsx
-- lib/contact/contact-route.test.ts
-- lib/packages-faq.ts
-- docs/BLOG_SANITY_BATCH_04_FINAL_REPORT.txt
-- docs/BLOG_SANITY_BATCH_05_FINAL_REPORT.txt
-- docs/MAIN_SHOWREEL_REPLACEMENT_REPORT.txt
-- docs/PACKAGES_DESKTOP_LOTTIE_REPLACEMENT_REPORT.txt
-- lib/packages-faq.test.ts
-- package-copy-consistency-report.txt
-- package-copy-corrections-report.txt
-- public/assets/lotties/CompetitorComparison_Euro.json
-
-Stop point:
-- Batch 08 complete.
-- Final four-post batch not started.
+Production deployment and route audit details are recorded in BLOG_FINAL_SANITY_CUTOVER_REPORT.md and BLOG_FINAL_ROUTE_AUDIT.json after deployment.
