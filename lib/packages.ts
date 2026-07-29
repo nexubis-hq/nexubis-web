@@ -65,7 +65,7 @@ export const TIERS: Tier[] = [
   {
     id: "scale",
     name: "Scale",
-    descriptor: "More capacity, faster turnaround.",
+    descriptor: "More capacity & skills, faster turnaround.",
     unlockLine: "Everything in Momentum, plus:",
     highlighted: false,
     discountsAvailable: false,
