@@ -1,7 +1,7 @@
 NEXUBIS BLOG SANITY MIGRATION BATCH REPORT
 Batch ID: batch-2026-07-29-archive-02
 
-Status: COMPLETED
+Status: COMPLETED FOR POSTS; SHARED /BLOG FILTER ICON CODE PUSHED, PRODUCTION STILL SERVING OLD ICON HTML AT LAST CHECK
 
 Preflight:
 - /blog returned 88 unique cards before Batch 02.
@@ -61,6 +61,8 @@ Shared category icons:
   Empowering Dreams, Founders Diary, Artificial Intelligence, Startup Stack, Company, For Professionals.
 - The /blog loader now overlays generated category/filter icons with published Sanity category icon assets.
 - Visual filter/card markup and CSS were not redesigned.
+- Sanity category documents now contain icon asset refs for all six categories.
+- At the last production browser check, /blog still rendered the old Webflow filter icon URLs. The app-code change is committed and pushed, but that production HTML had not picked it up yet.
 
 Media:
 - Every selected post thumbnail was uploaded to or reused from Sanity.
@@ -81,8 +83,10 @@ Verification:
 - All 10 /blog cards are Sanity-sourced and use cdn.sanity.io thumbnails.
 - Stored-data Webflow audit passed for the completed posts.
 - Rendered route Webflow audit passed for the completed posts.
+- Browser network audit found zero Webflow requests on all 10 Batch 02 post routes.
+- Browser network audit still found six Webflow filter icon requests on /blog at the last check. Remaining Webflow card media requests belonged to generated fallback cards.
 
-Expected final source counts after deployment/revalidation:
+Current source counts:
 - Total Blog cards: 88.
 - Sanity cards: 24.
 - Generated fallback cards: 64.
@@ -110,4 +114,3 @@ Unrelated dirty files excluded:
 Stop condition:
 - Stopped after batch-2026-07-29-archive-02.
 - Batch 03 was not started.
-
