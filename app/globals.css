@@ -11833,9 +11833,19 @@ summary {
     min-height: 8rem;
   }
 
-  .about-reel {
-    height: 30rem;
+  .about-page .about-reel {
+    height: auto;
     min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  .about-page .about-reel video {
+    position: static;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: 50% 50%;
   }
 
   .about-value-card {
