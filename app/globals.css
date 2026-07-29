@@ -5001,10 +5001,10 @@ button.nav-link {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--s-4);
-  align-items: stretch;
+  align-items: start;
 }
 
-.proof-quote {
+.dmn-testimonial-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -5018,7 +5018,7 @@ button.nav-link {
   box-shadow: inset 0 0 0 1px rgb(29 28 26 / 7%);
 }
 
-.proof-bubble {
+.dmn-quote-area {
   position: relative;
   display: flex;
   flex: 1;
@@ -5029,18 +5029,18 @@ button.nav-link {
   padding-block: 2.25rem 4rem;
 }
 
-.proof-quote .quote-mark {
+.dmn-testimonial-card .quote-mark {
   width: auto;
   height: 2rem;
   fill: rgb(255 65 65 / 16%);
 }
 
-.proof-quote .quote-mark-start {
+.dmn-testimonial-card .quote-mark-start {
   align-self: flex-start;
   margin-bottom: 1rem;
 }
 
-.proof-quote .quote-mark-end {
+.dmn-testimonial-card .quote-mark-end {
   position: absolute;
   right: 0;
   bottom: 1.4rem;
@@ -5059,7 +5059,7 @@ button.nav-link {
   letter-spacing: -0.01em;
 }
 
-.proof-attribution {
+.dmn-attribution {
   display: flex;
   align-items: center;
   gap: 1.35rem;
@@ -5069,27 +5069,33 @@ button.nav-link {
 }
 
 .dmn-avatar {
-  display: grid;
+  position: relative;
+  display: block;
   flex: none;
-  place-items: center;
   width: 3.75rem;
   height: 3.75rem;
-  padding: 0.35rem;
   border-radius: 50%;
   background: var(--primary);
   box-shadow: 0 0.45rem 1rem rgb(255 65 65 / 22%);
+  overflow: hidden;
 }
 
 .proof-avatar {
-  flex: none;
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 3.625rem;
+  height: auto;
+  max-width: none;
   aspect-ratio: 1;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center;
-  box-shadow: 0 0.35rem 0.9rem rgb(29 28 26 / 12%);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  object-fit: contain;
+  object-position: center bottom;
+  transform: translateX(-50%);
+  transform-origin: center bottom;
 }
 
 .proof-person {
@@ -5121,13 +5127,14 @@ button.nav-link {
   background: rgb(29 28 26 / 12%);
 }
 
-.proof-case {
+.oxipack-proof-card {
   display: flex;
+  align-self: start;
   flex-direction: column;
   justify-content: center;
   gap: 1.5rem;
   width: 100%;
-  height: 100%;
+  height: auto;
   padding: 1.5rem;
   border-radius: 16px;
   background: var(--white);
@@ -5224,22 +5231,70 @@ button.nav-link {
   .proof-grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--s-5);
+    align-items: stretch;
+  }
+
+  .dmn-testimonial-card,
+  .oxipack-proof-card {
+    height: 100%;
+    min-height: 0;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1280px) {
+  .dmn-testimonial-card {
+    gap: 1.1rem;
+    padding: 1.75rem 2rem 1.625rem;
+  }
+
+  .dmn-testimonial-card .dmn-quote-area {
+    flex: 1;
+    justify-content: center;
+    max-width: none;
+    padding-block: 2rem 2.35rem;
+  }
+
+  .dmn-testimonial-card .quote-mark {
+    height: 1.65rem;
+  }
+
+  .dmn-testimonial-card .quote-mark-start {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin-bottom: 0;
+  }
+
+  .dmn-testimonial-card .quote-mark-end {
+    right: 0;
+    bottom: 0.45rem;
+    height: 1.65rem;
+  }
+
+  .dmn-testimonial-card .proof-placeholder {
+    font-size: clamp(17px, 1.45vw, 18px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .dmn-testimonial-card .dmn-attribution {
+    gap: 1.1rem;
+    padding-top: 0.85rem;
   }
 }
 
 @media (max-width: 520px) {
-  .proof-quote {
+  .dmn-testimonial-card {
     padding: 1.5rem;
   }
 
-  .proof-attribution {
+  .dmn-attribution {
     gap: 1rem;
   }
 
   .dmn-avatar {
-    width: 3.5rem;
-    height: 3.5rem;
-    padding: 0.3125rem;
+    width: 3.75rem;
+    height: 3.75rem;
   }
 }
 
@@ -11105,6 +11160,11 @@ summary {
   height: 100%;
   object-fit: contain;
   object-position: 50% 0%;
+}
+
+.case-study-page.case-study-oxipack .case-study-testimonial-image {
+  bottom: 0;
+  object-position: center bottom;
 }
 
 .case-study-page .case-study-related {

@@ -41,7 +41,7 @@ export const UNLOCK = {
     "Here's your result. Your full report has your Credibility Score, the competitor comparison, and the first place to fix. We'll also email you the link so you have it.",
   // TODO CONFIRM WITH LEON: exact EU privacy wording. Placeholder kept plain
   // and honest until confirmed.
-  privacyNotice: "We use these details to send your report link and follow up about your results. See our privacy policy.",
+  privacyNotice: "We use these details to send your report link and follow up about your results.",
 } as const;
 
 // ── Report navigation + share ────────────────────────────────────────────────

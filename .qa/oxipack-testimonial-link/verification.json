@@ -1,0 +1,123 @@
+{
+  "statusChecks": {
+    "/work/oxipack": 200,
+    "/blog": 200,
+    "/assets/work/oxipack/kayleigh-smit-portrait.png": 200
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "routeStatus": 200,
+      "testimonialText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.Kayleigh SmitMarketing ManagerOxipack: Funding NexubisRead the full story here→",
+      "storyHref": "/blog",
+      "headerCount": 1,
+      "footerCount": 1,
+      "overflowX": false,
+      "kayleighImages": [
+        {
+          "src": "http://localhost:58524/_next/image?url=%2Fassets%2Fwork%2Foxipack%2Fkayleigh-smit-portrait.png&w=750&q=75",
+          "alt": "Kayleigh Smit",
+          "complete": true,
+          "naturalWidth": 648,
+          "naturalHeight": 648
+        }
+      ],
+      "failed": []
+    },
+    {
+      "viewport": 1280,
+      "routeStatus": 200,
+      "testimonialText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.Kayleigh SmitMarketing ManagerOxipack: Funding NexubisRead the full story here→",
+      "storyHref": "/blog",
+      "headerCount": 1,
+      "footerCount": 1,
+      "overflowX": false,
+      "kayleighImages": [
+        {
+          "src": "http://localhost:58524/_next/image?url=%2Fassets%2Fwork%2Foxipack%2Fkayleigh-smit-portrait.png&w=640&q=75",
+          "alt": "Kayleigh Smit",
+          "complete": true,
+          "naturalWidth": 576,
+          "naturalHeight": 576
+        }
+      ],
+      "failed": []
+    },
+    {
+      "viewport": 991,
+      "routeStatus": 200,
+      "testimonialText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.Kayleigh SmitMarketing ManagerOxipack: Funding NexubisRead the full story here→",
+      "storyHref": "/blog",
+      "headerCount": 1,
+      "footerCount": 1,
+      "overflowX": false,
+      "kayleighImages": [
+        {
+          "src": "http://localhost:58524/_next/image?url=%2Fassets%2Fwork%2Foxipack%2Fkayleigh-smit-portrait.png&w=1080&q=75",
+          "alt": "Kayleigh Smit",
+          "complete": true,
+          "naturalWidth": 939,
+          "naturalHeight": 939
+        }
+      ],
+      "failed": []
+    },
+    {
+      "viewport": 767,
+      "routeStatus": 200,
+      "testimonialText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.Kayleigh SmitMarketing ManagerOxipack: Funding NexubisRead the full story here→",
+      "storyHref": "/blog",
+      "headerCount": 1,
+      "footerCount": 1,
+      "overflowX": false,
+      "kayleighImages": [
+        {
+          "src": "http://localhost:58524/_next/image?url=%2Fassets%2Fwork%2Foxipack%2Fkayleigh-smit-portrait.png&w=828&q=75",
+          "alt": "Kayleigh Smit",
+          "complete": true,
+          "naturalWidth": 767,
+          "naturalHeight": 767
+        }
+      ],
+      "failed": []
+    },
+    {
+      "viewport": 390,
+      "routeStatus": 200,
+      "testimonialText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.Kayleigh SmitMarketing ManagerOxipack: Funding NexubisRead the full story here→",
+      "storyHref": "/blog",
+      "headerCount": 1,
+      "footerCount": 1,
+      "overflowX": false,
+      "kayleighImages": [
+        {
+          "src": "http://localhost:58524/_next/image?url=%2Fassets%2Fwork%2Foxipack%2Fkayleigh-smit-portrait.png&w=3840&q=75",
+          "alt": "Kayleigh Smit",
+          "complete": false,
+          "naturalWidth": 0,
+          "naturalHeight": 0
+        }
+      ],
+      "failed": []
+    },
+    {
+      "viewport": 375,
+      "routeStatus": 200,
+      "testimonialText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.Kayleigh SmitMarketing ManagerOxipack: Funding NexubisRead the full story here→",
+      "storyHref": "/blog",
+      "headerCount": 1,
+      "footerCount": 1,
+      "overflowX": false,
+      "kayleighImages": [
+        {
+          "src": "http://localhost:58524/_next/image?url=%2Fassets%2Fwork%2Foxipack%2Fkayleigh-smit-portrait.png&w=3840&q=75",
+          "alt": "Kayleigh Smit",
+          "complete": false,
+          "naturalWidth": 0,
+          "naturalHeight": 0
+        }
+      ],
+      "failed": []
+    }
+  ]
+}

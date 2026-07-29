@@ -1,8 +1,22 @@
 import posts from "@/lib/blog/generated/post-fixtures.json";
-import type { SanityPostDocument } from "@/lib/blog/sanity-posts";
-import type { BlogPost } from "@/lib/blog/types";
+import generatedSummaries from "@/lib/blog/generated/posts.json";
+import type { SanityPostDocument } from "@/lib/blog/sanity-types";
+import type { BlogPost, BlogPostSummary } from "@/lib/blog/types";
 
 const fixtures = posts as BlogPost[];
+const summaries = generatedSummaries as BlogPostSummary[];
+const caseStudyStorySlugs = new Set([
+  "altify-empowering-nexubis",
+  "oxipack-empowering-nexubis",
+]);
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
 
 export type PublishedSanityPostFetcher = (slug: string) => Promise<SanityPostDocument | null>;
 
@@ -29,7 +43,7 @@ export async function getPostBySlug(
     return mapSanityPostToBlogPost(sanityPost);
   }
 
-  return getPostFixtureBySlug(slug);
+  return getPostFixtureBySlug(slug) ?? getCaseStudyStorySummaryBySlug(slug);
 }
 
 export function getPostFixtureBySlug(slug: string): BlogPost | null {
@@ -38,6 +52,39 @@ export function getPostFixtureBySlug(slug: string): BlogPost | null {
 
 export function getBlogPostFixtureSlugs() {
   return fixtures.map((post) => post.slug);
+}
+
+function getCaseStudyStorySummaryBySlug(slug: string): BlogPost | null {
+  if (!caseStudyStorySlugs.has(slug)) return null;
+
+  const summary = summaries.find((post) => post.slug === slug);
+  if (!summary) return null;
+
+  return {
+    title: summary.title,
+    slug: summary.slug,
+    excerpt: summary.excerpt,
+    author: "Hannes Oosthuizen",
+    category: summary.category,
+    categorySlug: summary.categorySlug,
+    categoryIcon: summary.categoryIcon,
+    publishedAt: summary.publishedAt,
+    updatedAt: summary.publishedAt,
+    bodyHtml: `<p>${escapeHtml(summary.excerpt)}</p>`,
+    thumbnail: summary.thumbnail,
+    thumbnailAlt: summary.thumbnailAlt,
+    heroImage: summary.thumbnail,
+    heroImageAlt: summary.thumbnailAlt,
+    seoTitle: summary.title,
+    seoDescription: summary.excerpt,
+    ogImage: summary.thumbnail,
+    showreelEnabled: false,
+    showreelUrl: null,
+    lottieThumbnail: null,
+    lottieJson: null,
+    relatedSlugs: ["circuit-securing-nexubis"],
+    source: "legacy",
+  };
 }
 
 export async function getBlogPostStaticSlugs() {

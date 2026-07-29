@@ -5,7 +5,7 @@ import { BlogRichText } from "@/components/blog/BlogRichText";
 import { getPostBySlug } from "@/lib/blog/get-post-by-slug";
 import { collectPortableTextHeadings } from "@/lib/blog/heading-ids";
 import { mapSanityPostToBlogPost } from "@/lib/blog/sanity-post-mapper";
-import type { SanityPostDocument } from "@/lib/blog/sanity-posts";
+import type { SanityPostDocument } from "@/lib/blog/sanity-types";
 
 process.env.NEXT_PUBLIC_SANITY_PROJECT_ID = "tu3u3e8c";
 process.env.NEXT_PUBLIC_SANITY_DATASET = "production";

@@ -1,0 +1,210 @@
+[
+  {
+    "viewport": 1440,
+    "routeStatus": 200,
+    "section": {
+      "top": 995.22,
+      "bottom": 1569.22,
+      "height": 574,
+      "paddingBottom": "0px"
+    },
+    "image": {
+      "top": 995.22,
+      "bottom": 1569.22,
+      "height": 574,
+      "position": "absolute",
+      "display": "block",
+      "bottomCss": "0px",
+      "objectFit": "contain",
+      "objectPosition": "50% 100%",
+      "marginTop": "0px",
+      "marginBottom": "0px",
+      "naturalWidth": 648,
+      "naturalHeight": 648,
+      "complete": true
+    },
+    "bottomDelta": 0,
+    "overflowX": false,
+    "failed": []
+  },
+  {
+    "viewport": 1280,
+    "routeStatus": 200,
+    "section": {
+      "top": 496.73,
+      "bottom": 1102.73,
+      "height": 606,
+      "paddingBottom": "0px"
+    },
+    "image": {
+      "top": 496.73,
+      "bottom": 1102.73,
+      "height": 606,
+      "position": "absolute",
+      "display": "block",
+      "bottomCss": "0px",
+      "objectFit": "contain",
+      "objectPosition": "50% 100%",
+      "marginTop": "0px",
+      "marginBottom": "0px",
+      "naturalWidth": 576,
+      "naturalHeight": 576,
+      "complete": true
+    },
+    "bottomDelta": 0,
+    "overflowX": false,
+    "failed": []
+  },
+  {
+    "viewport": 1100,
+    "routeStatus": 200,
+    "section": {
+      "top": 810.27,
+      "bottom": 1416.27,
+      "height": 606,
+      "paddingBottom": "0px"
+    },
+    "image": {
+      "top": 810.27,
+      "bottom": 1416.27,
+      "height": 606,
+      "position": "absolute",
+      "display": "block",
+      "bottomCss": "0px",
+      "objectFit": "contain",
+      "objectPosition": "50% 100%",
+      "marginTop": "0px",
+      "marginBottom": "0px",
+      "naturalWidth": 495,
+      "naturalHeight": 495,
+      "complete": true
+    },
+    "bottomDelta": 0,
+    "overflowX": false,
+    "failed": []
+  },
+  {
+    "viewport": 991,
+    "routeStatus": 200,
+    "section": {
+      "top": 71.97,
+      "bottom": 1560.14,
+      "height": 1488.17,
+      "paddingBottom": "0px"
+    },
+    "image": {
+      "top": 569.14,
+      "bottom": 1560.14,
+      "height": 991,
+      "position": "relative",
+      "display": "block",
+      "bottomCss": "0px",
+      "objectFit": "contain",
+      "objectPosition": "50% 100%",
+      "marginTop": "32px",
+      "marginBottom": "0px",
+      "naturalWidth": 939,
+      "naturalHeight": 939,
+      "complete": true
+    },
+    "bottomDelta": 0,
+    "overflowX": false,
+    "failed": []
+  },
+  {
+    "viewport": 767,
+    "routeStatus": 200,
+    "section": {
+      "top": 216.02,
+      "bottom": 1383.75,
+      "height": 1167.73,
+      "paddingBottom": "0px"
+    },
+    "image": {
+      "top": 616.75,
+      "bottom": 1383.75,
+      "height": 767,
+      "position": "relative",
+      "display": "block",
+      "bottomCss": "0px",
+      "objectFit": "contain",
+      "objectPosition": "50% 100%",
+      "marginTop": "0px",
+      "marginBottom": "0px",
+      "naturalWidth": 767,
+      "naturalHeight": 767,
+      "complete": true
+    },
+    "bottomDelta": 0,
+    "overflowX": false,
+    "failed": []
+  },
+  {
+    "viewport": 390,
+    "routeStatus": 200,
+    "section": {
+      "top": 283.48,
+      "bottom": 1316,
+      "height": 1032.52,
+      "paddingBottom": "0px"
+    },
+    "image": {
+      "top": 926,
+      "bottom": 1316,
+      "height": 390,
+      "position": "relative",
+      "display": "block",
+      "bottomCss": "0px",
+      "objectFit": "contain",
+      "objectPosition": "50% 100%",
+      "marginTop": "0px",
+      "marginBottom": "0px",
+      "naturalWidth": 390,
+      "naturalHeight": 390,
+      "complete": true
+    },
+    "bottomDelta": 0,
+    "overflowX": false,
+    "failed": []
+  },
+  {
+    "viewport": 375,
+    "routeStatus": 200,
+    "section": {
+      "top": 294.59,
+      "bottom": 1304.7,
+      "height": 1010.11,
+      "paddingBottom": "0px"
+    },
+    "image": {
+      "top": 929.7,
+      "bottom": 1304.7,
+      "height": 375,
+      "position": "relative",
+      "display": "block",
+      "bottomCss": "0px",
+      "objectFit": "contain",
+      "objectPosition": "50% 100%",
+      "marginTop": "0px",
+      "marginBottom": "0px",
+      "naturalWidth": 374,
+      "naturalHeight": 374,
+      "complete": true
+    },
+    "bottomDelta": 0,
+    "overflowX": false,
+    "failed": []
+  },
+  {
+    "path": "/work/oxipack",
+    "status": 200
+  },
+  {
+    "path": "/work/altify",
+    "status": 200
+  },
+  {
+    "path": "/work/circuit",
+    "status": 200
+  }
+]

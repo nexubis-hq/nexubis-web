@@ -1,0 +1,43 @@
+Completed the non-blog CTA/link parity audit and made one safe correction.
+
+Files changed for this task:
+- lib/site-config.ts
+- docs/PRE_CUTOVER_LINK_PARITY_AUDIT.csv
+- docs/PRE_CUTOVER_LINK_FIXES.md
+- docs/PRE_CUTOVER_CTA_HANDOFF.md
+
+Safe fix applied:
+- Generic BOOKING_URL now resolves to /contact instead of https://cal.com/nexubis/30min.
+- This routes header/home/packages/general booking CTAs into the combined Contact page.
+- /contact Cal.com embed was not changed.
+- Scorecard logic/Funnelr/Resend/Sanity/Blog/robots/sitemap were not edited.
+
+Final audit counts:
+- Live Webflow routes inspected: /, /about, /work, /work/altify, /work/circuit, /work/oxipack, /packages, /contact, /scorecard, plus /blog nav/index only.
+- Rebuild routes inspected locally after fix: same routes.
+- Total rows audited: 436
+- Internal navigation links: 194
+- External links: 95
+- Functional controls: 87
+- Booking/appointment CTAs found: 17
+- Booking CTAs changed to /contact: 16
+- Same-site absolute UI links corrected: 0
+- Direct Cal.com UI links remaining outside /contact: 0
+- Webflow page links remaining: 0
+- Old Vercel project links remaining: 0
+- Migrated Sanity post links confirmed: 4
+- Pending Blog destinations from audited non-blog links: 0
+- Broken internal links: 0
+- Broken external links: 0
+
+Validation:
+- npm run lint passed with existing warnings.
+- npm run typecheck passed.
+- npm run test passed: 34 files, 263 tests.
+- npm run build passed.
+- Local rendered HTML check confirmed generic audited routes render /contact links and no direct https://cal.com/nexubis/30min.
+
+Important cutover note:
+I did not deploy, per instruction. The codebase is ready after this fix, but https://nexubis.vercel.app will need a normal deployment of this state before DNS cutover, otherwise the current deployed Vercel build may still reflect the old generic Cal.com CTA destination.
+
+Blog launch readiness is still separate and not claimed here.

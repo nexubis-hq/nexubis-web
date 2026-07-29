@@ -4,18 +4,15 @@
  * Every call-to-action and cross-site link on the homepage reads from here,
  * so booking, scorecard and contact destinations are set in exactly one place.
  *
- * BOOKING_URL is the primary conversion target — the real cal.com application-call
- * link (cal.com/nexubis/30min), sourced from lib/booking.ts so there is exactly one
- * cal.com URL in the codebase. Scorecard report CTAs use BookCallButton instead, which
- * adds per-report prefill for booking correlation; this plain link is for generic
- * "book a call" CTAs (homepage, header, footer) that have no report context.
+ * BOOKING_URL is the primary conversion target for generic "book a call" CTAs.
+ * It routes through /contact, where the booking embed and message form both live.
  */
-
-// Primary conversion target: the real cal.com booking link.
-export { CAL_BOOKING_URL as BOOKING_URL } from "./booking";
 
 // Contact destination (used by footer + header + "learn more" links).
 export const CONTACT_URL = "/contact";
+
+// Primary conversion target for generic booking CTAs.
+export const BOOKING_URL = CONTACT_URL;
 
 // Lead-generator tool. The tool itself ships later; the route is reserved now.
 export const SCORECARD_URL = "/scorecard";

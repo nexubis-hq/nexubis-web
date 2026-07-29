@@ -1,116 +1,51 @@
-NEXUBIS BLOG SANITY MIGRATION BATCH REPORT
+Batch 02 is complete for the 10 selected posts and pushed.
+
 Batch ID: batch-2026-07-29-archive-02
 
-Status: COMPLETED FOR POSTS; SHARED /BLOG FILTER ICON CODE PUSHED, PRODUCTION STILL SERVING OLD ICON HTML AT LAST CHECK
+Published slugs:
+- the-power-of-linkedin
+- how-to-not-suck-at-job-applications
+- momentum-fever
+- keep-positioning-yourself
+- new-years-resolutions
+- goals-vs-movement
+- 2025-in-retrospect
+- long-term-greed
+- dick-proves-the-agency-stereotype
+- striving-for-culinary-perfection
 
-Preflight:
-- /blog returned 88 unique cards before Batch 02.
-- Starting source split was 14 Sanity cards / 74 generated fallback cards.
-- All 14 existing Sanity post routes returned 200.
-- The authenticated package command still invokes:
-  sanity exec scripts/migrate-blog-sanity-batch.ts --with-user-token --
-- No public/client-side Sanity write token was found.
-- Existing manifest marked 14 posts complete.
+Results:
+- Posts published: 10
+- Failed posts: 0
+- Sanity cards: 24
+- Generated fallback cards: 64
+- /blog: 88 unique cards
+- All 10 Batch 02 /post/[slug] routes return 200
+- All 10 Batch 02 cards use cdn.sanity.io thumbnails
+- Batch 02 post routes made zero Webflow requests in browser audit
+- All six Sanity category documents now have Sanity icon asset refs
 
-Selected and published posts:
-1. The Power of LinkedIn | the-power-of-linkedin | https://www.nexubis.io/post/the-power-of-linkedin
-2. How to not suck at job applications | how-to-not-suck-at-job-applications | https://www.nexubis.io/post/how-to-not-suck-at-job-applications
-3. Momentum Fever | momentum-fever | https://www.nexubis.io/post/momentum-fever
-4. Keep positioning yourself | keep-positioning-yourself | https://www.nexubis.io/post/keep-positioning-yourself
-5. New Year’s Resolutions | new-years-resolutions | https://www.nexubis.io/post/new-years-resolutions
-6. Goals vs. Movement | goals-vs-movement | https://www.nexubis.io/post/goals-vs-movement
-7. 2025 In Retrospect | 2025-in-retrospect | https://www.nexubis.io/post/2025-in-retrospect
-8. Long-Term Greed | long-term-greed | https://www.nexubis.io/post/long-term-greed
-9. Dick Proves the Agency Stereotype | dick-proves-the-agency-stereotype | https://www.nexubis.io/post/dick-proves-the-agency-stereotype
-10. Striving for “Culinary” Perfection | striving-for-culinary-perfection | https://www.nexubis.io/post/striving-for-culinary-perfection
+Important caveat:
+- The shared category/filter icon code is committed and pushed, but the last production /blog check still rendered the old Webflow filter icon URLs.
+- That part is not production-verified yet.
 
-Drafts created:
-- drafts.post-the-power-of-linkedin
-- drafts.post-how-to-not-suck-at-job-applications
-- drafts.post-momentum-fever
-- drafts.post-keep-positioning-yourself
-- drafts.post-new-years-resolutions
-- drafts.post-goals-vs-movement
-- drafts.post-2025-in-retrospect
-- drafts.post-long-term-greed
-- drafts.post-dick-proves-the-agency-stereotype
-- drafts.post-striving-for-culinary-perfection
+Commits pushed to shannah:
+- 42090d5 - Batch 02 migration/code/report changes
+- 4fcda4d - corrected final verification .txt report
 
-Published documents:
-- post-the-power-of-linkedin
-- post-how-to-not-suck-at-job-applications
-- post-momentum-fever
-- post-keep-positioning-yourself
-- post-new-years-resolutions
-- post-goals-vs-movement
-- post-2025-in-retrospect
-- post-long-term-greed
-- post-dick-proves-the-agency-stereotype
-- post-striving-for-culinary-perfection
+Report file:
+docs/BLOG_SANITY_BATCH_REPORT_OUTPUT.txt
 
-Failed posts:
-- None.
+Validation passed:
+- npm run lint passed with existing warnings
+- npm run typecheck passed
+- npm run test passed, 263 tests
+- npm run build passed
 
-Authors/categories:
-- Reused author-hannes-oosthuizen for all 10 posts.
-- Reused or updated category-founders-diary.
-- Reused or updated category-for-professionals.
-
-Shared category icons:
-- Migrated or reused all six Blog category/filter icons through deterministic Sanity category documents:
-  Empowering Dreams, Founders Diary, Artificial Intelligence, Startup Stack, Company, For Professionals.
-- The /blog loader now overlays generated category/filter icons with published Sanity category icon assets.
-- Visual filter/card markup and CSS were not redesigned.
-- Sanity category documents now contain icon asset refs for all six categories.
-- At the last production browser check, /blog still rendered the old Webflow filter icon URLs. The app-code change is committed and pushed, but that production HTML had not picked it up yet.
-
-Media:
-- Every selected post thumbnail was uploaded to or reused from Sanity.
-- Every selected Open Graph image was uploaded to or reused from Sanity.
-- Category icons were uploaded to or reused from Sanity.
-- One AVIF thumbnail/OG image was uploaded for dick-proves-the-agency-stereotype.
-
-Lottie/showreel:
-- No selected Batch 02 post had Lottie enabled.
-- No selected Batch 02 post had showreel enabled.
-
-Verification:
-- Batch dry-run passed.
-- Authenticated execute/publish passed.
-- Verify-only passed and marked all 10 Batch 02 posts complete.
-- All exact slugs were preserved.
-- All 10 public /post/[slug] routes returned 200.
-- All 10 /blog cards are Sanity-sourced and use cdn.sanity.io thumbnails.
-- Stored-data Webflow audit passed for the completed posts.
-- Rendered route Webflow audit passed for the completed posts.
-- Browser network audit found zero Webflow requests on all 10 Batch 02 post routes.
-- Browser network audit still found six Webflow filter icon requests on /blog at the last check. Remaining Webflow card media requests belonged to generated fallback cards.
-
-Current source counts:
-- Total Blog cards: 88.
-- Sanity cards: 24.
-- Generated fallback cards: 64.
-- Remaining fallback count: 64.
-
-Validation commands:
-- npm run lint: passed with existing warnings only.
-- npm run typecheck: passed.
-- npm run test: passed, 263 tests.
-- npm run build: passed.
-
-Unrelated dirty files excluded:
-- app/globals.css
-- app/page.tsx
-- lib/scorecard/copy.ts
-- lib/site-config.ts
-- lib/work/data.ts
-- package.json unrelated unstaged hunk
+Unrelated dirty files remain excluded:
+- package.json
 - .qa/
-- docs/PRE_CUTOVER_CTA_HANDOFF.md
-- docs/PRE_CUTOVER_LINK_FIXES.md
-- docs/PRE_CUTOVER_LINK_PARITY_AUDIT.csv
-- public/assets/work/oxipack/kayleigh-smit-portrait.png
+- pre-cutover docs
+- scorecard/site/work files
+- existing dirty Blog test/helper files
 
-Stop condition:
-- Stopped after batch-2026-07-29-archive-02.
-- Batch 03 was not started.

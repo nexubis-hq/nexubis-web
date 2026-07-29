@@ -4,7 +4,7 @@ import type {
   SanityImage,
   SanityPostDocument,
   SanityPostSummaryDocument,
-} from "@/lib/blog/sanity-posts";
+} from "@/lib/blog/sanity-types";
 
 function imageUrl(image: SanityImage | null | undefined) {
   return sanityImageUrl(image as { asset?: { _ref?: string } } | null | undefined);

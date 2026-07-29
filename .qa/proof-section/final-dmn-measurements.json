@@ -1,0 +1,344 @@
+[
+  {
+    "viewport": 1440,
+    "avatar": {
+      "wrapper": {
+        "width": 60,
+        "height": 60
+      },
+      "portrait": {
+        "width": 56,
+        "height": 56,
+        "bottomOffset": -1,
+        "leftSpace": 2,
+        "rightSpace": 2,
+        "topSpace": 5,
+        "objectPosition": "50% 100%"
+      }
+    },
+    "quote": {
+      "fontSize": "24px",
+      "lineHeight": "33.6px",
+      "text": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected."
+    },
+    "dmnCard": {
+      "width": 593.59,
+      "height": 534.67,
+      "top": 432.41,
+      "bottom": 967.08,
+      "padding": "32px 32px 32px 32px"
+    },
+    "oxipack": {
+      "width": 593.59,
+      "height": 534.67,
+      "top": 432.5,
+      "bottom": 967.17,
+      "padding": "24px 24px 24px 24px"
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 1280,
+    "avatar": {
+      "wrapper": {
+        "width": 60,
+        "height": 60
+      },
+      "portrait": {
+        "width": 56,
+        "height": 56,
+        "bottomOffset": -1,
+        "leftSpace": 2,
+        "rightSpace": 2,
+        "topSpace": 5,
+        "objectPosition": "50% 100%"
+      }
+    },
+    "quote": {
+      "fontSize": "19.84px",
+      "lineHeight": "26.784px",
+      "text": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected."
+    },
+    "dmnCard": {
+      "width": 523.19,
+      "height": 495.86,
+      "top": 491.88,
+      "bottom": 987.73,
+      "padding": "32px 32px 32px 32px"
+    },
+    "oxipack": {
+      "width": 523.2,
+      "height": 495.86,
+      "top": 491.88,
+      "bottom": 987.73,
+      "padding": "24px 24px 24px 24px"
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 1180,
+    "avatar": {
+      "wrapper": {
+        "width": 60,
+        "height": 60
+      },
+      "portrait": {
+        "width": 56,
+        "height": 56,
+        "bottomOffset": -1,
+        "leftSpace": 2,
+        "rightSpace": 2,
+        "topSpace": 5,
+        "objectPosition": "50% 100%"
+      }
+    },
+    "quote": {
+      "fontSize": "18.29px",
+      "lineHeight": "24.6915px",
+      "text": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected."
+    },
+    "dmnCard": {
+      "width": 481.2,
+      "height": 471.48,
+      "top": 504.09,
+      "bottom": 975.58,
+      "padding": "32px 32px 32px 32px"
+    },
+    "oxipack": {
+      "width": 481.22,
+      "height": 471.48,
+      "top": 504.09,
+      "bottom": 975.58,
+      "padding": "24px 24px 24px 24px"
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 1100,
+    "avatar": {
+      "wrapper": {
+        "width": 60,
+        "height": 60
+      },
+      "portrait": {
+        "width": 56,
+        "height": 56,
+        "bottomOffset": -1,
+        "leftSpace": 2,
+        "rightSpace": 2,
+        "topSpace": 5,
+        "objectPosition": "50% 100%"
+      }
+    },
+    "quote": {
+      "fontSize": "18px",
+      "lineHeight": "24.3px",
+      "text": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected."
+    },
+    "dmnCard": {
+      "width": 447.81,
+      "height": 480.33,
+      "top": 466.75,
+      "bottom": 947.08,
+      "padding": "32px 32px 32px 32px"
+    },
+    "oxipack": {
+      "width": 447.83,
+      "height": 480.33,
+      "top": 466.75,
+      "bottom": 947.08,
+      "padding": "24px 24px 24px 24px"
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 1024,
+    "avatar": {
+      "wrapper": {
+        "width": 60,
+        "height": 60
+      },
+      "portrait": {
+        "width": 56,
+        "height": 56,
+        "bottomOffset": -1,
+        "leftSpace": 2,
+        "rightSpace": 2,
+        "topSpace": 5,
+        "objectPosition": "50% 100%"
+      }
+    },
+    "quote": {
+      "fontSize": "18px",
+      "lineHeight": "24.3px",
+      "text": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected."
+    },
+    "dmnCard": {
+      "width": 416.09,
+      "height": 490.08,
+      "top": 495.14,
+      "bottom": 985.22,
+      "padding": "32px 32px 32px 32px"
+    },
+    "oxipack": {
+      "width": 416.09,
+      "height": 461.42,
+      "top": 495.14,
+      "bottom": 956.56,
+      "padding": "24px 24px 24px 24px"
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 992,
+    "avatar": {
+      "wrapper": {
+        "width": 60,
+        "height": 60
+      },
+      "portrait": {
+        "width": 56,
+        "height": 56,
+        "bottomOffset": -1,
+        "leftSpace": 2,
+        "rightSpace": 2,
+        "topSpace": 5,
+        "objectPosition": "50% 100%"
+      }
+    },
+    "quote": {
+      "fontSize": "18px",
+      "lineHeight": "24.3px",
+      "text": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected."
+    },
+    "dmnCard": {
+      "width": 402.73,
+      "height": 514.38,
+      "top": 455.34,
+      "bottom": 969.72,
+      "padding": "32px 32px 32px 32px"
+    },
+    "oxipack": {
+      "width": 402.75,
+      "height": 453.48,
+      "top": 455.34,
+      "bottom": 908.83,
+      "padding": "24px 24px 24px 24px"
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 767,
+    "avatar": {
+      "wrapper": {
+        "width": 60,
+        "height": 60
+      },
+      "portrait": {
+        "width": 56,
+        "height": 56,
+        "bottomOffset": -1,
+        "leftSpace": 2,
+        "rightSpace": 2,
+        "topSpace": 5,
+        "objectPosition": "50% 100%"
+      }
+    },
+    "quote": {
+      "fontSize": "21.7235px",
+      "lineHeight": "30.4129px",
+      "text": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected."
+    },
+    "dmnCard": {
+      "width": 747,
+      "height": 472.03,
+      "top": 228.64,
+      "bottom": 700.67,
+      "padding": "32px 32px 32px 32px"
+    },
+    "oxipack": {
+      "width": 747,
+      "height": 588.66,
+      "top": 746.53,
+      "bottom": 1335.19,
+      "padding": "24px 24px 24px 24px"
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 390,
+    "avatar": {
+      "wrapper": {
+        "width": 60,
+        "height": 60
+      },
+      "portrait": {
+        "width": 56,
+        "height": 56,
+        "bottomOffset": -1,
+        "leftSpace": 2,
+        "rightSpace": 2,
+        "topSpace": 5,
+        "objectPosition": "50% 100%"
+      }
+    },
+    "quote": {
+      "fontSize": "20.027px",
+      "lineHeight": "28.0378px",
+      "text": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected."
+    },
+    "dmnCard": {
+      "width": 370,
+      "height": 556.28,
+      "top": 246.8,
+      "bottom": 803.08,
+      "padding": "24px 24px 24px 24px"
+    },
+    "oxipack": {
+      "width": 370,
+      "height": 427,
+      "top": 835.28,
+      "bottom": 1262.28,
+      "padding": "24px 24px 24px 24px"
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 375,
+    "avatar": {
+      "wrapper": {
+        "width": 60,
+        "height": 60
+      },
+      "portrait": {
+        "width": 56,
+        "height": 56,
+        "bottomOffset": -1,
+        "leftSpace": 2,
+        "rightSpace": 2,
+        "topSpace": 5,
+        "objectPosition": "50% 100%"
+      }
+    },
+    "quote": {
+      "fontSize": "20px",
+      "lineHeight": "28px",
+      "text": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected."
+    },
+    "dmnCard": {
+      "width": 355,
+      "height": 556,
+      "top": 15.93,
+      "bottom": 571.93,
+      "padding": "24px 24px 24px 24px"
+    },
+    "oxipack": {
+      "width": 355,
+      "height": 418.5,
+      "top": 607.84,
+      "bottom": 1026.34,
+      "padding": "24px 24px 24px 24px"
+    },
+    "overflowX": false
+  }
+]

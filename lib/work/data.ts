@@ -347,13 +347,13 @@ const caseStudies: CaseStudy[] = [
     ],
     testimonial: {
       quote: "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
-      name: "Brigitte van der Watt",
+      name: "Kayleigh Smit",
       role: "Marketing Manager",
       image: {
-        src: "/assets/work/oxipack/testimonial.avif",
-        alt: "Brigitte van der Watt",
-        width: 2018,
-        height: 2128,
+        src: "/assets/work/oxipack/kayleigh-smit-portrait.png",
+        alt: "Kayleigh Smit",
+        width: 1024,
+        height: 1024,
       },
       storyTitle: "Oxipack: Funding Nexubis",
       storyHref: "/post/oxipack-empowering-nexubis",

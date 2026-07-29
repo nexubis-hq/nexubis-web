@@ -3,7 +3,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { BlogIndex } from "@/components/blog/BlogIndex";
 import { getBlogIndexPosts } from "@/lib/blog/get-blog-index-posts";
-import type { SanityPostSummaryDocument } from "@/lib/blog/sanity-posts";
+import type { SanityPostSummaryDocument } from "@/lib/blog/sanity-types";
 
 process.env.NEXT_PUBLIC_SANITY_PROJECT_ID = "tu3u3e8c";
 process.env.NEXT_PUBLIC_SANITY_DATASET = "production";

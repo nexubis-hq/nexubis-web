@@ -1,0 +1,582 @@
+[
+  {
+    "viewport": 1440,
+    "card": {
+      "width": 593.59,
+      "height": 534.67,
+      "top": 432.39,
+      "bottom": 967.06,
+      "justifyContent": "space-between",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "oxipack": {
+      "width": 593.59,
+      "height": 534.67,
+      "top": 432.39,
+      "bottom": 967.06,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteArea": {
+      "width": 529.59,
+      "height": 362.67,
+      "top": 464.39,
+      "bottom": 827.06,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quote": {
+      "width": 529.59,
+      "height": 201.56,
+      "top": 554.94,
+      "bottom": 756.5,
+      "justifyContent": "normal",
+      "fontSize": "24px",
+      "lineHeight": "33.6px"
+    },
+    "attribution": {
+      "width": 529.59,
+      "height": 80,
+      "top": 855.06,
+      "bottom": 935.06,
+      "justifyContent": "normal",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+    "quoteContentTopInCard": 122.55,
+    "spaceAboveCopyInArea": 90.55,
+    "spaceBelowCopyInArea": 70.56,
+    "spaceCopyToAttribution": 98.56,
+    "portrait": {
+      "width": 58,
+      "bottomOffset": -1
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 1280,
+    "card": {
+      "width": 523.19,
+      "height": 495.86,
+      "top": 453.71,
+      "bottom": 949.57,
+      "justifyContent": "space-between",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "oxipack": {
+      "width": 523.2,
+      "height": 495.86,
+      "top": 456.17,
+      "bottom": 952.03,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteArea": {
+      "width": 459.19,
+      "height": 350.67,
+      "top": 481.71,
+      "bottom": 832.38,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quote": {
+      "width": 459.19,
+      "height": 116.95,
+      "top": 595.77,
+      "bottom": 712.73,
+      "justifyContent": "normal",
+      "fontSize": "18px",
+      "lineHeight": "23.4px"
+    },
+    "attribution": {
+      "width": 459.19,
+      "height": 73.59,
+      "top": 849.98,
+      "bottom": 923.57,
+      "justifyContent": "normal",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+    "quoteContentTopInCard": 142.06,
+    "spaceAboveCopyInArea": 114.06,
+    "spaceBelowCopyInArea": 119.66,
+    "spaceCopyToAttribution": 137.25,
+    "portrait": {
+      "width": 58,
+      "bottomOffset": -1
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 1180,
+    "card": {
+      "width": 481.2,
+      "height": 471.48,
+      "top": 463.97,
+      "bottom": 935.45,
+      "justifyContent": "space-between",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "oxipack": {
+      "width": 481.22,
+      "height": 471.48,
+      "top": 463.97,
+      "bottom": 935.45,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteArea": {
+      "width": 417.2,
+      "height": 326.3,
+      "top": 491.97,
+      "bottom": 818.27,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quote": {
+      "width": 417.2,
+      "height": 133.41,
+      "top": 585.61,
+      "bottom": 719.02,
+      "justifyContent": "normal",
+      "fontSize": "17.11px",
+      "lineHeight": "22.243px"
+    },
+    "attribution": {
+      "width": 417.2,
+      "height": 73.59,
+      "top": 835.86,
+      "bottom": 909.45,
+      "justifyContent": "normal",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+    "quoteContentTopInCard": 121.64,
+    "spaceAboveCopyInArea": 93.64,
+    "spaceBelowCopyInArea": 99.25,
+    "spaceCopyToAttribution": 116.84,
+    "portrait": {
+      "width": 58,
+      "bottomOffset": -1
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 1100,
+    "card": {
+      "width": 447.81,
+      "height": 480.33,
+      "top": 485.2,
+      "bottom": 965.53,
+      "justifyContent": "space-between",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "oxipack": {
+      "width": 447.83,
+      "height": 480.33,
+      "top": 494.63,
+      "bottom": 974.96,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteArea": {
+      "width": 383.81,
+      "height": 335.14,
+      "top": 513.2,
+      "bottom": 848.34,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quote": {
+      "width": 383.81,
+      "height": 132.56,
+      "top": 611.69,
+      "bottom": 744.25,
+      "justifyContent": "normal",
+      "fontSize": "17px",
+      "lineHeight": "22.1px"
+    },
+    "attribution": {
+      "width": 383.81,
+      "height": 73.59,
+      "top": 865.94,
+      "bottom": 939.53,
+      "justifyContent": "normal",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+    "quoteContentTopInCard": 126.48,
+    "spaceAboveCopyInArea": 98.48,
+    "spaceBelowCopyInArea": 104.09,
+    "spaceCopyToAttribution": 121.69,
+    "portrait": {
+      "width": 58,
+      "bottomOffset": -1
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 1024,
+    "card": {
+      "width": 416.09,
+      "height": 461.42,
+      "top": 470.02,
+      "bottom": 931.44,
+      "justifyContent": "space-between",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "oxipack": {
+      "width": 416.09,
+      "height": 461.42,
+      "top": 470.02,
+      "bottom": 931.44,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteArea": {
+      "width": 352.09,
+      "height": 316.23,
+      "top": 498.02,
+      "bottom": 814.25,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quote": {
+      "width": 352.09,
+      "height": 154.66,
+      "top": 576,
+      "bottom": 730.66,
+      "justifyContent": "normal",
+      "fontSize": "17px",
+      "lineHeight": "22.1px"
+    },
+    "attribution": {
+      "width": 352.09,
+      "height": 73.59,
+      "top": 831.84,
+      "bottom": 905.44,
+      "justifyContent": "normal",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+    "quoteContentTopInCard": 105.98,
+    "spaceAboveCopyInArea": 77.98,
+    "spaceBelowCopyInArea": 83.59,
+    "spaceCopyToAttribution": 101.19,
+    "portrait": {
+      "width": 58,
+      "bottomOffset": -1
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 992,
+    "card": {
+      "width": 402.73,
+      "height": 453.48,
+      "top": 473.34,
+      "bottom": 926.83,
+      "justifyContent": "space-between",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "oxipack": {
+      "width": 402.75,
+      "height": 453.48,
+      "top": 473.34,
+      "bottom": 926.83,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteArea": {
+      "width": 338.73,
+      "height": 308.3,
+      "top": 501.34,
+      "bottom": 809.64,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quote": {
+      "width": 338.73,
+      "height": 154.66,
+      "top": 575.36,
+      "bottom": 730.02,
+      "justifyContent": "normal",
+      "fontSize": "17px",
+      "lineHeight": "22.1px"
+    },
+    "attribution": {
+      "width": 338.73,
+      "height": 73.59,
+      "top": 827.23,
+      "bottom": 900.83,
+      "justifyContent": "normal",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+    "quoteContentTopInCard": 102.02,
+    "spaceAboveCopyInArea": 74.02,
+    "spaceBelowCopyInArea": 79.63,
+    "spaceCopyToAttribution": 97.22,
+    "portrait": {
+      "width": 58,
+      "bottomOffset": -1
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 991,
+    "card": {
+      "width": 872.08,
+      "height": 479.14,
+      "top": 103.47,
+      "bottom": 582.61,
+      "justifyContent": "space-between",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "oxipack": {
+      "width": 872.08,
+      "height": 660.5,
+      "top": 637.14,
+      "bottom": 1297.64,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteArea": {
+      "width": 576,
+      "height": 307.14,
+      "top": 135.47,
+      "bottom": 442.61,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quote": {
+      "width": 576,
+      "height": 159.14,
+      "top": 219.47,
+      "bottom": 378.61,
+      "justifyContent": "normal",
+      "fontSize": "22.7315px",
+      "lineHeight": "31.8241px"
+    },
+    "attribution": {
+      "width": 808.08,
+      "height": 80,
+      "top": 470.61,
+      "bottom": 550.61,
+      "justifyContent": "normal",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+    "quoteContentTopInCard": 116,
+    "spaceAboveCopyInArea": 84,
+    "spaceBelowCopyInArea": 64,
+    "spaceCopyToAttribution": 92,
+    "portrait": {
+      "width": 58,
+      "bottomOffset": -1
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 767,
+    "card": {
+      "width": 747,
+      "height": 472.03,
+      "top": 228.64,
+      "bottom": 700.67,
+      "justifyContent": "space-between",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "oxipack": {
+      "width": 747,
+      "height": 588.66,
+      "top": 746.53,
+      "bottom": 1335.19,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteArea": {
+      "width": 576,
+      "height": 300.03,
+      "top": 260.64,
+      "bottom": 560.67,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quote": {
+      "width": 576,
+      "height": 152.03,
+      "top": 344.64,
+      "bottom": 496.67,
+      "justifyContent": "normal",
+      "fontSize": "21.7235px",
+      "lineHeight": "30.4129px"
+    },
+    "attribution": {
+      "width": 683,
+      "height": 80,
+      "top": 588.67,
+      "bottom": 668.67,
+      "justifyContent": "normal",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+    "quoteContentTopInCard": 116,
+    "spaceAboveCopyInArea": 84,
+    "spaceBelowCopyInArea": 64,
+    "spaceCopyToAttribution": 92,
+    "portrait": {
+      "width": 58,
+      "bottomOffset": -1
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 390,
+    "card": {
+      "width": 370,
+      "height": 556.28,
+      "top": 1229.7,
+      "bottom": 1785.98,
+      "justifyContent": "space-between",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "oxipack": {
+      "width": 370,
+      "height": 427,
+      "top": 1818.19,
+      "bottom": 2245.19,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteArea": {
+      "width": 322,
+      "height": 400.28,
+      "top": 1253.7,
+      "bottom": 1653.98,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quote": {
+      "width": 322,
+      "height": 252.28,
+      "top": 1337.7,
+      "bottom": 1589.98,
+      "justifyContent": "normal",
+      "fontSize": "20.027px",
+      "lineHeight": "28.0378px"
+    },
+    "attribution": {
+      "width": 322,
+      "height": 80,
+      "top": 1681.98,
+      "bottom": 1761.98,
+      "justifyContent": "normal",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+    "quoteContentTopInCard": 108,
+    "spaceAboveCopyInArea": 84,
+    "spaceBelowCopyInArea": 64,
+    "spaceCopyToAttribution": 92,
+    "portrait": {
+      "width": 58,
+      "bottomOffset": -1
+    },
+    "overflowX": false
+  },
+  {
+    "viewport": 375,
+    "card": {
+      "width": 355,
+      "height": 556,
+      "top": 195.97,
+      "bottom": 751.97,
+      "justifyContent": "space-between",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "oxipack": {
+      "width": 355,
+      "height": 418.5,
+      "top": 783.97,
+      "bottom": 1202.47,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteArea": {
+      "width": 307,
+      "height": 400,
+      "top": 219.97,
+      "bottom": 619.97,
+      "justifyContent": "center",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quote": {
+      "width": 307,
+      "height": 252,
+      "top": 303.97,
+      "bottom": 555.97,
+      "justifyContent": "normal",
+      "fontSize": "20px",
+      "lineHeight": "28px"
+    },
+    "attribution": {
+      "width": 307,
+      "height": 80,
+      "top": 647.97,
+      "bottom": 727.97,
+      "justifyContent": "normal",
+      "fontSize": "16px",
+      "lineHeight": "25.6px"
+    },
+    "quoteText": "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+    "quoteContentTopInCard": 108,
+    "spaceAboveCopyInArea": 84,
+    "spaceBelowCopyInArea": 64,
+    "spaceCopyToAttribution": 92,
+    "portrait": {
+      "width": 58,
+      "bottomOffset": -1
+    },
+    "overflowX": false
+  }
+]

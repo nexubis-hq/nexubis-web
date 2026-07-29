@@ -1,0 +1,437 @@
+source_route,source_version,visible_label,element_type,original_webflow_destination,webflow_export_destination,current_rebuild_destination,match,deliberately_changed_by_new_cta_rules,internal_or_external,current_http_status,opens_new_tab,intended_destination_confirmed,same_site_absolute_url,direct_cal_url_outside_contact,webflow_dependency,old_vercel_project_url,placeholder_dead_action,classification,fix_applied,notes
+/,VERCEL_REBUILD,Nexubis home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,https://www.nexubis.io/work/altify,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,https://www.nexubis.io/work/circuit,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,https://www.nexubis.io/work/oxipack,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Packages,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/,VERCEL_REBUILD,Book an application callBook a Call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/,VERCEL_REBUILD,Open menu,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Home,a,/,index.html,/,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/; export=index.html
+/,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/,VERCEL_REBUILD,Pricing,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,https://www.nexubis.io/work/altify,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,https://www.nexubis.io/work/circuit,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,https://www.nexubis.io/work/oxipack,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Book an application call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/,VERCEL_REBUILD,Check your brand's credibility,a,,,/scorecard,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Unmute showreel,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Altify,a,,,https://altify.app/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/,VERCEL_REBUILD,Sataya,a,,,https://sataya.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/,VERCEL_REBUILD,Circuit,a,,,https://circuitprotect.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/,VERCEL_REBUILD,Blue Knight,a,,,https://www.blueknight.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/,VERCEL_REBUILD,Usably,a,,,https://www.usably.studio/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/,VERCEL_REBUILD,Lathyrus,a,,,https://www.lathyrus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/,VERCEL_REBUILD,View 16,a,,,https://www.lathyrus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/,VERCEL_REBUILD,Design Focus,a,,,https://www.designfocus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/,VERCEL_REBUILD,Emprise Digital,a,,,https://www.emprise.co.za/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/,VERCEL_REBUILD,01Brand Identity,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Learn more,a,,,/contact,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,02Website,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Learn more,a,,,/contact,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,033D & CGI,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Learn more,a,,,/contact,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,04Video & Motion,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Learn more,a,,,/contact,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,05Trade Show & Print,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Learn more,a,,,/contact,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Book an application call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/,VERCEL_REBUILD,Check my brand's credibility,a,,,/scorecard,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Play Oxipack showreel,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Read the full case study,a,,,/work/oxipack,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Book an application call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/,VERCEL_REBUILD,We already work with an agency and a few freelancers. Why switch?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,How does pricing work?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,What if we don't have enough work every month?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Our products are technical. Will you actually understand them?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Are we locked into a long contract?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,Why an application call instead of a generic sales call?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,How do we know the quality before paying?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/,VERCEL_REBUILD,About,a,,,/about,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,What we do,a,,,/#what-we-do,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Work / Case studies,a,,,/work,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Brand Credibility Scorecard,a,,,/scorecard,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/,VERCEL_REBUILD,Contact,a,/contact,contact.html,/contact,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/contact; export=contact.html
+/,VERCEL_REBUILD,LinkedIn,a,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/,VERCEL_REBUILD,Instagram,a,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/about,VERCEL_REBUILD,Nexubis home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/about,VERCEL_REBUILD,Altify,a,,,/work/altify,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Circuit,a,,,/work/circuit,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Oxipack,a,,,/work/oxipack,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Packages,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/about,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/about,VERCEL_REBUILD,Book an application callBook a Call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/about,VERCEL_REBUILD,Open menu,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/about,VERCEL_REBUILD,Home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Dreamlab,a,,,/blog,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Pricing,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/about,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/about,VERCEL_REBUILD,Altify,a,,,/work/altify,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Circuit,a,,,/work/circuit,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Oxipack,a,,,/work/oxipack,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,About,a,,,/about,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,What we do,a,,,/#what-we-do,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Work / Case studies,a,,,/work,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Brand Credibility Scorecard,a,,,/scorecard,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/about,VERCEL_REBUILD,Contact,a,/contact,contact.html,/contact,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/contact; export=contact.html
+/about,VERCEL_REBUILD,LinkedIn,a,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/about,VERCEL_REBUILD,Instagram,a,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/work,VERCEL_REBUILD,Nexubis home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,https://www.nexubis.io/work/altify,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,https://www.nexubis.io/work/circuit,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,https://www.nexubis.io/work/oxipack,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Packages,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/work,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/work,VERCEL_REBUILD,Book an application callBook a Call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/work,VERCEL_REBUILD,Open menu,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work,VERCEL_REBUILD,Home,a,/,index.html,/,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/; export=index.html
+/work,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/work,VERCEL_REBUILD,Pricing,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/work,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,https://www.nexubis.io/work/altify,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,https://www.nexubis.io/work/circuit,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,https://www.nexubis.io/work/oxipack,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Circuit Rebrand and Website launch,a,/work/circuit,,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Altify Merger Relaunch,a,/work/altify,,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Oxipack Website Redesign and Rebuild,a,/work/oxipack,,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,About,a,,,/about,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,What we do,a,,,/#what-we-do,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Work / Case studies,a,,,/work,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Brand Credibility Scorecard,a,,,/scorecard,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work,VERCEL_REBUILD,Contact,a,/contact,contact.html,/contact,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/contact; export=contact.html
+/work,VERCEL_REBUILD,LinkedIn,a,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/work,VERCEL_REBUILD,Instagram,a,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Nexubis home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/altify,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Packages,a,/packages,,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Dreamlab,a,/blog,,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Book an application callBook a Call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/work/altify,VERCEL_REBUILD,Open menu,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/altify,VERCEL_REBUILD,Home,a,/,,/,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Dreamlab,a,/blog,,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Pricing,a,/packages,,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/altify,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Unmute showreel,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/altify,VERCEL_REBUILD,Visit Altify website,a,,,https://www.altify.app/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Visit Altify on LinkedIn,a,,,https://www.linkedin.com/company/altifyinvest/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Visit Altify on X,a,,,https://x.com/Altifyinvest,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Visit Altify on Facebook,a,,,https://www.facebook.com/AltifyInvest/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Altify: Empowering NexubisRead the full story here→,a,,,/post/altify-empowering-nexubis,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,"Circuit Rebrand and Website launchWeb3 recovery had no clear language. Complex custody mechanics, abstract failover logic, and fragmented communication made it hard for compliance teams, engineers, and executives to understand, or trust, how assets could be protected when things went wrong.See More→",a,,,/work/circuit,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,"Oxipack Website Redesign and RebuildIndustrial brands often struggle to communicate innovation in a category known for complexity, cluttered messaging, and outdated digital systems. Oxipack's breakthrough technology in non-destructive leak detection deserved a platform that matched its precision, sustainability, and global scale.See More→",a,,,/work/oxipack,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,About,a,,,/about,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,What we do,a,,,/#what-we-do,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Work / Case studies,a,,,/work,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Brand Credibility Scorecard,a,,,/scorecard,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Contact,a,/contact,,/contact,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,LinkedIn,a,https://www.linkedin.com/company/nexubis/,,https://www.linkedin.com/company/nexubis/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/work/altify,VERCEL_REBUILD,Instagram,a,https://www.instagram.com/nexubis.design/,,https://www.instagram.com/nexubis.design/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Nexubis home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/circuit,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Packages,a,/packages,,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Dreamlab,a,/blog,,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Book an application callBook a Call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/work/circuit,VERCEL_REBUILD,Open menu,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/circuit,VERCEL_REBUILD,Home,a,/,,/,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Dreamlab,a,/blog,,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Pricing,a,/packages,,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/circuit,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Unmute showreel,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/circuit,VERCEL_REBUILD,Visit Circuit website,a,,,https://www.circuitsecurity.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Visit Circuit on LinkedIn,a,,,https://www.linkedin.com/company/circuitsecurity/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Visit Circuit on X,a,,,https://x.com/CircuitSecurity,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Circuit: Securing NexubisRead the full story here→,a,,,/post/circuit-securing-nexubis,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,"Altify Merger RelaunchTraditional investing is gated, complex, and built for the few. For most people, accessing high-performing private markets felt out of reach - locked behind jargon, minimums, and outdated systems that intimidated instead of empowered.See More→",a,,,/work/altify,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,"Oxipack Website Redesign and RebuildIndustrial brands often struggle to communicate innovation in a category known for complexity, cluttered messaging, and outdated digital systems. Oxipack's breakthrough technology in non-destructive leak detection deserved a platform that matched its precision, sustainability, and global scale.See More→",a,,,/work/oxipack,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,About,a,,,/about,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,What we do,a,,,/#what-we-do,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Work / Case studies,a,,,/work,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Brand Credibility Scorecard,a,,,/scorecard,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Contact,a,/contact,,/contact,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,LinkedIn,a,https://www.linkedin.com/company/nexubis/,,https://www.linkedin.com/company/nexubis/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/work/circuit,VERCEL_REBUILD,Instagram,a,https://www.instagram.com/nexubis.design/,,https://www.instagram.com/nexubis.design/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Nexubis home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/oxipack,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Packages,a,/packages,,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Dreamlab,a,/blog,,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Book an application callBook a Call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/work/oxipack,VERCEL_REBUILD,Open menu,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/oxipack,VERCEL_REBUILD,Home,a,/,,/,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Dreamlab,a,/blog,,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Pricing,a,/packages,,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/oxipack,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Unmute showreel,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/work/oxipack,VERCEL_REBUILD,Visit Oxipack website,a,,,https://www.oxipack.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Visit Oxipack on LinkedIn,a,,,https://www.linkedin.com/company/oxipack/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Visit Oxipack on X,a,,,https://x.com/Oxipack,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Visit Oxipack on Facebook,a,,,https://www.facebook.com/OxipackLeakDetection?mibextid=LQQJ4d,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Oxipack: Funding NexubisRead the full story here→,a,,,/post/oxipack-empowering-nexubis,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,"Circuit Rebrand and Website launchWeb3 recovery had no clear language. Complex custody mechanics, abstract failover logic, and fragmented communication made it hard for compliance teams, engineers, and executives to understand, or trust, how assets could be protected when things went wrong.See More→",a,,,/work/circuit,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,"Altify Merger RelaunchTraditional investing is gated, complex, and built for the few. For most people, accessing high-performing private markets felt out of reach - locked behind jargon, minimums, and outdated systems that intimidated instead of empowered.See More→",a,,,/work/altify,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,About,a,,,/about,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,What we do,a,,,/#what-we-do,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Work / Case studies,a,,,/work,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Brand Credibility Scorecard,a,,,/scorecard,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Contact,a,/contact,,/contact,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,LinkedIn,a,https://www.linkedin.com/company/nexubis/,,https://www.linkedin.com/company/nexubis/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/work/oxipack,VERCEL_REBUILD,Instagram,a,https://www.instagram.com/nexubis.design/,,https://www.instagram.com/nexubis.design/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Nexubis home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,https://www.nexubis.io/work/altify,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,https://www.nexubis.io/work/circuit,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,https://www.nexubis.io/work/oxipack,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Packages,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/packages,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/packages,VERCEL_REBUILD,Book an application callBook a Call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/packages,VERCEL_REBUILD,Open menu,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Home,a,/,index.html,/,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/; export=index.html
+/packages,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/packages,VERCEL_REBUILD,Pricing,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/packages,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,https://www.nexubis.io/work/altify,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,https://www.nexubis.io/work/circuit,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,https://www.nexubis.io/work/oxipack,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Nexubis Google reviews,a,,,https://www.google.com/search?q=Nexubis+Reviews,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,EUR,button[role=radio],,,ACTION:radio-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,USD,button[role=radio],,,ACTION:radio-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Monthly,button[role=radio],,,ACTION:radio-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Quarterly10% Off,button[role=radio],,,ACTION:radio-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Annually2 Months Free,button[role=radio],,,ACTION:radio-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,"More about: Two dedicated people, two work streams",button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,More about: Website build & maintenance,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,More about: SEO built in & monitored,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,"More about: Social, email & document design",button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,"More about: 72-hour turnaround, 3 meetings/mo",button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Book an application call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/packages,VERCEL_REBUILD,"More about: Three dedicated people, three work streams",button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,"More about: 48-hour turnaround, queue priority",button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,More about: Print & sales collateral,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,"More about: 3D & video, up to 5 a month",button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,More about: Monthly strategy call with our COO,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Book an application call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/packages,VERCEL_REBUILD,More about: The whole Nexubis team,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,More about: Dedicated creative director,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,More about: Quarterly strategy sessions,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,More about: Ongoing brand development,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,More about: Campaign design & execution,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,More about: Unlimited 3D & scripted video,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,More about: Trade-show & environment design,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Book an application call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/packages,VERCEL_REBUILD,Visit altify.app,a,,,https://altify.app/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit merklescience.com,a,,,https://www.merklescience.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit cordialsystems.com,a,,,https://cordialsystems.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit sofi.com,a,,,https://www.sofi.com/,NO_ORIGINAL_MATCH,no,external,403,yes,no,no,no,no,no,no,PENDING_MANUAL_TEST,,
+/packages,VERCEL_REBUILD,Visit ox.security,a,,,https://www.ox.security/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit sataya.io,a,,,https://sataya.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit oxipack.com,a,,,https://www.oxipack.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit circuitprotect.com,a,,,https://circuitprotect.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit blueknight.io,a,,,https://www.blueknight.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit usably.studio,a,,,https://www.usably.studio/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit lathyrus.io,a,,,https://www.lathyrus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit lathyrus.io,a,,,https://www.lathyrus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit designfocus.io,a,,,https://www.designfocus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit emprise.co.za,a,,,https://www.emprise.co.za/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit altify.app,a,,,https://altify.app/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit merklescience.com,a,,,https://www.merklescience.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit cordialsystems.com,a,,,https://cordialsystems.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit sofi.com,a,,,https://www.sofi.com/,NO_ORIGINAL_MATCH,no,external,403,yes,no,no,no,no,no,no,PENDING_MANUAL_TEST,,
+/packages,VERCEL_REBUILD,Visit ox.security,a,,,https://www.ox.security/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit sataya.io,a,,,https://sataya.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit oxipack.com,a,,,https://www.oxipack.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit circuitprotect.com,a,,,https://circuitprotect.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit blueknight.io,a,,,https://www.blueknight.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit usably.studio,a,,,https://www.usably.studio/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit lathyrus.io,a,,,https://www.lathyrus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit lathyrus.io,a,,,https://www.lathyrus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit designfocus.io,a,,,https://www.designfocus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Visit emprise.co.za,a,,,https://www.emprise.co.za/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Learn More,a,https://www.nexubis.io/post/the-flex-package,https://www.nexubis.io/post/the-flex-package,/post/rethinking-the-nexubis-trial,false,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,How much does a Nexubis retainer cost?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Why a monthly retainer instead of hourly or per project?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,"What is the difference between Momentum, Scale and Partner?",summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Is there anything cheaper than Momentum?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,How do the quarterly and yearly rates work?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Why not just hire a designer in-house?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,How long am I committed for?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,What if my workload changes month to month?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,"How fast do you deliver, and how much can run at once?",summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,How do I get work to you?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,"Do you build the website, or only design it?",summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Do I own the files and the website?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,Not sure which level is right for us?,summary,,,ACTION:accordion-toggle,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/packages,VERCEL_REBUILD,About,a,,,/about,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,What we do,a,,,/#what-we-do,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Work / Case studies,a,,,/work,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Brand Credibility Scorecard,a,,,/scorecard,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Contact,a,/contact,contact.html,/contact,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/contact; export=contact.html
+/packages,VERCEL_REBUILD,LinkedIn,a,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/packages,VERCEL_REBUILD,Instagram,a,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Nexubis home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/contact,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,https://www.nexubis.io/work/altify,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,https://www.nexubis.io/work/circuit,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,https://www.nexubis.io/work/oxipack,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Packages,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/contact,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/contact,VERCEL_REBUILD,Book an application callBook a Call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/contact,VERCEL_REBUILD,Open menu,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/contact,VERCEL_REBUILD,Home,a,/,index.html,/,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/; export=index.html
+/contact,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/contact,VERCEL_REBUILD,Pricing,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/contact,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/contact,VERCEL_REBUILD,Altify,a,https://www.nexubis.io/work/altify,https://www.nexubis.io/work/altify,/work/altify,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Circuit,a,https://www.nexubis.io/work/circuit,https://www.nexubis.io/work/circuit,/work/circuit,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Oxipack,a,https://www.nexubis.io/work/oxipack,https://www.nexubis.io/work/oxipack,/work/oxipack,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Book a Call,button[role=tab],,,ACTION:tab-switch,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/contact,VERCEL_REBUILD,Send a Message,button[role=tab],,,ACTION:tab-switch,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/contact,VERCEL_REBUILD,Name*Email*Company Name*Website LinkLearn MorePackage*Select one...MomentumScaleFlexI'm not sureAdditional NotesLeave this field emptyEmpower Your Dream,form,,,ACTION:form-submit,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/contact,VERCEL_REBUILD,Learn More,a,/packages,packages.html,/packages,true,no,internal,200,yes,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/contact,VERCEL_REBUILD,Empower Your Dream,button,,,ACTION:form-submit,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/contact,VERCEL_REBUILD,Visit altify.app,a,,,https://altify.app/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit merklescience.com,a,,,https://www.merklescience.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit cordialsystems.com,a,,,https://cordialsystems.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit sofi.com,a,,,https://www.sofi.com/,NO_ORIGINAL_MATCH,no,external,403,yes,no,no,no,no,no,no,PENDING_MANUAL_TEST,,
+/contact,VERCEL_REBUILD,Visit ox.security,a,,,https://www.ox.security/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit sataya.io,a,,,https://sataya.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit oxipack.com,a,,,https://www.oxipack.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit circuitprotect.com,a,,,https://circuitprotect.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit blueknight.io,a,,,https://www.blueknight.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit usably.studio,a,,,https://www.usably.studio/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit lathyrus.io,a,,,https://www.lathyrus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit lathyrus.io,a,,,https://www.lathyrus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit designfocus.io,a,,,https://www.designfocus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit emprise.co.za,a,,,https://www.emprise.co.za/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit altify.app,a,,,https://altify.app/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit merklescience.com,a,,,https://www.merklescience.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit cordialsystems.com,a,,,https://cordialsystems.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit sofi.com,a,,,https://www.sofi.com/,NO_ORIGINAL_MATCH,no,external,403,yes,no,no,no,no,no,no,PENDING_MANUAL_TEST,,
+/contact,VERCEL_REBUILD,Visit ox.security,a,,,https://www.ox.security/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit sataya.io,a,,,https://sataya.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit oxipack.com,a,,,https://www.oxipack.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit circuitprotect.com,a,,,https://circuitprotect.com/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit blueknight.io,a,,,https://www.blueknight.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit usably.studio,a,,,https://www.usably.studio/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit lathyrus.io,a,,,https://www.lathyrus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit lathyrus.io,a,,,https://www.lathyrus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit designfocus.io,a,,,https://www.designfocus.io/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Visit emprise.co.za,a,,,https://www.emprise.co.za/,NO_ORIGINAL_MATCH,no,external,200,yes,no,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,About,a,,,/about,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,What we do,a,,,/#what-we-do,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Work / Case studies,a,,,/work,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Brand Credibility Scorecard,a,,,/scorecard,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Contact,a,/contact,contact.html,/contact,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/contact; export=contact.html
+/contact,VERCEL_REBUILD,LinkedIn,a,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/contact,VERCEL_REBUILD,Instagram,a,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Nexubis home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/scorecard,VERCEL_REBUILD,Altify,a,,,/work/altify,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Circuit,a,,,/work/circuit,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Oxipack,a,,,/work/oxipack,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Packages,a,,,/packages,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Dreamlab,a,,,/blog,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Book an application callBook a Call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/scorecard,VERCEL_REBUILD,Open menu,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/scorecard,VERCEL_REBUILD,Home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Dreamlab,a,,,/blog,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Pricing,a,,,/packages,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/scorecard,VERCEL_REBUILD,Altify,a,,,/work/altify,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Circuit,a,,,/work/circuit,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,Oxipack,a,,,/work/oxipack,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/scorecard,VERCEL_REBUILD,"Company websiteCheck my brand's credibilityYou see your result on the spot. Unlock the full report by email, no waiting.",form,,,ACTION:form-submit,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/scorecard,VERCEL_REBUILD,Check my brand's credibility,button,,,ACTION:form-submit,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/blog,VERCEL_REBUILD,Nexubis home,a,,,/,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/blog,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/blog,VERCEL_REBUILD,Packages,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/blog,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/blog,VERCEL_REBUILD,Book an application callBook a Call,a,previous rebuild BOOKING_URL -> https://cal.com/nexubis/30min,,/contact,INTENTIONAL_CHANGE,yes,internal,200,no,no,no,no,no,no,no,INTENTIONAL_CONTACT_REDIRECT,lib/site-config.ts BOOKING_URL changed to /contact,
+/blog,VERCEL_REBUILD,Home,a,/,index.html,/,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/; export=index.html
+/blog,VERCEL_REBUILD,Dreamlab,a,/blog,blog.html,/blog,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/blog; export=blog.html
+/blog,VERCEL_REBUILD,Pricing,a,/packages,packages.html,/packages,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/packages; export=packages.html
+/blog,VERCEL_REBUILD,Case Studies,button,,,ACTION:button,NO_ORIGINAL_MATCH,no,action,,no,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,
+/blog,VERCEL_REBUILD,Work / Case studies,a,,,/work,NO_ORIGINAL_MATCH,no,internal,200,no,no,no,no,no,no,no,INTERNAL_VALID,,
+/blog,VERCEL_REBUILD,Contact,a,/contact,contact.html,/contact,true,no,internal,200,no,yes,no,no,no,no,no,INTERNAL_VALID,,Live/export disagree: live=/contact; export=contact.html
+/blog,VERCEL_REBUILD,LinkedIn,a,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,https://www.linkedin.com/company/nexubis/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+/blog,VERCEL_REBUILD,Instagram,a,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,https://www.instagram.com/nexubis.design/,true,no,external,200,yes,yes,no,no,no,no,no,EXTERNAL_VALID,,
+app/about/page.tsx,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const SITE_URL = ""https://www.nexubis.io"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,app\about\page.tsx:6; allowed metadata/structured-data absolute URL
+app/api/leads/scorecard/route.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"return host ? `${proto}://${host}` : ""https://www.nexubis.io"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,app\api\leads\scorecard\route.ts:13; allowed server/test/email/webhook context
+app/api/scorecard/unlock/route.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"return host ? `${proto}://${host}` : ""https://www.nexubis.io"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,app\api\scorecard\unlock\route.ts:42; allowed server/test/email/webhook context
+app/contact/page.tsx,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"url: ""https://www.nexubis.io/contact"",",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,app\contact\page.tsx:16; allowed metadata absolute URL
+app/contact/page.tsx,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"canonical: ""https://www.nexubis.io/contact"",",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,app\contact\page.tsx:25; allowed metadata/structured-data absolute URL
+app/robots.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const SITE_URL = ""https://www.nexubis.io"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,app\robots.ts:3; allowed metadata/structured-data absolute URL
+app/sitemap.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const SITE_URL = ""https://www.nexubis.io"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,app\sitemap.ts:5; allowed metadata/structured-data absolute URL
+app/work/page.tsx,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const SITE_URL = ""https://www.nexubis.io"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,app\work\page.tsx:8; allowed metadata/structured-data absolute URL
+app/work/[slug]/page.tsx,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const SITE_URL = ""https://www.nexubis.io"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,app\work\[slug]\page.tsx:8; allowed metadata/structured-data absolute URL
+components/ContactTabs.tsx,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"script.src = ""https://app.cal.com/embed/embed.js"";",N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,components\ContactTabs.tsx:63; approved Cal.com embed/fallback inside /contact
+components/ContactTabs.tsx,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"cal(""init"", CAL_NAMESPACE, { origin: ""https://cal.com"" });",N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,components\ContactTabs.tsx:102; approved Cal.com embed/fallback inside /contact
+components/ContactTabs.tsx,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,The booking calendar could not load. Open the booking page at cal.com/nexubis/30min.,N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,components\ContactTabs.tsx:134; approved Cal.com embed/fallback inside /contact
+components/scorecard/report/BookCallButton.tsx,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"// The report's ""book a call"" CTA. A non-embed link that opens cal.com prefilled",N/A,no,source,,,no,no,no,no,no,no,PENDING_MANUAL_TEST,,components\scorecard\report\BookCallButton.tsx:3; Scorecard/report booking helper remains direct Cal.com; not changed because Scorecard logic was out of safe-fix scope
+components/scorecard/report/BookCallButton.tsx,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,// Schedule only comes from the cal.com webhook (section 3). Usable from server components.,N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,components\scorecard\report\BookCallButton.tsx:7; allowed server/test/email/webhook context
+lib/booking.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,// Single source of truth for the booking target (cal.com/nexubis/30min).,N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\booking.ts:1; booking helper retained for approved /contact embed and Scorecard report prefill; no generic UI CTA consumes it after site-config fix
+lib/booking.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,// owner or event is a one-line change and there are no hardcoded cal.com URLs,N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\booking.ts:3; booking helper retained for approved /contact embed and Scorecard report prefill; no generic UI CTA consumes it after site-config fix
+lib/booking.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"// anywhere else (grep for ""cal.com/""). See docs/funnel-audit-checklist.md §1–2.",N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\booking.ts:4; booking helper retained for approved /contact embed and Scorecard report prefill; no generic UI CTA consumes it after site-config fix
+lib/booking.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"// The cal.com embed namespace form (""<user>/<slug>"") and the plain public URL.",N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\booking.ts:9; booking helper retained for approved /contact embed and Scorecard report prefill; no generic UI CTA consumes it after site-config fix
+lib/booking.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,export const CAL_BOOKING_URL = `https://cal.com/${CAL_LINK}`;,N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\booking.ts:11; booking helper retained for approved /contact embed and Scorecard report prefill; no generic UI CTA consumes it after site-config fix
+lib/booking.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"// cal.com booking-field identifiers, confirmed live from the event's public API",N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\booking.ts:13; booking helper retained for approved /contact embed and Scorecard report prefill; no generic UI CTA consumes it after site-config fix
+lib/booking.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"// ignored by cal.com, so these must stay in lockstep with the event config.",N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\booking.ts:15; booking helper retained for approved /contact embed and Scorecard report prefill; no generic UI CTA consumes it after site-config fix
+lib/booking.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"//   - Business Name: Laine mapped it onto cal.com's built-in meeting-title field, so",N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\booking.ts:16; booking helper retained for approved /contact embed and Scorecard report prefill; no generic UI CTA consumes it after site-config fix
+lib/booking.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"// The person's real name — NOT the business. cal.com's built-in ""name"" field.",N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\booking.ts:23; booking helper retained for approved /contact embed and Scorecard report prefill; no generic UI CTA consumes it after site-config fix
+lib/booking.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,// Build a prefilled cal.com booking URL. Empty/undefined values are dropped so,N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\booking.ts:34; booking helper retained for approved /contact embed and Scorecard report prefill; no generic UI CTA consumes it after site-config fix
+lib/contact/contact-route.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"return new NextRequest(""https://www.nexubis.io/api/contact"", {",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\contact\contact-route.test.ts:29; allowed server/test/email/webhook context
+lib/contact/funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const reportUrl = ""https://www.nexubis.io/scorecard/r/abc12345"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\contact\funnelr.test.ts:148; allowed server/test/email/webhook context
+lib/internal-emails.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"// leg (Meta CAPI, cal.com relay, future Funnelr bridge, notify) checks this.",N/A,no,source,,,yes,no,yes,no,no,no,FUNCTIONAL_ACTION,,lib\internal-emails.ts:3; allowed server/test/email/webhook context
+lib/meta/events.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"schedule: ""Schedule"", // standard: CONFIRMED booking only (cal.com webhook).",N/A,no,source,,,yes,no,yes,no,no,no,FUNCTIONAL_ACTION,,lib\meta\events.ts:16; allowed server/test/email/webhook context
+lib/meta/track.ts,VERCEL_REBUILD,legacy-search:cal.com,source-match,,,"// cal.com booking's `cal_<uid>`), so the two Schedule events dedupe. Otherwise",N/A,no,source,,,yes,no,no,no,no,no,FUNCTIONAL_ACTION,,lib\meta\track.ts:17; analytics comment mentioning cal.com booking dedupe; no UI link
+lib/scorecard/fetch-site.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const USER_AGENT = ""Mozilla/5.0 (compatible; NexubisScorecard/1.0; +https://www.nexubis.io)"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\fetch-site.ts:56; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"reportUrl: ""https://www.nexubis.io/scorecard/r/abc12345"",",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:41; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.calls.includes(""create:mark@veltkamp-dosing.nl:Mark:https://www.nexubis.io/scorecard/r/abc12345:true:""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:180; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === ""https://www.nexubis.io/scorecard/r/abc12345""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:186; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.calls.includes(""update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345::""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:223; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === ""https://www.nexubis.io/scorecard/r/abc12345""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:237; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.calls.includes(""create:mark@veltkamp-dosing.nl:Mark:https://www.nexubis.io/scorecard/r/abc12345:true:""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:244; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.equal(c.calls.some((call) => call.includes("":true:https://www.nexubis.io/scorecard/r/abc12345"")), false);",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:245; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.calls.includes(""create:mark@veltkamp-dosing.nl:Mark:https://www.nexubis.io/scorecard/r/abc12345:true:""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:255; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === ""https://www.nexubis.io/scorecard/r/abc12345""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:256; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.calls.includes(""update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345::""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:264; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === ""https://www.nexubis.io/scorecard/r/abc12345""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:266; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.calls.includes(""update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345::""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:274; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === ""https://www.nexubis.io/scorecard/r/abc12345""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:275; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const c = client({ userId: 7, email: ""mark@veltkamp-dosing.nl"", currencyCode: ""USD"", isAgent: false, street: ""https://www.nexubis.io/scorecard/r/abc23456"" });",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:280; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const latest = ""https://www.nexubis.io/scorecard/r/latest42"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:281; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const c = client({ userId: 7, email: ""mark@veltkamp-dosing.nl"", currencyCode: ""USD"", isAgent: false, telephone: ""https://www.nexubis.io/scorecard/r/abc23456"" });",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:291; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const latest = ""https://www.nexubis.io/scorecard/r/latest42"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:292; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.calls.includes(""update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345:+27110000000:12 Market Street""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:304; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(c.calls.includes(""update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345::""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:341; allowed server/test/email/webhook context
+lib/scorecard/lead-funnelr.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.deepEqual(mapped.updates, [{ formFieldId: ""field-key"", value: ""https://www.nexubis.io/scorecard/r/abc12345"" }]);",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\lead-funnelr.test.ts:370; allowed server/test/email/webhook context
+lib/scorecard/plumbing.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const payload = buildFunnelrPayload(lead, ""https://www.nexubis.io/scorecard/r/slug1234"");",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\plumbing.test.ts:87; allowed server/test/email/webhook context
+lib/scorecard/plumbing.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.equal(payload.reportUrl, ""https://www.nexubis.io/scorecard/r/slug1234"");",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\plumbing.test.ts:92; allowed server/test/email/webhook context
+lib/scorecard/plumbing.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const lead = await runLeadPlumbing(record, unlockInput, ""slug9999"", ""https://www.nexubis.io"");",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\plumbing.test.ts:158; allowed server/test/email/webhook context
+lib/scorecard/plumbing.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"await runLeadPlumbing(record, unlockInput, ""slug7777"", ""https://www.nexubis.io"");",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\plumbing.test.ts:192; allowed server/test/email/webhook context
+lib/scorecard/plumbing.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"assert.ok(email1.text.includes(""https://www.nexubis.io/scorecard/r/slug7777""));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\plumbing.test.ts:197; allowed server/test/email/webhook context
+lib/scorecard/scorecard-lead-route.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"return new NextRequest(""https://www.nexubis.io/api/leads/scorecard"", {",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\scorecard-lead-route.test.ts:25; allowed server/test/email/webhook context
+lib/scorecard/scorecard-lead-route.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const res = await POST(request(payload({ marketingConsent: true, reportUrl: ""https://www.nexubis.io/scorecard/r/abc23456"" })));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\scorecard-lead-route.test.ts:90; allowed server/test/email/webhook context
+lib/scorecard/scorecard-lead-route.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"reportUrl: ""https://www.nexubis.io/scorecard/r/abc23456"",",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\scorecard-lead-route.test.ts:101; allowed server/test/email/webhook context
+lib/scorecard/scorecard-lead-route.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const res = await POST(request(payload({ reportUrl: ""https://www.nexubis.io/scorecard/r/abc23456"" })));",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\scorecard-lead-route.test.ts:107; allowed server/test/email/webhook context
+lib/scorecard/share-mailto.test.ts,VERCEL_REBUILD,legacy-search:https://www.nexubis.io,source-match,,,"const url = ""https://www.nexubis.io/scorecard/r/abc123"";",N/A,no,source,,,yes,yes,no,no,no,no,FUNCTIONAL_ACTION,,lib\scorecard\share-mailto.test.ts:7; allowed server/test/email/webhook context
