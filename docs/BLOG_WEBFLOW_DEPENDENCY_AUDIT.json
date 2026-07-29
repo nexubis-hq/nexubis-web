@@ -1,5 +1,6 @@
 {
-  "generatedAt": "2026-07-29T18:07:47.205Z",
+  "generatedAt": "2026-07-29T18:23:25.012Z",
+  "batchId": "batch-2026-07-29-archive-05",
   "webflowPatterns": [
     "cdn.prod.website-files.com",
     "assets-global.website-files.com",
@@ -11,125 +12,185 @@
   ],
   "selected": [
     {
-      "slug": "your-perception-is-your-reality",
+      "slug": "the-new-creative-stack",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
       "routeStatus": 200,
       "webflowRequests": [],
-      "renderedWebflowUrls": []
+      "renderedWebflowUrls": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
     },
     {
-      "slug": "make-complex-simple",
+      "slug": "solve-the-boring-problem-first",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
       "routeStatus": 200,
       "webflowRequests": [],
-      "renderedWebflowUrls": []
+      "renderedWebflowUrls": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
     },
     {
-      "slug": "10-better-or-dont-bother",
+      "slug": "startups-dont-need-more-features",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
       "routeStatus": 200,
       "webflowRequests": [],
-      "renderedWebflowUrls": []
+      "renderedWebflowUrls": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
     },
     {
-      "slug": "the-disruption",
+      "slug": "if-it-aint-broke-refine-it",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
       "routeStatus": 200,
       "webflowRequests": [],
-      "renderedWebflowUrls": []
+      "renderedWebflowUrls": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
     },
     {
-      "slug": "the-personal-belief-vs-ai-paradox",
+      "slug": "dont-be-an-idiot-sandwich",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
       "routeStatus": 200,
       "webflowRequests": [],
-      "renderedWebflowUrls": []
+      "renderedWebflowUrls": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
     },
     {
-      "slug": "straight-line-thinking",
+      "slug": "do-something-useful",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
       "routeStatus": 200,
       "webflowRequests": [],
-      "renderedWebflowUrls": []
+      "renderedWebflowUrls": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
     },
     {
-      "slug": "the-builders-will-survive",
+      "slug": "eat-the-rich",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
       "routeStatus": 200,
       "webflowRequests": [],
-      "renderedWebflowUrls": []
+      "renderedWebflowUrls": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
     },
     {
-      "slug": "the-age-of-agi",
+      "slug": "startups-arent-a-family",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
       "routeStatus": 200,
       "webflowRequests": [],
-      "renderedWebflowUrls": []
+      "renderedWebflowUrls": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
     },
     {
-      "slug": "youre-not-ready-for-whats-coming",
+      "slug": "the-flex-package",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
       "routeStatus": 200,
       "webflowRequests": [],
-      "renderedWebflowUrls": []
+      "renderedWebflowUrls": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
     },
     {
-      "slug": "automation-is-not-the-enemy",
+      "slug": "the-myth-of-the-perfect-hire",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
       "routeStatus": 200,
       "webflowRequests": [],
-      "renderedWebflowUrls": []
+      "renderedWebflowUrls": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
     }
   ],
   "counts": {
     "inventory": 88,
-    "complete": 44,
-    "pending": 44,
-    "sanityCards": 44,
-    "generatedFallbackCards": 44
+    "complete": 54,
+    "pending": 34,
+    "sanityCards": 54,
+    "generatedFallbackCards": 34
   },
-  "batchId": "batch-2026-07-29-archive-04",
+  "categoryIdentity": {
+    "id": "category-ai-x-nexubis",
+    "title": "Artificial Intelligence",
+    "slug": "ai-x-nexubis",
+    "duplicateCount": 0,
+    "iconAssetId": "image-a7561c0e42db6f97a91f48eef7c0d6e21d825aaf-24x24-svg"
+  },
   "blogDomAudit": {
     "cards": 88,
     "uniqueCards": 88,
-    "sanityCards": 44,
-    "generatedFallbackCards": 44,
+    "sanityCards": 54,
+    "generatedFallbackCards": 34,
     "selectedCardsZeroWebflow": true,
-    "pendingFallbackWebflowThumbnails": 44
+    "pendingFallbackWebflowThumbnails": 34
   },
   "browserNetworkAudit": {
     "blogWebflowRequests": 0,
     "selectedRouteWebflowRequests": 0,
     "selectedRouteConsoleErrors": 0
+  },
+  "completedRouteAudit": {
+    "checked": 54,
+    "bad": []
   }
 }
