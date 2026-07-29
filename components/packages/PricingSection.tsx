@@ -23,9 +23,9 @@ export function PricingSection({ currency }: { currency: Currency }) {
             <img src="/assets/images/google-rating.svg" alt="Google five-star rating" />
           </a>
           <h1>
-            One creative team.
+            One Creative Team.
             <br />
-            <span>One flat monthly fee.</span>
+            <span>One Flat Monthly Fee.</span>
           </h1>
           <p>
             Three levels, one invoice, no per-project quotes.

@@ -10418,7 +10418,7 @@ button.nav-link {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1.25rem;
-  margin: 0 0 1.9375rem;
+  margin: 3rem 0 1.9375rem;
 }
 
 /* The billing-cycle toggle reuses .billing-selector as-is; drop its auto centering
@@ -10483,7 +10483,26 @@ button.nav-link {
 /* Saving pill under the price: reuses .saving (green) / .saving-neutral (grey). */
 .package-saving {
   display: inline-block;
-  margin: 0.75rem 0 0;
+  margin: 0.14rem 0 0;
+}
+
+/* A faint grey fill on the "No Discount Applied" pill so it reads as a quiet chip. */
+.package-saving.saving-neutral {
+  background: color-mix(in srgb, var(--black), transparent 94%);
+}
+
+/* Tighten the price block on the rebuilt cards so the discount pill sits closer. */
+.package-v2 .package-price h2 {
+  margin-bottom: 0.06rem;
+}
+
+.package-v2 .package-price strong {
+  margin-bottom: 0.14em;
+}
+
+/* Description now sits below the price and discount, above the line items. */
+.package-v2 .package-descriptor {
+  margin: 1.35rem 0 1.75rem;
 }
 
 .partner-terms {
@@ -10496,8 +10515,8 @@ button.nav-link {
 /* --- Card additions: descriptor quote, unlock spacing, tabular price, CTA --- */
 .package-descriptor {
   margin: 0 0 1.1rem;
-  color: var(--body);
-  font-style: italic;
+  color: var(--black);
+  font-weight: 600;
   line-height: 1.5;
 }
 
@@ -10627,42 +10646,6 @@ summary {
   .pkg-infotip-panel {
     animation: none;
   }
-}
-
-/* --- Reassurance band --- */
-.pkg-reassure {
-  background: var(--surface);
-}
-
-.pkg-reassure-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 48rem) {
-  .pkg-reassure-row {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.pkg-reassure-title {
-  margin: 0 0 0.4rem;
-  color: var(--black);
-  font-weight: 600;
-  font-size: 1.125rem;
-}
-
-.pkg-reassure-body {
-  margin: 0;
-  color: var(--body);
-  line-height: 1.6;
-}
-
-.pkg-reassure-cta {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--s-4);
 }
 
 /* --- FAQ: keep the h3 visually identical to the old summary span --- */

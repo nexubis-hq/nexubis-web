@@ -1,11 +1,14 @@
+import Link from "next/link";
+import { SCORECARD_URL } from "@/lib/site-config";
+
 const benefitColumns = [
   [
-    "No upfront subscription required",
-    "Room to explore how we work, at your own pace",
+    "Your Credibility Score across the five places buyers look",
+    "A benchmark against the competitors buyers weigh you against",
   ],
   [
-    "Get real work done while building trust",
-    "Extend your trial if you're still unsure after month 1",
+    "The first things to fix, clearly explained",
+    "Free, on the spot, and no call required",
   ],
 ];
 
@@ -24,7 +27,7 @@ export function PackagesTrial() {
       <div className="site-container trial-cta-wrapper">
         <div className="trial-content">
           <h2>Still on the Fence?</h2>
-          <p>Start flexible - pay only for what you need</p>
+          <p>See where your brand actually stands, before you spend anything.</p>
 
           <div className="trial-benefits-grid">
             {benefitColumns.map((column, index) => (
