@@ -96,7 +96,7 @@ export const TIERS: Tier[] = [
         tip: "Product renders and short-form video for social and sales, up to five pieces a month. Custom website animations and motion graphics come on top of that.",
       },
       {
-        label: "Monthly strategy call with our CEO",
+        label: "Monthly strategy call with our COO",
         tip: "A standing call about where the brand goes next, not a status update on this month's queue.",
       },
     ],
