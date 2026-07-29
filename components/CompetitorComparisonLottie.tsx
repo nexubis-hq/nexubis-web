@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const DESKTOP_PATH = "/assets/lotties/CompetitorComparison_Euro.json";
-const MOBILE_PATH = "/assets/lotties/CompetitorComparison_Mobile.json";
+const MOBILE_PATH = "/assets/lotties/CompetitorComparison_Euro_Mobile.json";
 
 export function CompetitorComparisonLottie() {
   const containerRef = useRef<HTMLDivElement>(null);
