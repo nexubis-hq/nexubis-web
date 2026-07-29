@@ -23,7 +23,7 @@ export type Tier = {
   highlightLabel?: string; // "Most chosen"
   discountsAvailable: boolean; // Partner only
   monthly: Record<Currency, number>;
-  features: Feature[]; // exactly 6
+  features: Feature[]; // 5 for Momentum and Scale, 7 for Partner
 };
 
 // Discount factors, applied only where discountsAvailable is true.
@@ -34,27 +34,23 @@ export const TIERS: Tier[] = [
   {
     id: "momentum",
     name: "Momentum",
-    descriptor: "Our website is outdated and it's nobody's job to fix it.",
-    unlockLine: "Your website, fully handled:",
+    descriptor: "Your design and development, fully handled.",
+    unlockLine: "", // Momentum is the base tier: no "Everything in X, plus:" lead row.
     highlighted: false,
     discountsAvailable: false,
     monthly: { EUR: 3500, USD: 3900 },
     features: [
       {
-        label: "Dedicated 2-person team",
-        tip: "Your own developer and designer, the same two people every month. You learn their names, they learn your product, and nothing goes into an anonymous ticket queue.",
+        label: "Two dedicated people, two work streams",
+        tip: "Your own developer and designer, the same two people every month, not an anonymous queue. Each person runs one thing at a time, so two move in parallel and the next starts as each is approved. Submit as much as you like, there is no cap.",
       },
       {
         label: "Website build & maintenance",
-        tip: "Full Webflow development, plus every update, new page and bug fix after launch. Your site never goes stale in the gap between projects.",
+        tip: "Full website design, build and launch, plus every update, new page and bug fix afterwards. Your site never goes stale in the gap between projects.",
       },
       {
         label: "SEO built in & monitored",
         tip: "On-page SEO handled as we build rather than bolted on afterwards, then tracked every month so you can see what is moving. No separate SEO retainer to buy.",
-      },
-      {
-        label: "30 design requests a month",
-        tip: "Any website or brand design task counts as one request, with two rounds of feedback on every deliverable. Most partners never come close to using all thirty.",
       },
       {
         label: "Social, email & document design",
@@ -62,41 +58,37 @@ export const TIERS: Tier[] = [
       },
       {
         label: "72-hour turnaround, 3 meetings/mo",
-        tip: "Most requests come back inside three working days. You get your own Slack channel, daily Loom updates, weekly progress notes and a monthly report.",
+        tip: "Most requests come back inside three working days, with two rounds of feedback on every deliverable. You also get your own Slack channel, daily Loom updates, weekly progress notes and a monthly report.",
       },
     ],
   },
   {
     id: "scale",
     name: "Scale",
-    descriptor: "Everything we put out needs to look like one company.",
+    descriptor: "More capacity & skills, faster turnaround.",
     unlockLine: "Everything in Momentum, plus:",
     highlighted: false,
     discountsAvailable: false,
     monthly: { EUR: 4200, USD: 4600 },
     features: [
       {
-        label: "Dedicated 3-person team",
-        tip: "A third specialist joins your team, usually design or motion, so more work can run in parallel instead of queueing. Four meetings a month instead of three.",
-      },
-      {
-        label: "Unlimited design requests",
-        tip: "No monthly cap and nobody counting. Submit as much as your team can review.",
+        label: "Three dedicated people, three work streams",
+        tip: "A third specialist joins, usually design or motion, so three things move in parallel instead of two. Noticeably more leaves the studio each month, and you get four meetings instead of three.",
       },
       {
         label: "48-hour turnaround, queue priority",
-        tip: "Most requests come back inside two working days, and your tasks are picked up ahead of Momentum work. Three feedback rounds per deliverable instead of two.",
+        tip: "Most requests come back inside two working days, and your work is picked up ahead of Momentum work. Three feedback rounds per deliverable instead of two.",
       },
       {
-        label: "The full design suite",
-        tip: "Print, presentations, pitch decks, brochures, spec sheets and sales collateral. Everything that lives beyond the screen.",
+        label: "Print & sales collateral",
+        tip: "Brochures, spec sheets, pitch decks, presentations and sales documents, designed and supplied print-ready. Everything your team hands over or sends.",
       },
       {
         label: "3D & video, up to 5 a month",
-        tip: "Product renders and short-form video for social and sales, up to five pieces a month. Custom website animations and motion graphics are included on top of that.",
+        tip: "Product renders and short-form video for social and sales, up to five pieces a month. Custom website animations and motion graphics come on top of that.",
       },
       {
-        label: "Monthly strategy call with our CEO",
+        label: "Monthly strategy call with our COO",
         tip: "A standing call about where the brand goes next, not a status update on this month's queue.",
       },
     ],
@@ -104,7 +96,7 @@ export const TIERS: Tier[] = [
   {
     id: "partner",
     name: "Partner",
-    descriptor: "We need to look completely different, and be actively marketing.",
+    descriptor: "Your embedded marketing department.",
     unlockLine: "Everything in Scale, plus:",
     highlighted: true,
     highlightLabel: "Most chosen",
@@ -112,16 +104,20 @@ export const TIERS: Tier[] = [
     monthly: { EUR: 6000, USD: 6600 },
     features: [
       {
-        label: "All hands on deck",
-        tip: "The whole team is available to you rather than a fixed headcount, and meetings happen as often as the work needs them. This is the level where we operate as your creative department.",
+        label: "The whole Nexubis team",
+        tip: "Not a fixed two or three people. Every specialist we have, developers, designers, motion, video and 3D, is on your account, so how much runs in parallel is set by the work rather than by a number.",
       },
       {
         label: "Dedicated creative director",
-        tip: "One named senior person owns your brand end to end and is your single point of contact. They hold the standard across everything that goes out.",
+        tip: "One named senior person owns your brand end to end and is your single point of contact. They set the standard and make the calls, so you are not the one arbitrating design decisions.",
       },
       {
-        label: "Brand refresh or full CI, yearly",
-        tip: "A complete identity rebuild or corporate identity guide, included every twelve months. On its own this is a project most agencies quote separately.",
+        label: "Quarterly strategy sessions",
+        tip: "Quarterly working sessions on where the business is going, not just what the brand looks like. We plan positioning, campaigns and what goes out next, then the same team executes it.",
+      },
+      {
+        label: "Ongoing brand development",
+        tip: "Your identity expands and sharpens as you grow, reviewed each quarter and kept consistent across everything client facing. Where a full rebuild is genuinely warranted, that sits inside the retainer too.",
       },
       {
         label: "Campaign design & execution",
@@ -132,8 +128,8 @@ export const TIERS: Tier[] = [
         tip: "No cap on product renders or video work. Includes a fully scripted product or brand film produced for you.",
       },
       {
-        label: "Trade-show and print collateral",
-        tip: "Stand graphics, banners, brochures and everything the show floor needs. We also review the whole brand every quarter to catch drift before your buyers notice it.",
+        label: "Trade-show & environment design",
+        tip: "We design the stand and everything on it, visualised in 3D so you see it before it exists, then hand over print-ready files for your supplier to produce. The design and artwork, not the manufacturing.",
       },
     ],
   },
@@ -224,9 +220,11 @@ export function currencyFromParam(value: string | null | undefined): Currency {
 // Build-time guard: every tier must carry exactly six features and no feature may
 // ship without a tip. Runs at module load so a future edit that drops a tip or a
 // row fails the build instead of shipping a bare row (Step 10, gate 6).
+const EXPECTED_FEATURE_COUNT: Record<Tier["id"], number> = { momentum: 5, scale: 5, partner: 7 };
 for (const tier of TIERS) {
-  if (tier.features.length !== 6) {
-    throw new Error(`packages: tier "${tier.id}" has ${tier.features.length} features, expected exactly 6`);
+  const expected = EXPECTED_FEATURE_COUNT[tier.id];
+  if (tier.features.length !== expected) {
+    throw new Error(`packages: tier "${tier.id}" has ${tier.features.length} features, expected ${expected}`);
   }
   for (const feature of tier.features) {
     if (!feature.label.trim() || !feature.tip.trim()) {

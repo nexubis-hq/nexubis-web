@@ -1,9 +1,8 @@
-// The six feature rows shared by every tier card. Reuses the existing
-// .package-benefits list styling so the cards look exactly like the current site;
-// the only addition per row is the InfoTip, which carries the detail that would
-// otherwise need a comparison table. One identical check icon on every row.
-// Isomorphic: rendered on the server (Momentum, Scale) and in the client Partner
-// card alike.
+// The feature rows shared by every tier card. Reuses the existing .package-benefits
+// list styling. An optional `lead` row (the "Everything in X, plus:" / "Your website,
+// fully handled:" line) renders first, as an emphasised tick-box item with no tooltip,
+// matching the original card. Every other row is a check + label + InfoTip.
+// Isomorphic: rendered on the server (Momentum, Scale) and in the client Partner card.
 
 import type { Feature } from "@/lib/packages";
 import { InfoTip } from "@/components/ui/InfoTip";
@@ -17,9 +16,14 @@ function CheckIcon() {
   );
 }
 
-export function FeatureRows({ features }: { features: Feature[] }) {
+export function FeatureRows({ features, lead }: { features: Feature[]; lead?: string }) {
   return (
     <ul className="package-benefits">
+      {lead && (
+        <li className="benefit-lead">
+          <span className="benefit-label benefit-emphasis">{lead}</span>
+        </li>
+      )}
       {features.map((feature) => (
         <li key={feature.label}>
           <CheckIcon />
