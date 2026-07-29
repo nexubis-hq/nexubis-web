@@ -7,6 +7,9 @@ import { LANDING, SCORECARD_NAME } from "@/lib/scorecard/copy";
 export const metadata: Metadata = {
   title: `${SCORECARD_NAME} | Nexubis`,
   description: LANDING.subheadline,
+  alternates: {
+    canonical: "https://www.nexubis.io/scorecard",
+  },
 };
 
 // The public entry: landing plus the instant Credibility Check. The flow
