@@ -139,11 +139,12 @@ export function PackagesPricing() {
 }
 
 const services = [
-  "Website Design", "Webflow", "Framer", "Bespoke Development",
-  "Custom Integrations", "Pitchdecks", "UI/UX Design", "SEO Optimization",
-  "E-Commerce", "Website Maintenance", "2D/3D Animation", "Social Media",
-  "Video Production", "Web 3.0", "Brand Strategy & Identity",
-  "Creative Direction", "Print Design", "Design Systems", "Copywriting",
+  "Industrial Website Design", "Webflow Development", "Multilingual Websites",
+  "Technical SEO", "Bespoke Development", "Product Configurators",
+  "3D Product Renders", "Product & Brand Film", "Motion Graphics",
+  "Trade-Show & Stand Design", "Brochures & Catalogues", "Spec Sheets & Datasheets",
+  "Pitch Decks", "Sales Collateral", "Brand Strategy & Identity",
+  "Creative Direction", "Design Systems", "Print Design", "Copywriting",
 ];
 
 export function PackagesServices() {

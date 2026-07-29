@@ -26,7 +26,7 @@ export function getPackagesFaq(currency: Currency): FaqEntry[] {
     },
     {
       q: "What is the difference between Momentum, Scale and Partner?",
-      a: "Momentum handles your website: development, maintenance, SEO, and the everyday design that goes with it. Scale adds the rest of your brand, so print, presentations, pitch decks, 3D and video all come from the same team and finally look like one company. Partner adds the brand itself, a refresh or full CI each year, campaigns going out the door, and a creative director who owns the whole picture.",
+      a: "Momentum handles your website: development, maintenance, SEO, and the everyday design that goes with it. Scale adds the rest of your brand, so print, presentations, pitch decks, 3D and video all come from the same team and finally look like one company. Partner adds the brand itself, developed and kept consistent over time, campaigns going out the door, and a creative director who owns the whole picture.",
     },
     {
       q: "Is there anything cheaper than Momentum?",
@@ -46,7 +46,7 @@ export function getPackagesFaq(currency: Currency): FaqEntry[] {
     },
     {
       q: "What if my workload changes month to month?",
-      a: "That is normal, and the retainer absorbs it. On Momentum, unused design requests roll over for as long as your retainer is active, so a quiet month is not money lost. Scale and Partner have no cap at all. If the change is permanent rather than seasonal, moving between levels is a conversation, not a renegotiation.",
+      a: "That is normal, and the retainer absorbs it. There is no monthly request cap on any level, so a quiet month is never wasted and a busy one simply runs more in parallel, up to the number of streams your team size allows. If the change is permanent rather than seasonal, moving between levels is a conversation, not a renegotiation.",
     },
     {
       q: "How fast do you deliver, and how much can run at once?",
@@ -58,11 +58,15 @@ export function getPackagesFaq(currency: Currency): FaqEntry[] {
     },
     {
       q: "Do you build the website, or only design it?",
-      a: "Both. Design, build and launch in Webflow, then every update, new page and bug fix afterwards. You never hand a design file to a separate developer and hope.",
+      a: "Both. We design, build and launch, then handle every update, new page and bug fix afterwards. We are not tied to a single platform, we build in whatever the project needs, so you never hand a design file to a separate developer and hope.",
     },
     {
       q: "Do I own the files and the website?",
-      a: "Yes. Everything we make for you is yours, source files included, handed over through Figma and Webflow or whatever format your team works in. The only thing we keep is the right to show the work as a case study.",
+      a: "Yes, entirely. Everything we make for you is yours, source files included, handed over through Figma, Webflow or whatever format your team works in. We may also show the work as ours and say publicly that Nexubis made it, but only ever with your explicit sign-off first.",
+    },
+    {
+      q: "Not sure which level is right for us?",
+      a: "Book an application call and we will tell you honestly, including if the answer is not yet. We would rather point you to the level that actually fits, or say it is not the right time, than put you on the wrong one.",
     },
   ];
 }

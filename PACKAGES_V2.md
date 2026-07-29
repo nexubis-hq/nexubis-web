@@ -17,9 +17,10 @@ live site; only genuinely new pieces got new CSS.
 - **Only Partner discounts.** Choosing Quarterly/Annually drops Partner's per-month
   price and shows the saving in the green pill the site has always used. Momentum
   and Scale are flat rates and show the grey "No Discount Applied" pill.
-- **Per-feature InfoTips**, a per-card "Book an application call" CTA, a reassurance
-  band (One invoice / Two months' notice / Not sure which fits?) + closing CTA, and
-  a fully rewritten 12-question FAQ with `FAQPage` JSON-LD.
+- **Per-feature InfoTips**, a per-card "Book an application call" CTA, and a fully
+  rewritten 13-question FAQ with `FAQPage` JSON-LD. (An earlier reassurance band was
+  removed as redundant: "one invoice, one team" is already in the header subtitle,
+  "two months' notice" is FAQ Q7, and "not sure which fits?" is now the closing FAQ.)
 
 ## Pricing model — how to change a price
 
@@ -67,7 +68,7 @@ makes clear who they apply to.
 ## Commercial terms on the page
 
 Only these appear, and no others may be added without sign-off: the **two months'
-notice** line (reassurance band + FAQ Q7) and the **paid-up-front** line (Partner
+notice** line (FAQ Q7) and the **paid-up-front** line (Partner
 card). No refund policy, minimum initial period, cancellation fee or auto-renewal.
 
 ## Dependency added
@@ -82,14 +83,17 @@ pattern and would not open reliably from hover.)
 `--steel: #5a6672` in `app/globals.css :root` — the muted blue-grey for the InfoTip
 glyph. Clears WCAG AA (5.8:1 on white) at the glyph's size.
 
-## AWAITING CLIENT CONFIRMATION
+## CLIENT-CONFIRMED (all resolved)
 
-Three FAQ answers assert claims a human should sign off:
+Everything previously flagged for sign-off has been confirmed and updated:
 
-- **Q8** asserts unused Momentum design requests roll over.
-- **Q11** asserts Webflow only (the old FAQ also offered Framer, Headless Shopify
-  and Figma Sites).
-- **Q12** asserts Nexubis retains case-study rights.
+- **Q11** — no longer Webflow-only. We build any development the project needs, not
+  just Webflow.
+- **Q12** — client owns everything; Nexubis may promote the work as ours (state
+  publicly that Nexubis made it) only with the client's explicit sign-off first.
+- **Partner strategy cadence** — set to Quarterly (that is how goals are usually set).
+- The earlier "unused requests roll over" claim was removed with the move to the
+  work-streams model (no monthly cap, so nothing to roll over).
 
 ## Deviations from the original brief (all per live client direction)
 

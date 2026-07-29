@@ -3,7 +3,6 @@ import { PackagesServices } from "@/components/PackagesPricing";
 import { PackagesComparison } from "@/components/PackagesComparison";
 import { PackagesTrial } from "@/components/PackagesTrial";
 import { PricingSection } from "@/components/packages/PricingSection";
-import { ReassuranceBand } from "@/components/packages/ReassuranceBand";
 import { PackagesFaq } from "@/components/PackagesFaq";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -28,7 +27,6 @@ export default async function PackagesPage({
       <SiteHeader activePage="packages" />
       <main>
         <PricingSection currency={currency} />
-        <ReassuranceBand />
         <PackagesServices />
         <PackagesComparison />
         <PackagesTrial />
