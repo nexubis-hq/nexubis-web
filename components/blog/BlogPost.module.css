@@ -1,0 +1,377 @@
+.page {
+  background: var(--white);
+  color: var(--body);
+}
+
+.container {
+  width: 88%;
+  max-width: var(--container);
+  margin-inline: auto;
+}
+
+.contentSection {
+  padding-block: 4rem 7rem;
+  background: var(--surface);
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  margin-inline: -1rem;
+}
+
+.articleColumn {
+  width: 66.6667%;
+  padding-inline: 1rem;
+}
+
+.sidebar {
+  position: sticky;
+  top: 5rem;
+  width: 33.3333%;
+  padding: 2rem 1rem 0;
+}
+
+.articleHeader {
+  padding: 0 1rem;
+}
+
+.breadcrumbList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  color: var(--black);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0 0 0.25em;
+  color: var(--black);
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.authorBlock {
+  margin-bottom: 1.5rem;
+  color: var(--body);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.authorBlock p {
+  margin: 0;
+}
+
+.authorBlock p:first-child {
+  color: var(--black);
+}
+
+.authorBlock strong {
+  font-weight: 600;
+}
+
+.heroMedia {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: var(--white);
+}
+
+.heroImage,
+.lottieCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.heroImage {
+  object-fit: cover;
+}
+
+.lottieCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.lottieCanvas > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.richText {
+  color: var(--body);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.richText :global(*) {
+  overflow-wrap: anywhere;
+}
+
+.richText :global(p) {
+  margin: 0 0 1rem;
+}
+
+.richText :global(h2),
+.richText :global(h3) {
+  margin: 2rem 0 1rem;
+  color: var(--black);
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-size: var(--p-lg);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+}
+
+.richText :global(h4),
+.richText :global(h5),
+.richText :global(h6) {
+  margin: 1.5rem 0 0.75rem;
+  color: var(--black);
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.richText :global(ul),
+.richText :global(ol) {
+  margin: 0 0 1rem;
+  padding-left: 1.75rem;
+}
+
+.richText :global(li) {
+  margin-bottom: 0.25rem;
+}
+
+.richText :global(a),
+.richText :global(strong) {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.richText :global(a) {
+  text-decoration-color: color-mix(in srgb, var(--primary) 50%, transparent);
+}
+
+.richText :global(blockquote) {
+  margin: 2rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--primary);
+  color: var(--black);
+  line-height: 1.7;
+}
+
+.richText :global(figure) {
+  margin: 2rem 0;
+}
+
+.richText :global(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.showreel {
+  aspect-ratio: 16 / 9;
+  margin-top: 1rem;
+  overflow: hidden;
+  background: var(--black);
+}
+
+.showreelFrame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.tocList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tocItem {
+  margin: 0;
+}
+
+.tocLink {
+  display: inline-flex;
+  width: 100%;
+  border-left: 1px solid #dfddd6;
+  padding: 0.75rem 2rem 0.75rem 1rem;
+  color: #888680;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  text-decoration: none;
+}
+
+.tocLink:hover,
+.tocLink:focus-visible {
+  color: var(--black);
+  border-left-color: var(--primary);
+}
+
+.tocLink[data-level="3"] {
+  padding-left: 2rem;
+}
+
+.tocLink[data-level="4"],
+.tocLink[data-level="5"],
+.tocLink[data-level="6"] {
+  padding-left: 3rem;
+}
+
+.relatedSection {
+  padding-block: 7rem;
+  background: var(--white);
+}
+
+.relatedHeading {
+  margin: 0 0 1em;
+  color: var(--black);
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-size: var(--h2);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+.relatedCard {
+  min-width: 0;
+}
+
+.relatedMedia {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+
+.relatedImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.relatedCard:hover .relatedImage {
+  transform: scale(1.035);
+}
+
+.relatedTitle {
+  margin: 1rem 0;
+  color: var(--black);
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.relatedTitle a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.relatedExcerpt {
+  display: -webkit-box;
+  margin: 0 0 1rem;
+  overflow: hidden;
+  color: var(--body);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.relatedReadLink {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  color: var(--black);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  text-decoration: none;
+}
+
+.relatedReadText {
+  border-bottom: 1px solid var(--black);
+}
+
+@media (max-width: 991px) {
+  .contentSection {
+    padding-block: clamp(2rem, 0.575rem + 5.89vw, 4.25rem);
+  }
+
+  .layout {
+    display: block;
+  }
+
+  .articleColumn {
+    width: 100%;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .title {
+    font-size: clamp(1.5068rem, 0.575rem + 3.85vw, 2.1867rem);
+  }
+
+  .relatedSection {
+    padding-block: clamp(2rem, 0.575rem + 5.89vw, 4.25rem);
+  }
+
+  .relatedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    width: 96%;
+  }
+
+  .articleHeader {
+    padding-inline: 0;
+  }
+
+  .articleColumn {
+    padding-inline: 1rem;
+  }
+
+  .relatedGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .relatedHeading {
+    font-size: var(--h3);
+  }
+}

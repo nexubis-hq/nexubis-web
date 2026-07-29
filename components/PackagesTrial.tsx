@@ -43,9 +43,9 @@ export function PackagesTrial() {
           </div>
 
           <div className="trial-button-group">
-            <a href="/post/rethinking-the-nexubis-trial">
+            <Link href="/post/rethinking-the-nexubis-trial">
               Learn More
-            </a>
+            </Link>
           </div>
         </div>
 

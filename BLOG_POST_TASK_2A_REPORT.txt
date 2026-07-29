@@ -1,0 +1,212 @@
+BLOG POST TASK 2A REPORT
+
+Scope
+
+Implemented TASK 2A for the two controlled /post/[slug] fixtures and stopped
+there.
+
+Routes completed:
+- /post/how-it-all-started-and-almost-didnt
+- /post/circuit-securing-nexubis
+
+No Sanity setup was started.
+No remaining Blog posts were migrated.
+No redirects were created.
+The approved /blog index was not redesigned.
+
+Files Changed Or Added
+
+- app/post/[slug]/page.tsx
+- components/blog/BlogLottiePlayer.tsx
+- components/blog/BlogPost.module.css
+- components/blog/BlogPostHeader.tsx
+- components/blog/BlogPostMedia.tsx
+- components/blog/BlogPostTemplate.tsx
+- components/blog/BlogRichText.tsx
+- components/blog/BlogShowreel.tsx
+- components/blog/BlogTableOfContents.tsx
+- components/blog/RelatedPosts.tsx
+- lib/blog/get-post-by-slug.ts
+- lib/blog/post-metadata.ts
+- lib/blog/post-url.ts
+- lib/blog/related-posts.ts
+- lib/blog/sanitize-post-html.ts
+- lib/blog/generated/post-fixtures.json
+- lib/blog/post-fixtures.test.ts
+- lib/blog/types.ts
+- scripts/generate-blog-post-fixtures.ts
+- docs/BLOG_POST_TEMPLATE_MEDIA_PENDING.md
+- package.json
+- components/PackagesPricing.tsx
+- components/PackagesTrial.tsx
+
+The two Packages component edits only changed existing internal article links
+from <a> to Next Link because adding /post/[slug] made Next lint treat those
+hrefs as internal routes. Visual styling and hrefs were preserved.
+
+Fixture Data
+
+Generated exactly 2 post fixtures:
+- how-it-all-started-and-almost-didnt
+- circuit-securing-nexubis
+
+The generated fixture data is committed production input and does not require
+webflow-export during rendering or Vercel builds.
+
+Standard Post Result
+
+/post/how-it-all-started-and-almost-didnt renders through the reusable Blog post
+template using the standard static thumbnail hero treatment.
+
+Featured / Lottie Post Result
+
+/post/circuit-securing-nexubis renders through the same reusable template using
+the Webflow CMS thumbnail as the base hero layer and the Lottie animation over
+it, matching the exported template behavior. Reduced-motion and animation
+failure fall back to the static thumbnail.
+
+Showreel Result
+
+Showreel renders only for circuit-securing-nexubis, below the rich-text article
+body. The showreel URL is converted from the fixture YouTube URL into an embed.
+
+Table Of Contents
+
+The table of contents is generated from sanitized article headings. Stable IDs
+are added to headings, links scroll to the matching article sections, and the
+TOC hides at the responsive breakpoint recovered from the Webflow template.
+
+Rich Text Sanitisation
+
+The exported Content HTML is rendered after sanitisation with cheerio.
+
+Removed or rewritten:
+- script/style/noscript tags
+- iframes from rich-text body
+- inline event handlers
+- javascript: hrefs
+- Webflow/runtime-style data and vdx attributes
+- absolute internal nexubis.io links rewritten to local paths
+
+Preserved:
+- paragraphs
+- headings
+- lists
+- strong/emphasis
+- links
+- figures/images
+- line breaks
+
+Related Posts
+
+Related posts use existing generated Blog summaries, not raw CSV files.
+
+The recovered explicit related-post order for both fixtures is:
+- ai-is-not-a-phase-its-an-era
+- metamorphosis
+- beyond-the-eu30-000
+
+Each related card links to /post/[exact-existing-slug]. Some related routes are
+expected to remain unresolved until a later Blog archive/Sanity pass.
+
+Metadata
+
+generateStaticParams includes only the two fixture slugs.
+generateMetadata maps SEO title, SEO description, OG image and canonical path.
+Canonical paths use:
+- /post/[slug]
+
+No Webflow or Vercel preview canonical URLs were added.
+
+Remaining Webflow Media Dependencies
+
+Documented in:
+- docs/BLOG_POST_TEMPLATE_MEDIA_PENDING.md
+
+Current unresolved dependencies include:
+- Standard post hero thumbnail
+- Standard post OG image
+- Circuit hero thumbnail / Lottie fallback
+- Circuit OG image
+- Circuit Lottie JSON currently committed as fixture data
+- Circuit YouTube showreel embed
+
+Validation Results
+
+npm run blog:generate-fixtures:
+- passed
+
+npm run lint:
+- passed with existing warnings only
+
+npm run typecheck:
+- passed
+
+npm run test:
+- passed
+- 30 test files passed
+- 233 tests passed
+
+npm run build:
+- passed
+- /post/[slug] prerenders exactly:
+  - /post/how-it-all-started-and-almost-didnt
+  - /post/circuit-securing-nexubis
+
+Build with webflow-export temporarily renamed away:
+- passed
+- webflow-export was restored afterward
+
+Browser / Preview Validation
+
+Ship Studio preview confirmed:
+- both fixture routes render
+- unknown /post/not-a-real-post returns 404
+- browser console has no errors
+- failed network list has no entries
+
+Responsive QA
+
+Local automated responsive pass checked both fixture pages at:
+- 1440
+- 1280
+- 1024
+- 992
+- 991
+- 768
+- 767
+- 480
+- 479
+- 390
+- 375
+
+Total route/viewport combinations checked:
+- 22
+
+Horizontal overflow count:
+- 0
+
+Screenshots and measurements saved under:
+- .shipstudio/screenshots/blog-post-task2a
+- .shipstudio/screenshots/blog-post-task2a-live
+
+Known Remaining Visual Differences
+
+The current shared SiteHeader and SiteFooter are intentionally used instead of
+the old Webflow header/footer from the reference screenshots.
+
+The Circuit Lottie is animated, so exact screenshot frame state can differ from
+the static live/reference screenshot depending on capture timing.
+
+Unrelated Existing Working Tree Changes
+
+These files were already modified or unrelated and were left alone:
+- app/about/page.tsx
+- app/globals.css
+- app/work/page.tsx
+- WORK_INDEX_PARITY_REPORT.txt
+
+Git Index Note
+
+The Task 2A implementation files were staged explicitly so generated fixture
+data is tracked in the Git index. No commit was created in this task.
