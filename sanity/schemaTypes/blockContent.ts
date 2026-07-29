@@ -22,6 +22,7 @@ export const blockContent = defineType({
         decorators: [
           { title: "Strong", value: "strong" },
           { title: "Emphasis", value: "em" },
+          { title: "Accent red", value: "accent" },
         ],
         annotations: [
           defineField({

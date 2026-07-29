@@ -176,10 +176,7 @@ export function UnlockPanel({ runId }: { runId: string }) {
         </label>
         {siteKey ? <div ref={turnstileRef} className="sc-turnstile" /> : null}
         <p className="sc-privacy">
-          {UNLOCK.privacyNotice}{" "}
-          <a href={UNLOCK.privacyUrl} target="_blank" rel="noreferrer">
-            Privacy policy
-          </a>
+          {UNLOCK.privacyNotice}
         </p>
         {error ? <p className="sc-form-error">{error}</p> : null}
         <button className="btn btn-primary sc-unlock-submit" type="submit" disabled={state === "submitting"}>

@@ -1,0 +1,19 @@
+route,classification,status,notes
+/,COMPLETED_NON_BLOG,200,Production page loads on nexubis.vercel.app
+/about,COMPLETED_NON_BLOG,200,Production page loads on nexubis.vercel.app
+/work,COMPLETED_NON_BLOG,200,Production Work index loads
+/work/altify,COMPLETED_NON_BLOG,200,Production Case Study loads
+/work/circuit,COMPLETED_NON_BLOG,200,Production Case Study loads
+/work/oxipack,COMPLETED_NON_BLOG,200,Production Case Study loads
+/packages,COMPLETED_NON_BLOG,200,Production Packages page loads
+/contact,COMPLETED_NON_BLOG,200,Production Contact page loads
+/scorecard,COMPLETED_NON_BLOG,200,Production Scorecard entry loads
+/scorecard/admin,COMPLETED_NON_BLOG,200,Admin login shell loads
+/scorecard/admin/leads,COMPLETED_NON_BLOG,307,Redirects to /scorecard/admin when unauthenticated
+/work/not-a-real-case-study,EXPECTED_404,404,Unknown work slug returns 404
+/api/contact,API_EXPECTED_METHOD_STATUS,405,GET is not allowed; POST route exists
+/robots.txt,SEO_BLOCKER,404,Missing robots endpoint for completed pages
+/sitemap.xml,SEO_BLOCKER,404,Missing sitemap endpoint for completed pages
+/blog,PENDING_BLOG_MIGRATION,deferred,Active Blog/Sanity migration
+/post/[slug],PENDING_BLOG_MIGRATION,deferred,Active Blog/Sanity migration
+/studio,PENDING_BLOG_MIGRATION,deferred,Sanity Studio/configuration present; content audit deferred

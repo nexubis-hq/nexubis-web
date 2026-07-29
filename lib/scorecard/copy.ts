@@ -40,9 +40,8 @@ export const UNLOCK = {
   afterSubmit:
     "Here's your result. Your full report has your Credibility Score, the competitor comparison, and the first place to fix. We'll also email you the link so you have it.",
   // TODO CONFIRM WITH LEON: exact EU privacy wording. Placeholder kept plain
-  // and honest until confirmed; the link target is the site privacy page.
+  // and honest until confirmed.
   privacyNotice: "We use these details to send your report link and follow up about your results. See our privacy policy.",
-  privacyUrl: "https://www.nexubis.io/privacy",
 } as const;
 
 // ── Report navigation + share ────────────────────────────────────────────────

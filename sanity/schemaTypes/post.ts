@@ -45,7 +45,7 @@ export const post = defineType({
       type: "text",
       rows: 4,
       group: "content",
-      validation: (rule) => rule.required().max(300),
+      validation: (rule) => rule.required().max(300).error("Excerpt must be 300 characters or fewer."),
     }),
     defineField({
       name: "body",
