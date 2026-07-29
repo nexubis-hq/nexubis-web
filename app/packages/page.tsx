@@ -11,6 +11,9 @@ import { currencyFromParam } from "@/lib/packages";
 export const metadata: Metadata = {
   title: "Nexubis - Packages",
   description: "One creative team on a flat monthly fee. Three levels, one invoice, no per-project quotes.",
+  alternates: {
+    canonical: "https://www.nexubis.io/packages",
+  },
 };
 
 export default async function PackagesPage({
