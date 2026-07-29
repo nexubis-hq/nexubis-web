@@ -128,7 +128,7 @@ export function PackagesPricing() {
             <div className="saving saving-placeholder">2 Months Free</div>
             <div className="package-audience">For bespoke needs</div>
             <p className="flex-copy">Whether you’re starting small or thinking big, we’ll build a plan that’s shaped around your specific goals.</p>
-            <a className="packages-learn-more" href="https://www.nexubis.io/post/the-flex-package" target="_blank" rel="noreferrer">Learn More</a>
+            <a className="packages-learn-more" href="/post/the-flex-package">Learn More</a>
           </article>
         </div>
       </div>

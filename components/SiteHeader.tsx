@@ -13,12 +13,12 @@ const caseStudies = WORK_SLUGS.map((slug) => ({
 
 const desktopLinks = [
   { label: "Packages", href: PACKAGES_URL, icon: "wallet" },
-  { label: "Dreamlab", href: "https://www.nexubis.io/blog", icon: "flask" },
+  { label: "Dreamlab", href: "/blog", icon: "flask" },
 ];
 
 const mobileLinks = [
   { label: "Home", href: "/", icon: "home" },
-  { label: "Dreamlab", href: "https://www.nexubis.io/blog", icon: "flask" },
+  { label: "Dreamlab", href: "/blog", icon: "flask" },
   { label: "Pricing", href: PACKAGES_URL, icon: "wallet" },
 ];
 

@@ -1,0 +1,73 @@
+Deployment Day QA Report
+
+Implemented the deployment-day link/testimonial fixes in the working tree.
+
+Changed
+- components/work/CaseStudyTemplate.tsx: replaced generated share URLs with verified client-owned links, in live order: Website, LinkedIn, X, Facebook. Circuit has no Facebook because no verified destination exists.
+- components/work/CaseStudyTemplate.tsx: restored Webflow SVG testimonial quote marks.
+- app/globals.css: positioned testimonial SVG quote marks to match the Webflow export responsive rules.
+- lib/work/data.ts: corrected Oxipack story-card title to "Oxipack: Funding Nexubis"; kept /post/oxipack-empowering-nexubis.
+- lib/site-config.ts: footer links now use internal /contact, /work, /about, /privacy.
+- components/SiteHeader.tsx: Dreamlab now links to /blog.
+- components/PackagesPricing.tsx and components/PackagesTrial.tsx: Learn More post links now use internal /post/... paths.
+
+Verified Sources
+- Live DOM confirmed Altify client links:
+  - Website: https://www.altify.app/
+  - LinkedIn: https://www.linkedin.com/company/altifyinvest/
+  - X: https://x.com/Altifyinvest
+  - Facebook: https://www.facebook.com/AltifyInvest/
+- Live DOM confirmed Circuit client links:
+  - Website: https://www.circuitsecurity.com/
+  - LinkedIn: https://www.linkedin.com/company/circuitsecurity/
+  - X: https://x.com/CircuitSecurity
+  - Facebook: no verified destination in live/CMS source.
+- Live DOM confirmed Oxipack client links:
+  - Website: https://www.oxipack.com/
+  - LinkedIn: https://www.linkedin.com/company/oxipack/
+  - X: https://x.com/Oxipack
+  - Facebook: https://www.facebook.com/OxipackLeakDetection?mibextid=LQQJ4d
+- Blog CMS confirmed story cards:
+  - Altify: "Altify: Empowering Nexubis" -> /post/altify-empowering-nexubis
+  - Circuit: "Circuit: Securing Nexubis" -> /post/circuit-securing-nexubis
+  - Oxipack: "Oxipack: Funding Nexubis" -> /post/oxipack-empowering-nexubis
+
+QA Results
+- Local production build route statuses:
+  - /, /packages, /contact, /work/altify, /work/circuit, /work/oxipack: 200
+  - unknown /work/nope: 404
+  - /work, /about, /privacy: 404 blockers
+  - testimonial /post/* routes and package /post/* routes: 404 pending blog/post fallback
+  - /api/contact: 405 on GET, route exists for POST
+- Production-rendered breakpoints tested: 1440, 1280, 991, 767, 390, 375.
+- No horizontal overflow on case-study routes.
+- No Webflow media/runtime host requests on /, /packages, /contact, and all three case-study routes.
+- Case-study gallery videos passed two-loop checks at 1440 and 390; all stayed muted, looping, control-free, unpaused, unended, and used local project posters.
+- Contact route loads Cal.com, tabs render, contact form exists, no Webflow form endpoint observed.
+- Remaining runtime issue: homepage requests missing /booth-loop-poster.jpg, causing one 404 console error. Homepage assets were left untouched per scope.
+
+Canonical Vercel
+- https://nexubis-web.vercel.app is accessible, but it is still serving the older deployed code:
+  - generated share URLs
+  - old Oxipack card title
+  - generic reel_draft.jpg gallery posters
+- These fixes need deployment before canonical Vercel can pass.
+
+Validation Commands
+- npm run lint: passed with warnings only.
+- npm run typecheck: passed.
+- npm run test: passed, 29 files / 224 tests.
+- npm run build: passed, with existing placeholder proof-content build warning.
+
+Cutover Blockers
+- Missing rebuilt /work index.
+- Missing rebuilt /about.
+- Missing rebuilt /privacy or final legal content.
+- Missing rebuilt /post/[slug] route for testimonial/package story links.
+- Homepage missing /booth-loop-poster.jpg.
+- Current canonical Vercel preview is not updated to this working-tree state.
+
+Git Note
+- This pass was not committed or pushed because the worktree also contains unrelated changes not made in this pass:
+  - deleted tracked report files
+  - untracked blog fallback files/reports

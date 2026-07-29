@@ -1,7 +1,5 @@
 import type { CaseStudy, WorkSlug } from "@/lib/work/types";
 
-const GALLERY_VIDEO_POSTER = "/assets/images/reel_draft.jpg";
-
 const caseStudies: CaseStudy[] = [
   {
     slug: "altify",
@@ -63,13 +61,13 @@ const caseStudies: CaseStudy[] = [
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/altify/TEMPLATE%20LONG.mp4",
         title: "Altify wide campaign motion",
-        poster: GALLERY_VIDEO_POSTER,
+        poster: "/assets/work/altify/gallery-video-1-poster.png",
         aspect: "wide",
       },
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/altify/BTC%20MOON%202.mp4",
         title: "Altify square campaign motion",
-        poster: GALLERY_VIDEO_POSTER,
+        poster: "/assets/work/altify/gallery-video-2-poster.png",
         aspect: "square",
       },
     ],
@@ -81,7 +79,7 @@ const caseStudies: CaseStudy[] = [
         video: {
           src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/altify/TEMPLATE%20LONG.mp4",
           title: "Altify wide campaign motion",
-          poster: GALLERY_VIDEO_POSTER,
+          poster: "/assets/work/altify/gallery-video-1-poster.png",
           aspect: "wide",
         },
         span: "wide",
@@ -92,7 +90,7 @@ const caseStudies: CaseStudy[] = [
         video: {
           src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/altify/BTC%20MOON%202.mp4",
           title: "Altify square campaign motion",
-          poster: GALLERY_VIDEO_POSTER,
+          poster: "/assets/work/altify/gallery-video-2-poster.png",
           aspect: "square",
         },
         span: "half",
@@ -190,13 +188,13 @@ const caseStudies: CaseStudy[] = [
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/circuit/01.mp4",
         title: "Circuit wide campaign motion",
-        poster: GALLERY_VIDEO_POSTER,
+        poster: "/assets/work/circuit/gallery-video-1-poster.png",
         aspect: "wide",
       },
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/circuit/02.mp4",
         title: "Circuit square campaign motion",
-        poster: GALLERY_VIDEO_POSTER,
+        poster: "/assets/work/circuit/gallery-video-2-poster.png",
         aspect: "square",
       },
     ],
@@ -208,7 +206,7 @@ const caseStudies: CaseStudy[] = [
         video: {
           src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/circuit/01.mp4",
           title: "Circuit wide campaign motion",
-          poster: GALLERY_VIDEO_POSTER,
+          poster: "/assets/work/circuit/gallery-video-1-poster.png",
           aspect: "wide",
         },
         span: "wide",
@@ -219,7 +217,7 @@ const caseStudies: CaseStudy[] = [
         video: {
           src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/circuit/02.mp4",
           title: "Circuit square campaign motion",
-          poster: GALLERY_VIDEO_POSTER,
+          poster: "/assets/work/circuit/gallery-video-2-poster.png",
           aspect: "square",
         },
         span: "half",
@@ -312,13 +310,13 @@ const caseStudies: CaseStudy[] = [
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/oxipack/TEMPLATE%20LONG.mp4",
         title: "Oxipack wide campaign motion",
-        poster: GALLERY_VIDEO_POSTER,
+        poster: "/assets/work/oxipack/gallery-video-1-poster.png",
         aspect: "wide",
       },
       {
         src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/oxipack/TEMPLATE%20SQUARE.mp4",
         title: "Oxipack square campaign motion",
-        poster: GALLERY_VIDEO_POSTER,
+        poster: "/assets/work/oxipack/gallery-video-2-poster.png",
         aspect: "square",
       },
     ],
@@ -330,7 +328,7 @@ const caseStudies: CaseStudy[] = [
         video: {
           src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/oxipack/TEMPLATE%20LONG.mp4",
           title: "Oxipack wide campaign motion",
-          poster: GALLERY_VIDEO_POSTER,
+          poster: "/assets/work/oxipack/gallery-video-1-poster.png",
           aspect: "wide",
         },
         span: "wide",
@@ -341,7 +339,7 @@ const caseStudies: CaseStudy[] = [
         video: {
           src: "https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/oxipack/TEMPLATE%20SQUARE.mp4",
           title: "Oxipack square campaign motion",
-          poster: GALLERY_VIDEO_POSTER,
+          poster: "/assets/work/oxipack/gallery-video-2-poster.png",
           aspect: "square",
         },
         span: "half",
@@ -357,7 +355,7 @@ const caseStudies: CaseStudy[] = [
         width: 2018,
         height: 2128,
       },
-      storyTitle: "Oxipack: Empowering Nexubis",
+      storyTitle: "Oxipack: Funding Nexubis",
       storyHref: "/post/oxipack-empowering-nexubis",
       storyThumbnail: "/assets/work/oxipack/story-thumbnail.avif",
     },

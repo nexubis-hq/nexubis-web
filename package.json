@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "blog:generate-index": "tsx scripts/generate-blog-index-data.ts",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",

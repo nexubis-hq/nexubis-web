@@ -15,7 +15,7 @@
 export { CAL_BOOKING_URL as BOOKING_URL } from "./booking";
 
 // Contact destination (used by footer + header + "learn more" links).
-export const CONTACT_URL = "https://www.nexubis.io/contact";
+export const CONTACT_URL = "/contact";
 
 // Lead-generator tool. The tool itself ships later; the route is reserved now.
 export const SCORECARD_URL = "/scorecard";
@@ -41,12 +41,12 @@ export const SHOW_SCORECARD = process.env.NEXT_PUBLIC_SHOW_SCORECARD !== "false"
 
 // Footer navigation. Scorecard is filtered out at render time when the flag is off.
 export const FOOTER_LINKS = [
-  { label: "About", href: "https://www.nexubis.io/about" },
+  { label: "About", href: "/about" },
   { label: "What we do", href: "/#what-we-do" },
-  { label: "Work / Case studies", href: "https://www.nexubis.io/work" },
+  { label: "Work / Case studies", href: "/work" },
   { label: "Brand Credibility Scorecard", href: SCORECARD_URL, scorecard: true },
   { label: "Contact", href: CONTACT_URL },
-  { label: "Privacy & terms", href: "https://www.nexubis.io/privacy" },
+  { label: "Privacy & terms", href: "/privacy" },
 ] as const;
 
 // Footer social links.
