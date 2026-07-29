@@ -28,8 +28,9 @@ const PRIORITY_SLUGS = [
   "rethinking-the-nexubis-trial",
 ] as const;
 const API_VERSION = "2026-07-29";
-const REPORT_PATH = path.join(process.cwd(), "docs", "BLOG_PRIORITY_SANITY_IMPORT_REPORT.md");
-const MEDIA_MAPPING_PATH = path.join(process.cwd(), "docs", "BLOG_PRIORITY_MEDIA_MAPPING.json");
+const BLOG_MIGRATION_ARCHIVE_DIR = path.join(process.cwd(), "docs", "archive", "blog-migration");
+const REPORT_PATH = path.join(BLOG_MIGRATION_ARCHIVE_DIR, "BLOG_PRIORITY_SANITY_IMPORT_REPORT.md");
+const MEDIA_MAPPING_PATH = path.join(BLOG_MIGRATION_ARCHIVE_DIR, "BLOG_PRIORITY_MEDIA_MAPPING.json");
 
 type CsvRecord = Record<string, string>;
 type PortableTextSpan = {
@@ -610,7 +611,10 @@ function writeReport(summaries: Array<Record<string, unknown>>) {
     );
   }
 
-  lines.push("See docs/BLOG_PRIORITY_MEDIA_MAPPING.json for original URL to Sanity asset mappings.", "");
+  lines.push(
+    "See docs/archive/blog-migration/BLOG_PRIORITY_MEDIA_MAPPING.json for original URL to Sanity asset mappings.",
+    "",
+  );
   writeFileSync(REPORT_PATH, `${lines.join("\n")}\n`, "utf8");
 }
 

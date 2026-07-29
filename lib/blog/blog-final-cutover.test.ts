@@ -12,7 +12,10 @@ type Manifest = {
 
 function manifest() {
   return JSON.parse(
-    readFileSync(path.join(process.cwd(), "docs/BLOG_SANITY_BATCH_MANIFEST.json"), "utf8"),
+    readFileSync(
+      path.join(process.cwd(), "docs", "migration", "blog", "BLOG_SANITY_BATCH_MANIFEST.json"),
+      "utf8",
+    ),
   ) as Manifest;
 }
 

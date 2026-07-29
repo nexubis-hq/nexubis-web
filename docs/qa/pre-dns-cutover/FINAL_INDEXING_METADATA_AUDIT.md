@@ -1,0 +1,113 @@
+# Final Indexing Metadata Audit
+
+Generated: 2026-07-29T20:51:21.023Z
+
+- Public routes audited: 98
+- Public noindex errors: 0
+- Canonical errors: 3
+- Structured data detected where implemented; missing optional BlogPosting/BreadcrumbList enhancements are recommended post-launch enhancements, not DNS blockers.
+- Current deployed Vercel canonical errors are `/`, `/packages`, and `/scorecard`.
+- Local corrected production build was verified after adding canonical metadata:
+  - `/` -> `https://www.nexubis.io/`
+  - `/packages` -> `https://www.nexubis.io/packages`
+  - `/scorecard` -> `https://www.nexubis.io/scorecard`
+- Deployment is required before these canonical corrections are present on `https://nexubis.vercel.app`.
+
+- /: title=present, description=present, canonical=missing, canonicalOk=no, ogImage=missing, robots=none
+- /about: title=present, description=present, canonical=https://www.nexubis.io/about, canonicalOk=yes, ogImage=missing, robots=none
+- /blog: title=present, description=present, canonical=https://www.nexubis.io/blog, canonicalOk=yes, ogImage=missing, robots=none
+- /contact: title=present, description=present, canonical=https://www.nexubis.io/contact, canonicalOk=yes, ogImage=missing, robots=none
+- /packages: title=present, description=present, canonical=missing, canonicalOk=no, ogImage=missing, robots=none
+- /post/10-better-or-dont-bother: title=present, description=present, canonical=https://www.nexubis.io/post/10-better-or-dont-bother, canonicalOk=yes, ogImage=present, robots=none
+- /post/2025-in-retrospect: title=present, description=present, canonical=https://www.nexubis.io/post/2025-in-retrospect, canonicalOk=yes, ogImage=present, robots=none
+- /post/ai-is-not-a-phase-its-an-era: title=present, description=present, canonical=https://www.nexubis.io/post/ai-is-not-a-phase-its-an-era, canonicalOk=yes, ogImage=present, robots=none
+- /post/ai-isnt-coming-its-already-here: title=present, description=present, canonical=https://www.nexubis.io/post/ai-isnt-coming-its-already-here, canonicalOk=yes, ogImage=present, robots=none
+- /post/altify-empowering-nexubis: title=present, description=present, canonical=https://www.nexubis.io/post/altify-empowering-nexubis, canonicalOk=yes, ogImage=present, robots=none
+- /post/automation-is-not-the-enemy: title=present, description=present, canonical=https://www.nexubis.io/post/automation-is-not-the-enemy, canonicalOk=yes, ogImage=present, robots=none
+- /post/beyond-the-eu30-000: title=present, description=present, canonical=https://www.nexubis.io/post/beyond-the-eu30-000, canonicalOk=yes, ogImage=present, robots=none
+- /post/building-a-leadership-team: title=present, description=present, canonical=https://www.nexubis.io/post/building-a-leadership-team, canonicalOk=yes, ogImage=present, robots=none
+- /post/building-fast-vs-building-right: title=present, description=present, canonical=https://www.nexubis.io/post/building-fast-vs-building-right, canonicalOk=yes, ogImage=present, robots=none
+- /post/circuit-securing-nexubis: title=present, description=present, canonical=https://www.nexubis.io/post/circuit-securing-nexubis, canonicalOk=yes, ogImage=present, robots=none
+- /post/dick-proves-the-agency-stereotype: title=present, description=present, canonical=https://www.nexubis.io/post/dick-proves-the-agency-stereotype, canonicalOk=yes, ogImage=present, robots=none
+- /post/do-something-useful: title=present, description=present, canonical=https://www.nexubis.io/post/do-something-useful, canonicalOk=yes, ogImage=present, robots=none
+- /post/dont-be-an-idiot-sandwich: title=present, description=present, canonical=https://www.nexubis.io/post/dont-be-an-idiot-sandwich, canonicalOk=yes, ogImage=present, robots=none
+- /post/dont-turn-into-a-robot: title=present, description=present, canonical=https://www.nexubis.io/post/dont-turn-into-a-robot, canonicalOk=yes, ogImage=present, robots=none
+- /post/dragonborn: title=present, description=present, canonical=https://www.nexubis.io/post/dragonborn, canonicalOk=yes, ogImage=present, robots=none
+- /post/eat-the-rich: title=present, description=present, canonical=https://www.nexubis.io/post/eat-the-rich, canonicalOk=yes, ogImage=present, robots=none
+- /post/empowering-clients: title=present, description=present, canonical=https://www.nexubis.io/post/empowering-clients, canonicalOk=yes, ogImage=present, robots=none
+- /post/empowering-communities: title=present, description=present, canonical=https://www.nexubis.io/post/empowering-communities, canonicalOk=yes, ogImage=present, robots=none
+- /post/empowering-founders: title=present, description=present, canonical=https://www.nexubis.io/post/empowering-founders, canonicalOk=yes, ogImage=present, robots=none
+- /post/empowering-teams: title=present, description=present, canonical=https://www.nexubis.io/post/empowering-teams, canonicalOk=yes, ogImage=present, robots=none
+- /post/empowering-women-with-project-flamingo: title=present, description=present, canonical=https://www.nexubis.io/post/empowering-women-with-project-flamingo, canonicalOk=yes, ogImage=present, robots=none
+- /post/fire-faster-promote-faster: title=present, description=present, canonical=https://www.nexubis.io/post/fire-faster-promote-faster, canonicalOk=yes, ogImage=present, robots=none
+- /post/for-professionals-by-professionals: title=present, description=present, canonical=https://www.nexubis.io/post/for-professionals-by-professionals, canonicalOk=yes, ogImage=present, robots=none
+- /post/fresh-out-of-college-now-what: title=present, description=present, canonical=https://www.nexubis.io/post/fresh-out-of-college-now-what, canonicalOk=yes, ogImage=present, robots=none
+- /post/goals-vs-movement: title=present, description=present, canonical=https://www.nexubis.io/post/goals-vs-movement, canonicalOk=yes, ogImage=present, robots=none
+- /post/how-it-all-started-and-almost-didnt: title=present, description=present, canonical=https://www.nexubis.io/post/how-it-all-started-and-almost-didnt, canonicalOk=yes, ogImage=present, robots=none
+- /post/how-to-not-suck-at-job-applications: title=present, description=present, canonical=https://www.nexubis.io/post/how-to-not-suck-at-job-applications, canonicalOk=yes, ogImage=present, robots=none
+- /post/how-we-landed-on-empowering-dreams: title=present, description=present, canonical=https://www.nexubis.io/post/how-we-landed-on-empowering-dreams, canonicalOk=yes, ogImage=present, robots=none
+- /post/how-we-work: title=present, description=present, canonical=https://www.nexubis.io/post/how-we-work, canonicalOk=yes, ogImage=present, robots=none
+- /post/if-it-aint-broke-refine-it: title=present, description=present, canonical=https://www.nexubis.io/post/if-it-aint-broke-refine-it, canonicalOk=yes, ogImage=present, robots=none
+- /post/impact-builds-network: title=present, description=present, canonical=https://www.nexubis.io/post/impact-builds-network, canonicalOk=yes, ogImage=present, robots=none
+- /post/just-do-it: title=present, description=present, canonical=https://www.nexubis.io/post/just-do-it, canonicalOk=yes, ogImage=present, robots=none
+- /post/just-start-the-damn-thing: title=present, description=present, canonical=https://www.nexubis.io/post/just-start-the-damn-thing, canonicalOk=yes, ogImage=present, robots=none
+- /post/keep-firing-yourself: title=present, description=present, canonical=https://www.nexubis.io/post/keep-firing-yourself, canonicalOk=yes, ogImage=present, robots=none
+- /post/keep-firing-yourself-part-2: title=present, description=present, canonical=https://www.nexubis.io/post/keep-firing-yourself-part-2, canonicalOk=yes, ogImage=present, robots=none
+- /post/keep-positioning-yourself: title=present, description=present, canonical=https://www.nexubis.io/post/keep-positioning-yourself, canonicalOk=yes, ogImage=present, robots=none
+- /post/long-term-greed: title=present, description=present, canonical=https://www.nexubis.io/post/long-term-greed, canonicalOk=yes, ogImage=present, robots=none
+- /post/make-complex-simple: title=present, description=present, canonical=https://www.nexubis.io/post/make-complex-simple, canonicalOk=yes, ogImage=present, robots=none
+- /post/make-it-memorable: title=present, description=present, canonical=https://www.nexubis.io/post/make-it-memorable, canonicalOk=yes, ogImage=present, robots=none
+- /post/manifestation-from-impossible-to-probable: title=present, description=present, canonical=https://www.nexubis.io/post/manifestation-from-impossible-to-probable, canonicalOk=yes, ogImage=present, robots=none
+- /post/metamorphosis: title=present, description=present, canonical=https://www.nexubis.io/post/metamorphosis, canonicalOk=yes, ogImage=present, robots=none
+- /post/momentum-fever: title=present, description=present, canonical=https://www.nexubis.io/post/momentum-fever, canonicalOk=yes, ogImage=present, robots=none
+- /post/most-of-my-job-sucks: title=present, description=present, canonical=https://www.nexubis.io/post/most-of-my-job-sucks, canonicalOk=yes, ogImage=present, robots=none
+- /post/my-1st-biggest-mistake: title=present, description=present, canonical=https://www.nexubis.io/post/my-1st-biggest-mistake, canonicalOk=yes, ogImage=present, robots=none
+- /post/new-years-resolutions: title=present, description=present, canonical=https://www.nexubis.io/post/new-years-resolutions, canonicalOk=yes, ogImage=present, robots=none
+- /post/not-everyone-wants-the-gold-bar: title=present, description=present, canonical=https://www.nexubis.io/post/not-everyone-wants-the-gold-bar, canonicalOk=yes, ogImage=present, robots=none
+- /post/overcoming-imposter-syndrome: title=present, description=present, canonical=https://www.nexubis.io/post/overcoming-imposter-syndrome, canonicalOk=yes, ogImage=present, robots=none
+- /post/oxipack-empowering-nexubis: title=present, description=present, canonical=https://www.nexubis.io/post/oxipack-empowering-nexubis, canonicalOk=yes, ogImage=present, robots=none
+- /post/partnership-over-transaction: title=present, description=present, canonical=https://www.nexubis.io/post/partnership-over-transaction, canonicalOk=yes, ogImage=present, robots=none
+- /post/pick-your-battles: title=present, description=present, canonical=https://www.nexubis.io/post/pick-your-battles, canonicalOk=yes, ogImage=present, robots=none
+- /post/press-pause: title=present, description=present, canonical=https://www.nexubis.io/post/press-pause, canonicalOk=yes, ogImage=present, robots=none
+- /post/resentment-is-a-symptom-of-poor-process: title=present, description=present, canonical=https://www.nexubis.io/post/resentment-is-a-symptom-of-poor-process, canonicalOk=yes, ogImage=present, robots=none
+- /post/rethinking-the-nexubis-trial: title=present, description=present, canonical=https://www.nexubis.io/post/rethinking-the-nexubis-trial, canonicalOk=yes, ogImage=present, robots=none
+- /post/scale-responsibly: title=present, description=present, canonical=https://www.nexubis.io/post/scale-responsibly, canonicalOk=yes, ogImage=present, robots=none
+- /post/sell-the-slice-not-the-sauce: title=present, description=present, canonical=https://www.nexubis.io/post/sell-the-slice-not-the-sauce, canonicalOk=yes, ogImage=present, robots=none
+- /post/skip-the-ladder-join-a-startup: title=present, description=present, canonical=https://www.nexubis.io/post/skip-the-ladder-join-a-startup, canonicalOk=yes, ogImage=present, robots=none
+- /post/solve-the-boring-problem-first: title=present, description=present, canonical=https://www.nexubis.io/post/solve-the-boring-problem-first, canonicalOk=yes, ogImage=present, robots=none
+- /post/startups-arent-a-family: title=present, description=present, canonical=https://www.nexubis.io/post/startups-arent-a-family, canonicalOk=yes, ogImage=present, robots=none
+- /post/startups-dont-need-more-features: title=present, description=present, canonical=https://www.nexubis.io/post/startups-dont-need-more-features, canonicalOk=yes, ogImage=present, robots=none
+- /post/stop-selling-time-start-delivering-value: title=present, description=present, canonical=https://www.nexubis.io/post/stop-selling-time-start-delivering-value, canonicalOk=yes, ogImage=present, robots=none
+- /post/straight-line-thinking: title=present, description=present, canonical=https://www.nexubis.io/post/straight-line-thinking, canonicalOk=yes, ogImage=present, robots=none
+- /post/striving-for-culinary-perfection: title=present, description=present, canonical=https://www.nexubis.io/post/striving-for-culinary-perfection, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-age-of-agi: title=present, description=present, canonical=https://www.nexubis.io/post/the-age-of-agi, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-biggest-risk-playing-it-safe: title=present, description=present, canonical=https://www.nexubis.io/post/the-biggest-risk-playing-it-safe, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-builders-will-survive: title=present, description=present, canonical=https://www.nexubis.io/post/the-builders-will-survive, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-butterfly-effect: title=present, description=present, canonical=https://www.nexubis.io/post/the-butterfly-effect, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-cost-of-refusing-to-adapt: title=present, description=present, canonical=https://www.nexubis.io/post/the-cost-of-refusing-to-adapt, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-discipline-of-quitting: title=present, description=present, canonical=https://www.nexubis.io/post/the-discipline-of-quitting, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-disruption: title=present, description=present, canonical=https://www.nexubis.io/post/the-disruption, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-flex-package: title=present, description=present, canonical=https://www.nexubis.io/post/the-flex-package, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-gold-bar-theory: title=present, description=present, canonical=https://www.nexubis.io/post/the-gold-bar-theory, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-legendary-play: title=present, description=present, canonical=https://www.nexubis.io/post/the-legendary-play, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-myth-of-the-perfect-hire: title=present, description=present, canonical=https://www.nexubis.io/post/the-myth-of-the-perfect-hire, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-new-creative-stack: title=present, description=present, canonical=https://www.nexubis.io/post/the-new-creative-stack, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-nexubis-effect: title=present, description=present, canonical=https://www.nexubis.io/post/the-nexubis-effect, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-nexubis-referral-program: title=present, description=present, canonical=https://www.nexubis.io/post/the-nexubis-referral-program, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-personal-belief-vs-ai-paradox: title=present, description=present, canonical=https://www.nexubis.io/post/the-personal-belief-vs-ai-paradox, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-power-of-linkedin: title=present, description=present, canonical=https://www.nexubis.io/post/the-power-of-linkedin, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-process-or-people-problem: title=present, description=present, canonical=https://www.nexubis.io/post/the-process-or-people-problem, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-secret-third-option: title=present, description=present, canonical=https://www.nexubis.io/post/the-secret-third-option, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-tech-stack-we-actually-recommend: title=present, description=present, canonical=https://www.nexubis.io/post/the-tech-stack-we-actually-recommend, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-walter-mitty-effect: title=present, description=present, canonical=https://www.nexubis.io/post/the-walter-mitty-effect, canonicalOk=yes, ogImage=present, robots=none
+- /post/the-work-life-balance-lie: title=present, description=present, canonical=https://www.nexubis.io/post/the-work-life-balance-lie, canonicalOk=yes, ogImage=present, robots=none
+- /post/welcome-to-dreamlab: title=present, description=present, canonical=https://www.nexubis.io/post/welcome-to-dreamlab, canonicalOk=yes, ogImage=present, robots=none
+- /post/what-early-stage-founders-spend-way-too-much-time-on: title=present, description=present, canonical=https://www.nexubis.io/post/what-early-stage-founders-spend-way-too-much-time-on, canonicalOk=yes, ogImage=present, robots=none
+- /post/when-branding-does-and-doesnt-matter: title=present, description=present, canonical=https://www.nexubis.io/post/when-branding-does-and-doesnt-matter, canonicalOk=yes, ogImage=present, robots=none
+- /post/your-perception-is-your-reality: title=present, description=present, canonical=https://www.nexubis.io/post/your-perception-is-your-reality, canonicalOk=yes, ogImage=present, robots=none
+- /post/youre-not-ready-for-whats-coming: title=present, description=present, canonical=https://www.nexubis.io/post/youre-not-ready-for-whats-coming, canonicalOk=yes, ogImage=present, robots=none
+- /scorecard: title=present, description=present, canonical=missing, canonicalOk=no, ogImage=missing, robots=none
+- /work: title=present, description=present, canonical=https://www.nexubis.io/work, canonicalOk=yes, ogImage=missing, robots=none
+- /work/altify: title=present, description=present, canonical=https://www.nexubis.io/work/altify, canonicalOk=yes, ogImage=present, robots=none
+- /work/circuit: title=present, description=present, canonical=https://www.nexubis.io/work/circuit, canonicalOk=yes, ogImage=present, robots=none
+- /work/oxipack: title=present, description=present, canonical=https://www.nexubis.io/work/oxipack, canonicalOk=yes, ogImage=present, robots=none

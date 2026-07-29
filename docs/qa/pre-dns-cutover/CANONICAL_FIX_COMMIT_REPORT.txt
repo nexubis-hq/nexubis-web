@@ -1,0 +1,52 @@
+Canonical Fix Commit Report
+Generated: 2026-07-29
+
+Committed the scoped canonical fix.
+
+1. Current branch:
+shannah
+
+2. Canonical fix files:
+
+app/page.tsx
+- Before: no route-level metadata canonical.
+- After: export const metadata: Metadata = { alternates: { canonical: "https://www.nexubis.io/" } }
+- Result: / -> https://www.nexubis.io/
+
+app/packages/page.tsx
+- Before: title/description only.
+- After: added alternates.canonical: "https://www.nexubis.io/packages"
+- Result: /packages -> https://www.nexubis.io/packages
+
+app/scorecard/page.tsx
+- Before: title/description only.
+- After: added alternates.canonical: "https://www.nexubis.io/scorecard"
+- Result: /scorecard -> https://www.nexubis.io/scorecard
+
+3. Files staged and committed:
+- app/page.tsx
+- app/packages/page.tsx
+- app/scorecard/page.tsx
+
+No cleanup files, Blog/Sanity files, audit outputs, env files, public media, or
+unrelated files were staged.
+
+Validation:
+- npm run lint: passed, 0 errors, 29 existing warnings
+- npm run typecheck: passed
+- npm run test: passed, 38 files / 281 tests
+- npm run build: passed, 104 static pages generated
+- Local production HTML check: passed. /, /packages, /scorecard, plus sampled
+  unaffected pages each rendered exactly one canonical using https://www.nexubis.io.
+
+Commit created:
+- e5936c442fb97210f2e56ad586d6ede36c4a7c90
+- Message: Fix canonical metadata before DNS cutover
+
+This commit is currently only on shannah, not main.
+
+Required next Git action to place it on main:
+Merge or cherry-pick e5936c442fb97210f2e56ad586d6ede36c4a7c90 into main, then
+push or allow Vercel Production to deploy from main.
+
+No push, merge, or deploy was performed.

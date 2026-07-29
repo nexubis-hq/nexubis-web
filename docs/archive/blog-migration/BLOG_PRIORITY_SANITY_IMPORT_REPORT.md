@@ -90,5 +90,4 @@ Last updated: 2026-07-29T14:42:18.630Z
 - Original Webflow URLs replaced: 3
 - Warnings/manual review: none
 
-See docs/BLOG_PRIORITY_MEDIA_MAPPING.json for original URL to Sanity asset mappings.
-
+See docs/archive/blog-migration/BLOG_PRIORITY_MEDIA_MAPPING.json for original URL to Sanity asset mappings.

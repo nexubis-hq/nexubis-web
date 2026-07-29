@@ -21,7 +21,7 @@ Generated: 2026-07-29T20:11:32.030Z
 
 ## Retry Selection Hardening
 
-- Batch selections are locked in docs/BLOG_SANITY_BATCH_MANIFEST.json under batchSelections.
+- Batch selections are locked in docs/migration/blog/BLOG_SANITY_BATCH_MANIFEST.json under batchSelections.
 - Same batch ID reuses the locked slug list.
 - Partial retry cannot select later pending posts.
 - Final smaller batches stay locked to their smaller list.
@@ -79,7 +79,7 @@ Generated: 2026-07-29T20:11:32.030Z
 
 ## Stored Data Audit
 
-See docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json.
+See docs/migration/blog/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json.
 
 - Published posts scanned: 88.
 - Webflow media/runtime dependencies: 0.
@@ -95,7 +95,7 @@ See docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json.
 
 ## Route And Sitemap Audit
 
-See docs/BLOG_FINAL_ROUTE_AUDIT.json.
+See docs/migration/blog/BLOG_FINAL_ROUTE_AUDIT.json.
 
 - Exact routes scanned: 88.
 - Missing original routes: 0.

@@ -2,9 +2,9 @@ Completed the non-blog CTA/link parity audit and made one safe correction.
 
 Files changed for this task:
 - lib/site-config.ts
-- docs/PRE_CUTOVER_LINK_PARITY_AUDIT.csv
-- docs/PRE_CUTOVER_LINK_FIXES.md
-- docs/PRE_CUTOVER_CTA_HANDOFF.md
+- docs/qa/PRE_CUTOVER_LINK_PARITY_AUDIT.csv
+- docs/qa/PRE_CUTOVER_LINK_FIXES.md
+- docs/qa/PRE_CUTOVER_CTA_HANDOFF.md
 
 Safe fix applied:
 - Generic BOOKING_URL now resolves to /contact instead of https://cal.com/nexubis/30min.

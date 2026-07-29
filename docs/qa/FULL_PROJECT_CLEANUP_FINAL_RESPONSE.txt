@@ -1,0 +1,86 @@
+Full Project Cleanup Final Response
+Generated: 2026-07-29
+
+Cleanup pass completed conservatively. No staging, commit, push, deploy, DNS,
+environment-value, source-behaviour, route, pricing, Funnelr, Scorecard,
+Cal.com, Sanity content, Webflow export, or public asset changes were made.
+
+Files created or updated:
+- .gitignore
+- docs/README.md
+- docs/archive/PACKAGES_MOBILE_EURO_LOTTIE_ADAPTATION_REPORT.txt
+- docs/qa/FULL_PROJECT_CLEANUP_MANIFEST.md
+- docs/qa/FULL_PROJECT_CLEANUP_SUMMARY.md
+- docs/qa/MANUAL_CLEANUP_REVIEW.md
+- docs/qa/FULL_PROJECT_CLEANUP_FINAL_RESPONSE.txt
+
+Totals:
+- Total files reviewed: 613 inventory entries, plus focused QA/public/script/env/Webflow audits
+- Total kept in place: 612 existing tracked files
+- Total moved: 1
+- Total archived: 1
+- Total deleted: 0
+- Dead source files removed: 0
+- Unused assets removed: 0
+- QA artefacts removed: 0
+- Manual-review entries: 11
+
+Moved and archived:
+- PACKAGES_MOBILE_EURO_LOTTIE_ADAPTATION_REPORT.txt -> docs/archive/PACKAGES_MOBILE_EURO_LOTTIE_ADAPTATION_REPORT.txt
+
+Deleted:
+- None
+
+Exact .gitignore changes:
+- Added /test-results/
+- Added /.tmp-sanity-import/
+
+Blog/Sanity files left untouched:
+- docs/BLOG_CIRCUIT_MEDIA_MAPPING.json
+- docs/BLOG_CIRCUIT_SANITY_IMPORT_REPORT.md
+- docs/BLOG_FINAL_ROUTE_AUDIT.json
+- docs/BLOG_FINAL_SANITY_CUTOVER_OUTPUT.txt
+- docs/BLOG_FINAL_SANITY_CUTOVER_REPORT.md
+- docs/BLOG_FINAL_WEBFLOW_REMOVAL_REPORT.md
+- docs/BLOG_INDEX_GENERATED_DATA.md
+- docs/BLOG_INDEX_MEDIA_PENDING.md
+- docs/BLOG_POST_TEMPLATE_MEDIA_PENDING.md
+- docs/BLOG_PRIORITY_MEDIA_MAPPING.json
+- docs/BLOG_PRIORITY_SANITY_IMPORT_REPORT.md
+- docs/BLOG_SANITY_BATCH_04_FINAL_REPORT.txt
+- docs/BLOG_SANITY_BATCH_05_FINAL_REPORT.txt
+- docs/BLOG_SANITY_BATCH_MANIFEST.json
+- docs/BLOG_SANITY_BATCH_MEDIA_MAPPING.json
+- docs/BLOG_SANITY_BATCH_REPORT.md
+- docs/BLOG_SANITY_BATCH_REPORT_OUTPUT.txt
+- docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json
+- scripts/generate-blog-index-data.ts
+- scripts/generate-blog-post-fixtures.ts
+- scripts/import-circuit-blog-post.ts
+- scripts/import-priority-blog-posts.ts
+- scripts/migrate-blog-sanity-batch.ts
+- scripts/verify-circuit-blog-post-import.ts
+- scripts/verify-priority-blog-posts.ts
+
+Remaining notable findings:
+- Webflow references remain in migration/docs/reference material only; no production runtime dependency found.
+- nexubis.vercel.app remains in final audit docs and migration/staging context.
+- Direct Cal.com references remain in approved booking/contact/scorecard paths and docs/tests.
+- No /privacy or /terms app route references were found in the targeted source audit.
+- Package scripts resolve to existing targets.
+- .env.example is incomplete relative to all discovered environment references; left for manual review because updating env docs broadly without owner confirmation is risky.
+
+Validation:
+- npm run lint: passed, 0 errors, 29 warnings
+- npm run typecheck: passed
+- npm run test: passed, 38 files / 281 tests
+- npm run build: passed, 104 static pages generated including Blog posts, robots.txt, and sitemap.xml
+- No files are staged
+- .env.local remains ignored
+- Required root config files remain in root
+- Repository is buildable
+
+Conclusion:
+This cleanup is safe to review and commit as a low-risk documentation/tooling
+cleanup, but the repository is not fully clean until the manual-review items in
+docs/qa/MANUAL_CLEANUP_REVIEW.md are resolved.

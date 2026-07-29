@@ -31,7 +31,7 @@ Status: Circuit pilot import completed as a Sanity draft. The excerpt validation
 - Excerpt validation result: fixed; excerpt is under the 300-character Sanity schema maximum
 - Sanity document validation result: 0 errors; 1 SEO description length warning remains
 
-See `docs/BLOG_CIRCUIT_MEDIA_MAPPING.json` for old URL to Sanity asset mapping.
+See `docs/archive/blog-migration/BLOG_CIRCUIT_MEDIA_MAPPING.json` for old URL to Sanity asset mapping.
 
 ## Manual Studio Review
 
