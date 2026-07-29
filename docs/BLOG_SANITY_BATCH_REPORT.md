@@ -1,186 +1,207 @@
 # Blog Sanity Batch Report
 
-Last updated: 2026-07-29T18:23:25.010Z
-Batch ID: batch-2026-07-29-archive-05
+Last updated: 2026-07-29T18:43:00.000Z
+Batch ID: batch-2026-07-29-archive-06
 
 ## Preflight
 
-- `/blog` before Batch 05: 88 unique cards, 44 Sanity cards, 44 generated fallback cards.
+- /blog before Batch 06: 88 unique cards, 54 Sanity cards, 34 generated fallback cards.
 - Authenticated command path confirmed: `npm run blog:migrate-batch` -> `sanity exec scripts/migrate-blog-sanity-batch.ts --with-user-token --`.
 - Published Sanity summaries override generated records by exact slug; drafts, versions and release documents remain excluded.
-- All 44 pre-batch Sanity cards used `cdn.sanity.io` thumbnails; all six filter/category icons used Sanity assets; shared Blog interface graphics contained no Webflow dependency.
+- All 54 pre-batch Sanity cards used `cdn.sanity.io` thumbnails; all six filter/category icons used Sanity assets; shared Blog interface graphics contained no Webflow dependency.
 - No public/client-side Sanity write token was found; only public project/dataset IDs are exposed.
-- Manifest preflight marked the previous 44 posts complete; no completed manifest entries were reset, recreated or reordered.
+- Manifest preflight marked 54 posts complete and 34 pending; no completed manifest entries were reset, recreated or reordered.
 
 ## Selected Posts
 
-- 44. The New Creative Stack | the-new-creative-stack | https://www.nexubis.io/post/the-new-creative-stack | Hannes Oosthuizen | Artificial Intelligence | Tue Aug 26 2025 11:27:50 GMT+0000
-- 45. Solve the Boring Problem First | solve-the-boring-problem-first | https://www.nexubis.io/post/solve-the-boring-problem-first | Hannes Oosthuizen | Founders Diary | Tue Aug 26 2025 11:27:50 GMT+0000
-- 46. Startups Don’t Need More Features | startups-dont-need-more-features | https://www.nexubis.io/post/startups-dont-need-more-features | Hannes Oosthuizen | Founders Diary | Tue Aug 26 2025 11:27:50 GMT+0000
-- 47. If It Ain’t Broke… Refine It | if-it-aint-broke-refine-it | https://www.nexubis.io/post/if-it-aint-broke-refine-it | Hannes Oosthuizen | Founders Diary | Mon Jun 23 2025 09:00:01 GMT+0000
-- 48. Don’t Be an Idiot Sandwich | dont-be-an-idiot-sandwich | https://www.nexubis.io/post/dont-be-an-idiot-sandwich | Hannes Oosthuizen | Founders Diary | Thu Jun 19 2025 09:36:33 GMT+0000
-- 49. Do Something Useful | do-something-useful | https://www.nexubis.io/post/do-something-useful | Hannes Oosthuizen | Founders Diary | Wed Jun 18 2025 09:00:02 GMT+0000
-- 50. Eat The Rich | eat-the-rich | https://www.nexubis.io/post/eat-the-rich | Hannes Oosthuizen | Founders Diary | Tue Jun 17 2025 12:51:53 GMT+0000
-- 51. Startups Aren’t a Family | startups-arent-a-family | https://www.nexubis.io/post/startups-arent-a-family | Hannes Oosthuizen | Founders Diary | Fri Jun 13 2025 09:00:01 GMT+0000
-- 52. The Flex Package | the-flex-package | https://www.nexubis.io/post/the-flex-package | Hannes Oosthuizen | Company | Thu Jun 12 2025 13:57:42 GMT+0000
-- 53. The Myth of the Perfect Hire | the-myth-of-the-perfect-hire | https://www.nexubis.io/post/the-myth-of-the-perfect-hire | Hannes Oosthuizen | Founders Diary | Thu Jun 12 2025 09:00:01 GMT+0000
-
-## Category Identity Verification
-
-- `category-ai-x-nexubis` represents the approved public category `Artificial Intelligence`.
-- Visible title: `Artificial Intelligence`; public slug: `ai-x-nexubis`; icon: `image-a7561c0e42db6f97a91f48eef7c0d6e21d825aaf-24x24-svg`.
-- No duplicate `Artificial Intelligence` category document was found, and the internal document ID is not exposed as visitor-facing text.
-- Batch 05 Artificial Intelligence posts remain filterable by the approved category slug.
+- 54. Resentment Is a Symptom of Poor Process | resentment-is-a-symptom-of-poor-process | https://www.nexubis.io/post/resentment-is-a-symptom-of-poor-process | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
+- 55. Sell the Slice, Not the Sauce | sell-the-slice-not-the-sauce | https://www.nexubis.io/post/sell-the-slice-not-the-sauce | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
+- 56. Just Start the Damn Thing | just-start-the-damn-thing | https://www.nexubis.io/post/just-start-the-damn-thing | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
+- 58. Don’t Turn Into a Robot | dont-turn-into-a-robot | https://www.nexubis.io/post/dont-turn-into-a-robot | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
+- 59. The Butterfly Effect | the-butterfly-effect | https://www.nexubis.io/post/the-butterfly-effect | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
+- 60. Fire Faster. Promote Faster. | fire-faster-promote-faster | https://www.nexubis.io/post/fire-faster-promote-faster | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
+- 61. Scale Responsibly | scale-responsibly | https://www.nexubis.io/post/scale-responsibly | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
+- 62. The Secret Third Option | the-secret-third-option | https://www.nexubis.io/post/the-secret-third-option | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
+- 63. The Biggest Risk? Playing It Safe | the-biggest-risk-playing-it-safe | https://www.nexubis.io/post/the-biggest-risk-playing-it-safe | Hannes Oosthuizen | Founders Diary | Fri Sep 05 2025 11:08:10 GMT+0000
+- 64. Press Pause | press-pause | https://www.nexubis.io/post/press-pause | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
 
 ## Structured-Field Whitespace
 
-- Selected Batch 05 source structured fields had no accidental leading or trailing whitespace.
-- Existing narrow normalisation still applied only to title, author name, category title, excerpt, SEO title and SEO description. Slugs, body text, headings, punctuation, capitalisation, URLs and captions were not altered.
+- Selected Batch 06 source structured fields had no accidental leading or trailing whitespace in title, author name, category title, excerpt, SEO title or SEO description.
+- Existing narrow normalisation remained limited to those structured fields. Slugs, body text, headings, punctuation, capitalisation, URLs and captions were not altered.
 
 ## Publication Results
 
-### The New Creative Stack
+Resentment Is a Symptom of Poor Process
 
-- Slug: `the-new-creative-stack`
-- Draft: `drafts.post-the-new-creative-stack`
-- Published: `post-the-new-creative-stack`
-- Author/category: `author-hannes-oosthuizen` / `category-ai-x-nexubis`
-- Portable Text: 54 blocks, 6 headings, 27 paragraphs, 20 unordered list items, 1 blockquote
-- Lottie/showreel: not present; no migration required.
-- Validation errors: none
-- Route, card, media, metadata and zero-Webflow flags: true
-
-### Solve the Boring Problem First
-
-- Slug: `solve-the-boring-problem-first`
-- Draft: `drafts.post-solve-the-boring-problem-first`
-- Published: `post-solve-the-boring-problem-first`
+- Slug: `resentment-is-a-symptom-of-poor-process`
+- Draft: `drafts.post-resentment-is-a-symptom-of-poor-process`
+- Published: `post-resentment-is-a-symptom-of-poor-process`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 42 blocks, 5 headings, 33 paragraphs, 4 unordered list items
+- Portable Text: 35 blocks, 5 headings, 17 paragraphs, 9 unordered list items, 4 ordered list items, 1 link
+- Excerpt: 147 -> 147
+- SEO description: 151 -> 151
 - Lottie/showreel: not present; no migration required.
 - Validation errors: none
 - Route, card, media, metadata and zero-Webflow flags: true
 
-### Startups Don’t Need More Features
+Sell the Slice, Not the Sauce
 
-- Slug: `startups-dont-need-more-features`
-- Draft: `drafts.post-startups-dont-need-more-features`
-- Published: `post-startups-dont-need-more-features`
+- Slug: `sell-the-slice-not-the-sauce`
+- Draft: `drafts.post-sell-the-slice-not-the-sauce`
+- Published: `post-sell-the-slice-not-the-sauce`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 48 blocks, 7 headings, 35 paragraphs, 6 unordered list items, 1 link
+- Portable Text: 32 blocks, 5 headings, 21 paragraphs, 4 unordered list items, 2 blockquotes
+- Excerpt: 212 -> 212
+- SEO description: 223 -> 169
 - Lottie/showreel: not present; no migration required.
 - Validation errors: none
 - Route, card, media, metadata and zero-Webflow flags: true
 
-### If It Ain’t Broke… Refine It
+Just Start the Damn Thing
 
-- Slug: `if-it-aint-broke-refine-it`
-- Draft: `drafts.post-if-it-aint-broke-refine-it`
-- Published: `post-if-it-aint-broke-refine-it`
+- Slug: `just-start-the-damn-thing`
+- Draft: `drafts.post-just-start-the-damn-thing`
+- Published: `post-just-start-the-damn-thing`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 31 blocks, 5 headings, 26 paragraphs
+- Portable Text: 27 blocks, 5 headings, 22 paragraphs
+- Excerpt: 170 -> 170
+- SEO description: 132 -> 132
 - Lottie/showreel: not present; no migration required.
 - Validation errors: none
 - Route, card, media, metadata and zero-Webflow flags: true
 
-### Don’t Be an Idiot Sandwich
+Don’t Turn Into a Robot
 
-- Slug: `dont-be-an-idiot-sandwich`
-- Draft: `drafts.post-dont-be-an-idiot-sandwich`
-- Published: `post-dont-be-an-idiot-sandwich`
+- Slug: `dont-turn-into-a-robot`
+- Draft: `drafts.post-dont-turn-into-a-robot`
+- Published: `post-dont-turn-into-a-robot`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 38 blocks, 6 headings, 21 paragraphs, 9 unordered list items, 2 blockquotes
+- Portable Text: 27 blocks, 3 headings, 23 paragraphs, 1 blockquote, 2 links
+- Excerpt: 168 -> 168
+- SEO description: 176 -> 169
 - Lottie/showreel: not present; no migration required.
 - Validation errors: none
 - Route, card, media, metadata and zero-Webflow flags: true
 
-### Do Something Useful
+The Butterfly Effect
 
-- Slug: `do-something-useful`
-- Draft: `drafts.post-do-something-useful`
-- Published: `post-do-something-useful`
+- Slug: `the-butterfly-effect`
+- Draft: `drafts.post-the-butterfly-effect`
+- Published: `post-the-butterfly-effect`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 42 blocks, 6 headings, 36 paragraphs
+- Portable Text: 32 blocks, 4 headings, 24 paragraphs, 3 unordered list items, 1 blockquote
+- Excerpt: 232 -> 232
+- SEO description: 213 -> 169
 - Lottie/showreel: not present; no migration required.
 - Validation errors: none
 - Route, card, media, metadata and zero-Webflow flags: true
 
-### Eat The Rich
+Fire Faster. Promote Faster.
 
-- Slug: `eat-the-rich`
-- Draft: `drafts.post-eat-the-rich`
-- Published: `post-eat-the-rich`
+- Slug: `fire-faster-promote-faster`
+- Draft: `drafts.post-fire-faster-promote-faster`
+- Published: `post-fire-faster-promote-faster`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 33 blocks, 3 headings, 29 paragraphs, 1 blockquote
+- Portable Text: 32 blocks, 5 headings, 25 paragraphs, 2 blockquotes
+- Excerpt: 99 -> 99
+- SEO description: 219 -> 170
 - Lottie/showreel: not present; no migration required.
 - Validation errors: none
 - Route, card, media, metadata and zero-Webflow flags: true
 
-### Startups Aren’t a Family
+Scale Responsibly
 
-- Slug: `startups-arent-a-family`
-- Draft: `drafts.post-startups-arent-a-family`
-- Published: `post-startups-arent-a-family`
+- Slug: `scale-responsibly`
+- Draft: `drafts.post-scale-responsibly`
+- Published: `post-scale-responsibly`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 31 blocks, 4 headings, 22 paragraphs, 4 unordered list items, 1 blockquote
+- Portable Text: 29 blocks, 5 headings, 24 paragraphs
+- Excerpt: 324 -> 292
+- SEO description: 149 -> 149
 - Lottie/showreel: not present; no migration required.
 - Validation errors: none
 - Route, card, media, metadata and zero-Webflow flags: true
 
-### The Flex Package
+The Secret Third Option
 
-- Slug: `the-flex-package`
-- Draft: `drafts.post-the-flex-package`
-- Published: `post-the-flex-package`
-- Author/category: `author-hannes-oosthuizen` / `category-company`
-- Portable Text: 26 blocks, 4 headings, 16 paragraphs, 6 unordered list items, 2 links
-- Lottie/showreel: not present; no migration required.
-- Validation errors: none
-- Route, card, media, metadata and zero-Webflow flags: true
-
-### The Myth of the Perfect Hire
-
-- Slug: `the-myth-of-the-perfect-hire`
-- Draft: `drafts.post-the-myth-of-the-perfect-hire`
-- Published: `post-the-myth-of-the-perfect-hire`
+- Slug: `the-secret-third-option`
+- Draft: `drafts.post-the-secret-third-option`
+- Published: `post-the-secret-third-option`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 29 blocks, 4 headings, 24 paragraphs, 1 blockquote
+- Portable Text: 31 blocks, 5 headings, 21 paragraphs, 3 unordered list items, 2 blockquotes
+- Excerpt: 180 -> 180
+- SEO description: 162 -> 162
+- Lottie/showreel: not present; no migration required.
+- Validation errors: none
+- Route, card, media, metadata and zero-Webflow flags: true
+
+The Biggest Risk? Playing It Safe
+
+- Slug: `the-biggest-risk-playing-it-safe`
+- Draft: `drafts.post-the-biggest-risk-playing-it-safe`
+- Published: `post-the-biggest-risk-playing-it-safe`
+- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
+- Portable Text: 35 blocks, 5 headings, 22 paragraphs, 7 unordered list items, 1 blockquote
+- Excerpt: 214 -> 214
+- SEO description: 132 -> 132
+- Lottie/showreel: not present; no migration required.
+- Validation errors: none
+- Route, card, media, metadata and zero-Webflow flags: true
+
+Press Pause
+
+- Slug: `press-pause`
+- Draft: `drafts.post-press-pause`
+- Published: `post-press-pause`
+- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
+- Portable Text: 22 blocks, 4 headings, 16 paragraphs, 2 blockquotes
+- Excerpt: 233 -> 233
+- SEO description: 153 -> 153
 - Lottie/showreel: not present; no migration required.
 - Validation errors: none
 - Route, card, media, metadata and zero-Webflow flags: true
 
 ## Excerpt And SEO
 
-- All excerpts are 300 characters or fewer.
-- All SEO descriptions are 170 characters or fewer.
-- SEO title length warnings remained non-blocking; no schema-blocking validation errors were returned.
+- All excerpts are 300 characters or fewer after the approved excerpt normaliser.
+- All SEO descriptions are 170 characters or fewer after the approved SEO-description normaliser.
+- SEO title length warnings remained non-blocking; Sanity document validation returned 0 errors.
 
 ## Media
 
-- Batch 05 media mappings: 30.
-- Uploaded assets: 10. Reused mappings/assets: 20.
+- Batch 06 media mappings: 30.
+- Uploaded assets: 11. Reused mappings/assets: 19.
 - Each selected post migrated thumbnail and Open Graph image to Sanity; category icons reused existing Sanity assets.
+- `the-biggest-risk-playing-it-safe` uploaded the AVIF thumbnail/OG asset as `image-60e5414a7bf79211fccdf6114b4c4f3247ee4739-1920x1080-avif`.
 - No inline image, hero media, Lottie fallback, Lottie JSON image, poster image, CMS file or YouTube showreel migration was required for these ten standard posts.
+
+## Lottie And Showreel
+
+- Lottie: not present for all ten selected posts.
+- Showreel/video: not enabled for all ten selected posts.
+- No malformed Lottie JSON, external Lottie asset, poster image or unsupported embed was found.
 
 ## Audits
 
 - Stored-data Webflow audit: zero Webflow media/runtime dependencies in selected post documents, Portable Text, markDefs, SEO fields, thumbnails, author/category refs and Lottie fields.
-- Blog DOM/hydration audit: `/blog` returned 88 unique cards; 54 Sanity thumbnail cards and 34 generated fallback cards. All ten Batch 05 card DOM fragments contain Sanity thumbnail URLs and no Webflow URL in `src`, serialized HTML or hydration content.
-- Browser network audit: `/blog` made zero Webflow network requests; each selected `/post/[slug]` route made zero Webflow requests, contained zero Webflow URLs in rendered DOM, and had no console/page errors.
-- Remaining Webflow DOM URLs: 34 generated fallback thumbnails for pending archive posts only. The full Blog archive is not yet Webflow-independent.
+- Sanity duplicate audit: exactly one published document per selected slug; deterministic IDs were reused.
+- Blog DOM/hydration audit: /blog returned 88 unique cards; 64 Sanity thumbnail cards and 24 generated fallback cards. All ten Batch 06 card DOM fragments contain Sanity thumbnail URLs and no Webflow URL in src, srcset, serialized HTML or hydration content.
+- Browser network audit: each selected /post/[slug] route made zero Webflow requests, contained zero Webflow URLs in rendered DOM, and had no console/page errors after scrolling.
+- /blog full-scroll browser audit still loaded 24 Webflow thumbnail requests from remaining generated fallback cards only; these belong to pending slugs and are not marked complete.
 - Related-post audit: selected Sanity article routes rendered no related-post Webflow thumbnails and no Webflow related resources.
 
 ## Route And Card Verification
 
-- All 54 completed staging routes returned HTTP 200.
+- All 64 completed staging routes returned HTTP 200.
 - Every selected staging route returned HTTP 200 at `https://nexubis.vercel.app/post/[exact-slug]`.
-- Exact `/post/[slug]` paths and canonical `https://www.nexubis.io/post/[exact-slug]` values were preserved. No `/blog/[slug]` routes, Vercel canonicals or redirects were created.
-- Blog-card verification passed: exactly one card per selected slug, Sanity-sourced title/excerpt/category/thumbnail, Sanity category icon, stable `/post/[slug]` href, and no duplicates.
+- Exact /post/[slug] paths and canonical `https://www.nexubis.io/post/[exact-slug]` values were preserved. No /blog/[slug] routes, Vercel canonicals or redirects were created.
+- Blog-card verification passed: exactly one card per selected slug, Sanity-sourced title/excerpt/category/thumbnail, Sanity category icon, stable /post/[slug] href, and no duplicates.
 
 ## Counts And Idempotency
 
-- Previous source split: 44 Sanity / 44 generated fallback.
-- New source split: 54 Sanity / 34 generated fallback.
+- Previous source split: 54 Sanity / 34 generated fallback.
+- New source split: 64 Sanity / 24 generated fallback.
 - Verify-only rerun completed and marked all ten complete without duplicate posts, cards, authors, categories, references, body blocks, unnecessary asset uploads, changed slugs or reverted category icon mappings.
 
 ## Validation Commands
@@ -188,14 +209,15 @@ Batch ID: batch-2026-07-29-archive-05
 - Preflight count verification: passed.
 - Batch dry-run: passed.
 - Batch execute/publish: passed.
+- Sanity document validation: passed, 48 valid documents, 0 errors, 23 non-blocking SEO-title warnings.
 - Verify-only/idempotency: passed.
-- Exact-slug, category identity, structured-field whitespace, stored-data Webflow, Blog DOM/hydration, browser network, route, card and related-post audits: passed for Batch 05.
-- `npm run lint`: passed with 29 existing warnings and 0 errors.
-- `npm run typecheck`: passed.
-- `npm run test`: first parallel run had one timeout while build was running; isolated rerun passed, 35 files / 270 tests.
-- `npm run build`: passed.
+- Exact-slug, structured-field whitespace, stored-data Webflow, Blog DOM/hydration, browser network, route, card and related-post audits: passed for Batch 06.
+- npm run lint: passed with 29 existing warnings and 0 errors.
+- npm run typecheck: passed.
+- npm run test: passed, 35 files / 270 tests.
+- npm run build: passed.
 
 ## Remaining Work
 
-- 34 generated fallback posts remain pending for later batches.
-- Failed posts: 0. Posts requiring repair: none for Batch 05.
+- 24 generated fallback posts remain pending for later batches.
+- Failed posts: 0. Posts requiring repair: none for Batch 06.

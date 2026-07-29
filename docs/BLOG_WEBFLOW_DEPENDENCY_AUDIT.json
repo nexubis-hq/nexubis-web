@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-29T18:23:25.012Z",
-  "batchId": "batch-2026-07-29-archive-05",
+  "generatedAt": "2026-07-29T18:43:00.000Z",
+  "batchId": "batch-2026-07-29-archive-06",
   "webflowPatterns": [
     "cdn.prod.website-files.com",
     "assets-global.website-files.com",
@@ -12,7 +12,7 @@
   ],
   "selected": [
     {
-      "slug": "the-new-creative-stack",
+      "slug": "resentment-is-a-symptom-of-poor-process",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -27,7 +27,7 @@
       }
     },
     {
-      "slug": "solve-the-boring-problem-first",
+      "slug": "sell-the-slice-not-the-sauce",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -42,7 +42,7 @@
       }
     },
     {
-      "slug": "startups-dont-need-more-features",
+      "slug": "just-start-the-damn-thing",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -57,7 +57,7 @@
       }
     },
     {
-      "slug": "if-it-aint-broke-refine-it",
+      "slug": "dont-turn-into-a-robot",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -72,7 +72,7 @@
       }
     },
     {
-      "slug": "dont-be-an-idiot-sandwich",
+      "slug": "the-butterfly-effect",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -87,7 +87,7 @@
       }
     },
     {
-      "slug": "do-something-useful",
+      "slug": "fire-faster-promote-faster",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -102,7 +102,7 @@
       }
     },
     {
-      "slug": "eat-the-rich",
+      "slug": "scale-responsibly",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -117,7 +117,7 @@
       }
     },
     {
-      "slug": "startups-arent-a-family",
+      "slug": "the-secret-third-option",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -132,7 +132,7 @@
       }
     },
     {
-      "slug": "the-flex-package",
+      "slug": "the-biggest-risk-playing-it-safe",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -147,7 +147,7 @@
       }
     },
     {
-      "slug": "the-myth-of-the-perfect-hire",
+      "slug": "press-pause",
       "status": "complete",
       "storedDataZeroWebflow": true,
       "renderedZeroWebflow": true,
@@ -164,33 +164,36 @@
   ],
   "counts": {
     "inventory": 88,
-    "complete": 54,
-    "pending": 34,
-    "sanityCards": 54,
-    "generatedFallbackCards": 34
-  },
-  "categoryIdentity": {
-    "id": "category-ai-x-nexubis",
-    "title": "Artificial Intelligence",
-    "slug": "ai-x-nexubis",
-    "duplicateCount": 0,
-    "iconAssetId": "image-a7561c0e42db6f97a91f48eef7c0d6e21d825aaf-24x24-svg"
+    "complete": 64,
+    "pending": 24,
+    "sanityCards": 64,
+    "generatedFallbackCards": 24
   },
   "blogDomAudit": {
     "cards": 88,
     "uniqueCards": 88,
-    "sanityCards": 54,
-    "generatedFallbackCards": 34,
+    "sanityCards": 64,
+    "generatedFallbackCards": 24,
     "selectedCardsZeroWebflow": true,
-    "pendingFallbackWebflowThumbnails": 34
+    "pendingFallbackWebflowThumbnails": 24
   },
   "browserNetworkAudit": {
-    "blogWebflowRequests": 0,
+    "blogWebflowRequestsFromPendingFallbackCards": 24,
     "selectedRouteWebflowRequests": 0,
-    "selectedRouteConsoleErrors": 0
+    "selectedRouteConsoleErrors": 0,
+    "selectedRoutePageErrors": 0
+  },
+  "storedDataAudit": {
+    "selectedDocuments": 10,
+    "duplicatePublishedPosts": 0,
+    "storedWebflowUrls": 0
   },
   "completedRouteAudit": {
-    "checked": 54,
+    "checked": 64,
     "bad": []
+  },
+  "relatedPostAudit": {
+    "selectedRoutesWithWebflowRelatedMedia": 0,
+    "pendingFallbackRelatedMediaAttributedToPendingSlugs": true
   }
 }
