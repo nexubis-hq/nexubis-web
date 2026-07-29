@@ -1,0 +1,41 @@
+{
+  "categories": [
+    {
+      "label": "Empowering Dreams",
+      "slug": "empowering-dreams",
+      "icon": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681a285a8ee955f6bfb99596_dreams.svg"
+    },
+    {
+      "label": "Founders Diary",
+      "slug": "founders-diary",
+      "icon": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681a28508f107856c3bc7ebf_founder.svg"
+    },
+    {
+      "label": "Artificial Intelligence",
+      "slug": "ai-x-nexubis",
+      "icon": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681a283d06ed2c86e4461b76_ai.svg"
+    },
+    {
+      "label": "Startup Stack",
+      "slug": "startup-stack",
+      "icon": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681a2848208c2283ad87a2d8_stack.svg"
+    },
+    {
+      "label": "Company",
+      "slug": "company",
+      "icon": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/684adbfdec2dc3fd487c4f87_coffee.svg"
+    },
+    {
+      "label": "For Professionals",
+      "slug": "for-professionals",
+      "icon": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/687613622680ab2d0ed9fe75_professionals.svg"
+    }
+  ],
+  "stats": {
+    "totalRecords": 91,
+    "excludedRecords": 3,
+    "draftRecords": 3,
+    "archivedRecords": 0,
+    "invalidPublishedDateRecords": 3
+  }
+}

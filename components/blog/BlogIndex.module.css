@@ -10,20 +10,21 @@
 }
 
 .hero {
-  min-height: 40rem;
-  padding-block: var(--s-8);
-  background-image: url("/assets/images/clouds_1.avif");
+  height: 40rem;
+  padding-block: 7rem;
+  background-color: #f2f2f2;
+  background-image: url("/assets/images/clouds_1clouds.avif");
   background-position: 50% 190%;
   background-repeat: no-repeat;
   background-size: auto;
 }
 
 .heroTitleWrap {
-  width: min(100%, 58.333%);
+  width: calc((100% + 2rem) * 0.666667 - 2rem);
 }
 
 .heading {
-  max-width: 11.6ch;
+  margin: 0 0 0.375em;
   font-size: var(--h1);
   line-height: 1.1;
 }
@@ -35,18 +36,19 @@
 .introRow {
   display: flex;
   justify-content: flex-end;
-  margin-top: 3rem;
+  margin-top: calc(var(--s-3) + var(--h1) * 0.375);
 }
 
 .intro {
-  width: 50%;
-  font-size: var(--p-xl);
+  width: calc((100% + 2rem) * 0.5 - 2rem);
+  margin: 0;
+  font-size: var(--p-lg);
   line-height: 1.6;
   color: var(--body);
 }
 
 .postsSection {
-  padding-block: var(--s-8);
+  padding-block: 7rem;
   background: var(--white);
 }
 
@@ -258,29 +260,41 @@
 }
 
 .readLink {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
   align-self: flex-start;
   margin-top: 1rem;
   color: var(--black);
-  text-decoration: underline;
-  text-decoration-color: var(--light);
-  text-underline-offset: 0.16em;
-  transition:
-    color 0.2s ease,
-    text-decoration-color 0.2s ease;
+  line-height: 1.6;
+  text-decoration: none;
 }
 
-.readLink:hover {
-  color: var(--primary);
-  text-decoration-color: var(--primary);
+.readText {
+  border-bottom: 1px solid var(--black);
+  line-height: 1.6;
+}
+
+.readArrow {
+  color: var(--black);
+  line-height: 1.6;
 }
 
 @media (max-width: 991px) {
+  .hero {
+    padding-block: clamp(2rem, 0.575rem + 5.89vw, 4.25rem);
+  }
+
   .heroTitleWrap {
     width: 100%;
   }
 
   .intro {
     width: 100%;
+  }
+
+  .postsSection {
+    padding-block: clamp(2rem, 0.575rem + 5.89vw, 4.25rem);
   }
 
   .grid {
@@ -290,22 +304,9 @@
 
 @media (max-width: 767px) {
   .hero {
-    min-height: 32rem;
-    padding-block: 4rem;
-    background-position: 50% 115%;
-    background-size: 60rem auto;
-  }
-
-  .postsSection {
-    padding-block: 4rem;
-  }
-
-  .introRow {
-    margin-top: 1.75rem;
-  }
-
-  .intro {
-    font-size: var(--p-lg);
+    height: 40rem;
+    background-position: 50% 190%;
+    background-size: auto;
   }
 
   .filterList {
@@ -319,12 +320,12 @@
 }
 
 @media (max-width: 480px) {
-  .container {
+  .postsSection .container {
     width: 90%;
   }
 
-  .heading {
-    max-width: 9.8ch;
+  .intro {
+    font-size: 1.1rem;
   }
 
   .filterOption,

@@ -33,7 +33,10 @@ export function BlogCard({ post }: BlogCardProps) {
         </h2>
         <p className={styles.excerpt}>{post.excerpt}</p>
         <Link className={styles.readLink} href={href}>
-          Read full article <span aria-hidden="true">-&gt;</span>
+          <span className={styles.readText}>Read full article</span>
+          <span className={styles.readArrow} aria-hidden="true">
+            &rarr;
+          </span>
         </Link>
       </div>
     </article>
