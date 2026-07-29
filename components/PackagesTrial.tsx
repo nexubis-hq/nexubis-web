@@ -1,11 +1,14 @@
+import Link from "next/link";
+import { SCORECARD_URL } from "@/lib/site-config";
+
 const benefitColumns = [
   [
-    "No upfront subscription required",
-    "Room to explore how we work, at your own pace",
+    "Your Credibility Score across the five places buyers look",
+    "A benchmark against the competitors buyers weigh you against",
   ],
   [
-    "Get real work done while building trust",
-    "Extend your trial if you're still unsure after month 1",
+    "The first thing to fix, explained in a short personal video",
+    "Free, on the spot, and no call required",
   ],
 ];
 
@@ -24,7 +27,7 @@ export function PackagesTrial() {
       <div className="site-container trial-cta-wrapper">
         <div className="trial-content">
           <h2>Still on the Fence?</h2>
-          <p>Start flexible - pay only for what you need</p>
+          <p>See where your brand actually stands, before you spend anything.</p>
 
           <div className="trial-benefits-grid">
             {benefitColumns.map((column, index) => (
@@ -40,13 +43,7 @@ export function PackagesTrial() {
           </div>
 
           <div className="trial-button-group">
-            <a
-              href="https://www.nexubis.io/post/rethinking-the-nexubis-trial"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Learn More
-            </a>
+            <Link href={SCORECARD_URL}>Learn More</Link>
           </div>
         </div>
 
