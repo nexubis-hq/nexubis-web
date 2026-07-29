@@ -1,223 +1,188 @@
 # Blog Sanity Batch Report
 
-Last updated: 2026-07-29T17:33:26.739Z
-Batch ID: batch-2026-07-29-archive-03
+Last updated: 2026-07-29T18:07:47.203Z
+Batch ID: batch-2026-07-29-archive-04
 
-## Task 3C2 Preflight
+## Preflight
 
-- /blog production state before this batch: 88 unique cards, 4 Sanity cards, 84 generated fallback cards.
-- Sanity exact-slug precedence remains implemented in `lib/blog/get-blog-index-posts.ts`.
-- Drafts, versions and release documents remain excluded by the published summary query.
-- `/post/[slug]` still uses published Sanity first via `getPostBySlug`.
-- No Sanity write token is exposed in client-side code; batch writes use the locally authenticated Sanity CLI user.
-- Production application code does not read `webflow-export`; only migration scripts read offline CSV files.
-- `lib/blog/related-posts.ts` keeps generated-only related summaries because the helper is synchronous and unrelated to `/blog` Sanity precedence.
-- `scripts/generate-blog-index-data.ts` writes `source: "generated"` so generated fallback records satisfy the shared summary type.
-
-## Oxipack Title Check
-
-Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflow Blog CSV, generated Blog record, published Sanity document, current `/blog` card, and live Webflow article H1 all use that title. The live Webflow page HTML title says `Oxipack: Empowering Nexubis`, but the article content and CMS sources do not. No Sanity title change was made.
-
-```json
-{
-  "liveWebflowArticleH1": "Oxipack: Funding Nexubis",
-  "liveWebflowHtmlTitle": "Oxipack: Empowering Nexubis",
-  "webflowCsv": "Oxipack: Funding Nexubis",
-  "generated": "Oxipack: Funding Nexubis",
-  "sanity": [
-    {
-      "_id": "post-oxipack-empowering-nexubis",
-      "slug": "oxipack-empowering-nexubis",
-      "title": "Oxipack: Funding Nexubis"
-    }
-  ],
-  "productionBlogCardContainsFunding": true,
-  "productionPostContainsFunding": true,
-  "conclusion": "Keep Oxipack: Funding Nexubis"
-}
-```
+- `/blog` before Batch 04: 88 unique cards, 34 Sanity cards, 54 generated fallback cards.
+- Authenticated command path confirmed: `npm run blog:migrate-batch` -> `sanity exec scripts/migrate-blog-sanity-batch.ts --with-user-token --`.
+- Published Sanity summaries still override generated records by exact slug; drafts, versions and release documents remain excluded.
+- All 34 pre-batch Sanity cards used Sanity thumbnails; all six filter/category icons used Sanity assets; shared Blog interface graphics made zero Webflow requests.
+- No public/client-side Sanity write token was found; only public project/dataset IDs are exposed.
+- Manifest preflight marked the previous 34 posts complete; no completed manifest entries were reset or regenerated.
 
 ## Selected Posts
 
-- 24. The Walter Mitty Effect | the-walter-mitty-effect | https://www.nexubis.io/post/the-walter-mitty-effect
-- 25. The Discipline of Quitting | the-discipline-of-quitting | https://www.nexubis.io/post/the-discipline-of-quitting
-- 26. Empowering Women with Project Flamingo | empowering-women-with-project-flamingo | https://www.nexubis.io/post/empowering-women-with-project-flamingo
-- 27. The Legendary Play  | the-legendary-play | https://www.nexubis.io/post/the-legendary-play
-- 28. Keep Firing Yourself (Part 2) | keep-firing-yourself-part-2 | https://www.nexubis.io/post/keep-firing-yourself-part-2
-- 29. Skip the Ladder. Join a Startup. | skip-the-ladder-join-a-startup | https://www.nexubis.io/post/skip-the-ladder-join-a-startup
-- 30. Fresh Out of College… Now What? | fresh-out-of-college-now-what | https://www.nexubis.io/post/fresh-out-of-college-now-what
-- 31. For Professionals, By Professionals | for-professionals-by-professionals | https://www.nexubis.io/post/for-professionals-by-professionals
-- 32. Pick Your Battles | pick-your-battles | https://www.nexubis.io/post/pick-your-battles
-- 33. Make It Memorable | make-it-memorable | https://www.nexubis.io/post/make-it-memorable
+- 34. Your Perception Is Your Reality | your-perception-is-your-reality | https://www.nexubis.io/post/your-perception-is-your-reality | Hannes Oosthuizen | founders-diary | Tue Aug 26 2025 11:27:50 GMT+0000
+- 35. Make Complex Simple | make-complex-simple | https://www.nexubis.io/post/make-complex-simple | Hannes Oosthuizen | founders-diary | Tue Aug 26 2025 11:27:50 GMT+0000
+- 36. 10% Better or Don’t Bother | 10-better-or-dont-bother | https://www.nexubis.io/post/10-better-or-dont-bother | Hannes Oosthuizen | founders-diary | Tue Aug 26 2025 11:27:50 GMT+0000
+- 37. The Disruption | the-disruption | https://www.nexubis.io/post/the-disruption | Hannes Oosthuizen | founders-diary | Tue Aug 26 2025 11:27:50 GMT+0000
+- 38. The Personal Belief vs. AI Paradox | the-personal-belief-vs-ai-paradox | https://www.nexubis.io/post/the-personal-belief-vs-ai-paradox | Hannes Oosthuizen | ai-x-nexubis | Tue Aug 26 2025 11:27:50 GMT+0000
+- 39. Straight Line Thinking | straight-line-thinking | https://www.nexubis.io/post/straight-line-thinking | Hannes Oosthuizen | founders-diary | Tue Aug 26 2025 11:27:50 GMT+0000
+- 40. The Builders Will Survive | the-builders-will-survive | https://www.nexubis.io/post/the-builders-will-survive | Hannes Oosthuizen | ai-x-nexubis | Tue Aug 26 2025 11:27:50 GMT+0000
+- 41. The Age of AGI | the-age-of-agi | https://www.nexubis.io/post/the-age-of-agi | Hannes Oosthuizen | ai-x-nexubis | Tue Aug 26 2025 11:27:50 GMT+0000
+- 42. You’re Not Ready for What’s Coming | youre-not-ready-for-whats-coming | https://www.nexubis.io/post/youre-not-ready-for-whats-coming | Hannes Oosthuizen | ai-x-nexubis | Tue Aug 26 2025 11:27:50 GMT+0000
+- 43. Automation Is Not the Enemy | automation-is-not-the-enemy | https://www.nexubis.io/post/automation-is-not-the-enemy | Hannes Oosthuizen | ai-x-nexubis | Tue Aug 26 2025 11:27:50 GMT+0000
 
-## Results
+## Structured-Field Whitespace
 
-### The Walter Mitty Effect
+- Batch 03 source/generated title for `the-legendary-play` contains trailing whitespace: `The Legendary Play `. Sanity published document `post-the-legendary-play` also contained it and was patched in place to `The Legendary Play`; slug and document ID unchanged.
+- Batch 04 `10-better-or-dont-bother` source SEO description had a trailing newline; existing SEO-description normaliser trimmed it before write.
+- Batch 04 `straight-line-thinking` source excerpt had a trailing newline; existing excerpt normaliser trimmed it before write.
+- Importer now trims only structured title/category/SEO-title fields before writing. Slugs, body text, punctuation, capitalisation, headings and URLs were not altered.
 
-- Slug: `the-walter-mitty-effect`
-- Draft: `drafts.post-the-walter-mitty-effect`
-- Published: `post-the-walter-mitty-effect`
+## Publication Results
+
+### Your Perception Is Your Reality
+
+- Slug: `your-perception-is-your-reality`
+- Draft: `drafts.post-your-perception-is-your-reality`
+- Published: `post-your-perception-is-your-reality`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
+- Portable Text: 22 blocks, 4 headings, 17 paragraphs, 1 blockquote
+- Lottie/showreel: not present; no migration required.
 - Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
+- Route, card, media, metadata and zero-Webflow flags: true
 
-### The Discipline of Quitting
+### Make Complex Simple
 
-- Slug: `the-discipline-of-quitting`
-- Draft: `drafts.post-the-discipline-of-quitting`
-- Published: `post-the-discipline-of-quitting`
+- Slug: `make-complex-simple`
+- Draft: `drafts.post-make-complex-simple`
+- Published: `post-make-complex-simple`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
+- Portable Text: 59 blocks, 5 headings, 38 paragraphs, 13 unordered list items, 3 blockquotes
+- Lottie/showreel: not present; no migration required.
 - Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
+- Route, card, media, metadata and zero-Webflow flags: true
 
-### Empowering Women with Project Flamingo
+### 10% Better or Don’t Bother
 
-- Slug: `empowering-women-with-project-flamingo`
-- Draft: `drafts.post-empowering-women-with-project-flamingo`
-- Published: `post-empowering-women-with-project-flamingo`
-- Author/category: `author-hannes-oosthuizen` / `category-empowering-dreams`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-
-### The Legendary Play
-
-- Slug: `the-legendary-play`
-- Draft: `drafts.post-the-legendary-play`
-- Published: `post-the-legendary-play`
+- Slug: `10-better-or-dont-bother`
+- Draft: `drafts.post-10-better-or-dont-bother`
+- Published: `post-10-better-or-dont-bother`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
+- Portable Text: 42 blocks, 5 headings, 33 paragraphs, 3 unordered list items, 1 blockquote, 1 link
+- Lottie/showreel: not present; no migration required.
 - Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
+- Route, card, media, metadata and zero-Webflow flags: true
 
-### Keep Firing Yourself (Part 2)
+### The Disruption
 
-- Slug: `keep-firing-yourself-part-2`
-- Draft: `drafts.post-keep-firing-yourself-part-2`
-- Published: `post-keep-firing-yourself-part-2`
+- Slug: `the-disruption`
+- Draft: `drafts.post-the-disruption`
+- Published: `post-the-disruption`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
+- Portable Text: 50 blocks, 7 headings, 33 paragraphs, 10 unordered list items
+- Lottie/showreel: not present; no migration required.
 - Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
+- Route, card, media, metadata and zero-Webflow flags: true
 
-### Skip the Ladder. Join a Startup.
+### The Personal Belief vs. AI Paradox
 
-- Slug: `skip-the-ladder-join-a-startup`
-- Draft: `drafts.post-skip-the-ladder-join-a-startup`
-- Published: `post-skip-the-ladder-join-a-startup`
-- Author/category: `author-hannes-oosthuizen` / `category-for-professionals`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
+- Slug: `the-personal-belief-vs-ai-paradox`
+- Draft: `drafts.post-the-personal-belief-vs-ai-paradox`
+- Published: `post-the-personal-belief-vs-ai-paradox`
+- Author/category: `author-hannes-oosthuizen` / `category-ai-x-nexubis`
+- Portable Text: 41 blocks, 4 headings, 37 paragraphs
+- Lottie/showreel: not present; no migration required.
 - Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
+- Route, card, media, metadata and zero-Webflow flags: true
 
-### Fresh Out of College… Now What?
+### Straight Line Thinking
 
-- Slug: `fresh-out-of-college-now-what`
-- Draft: `drafts.post-fresh-out-of-college-now-what`
-- Published: `post-fresh-out-of-college-now-what`
-- Author/category: `author-hannes-oosthuizen` / `category-for-professionals`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-
-### For Professionals, By Professionals
-
-- Slug: `for-professionals-by-professionals`
-- Draft: `drafts.post-for-professionals-by-professionals`
-- Published: `post-for-professionals-by-professionals`
-- Author/category: `author-hannes-oosthuizen` / `category-for-professionals`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-
-### Pick Your Battles
-
-- Slug: `pick-your-battles`
-- Draft: `drafts.post-pick-your-battles`
-- Published: `post-pick-your-battles`
+- Slug: `straight-line-thinking`
+- Draft: `drafts.post-straight-line-thinking`
+- Published: `post-straight-line-thinking`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
+- Portable Text: 68 blocks, 10 headings, 40 paragraphs, 17 unordered list items, 1 blockquote
+- Lottie/showreel: not present; no migration required.
 - Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
+- Route, card, media, metadata and zero-Webflow flags: true
 
-### Make It Memorable
+### The Builders Will Survive
 
-- Slug: `make-it-memorable`
-- Draft: `drafts.post-make-it-memorable`
-- Published: `post-make-it-memorable`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
+- Slug: `the-builders-will-survive`
+- Draft: `drafts.post-the-builders-will-survive`
+- Published: `post-the-builders-will-survive`
+- Author/category: `author-hannes-oosthuizen` / `category-ai-x-nexubis`
+- Portable Text: 57 blocks, 8 headings, 34 paragraphs, 11 unordered list items, 4 ordered list items, 4 links
+- Lottie/showreel: not present; no migration required.
 - Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
+- Route, card, media, metadata and zero-Webflow flags: true
+
+### The Age of AGI
+
+- Slug: `the-age-of-agi`
+- Draft: `drafts.post-the-age-of-agi`
+- Published: `post-the-age-of-agi`
+- Author/category: `author-hannes-oosthuizen` / `category-ai-x-nexubis`
+- Portable Text: 104 blocks, 10 headings, 46 paragraphs, 47 unordered list items, 1 blockquote, 3 links
+- Lottie/showreel: not present; no migration required.
+- Validation errors: none
+- Route, card, media, metadata and zero-Webflow flags: true
+
+### You’re Not Ready for What’s Coming
+
+- Slug: `youre-not-ready-for-whats-coming`
+- Draft: `drafts.post-youre-not-ready-for-whats-coming`
+- Published: `post-youre-not-ready-for-whats-coming`
+- Author/category: `author-hannes-oosthuizen` / `category-ai-x-nexubis`
+- Portable Text: 78 blocks, 8 headings, 46 paragraphs, 24 unordered list items, 2 links
+- Lottie/showreel: not present; no migration required.
+- Validation errors: none
+- Route, card, media, metadata and zero-Webflow flags: true
+
+### Automation Is Not the Enemy
+
+- Slug: `automation-is-not-the-enemy`
+- Draft: `drafts.post-automation-is-not-the-enemy`
+- Published: `post-automation-is-not-the-enemy`
+- Author/category: `author-hannes-oosthuizen` / `category-ai-x-nexubis`
+- Portable Text: 41 blocks, 8 headings, 29 paragraphs, 4 unordered list items, 1 link
+- Lottie/showreel: not present; no migration required.
+- Validation errors: none
+- Route, card, media, metadata and zero-Webflow flags: true
+
+## Media
+
+- Batch 04 media mappings: 30.
+- Uploaded assets: 10. Reused mappings/assets: 20.
+- Each selected post migrated thumbnail and Open Graph image to Sanity; category icons reused existing Sanity assets.
+- No inline image, hero media, Lottie fallback, Lottie JSON image, poster image, CMS file or showreel media migration was required for these ten standard posts.
+
+## Audits
+
+- Stored-data Webflow audit: zero Webflow media/runtime dependencies in selected post documents, Portable Text, SEO fields, thumbnails, author/category refs and Lottie fields.
+- Blog DOM/source audit: `/blog` returned 88 unique cards; 44 Sanity thumbnail cards and 44 generated fallback cards. All ten Batch 04 card DOM fragments contain Sanity thumbnail URLs and no Webflow URL in `src`, serialized HTML or hydration content.
+- Browser network audit: `/blog` made zero Webflow network requests; each selected `/post/[slug]` route made zero Webflow requests, contained zero Webflow URLs in rendered DOM, and had no console/page errors.
+- Remaining Webflow DOM URLs: 44 generated fallback thumbnails for pending archive posts only. The full Blog archive is not yet Webflow-independent.
+- Related-post audit: selected Sanity article routes rendered no related-post Webflow thumbnails and no Webflow related resources.
+
+## Route And Card Verification
+
+- Every selected staging route returned HTTP 200 at `https://nexubis.vercel.app/post/[exact-slug]`.
+- Exact `/post/[slug]` paths and canonical `https://www.nexubis.io/post/[exact-slug]` values were preserved. No `/blog/[slug]` routes or redirects were created.
+- Blog-card verification passed: exactly one card per selected slug, Sanity-sourced title/excerpt/category/thumbnail, Sanity category icon, stable `/post/[slug]` href, and no duplicates.
+
+## Counts And Idempotency
+
+- Previous source split: 34 Sanity / 54 generated fallback.
+- New source split: 44 Sanity / 44 generated fallback.
+- Verify-only rerun completed after cache freshness and marked all ten complete without duplicate posts, cards, authors, categories, references, body blocks or asset uploads.
+
+## Validation Commands
+
+- Batch dry-run: passed.
+- Batch execute/publish: passed.
+- Verify-only/idempotency: passed.
+- Exact-slug, structured-field whitespace, stored-data Webflow, Blog DOM, browser network, route, card and related-post audits: passed for Batch 04.
+- `npm run lint`: passed with 29 existing warnings and 0 errors.
+- `npm run typecheck`: passed.
+- `npm run test`: passed, 35 files / 269 tests.
+- `npm run build`: passed.
+
+## Remaining Work
+
+- 44 generated fallback posts remain pending for later batches.
+- Failed posts: 0. Posts requiring repair: none for Batch 04.
