@@ -46,7 +46,7 @@ export function getPackagesFaq(currency: Currency): FaqEntry[] {
     },
     {
       q: "What if my workload changes month to month?",
-      a: "That is normal, and the retainer absorbs it. On Momentum, unused design requests roll over for as long as your retainer is active, so a quiet month is not money lost. Scale and Partner have no cap at all. If the change is permanent rather than seasonal, moving between levels is a conversation, not a renegotiation.",
+      a: "That is normal, and the retainer absorbs it. There is no monthly request cap on any level, so a quiet month is never wasted and a busy one simply runs more in parallel, up to the number of streams your team size allows. If the change is permanent rather than seasonal, moving between levels is a conversation, not a renegotiation.",
     },
     {
       q: "How fast do you deliver, and how much can run at once?",

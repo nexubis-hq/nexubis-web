@@ -85,12 +85,15 @@ glyph. Clears WCAG AA (5.8:1 on white) at the glyph's size.
 
 ## AWAITING CLIENT CONFIRMATION
 
-Three FAQ answers assert claims a human should sign off:
+Two FAQ answers assert claims a human should sign off:
 
-- **Q8** asserts unused Momentum design requests roll over.
 - **Q11** asserts Webflow only (the old FAQ also offered Framer, Headless Shopify
   and Figma Sites).
 - **Q12** asserts Nexubis retains case-study rights.
+
+(The earlier "unused requests roll over" claim was removed: the monthly request
+count is gone entirely, replaced by the work-streams model, so there is no cap and
+nothing to roll over.)
 
 ## Deviations from the original brief (all per live client direction)
 

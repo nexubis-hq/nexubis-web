@@ -53,8 +53,8 @@ export const TIERS: Tier[] = [
         tip: "On-page SEO handled as we build rather than bolted on afterwards, then tracked every month so you can see what is moving. No separate SEO retainer to buy.",
       },
       {
-        label: "30 design requests a month",
-        tip: "Any design or website task counts as one request, with two rounds of feedback on every deliverable. Most partners never come close to using all thirty.",
+        label: "Two work streams at a time",
+        tip: "Submit as much as you like, there is no monthly cap. Your two people work on two things at a time and pull the next one forward as each is approved, with two rounds of feedback on every deliverable.",
       },
       {
         label: "Social, email & document design",
@@ -80,8 +80,8 @@ export const TIERS: Tier[] = [
         tip: "A third specialist joins your team, usually design or motion, so more work runs in parallel instead of queueing. Four meetings a month instead of three.",
       },
       {
-        label: "Unlimited design requests",
-        tip: "No monthly cap and nobody counting. Submit as much as your team can review.",
+        label: "Three work streams at a time",
+        tip: "A third specialist means three things move in parallel instead of two, so noticeably more leaves the studio each month. Still no cap on what you submit.",
       },
       {
         label: "48-hour turnaround, queue priority",
@@ -113,7 +113,7 @@ export const TIERS: Tier[] = [
     features: [
       {
         label: "The whole Nexubis team",
-        tip: "Not a fixed two or three people. Every specialist we have, developers, designers, motion, video and 3D, is on your account as the work needs them.",
+        tip: "Not a fixed two or three people. Every specialist we have, developers, designers, motion, video and 3D, is on your account, so how much runs in parallel is set by the work rather than by a number.",
       },
       {
         label: "Dedicated creative director",
