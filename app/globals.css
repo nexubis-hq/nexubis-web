@@ -11292,7 +11292,7 @@ button.nav-link {
 /* Saving pill under the price: reuses .saving (green) / .saving-neutral (grey). */
 .package-saving {
   display: inline-block;
-  margin: 0.35rem 0 0;
+  margin: 0.14rem 0 0;
 }
 
 /* A faint grey fill on the "No Discount Applied" pill so it reads as a quiet chip. */
@@ -11302,11 +11302,11 @@ button.nav-link {
 
 /* Tighten the price block on the rebuilt cards so the discount pill sits closer. */
 .package-v2 .package-price h2 {
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.06rem;
 }
 
 .package-v2 .package-price strong {
-  margin-bottom: 0.35em;
+  margin-bottom: 0.14em;
 }
 
 /* Description now sits below the price and discount, above the line items. */
