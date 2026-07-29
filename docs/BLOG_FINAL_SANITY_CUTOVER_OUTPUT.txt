@@ -1,0 +1,49 @@
+Nexubis Blog Final Sanity Cutover Output
+
+Status: Complete
+
+Final acceptance counts:
+- Published Sanity Blog posts: 88
+- Unique published slugs: 88
+- Manifest complete: 88
+- Manifest pending: 0
+- Manifest failed: 0
+- /blog cards: 88
+- Sanity cards: 88
+- Generated runtime fallbacks: 0
+- Broken original /post/[slug] routes: 0
+- Changed original slugs: 0
+- Blog sitemap routes: 88
+- Blog runtime Webflow dependencies: 0
+- Blog Webflow browser/network requests: 0
+
+Deployment:
+- Branch: shannah
+- Cutover code commit: a16079b
+- Final audit docs commit: 832b501
+- Push result: origin/shannah updated
+- Production deployment ID: dpl_2afFew7TajhGQcREEQH49wx4HdzG
+- Deployment status: Ready
+- Public staging alias: https://nexubis.vercel.app
+
+Validation:
+- npm run lint: passed with 29 existing warnings
+- npm run typecheck: passed
+- npm run test: passed, 38 files / 281 tests
+- npm run build: passed
+- Strict build-independence check: passed with webflow-export and archived generated Webflow JSON temporarily unavailable
+
+Reports:
+- docs/BLOG_FINAL_SANITY_CUTOVER_REPORT.md
+- docs/BLOG_FINAL_ROUTE_AUDIT.json
+- docs/BLOG_FINAL_WEBFLOW_REMOVAL_REPORT.md
+- docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json
+- docs/BLOG_SANITY_BATCH_MANIFEST.json
+- docs/BLOG_SANITY_BATCH_MEDIA_MAPPING.json
+- docs/BLOG_SANITY_BATCH_REPORT.md
+- docs/BLOG_SANITY_BATCH_REPORT_OUTPUT.txt
+
+Notes:
+- The public Blog is Sanity-backed and Webflow-independent for /blog, /post/[slug], Related Posts, Blog metadata, Blog sitemap and Blog runtime data.
+- Generated Webflow JSON was moved out of public runtime into docs/archive/blog-webflow-generated as offline migration reference.
+- Unrelated dirty workspace files were left untouched.

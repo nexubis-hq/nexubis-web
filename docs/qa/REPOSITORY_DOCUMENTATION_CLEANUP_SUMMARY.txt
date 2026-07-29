@@ -1,0 +1,84 @@
+Repository Documentation Cleanup Summary
+Generated: 2026-07-29
+
+Completed a conservative documentation and temporary-file cleanup pass.
+
+No staging, commits, pushes, deploys, application-code edits, environment-value edits, media deletion, Webflow reference deletion, or active Blog/Sanity artifact cleanup was performed.
+
+Created:
+- docs/README.md
+- docs/qa/REPOSITORY_DOCUMENTATION_CLEANUP_MANIFEST.md
+- docs/qa/REPOSITORY_DOCUMENTATION_CLEANUP_SUMMARY.txt
+
+Moved to docs/architecture:
+- ASSET_BRIEF.md -> docs/architecture/ASSET_BRIEF.md
+- DESIGN_DIRECTIONS.md -> docs/architecture/DESIGN_DIRECTIONS.md
+- DESIGN_ELEVATION.md -> docs/architecture/DESIGN_ELEVATION.md
+- HOMEPAGE_MAP.md -> docs/architecture/HOMEPAGE_MAP.md
+- PACKAGES_MAP.md -> docs/architecture/PACKAGES_MAP.md
+- PACKAGES_V2.md -> docs/architecture/PACKAGES_V2.md
+- PORT_PLAN.md -> docs/architecture/PORT_PLAN.md
+- SCORECARD_HANDOFF.md -> docs/architecture/SCORECARD_HANDOFF.md
+
+Moved to docs/qa:
+- LAUNCH_CHECKLIST.md -> docs/qa/LAUNCH_CHECKLIST.md
+
+Archived under docs/archive:
+- QA_REPORT.md -> docs/archive/QA_REPORT.md
+- CRITIQUE_LOG.md -> docs/archive/CRITIQUE_LOG.md
+- package-copy-corrections-report.txt -> docs/archive/package-copy-corrections-report.txt
+- docs/scorecard-glass-restyle.md -> docs/archive/scorecard-glass-restyle.md
+- docs/MAIN_SHOWREEL_REPLACEMENT_REPORT.txt -> docs/archive/MAIN_SHOWREEL_REPLACEMENT_REPORT.txt
+- docs/PACKAGES_DESKTOP_LOTTIE_REPLACEMENT_REPORT.txt -> docs/archive/PACKAGES_DESKTOP_LOTTIE_REPLACEMENT_REPORT.txt
+
+Deleted exactly:
+- package-copy-consistency-report.txt
+- tsconfig.tsbuildinfo
+
+Left untouched due active Blog/Sanity activity:
+- docs/BLOG_SANITY_BATCH_MANIFEST.json
+- docs/BLOG_SANITY_BATCH_MEDIA_MAPPING.json
+- docs/BLOG_SANITY_BATCH_REPORT.md
+- docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json
+- docs/BLOG_SANITY_BATCH_04_FINAL_REPORT.txt
+- docs/BLOG_SANITY_BATCH_05_FINAL_REPORT.txt
+- docs/BLOG_SANITY_BATCH_REPORT_OUTPUT.txt
+- docs/BLOG_PRIORITY_*
+- docs/BLOG_CIRCUIT_*
+- docs/BLOG_INDEX_MEDIA_PENDING.md
+- docs/BLOG_POST_TEMPLATE_MEDIA_PENDING.md
+- current pre-blog QA/cutover docs
+
+Counts:
+- Reviewed: 62
+- Kept in root: 18
+- Moved: 9
+- Archived: 6
+- Deleted: 2
+- Left as active work: 18
+- Manual review required: 2
+
+Manual review required:
+- .qa/
+- qa/
+
+References corrected:
+- SITE.md now points to docs/architecture/PACKAGES_V2.md
+- SITE.md now points to docs/qa/LAUNCH_CHECKLIST.md
+- docs/go-live-and-migration.md now points to qa/LAUNCH_CHECKLIST.md
+
+Validation:
+- Nothing is staged: git diff --cached --name-only is empty.
+- .env.local remains ignored and was not displayed.
+- next-env.d.ts remains in the root.
+- npm run test passed: 38 files, 281 tests.
+- npm run typecheck failed in active Blog/Sanity test work: lib/blog/blog-batch-selection.test.ts has status inferred as string instead of BatchStatus.
+- npm run build could not run because Next reported another build process already running. No process was killed and .next was not cleared.
+
+Repository buildability:
+- The cleanup itself is ready to review.
+- The full repository should not be considered buildable until the active Blog/Sanity typecheck issue is resolved and the concurrent Next build lock/process clears.
+
+Commit safety:
+- Safe for review.
+- Commit only after separating this documentation cleanup from concurrent active app/blog/package work currently visible in git status.
