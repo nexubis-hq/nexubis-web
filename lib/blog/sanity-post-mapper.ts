@@ -1,6 +1,10 @@
 import { sanityImageUrl } from "@/lib/blog/sanity-image-url";
-import type { BlogPost } from "@/lib/blog/types";
-import type { SanityImage, SanityPostDocument } from "@/lib/blog/sanity-posts";
+import type { BlogPost, BlogPostSummary } from "@/lib/blog/types";
+import type {
+  SanityImage,
+  SanityPostDocument,
+  SanityPostSummaryDocument,
+} from "@/lib/blog/sanity-posts";
 
 function imageUrl(image: SanityImage | null | undefined) {
   return sanityImageUrl(image as { asset?: { _ref?: string } } | null | undefined);
@@ -46,6 +50,34 @@ export function mapSanityPostToBlogPost(document: SanityPostDocument): BlogPost 
     showreelUrl: document.showreelUrl ?? null,
     lottieThumbnail: lottieThumbnailUrl,
     lottieJson: parseLottieJson(document.lottieJson),
+    source: "sanity",
+  };
+}
+
+function normaliseSummaryExcerpt(value: string | null | undefined) {
+  return (value ?? "").replace(/\s+/g, " ").trim();
+}
+
+export function mapSanityPostSummaryToBlogPostSummary(
+  document: SanityPostSummaryDocument,
+): BlogPostSummary | null {
+  const slug = document.slug?.trim();
+  const publishedAt = document.publishedAt?.trim();
+  const thumbnail = imageUrl(document.thumbnail);
+
+  if (!slug || !publishedAt || !thumbnail) return null;
+
+  return {
+    title: document.title ?? "",
+    slug,
+    excerpt: normaliseSummaryExcerpt(document.excerpt),
+    category: document.category?.title ?? "",
+    categorySlug: document.category?.slug ?? "",
+    categoryIcon: imageUrl(document.category?.icon),
+    publishedAt,
+    thumbnail,
+    thumbnailAlt: document.thumbnailAlt ?? document.thumbnail?.alt ?? null,
+    featured: Boolean(document.featured),
     source: "sanity",
   };
 }

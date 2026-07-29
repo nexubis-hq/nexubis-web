@@ -1,8 +1,8 @@
-import { getBlogIndexPosts } from "@/lib/blog/get-blog-index-posts";
+import { getGeneratedBlogIndexPosts } from "@/lib/blog/get-blog-index-posts";
 import type { BlogPost, BlogPostSummary } from "@/lib/blog/types";
 
 export function getRelatedPostSummaries(post: BlogPost): BlogPostSummary[] {
-  const { posts } = getBlogIndexPosts();
+  const { posts } = getGeneratedBlogIndexPosts();
   const bySlug = new Map(posts.map((summary) => [summary.slug, summary]));
 
   return (post.relatedSlugs ?? [])

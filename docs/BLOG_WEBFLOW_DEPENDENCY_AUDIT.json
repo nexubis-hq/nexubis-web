@@ -1,0 +1,149 @@
+{
+  "generatedAt": "2026-07-29T17:01:45.592Z",
+  "webflowPatterns": [
+    "cdn.prod.website-files.com",
+    "assets-global.website-files.com",
+    "uploads-ssl.webflow.com",
+    "website-files.com",
+    "webflow.io",
+    "webflow.com",
+    "daks2k3a4ib2z.cloudfront.net"
+  ],
+  "selected": [
+    {
+      "slug": "the-power-of-linkedin",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "how-to-not-suck-at-job-applications",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "momentum-fever",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "keep-positioning-yourself",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "new-years-resolutions",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "goals-vs-movement",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "2025-in-retrospect",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "long-term-greed",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "dick-proves-the-agency-stereotype",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    },
+    {
+      "slug": "striving-for-culinary-perfection",
+      "status": "complete",
+      "storedDataZeroWebflow": true,
+      "renderedZeroWebflow": true,
+      "renderedWebflowUrls": [],
+      "media": [],
+      "lottie": {
+        "present": false,
+        "valid": true,
+        "webflowUrls": []
+      }
+    }
+  ],
+  "counts": {
+    "inventory": 88,
+    "complete": 24,
+    "pending": 64
+  }
+}

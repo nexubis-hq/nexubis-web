@@ -7,6 +7,7 @@
     "build": "next build",
     "blog:generate-index": "tsx scripts/generate-blog-index-data.ts",
     "blog:generate-fixtures": "tsx scripts/generate-blog-post-fixtures.ts",
+    "blog:migrate-batch": "sanity exec scripts/migrate-blog-sanity-batch.ts --with-user-token --",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",

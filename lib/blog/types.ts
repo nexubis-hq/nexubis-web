@@ -19,7 +19,9 @@ export type BlogPostSummary = {
   categoryIcon: string | null;
   publishedAt: string;
   thumbnail: string | null;
+  thumbnailAlt?: string | null;
   featured: boolean;
+  source: "generated" | "sanity" | "legacy";
 };
 
 export type BlogPost = {
