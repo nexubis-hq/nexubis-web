@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-29T19:05:00.000Z",
-  "batchId": "batch-2026-07-29-archive-07",
+  "generatedAt": "2026-07-29T19:32:00+02:00",
+  "batchId": "batch-2026-07-29-archive-08",
   "webflowPatterns": [
     "cdn.prod.website-files.com",
     "assets-global.website-files.com",
@@ -10,215 +10,218 @@
     "webflow.com",
     "daks2k3a4ib2z.cloudfront.net"
   ],
+  "preflight": {
+    "blogCards": 88,
+    "sanityCardsBefore": 74,
+    "fallbackCardsBefore": 14,
+    "publishedPostsBefore": 74,
+    "uniquePublishedSlugsBefore": 74,
+    "duplicatePublishedSlugsBefore": 0,
+    "draftPostDocumentsBefore": 0,
+    "manifestRecords": 88,
+    "manifestCompleteBefore": 74,
+    "manifestPendingBefore": 14,
+    "manifestValidationFailedBefore": 0
+  },
+  "postBatch": {
+    "blogCards": 88,
+    "sanityCards": 84,
+    "fallbackCards": 4,
+    "publishedPosts": 84,
+    "uniquePublishedSlugs": 84,
+    "duplicatePublishedSlugs": 0,
+    "draftPostDocuments": 0,
+    "manifestComplete": 84,
+    "manifestPending": 4,
+    "manifestValidationFailed": 0
+  },
   "selected": [
     {
-      "slug": "manifestation-from-impossible-to-probable",
+      "position": 75,
+      "slug": "building-fast-vs-building-right",
       "status": "complete",
+      "publishedId": "post-building-fast-vs-building-right",
       "storedDataZeroWebflow": true,
-      "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
+      "renderedRouteZeroWebflow": true,
+      "networkWebflowRequests": 0,
       "routeStatus": 200,
-      "webflowRequests": [],
-      "renderedWebflowUrls": [],
-      "lottie": {
-        "present": false,
-        "valid": true,
-        "webflowUrls": []
-      }
+      "canonical": "https://www.nexubis.io/post/building-fast-vs-building-right",
+      "lottiePresent": false
     },
     {
-      "slug": "stop-selling-time-start-delivering-value",
+      "position": 76,
+      "slug": "empowering-communities",
       "status": "complete",
+      "publishedId": "post-empowering-communities",
       "storedDataZeroWebflow": true,
-      "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
+      "renderedRouteZeroWebflow": true,
+      "networkWebflowRequests": 0,
       "routeStatus": 200,
-      "webflowRequests": [],
-      "renderedWebflowUrls": [],
-      "lottie": {
-        "present": false,
-        "valid": true,
-        "webflowUrls": []
-      }
+      "canonical": "https://www.nexubis.io/post/empowering-communities",
+      "lottiePresent": false
     },
     {
-      "slug": "the-nexubis-referral-program",
+      "position": 77,
+      "slug": "the-work-life-balance-lie",
       "status": "complete",
+      "publishedId": "post-the-work-life-balance-lie",
       "storedDataZeroWebflow": true,
-      "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
+      "renderedRouteZeroWebflow": true,
+      "networkWebflowRequests": 0,
       "routeStatus": 200,
-      "webflowRequests": [],
-      "renderedWebflowUrls": [],
-      "lottie": {
-        "present": false,
-        "valid": true,
-        "webflowUrls": []
-      }
+      "canonical": "https://www.nexubis.io/post/the-work-life-balance-lie",
+      "lottiePresent": false
     },
     {
-      "slug": "overcoming-imposter-syndrome",
+      "position": 78,
+      "slug": "when-branding-does-and-doesnt-matter",
       "status": "complete",
+      "publishedId": "post-when-branding-does-and-doesnt-matter",
       "storedDataZeroWebflow": true,
-      "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
+      "renderedRouteZeroWebflow": true,
+      "networkWebflowRequests": 0,
       "routeStatus": 200,
-      "webflowRequests": [],
-      "renderedWebflowUrls": [],
-      "lottie": {
-        "present": false,
-        "valid": true,
-        "webflowUrls": []
-      }
+      "canonical": "https://www.nexubis.io/post/when-branding-does-and-doesnt-matter",
+      "lottiePresent": false
     },
     {
-      "slug": "dragonborn",
+      "position": 79,
+      "slug": "empowering-founders",
       "status": "complete",
+      "publishedId": "post-empowering-founders",
       "storedDataZeroWebflow": true,
-      "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
+      "renderedRouteZeroWebflow": true,
+      "networkWebflowRequests": 0,
       "routeStatus": 200,
-      "webflowRequests": [],
-      "renderedWebflowUrls": [],
-      "lottie": {
-        "present": false,
-        "valid": true,
-        "webflowUrls": []
-      }
+      "canonical": "https://www.nexubis.io/post/empowering-founders",
+      "lottiePresent": false
     },
     {
-      "slug": "building-a-leadership-team",
+      "position": 80,
+      "slug": "keep-firing-yourself",
       "status": "complete",
+      "publishedId": "post-keep-firing-yourself",
       "storedDataZeroWebflow": true,
-      "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
+      "renderedRouteZeroWebflow": true,
+      "networkWebflowRequests": 0,
       "routeStatus": 200,
-      "webflowRequests": [],
-      "renderedWebflowUrls": [],
-      "lottie": {
-        "present": false,
-        "valid": true,
-        "webflowUrls": []
-      }
+      "canonical": "https://www.nexubis.io/post/keep-firing-yourself",
+      "lottiePresent": false
     },
     {
-      "slug": "not-everyone-wants-the-gold-bar",
+      "position": 81,
+      "slug": "how-we-work",
       "status": "complete",
+      "publishedId": "post-how-we-work",
       "storedDataZeroWebflow": true,
-      "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
+      "renderedRouteZeroWebflow": true,
+      "networkWebflowRequests": 0,
       "routeStatus": 200,
-      "webflowRequests": [],
-      "renderedWebflowUrls": [],
-      "lottie": {
-        "present": false,
-        "valid": true,
-        "webflowUrls": []
-      }
+      "canonical": "https://www.nexubis.io/post/how-we-work",
+      "lottiePresent": false
     },
     {
-      "slug": "the-process-or-people-problem",
+      "position": 82,
+      "slug": "the-tech-stack-we-actually-recommend",
       "status": "complete",
+      "publishedId": "post-the-tech-stack-we-actually-recommend",
       "storedDataZeroWebflow": true,
-      "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
+      "renderedRouteZeroWebflow": true,
+      "networkWebflowRequests": 0,
       "routeStatus": 200,
-      "webflowRequests": [],
-      "renderedWebflowUrls": [],
-      "lottie": {
-        "present": false,
-        "valid": true,
-        "webflowUrls": []
-      }
+      "canonical": "https://www.nexubis.io/post/the-tech-stack-we-actually-recommend",
+      "lottiePresent": false
     },
     {
-      "slug": "most-of-my-job-sucks",
+      "position": 83,
+      "slug": "empowering-teams",
       "status": "complete",
+      "publishedId": "post-empowering-teams",
       "storedDataZeroWebflow": true,
-      "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
+      "renderedRouteZeroWebflow": true,
+      "networkWebflowRequests": 0,
       "routeStatus": 200,
-      "webflowRequests": [],
-      "renderedWebflowUrls": [],
-      "lottie": {
-        "present": false,
-        "valid": true,
-        "webflowUrls": []
-      }
+      "canonical": "https://www.nexubis.io/post/empowering-teams",
+      "lottiePresent": false
     },
     {
-      "slug": "empowering-clients",
+      "position": 84,
+      "slug": "ai-isnt-coming-its-already-here",
       "status": "complete",
+      "publishedId": "post-ai-isnt-coming-its-already-here",
       "storedDataZeroWebflow": true,
-      "renderedZeroWebflow": true,
       "blogCardZeroWebflow": true,
+      "renderedRouteZeroWebflow": true,
+      "networkWebflowRequests": 0,
       "routeStatus": 200,
-      "webflowRequests": [],
-      "renderedWebflowUrls": [],
-      "lottie": {
-        "present": false,
-        "valid": true,
-        "webflowUrls": []
-      }
+      "canonical": "https://www.nexubis.io/post/ai-isnt-coming-its-already-here",
+      "lottiePresent": false
     }
   ],
-  "counts": {
-    "inventory": 88,
-    "complete": 74,
-    "pending": 14,
-    "sanityCards": 74,
-    "generatedFallbackCards": 14
+  "remainingPendingFallbacks": [
+    {
+      "position": 85,
+      "slug": "what-early-stage-founders-spend-way-too-much-time-on",
+      "title": "Startup Time Traps",
+      "status": "pending",
+      "webflowThumbnailUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/68122143763874402c013590_What%20Early-Stage%20Founders%20Spend%20Way%20Too%20Much%20Time%20On_Startup%20Stack.webp"
+    },
+    {
+      "position": 86,
+      "slug": "how-it-all-started-and-almost-didnt",
+      "title": "How It All Started (and Almost Didn’t)",
+      "status": "pending",
+      "webflowThumbnailUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681220e76fdf3c4be10244f8_How%20It%20All%20Started%20and%20Almost%20Didn%E2%80%99t_Founders%20Diary.webp"
+    },
+    {
+      "position": 87,
+      "slug": "how-we-landed-on-empowering-dreams",
+      "title": "How We Landed on Empowering Dreams",
+      "status": "pending",
+      "webflowThumbnailUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681221011aaf53a89d396738_How%20We%20Landed%20on%20Empowering%20Dreams%20and%20Why%20It%20Stuck_Empowering%20Dreams.webp"
+    },
+    {
+      "position": 88,
+      "slug": "welcome-to-dreamlab",
+      "title": "Welcome to Dreamlab",
+      "status": "pending",
+      "webflowThumbnailUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/68122125eb6ad37e23cab742_Welcome%20to%20Dreamlab_Intro.avif"
+    }
+  ],
+  "browserAudit": {
+    "blog": {
+      "url": "https://nexubis.vercel.app/blog",
+      "status": 200,
+      "webflowRequests": 0,
+      "domContainsWebflowBecausePendingFallbacksRemain": true,
+      "consoleErrors": 0
+    },
+    "selectedRoutes": {
+      "count": 10,
+      "allStatus200": true,
+      "allZeroWebflowRequests": true,
+      "allRenderedDomZeroWebflow": true,
+      "allConsoleErrorsZero": true
+    }
   },
-  "blogDomAudit": {
-    "cards": 88,
-    "uniqueCards": 88,
-    "sanityCards": 74,
-    "generatedFallbackCards": 14,
-    "selectedCardsZeroWebflow": true,
-    "pendingFallbackWebflowThumbnails": 14
-  },
-  "browserNetworkAudit": {
-    "blogWebflowRequestsFromPendingFallbackCards": 14,
-    "selectedRouteWebflowRequests": 0,
-    "selectedRouteConsoleErrors": 0,
-    "selectedRoutePageErrors": 0
-  },
-  "storedDataAudit": {
-    "selectedDocuments": 10,
-    "duplicatePublishedPosts": 0,
-    "storedWebflowUrls": 0
-  },
-  "completedRouteAudit": {
-    "checked": 74,
-    "bad": []
-  },
-  "relatedPostAudit": {
-    "selectedRoutesWithWebflowRelatedMedia": 0,
-    "pendingFallbackRelatedMediaAttributedToPendingSlugs": true
-  },
-  "batch06DeploymentGate": {
-    "commit": "260db6f9e82172329a35fbcb5d1bdd215393ffbf",
-    "branch": "shannah",
-    "pushed": true,
-    "productionDeploymentId": "dpl_13ebu2sGdpSCQk28Brr5Fo4wL4sZ",
-    "productionCommitShaAvailable": false,
-    "productionStateVerified": "88 cards, 64 Sanity, 24 fallback before Batch 07"
-  },
-  "sanityDocumentCountExplanation": {
-    "publishedPostsBeforeBatch07": 64,
-    "draftPosts": 0,
-    "authors": 1,
-    "categories": 6,
-    "versionReleaseDocuments": 0,
-    "reasonFor48ValidDocuments": "Sanity validator reported documents without warnings, not total published post documents."
-  },
-  "position57": {
-    "title": "Rethinking the Nexubis Trial",
-    "slug": "rethinking-the-nexubis-trial",
-    "status": "complete",
-    "batchId": "priority-3c2",
-    "publishedId": "post-rethinking-the-nexubis-trial",
-    "routeStatus": 200,
-    "reasonSkippedByArchiveBatch": "Already completed as a priority post."
+  "repairNote": {
+    "summary": "A retry after the first execute timeout briefly selected the final four pending posts. The four published Sanity post documents were deleted, the manifest rows for positions 85-88 were restored to pending, and accidental media mapping rows for those slugs were removed.",
+    "deletedPublishedPostIds": [
+      "post-what-early-stage-founders-spend-way-too-much-time-on",
+      "post-how-it-all-started-and-almost-didnt",
+      "post-how-we-landed-on-empowering-dreams",
+      "post-welcome-to-dreamlab"
+    ],
+    "finalFourImported": false,
+    "finalFourPublished": false
   }
 }

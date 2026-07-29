@@ -1,240 +1,160 @@
 # Blog Sanity Batch Report
 
-Last updated: 2026-07-29T19:05:00.000Z
-Batch ID: batch-2026-07-29-archive-07
+Last updated: 2026-07-29T19:32:00+02:00
+Batch ID: batch-2026-07-29-archive-08
 
-## Batch 06 Deployment Gate
+## Batch 07 Deployment Verification
 
-- Batch 06 commit: `260db6f9e82172329a35fbcb5d1bdd215393ffbf`.
+- Batch 07 commit: `7630ef9e5f97762aac54943bffec1dc2c128cb7e`.
 - Branch: `shannah`.
-- Push status: committed and pushed to `origin/shannah`.
-- Production deployment: `dpl_13ebu2sGdpSCQk28Brr5Fo4wL4sZ`, Ready, target `production`, aliased to `https://nexubis.vercel.app`.
-- Vercel inspect and response headers did not expose Git commit SHA for the production deployment. Production state was verified behaviorally before Batch 07: `/blog` returned 88 unique cards with 64 Sanity cards and 24 generated fallback cards.
+- Push result: branch was aligned with `origin/shannah` before Batch 08 work.
+- Vercel deployment: `dpl_13ebu2sGdpSCQk28Brr5Fo4wL4sZ`, Ready, aliased to `https://nexubis.vercel.app`.
+- Deployed Blog state before Batch 08: 88 unique cards, 74 Sanity cards, 14 generated fallback cards.
 
-## Sanity Document Counts
+## Preflight And Reconciliation
 
-- Published post documents: 64 before Batch 07.
-- Draft post documents: 0.
-- Author documents: 1.
-- Category documents: 6.
-- Version/release documents: 0.
-- Other schema documents: 70 `sanity.imageAsset` documents before Batch 07.
-- Published post query used the public website conditions: `_type == "post"`, `defined(slug.current)`, `defined(publishedAt)`, not drafts, not versions.
-- Published post slugs were unique: 64 unique slugs, 0 duplicate published slugs.
-- The earlier `48 valid documents` Sanity validation output was not a post count. It meant 48 validated schema documents had no warnings; 23 additional validated documents had warnings, for 71 validated documents total and 0 errors.
-
-## Position 57 Investigation
-
-- Position 57 title: `Rethinking the Nexubis Trial`.
-- Exact slug: `rethinking-the-nexubis-trial`.
-- Manifest status: `complete`.
-- Batch: `priority-3c2`.
-- Published Sanity ID: `post-rethinking-the-nexubis-trial`.
-- Webflow draft/archive: false / false.
-- Body: non-empty.
-- Source conflict: none found.
-- Staging route: `https://nexubis.vercel.app/post/rethinking-the-nexubis-trial` returned HTTP 200.
-- Conclusion: position 57 was legitimately skipped by Batch 06 because it was already completed in the priority set; it remains included in the 88-post manifest and final inventory.
-
-## Manifest Reconciliation
-
-- Inventory records: 88.
-- Manifest records: 88.
-- Complete records before Batch 07: 64.
-- Pending records before Batch 07: 24.
-- Validation-failed records: 0.
-- Duplicate manifest slugs: 0.
-- Missing inventory slugs: 0.
-- Extra manifest slugs: 0.
-- Published Sanity slugs missing from manifest: 0.
+- Published Blog posts before Batch 08: 74; unique published slugs: 74; duplicate slugs: 0.
+- Unexpected draft Blog posts: 0.
+- Public version/release Blog documents: 0.
+- Manifest records: 88 total, 74 complete, 14 pending, 0 validation-failed.
+- Missing manifest slugs: 0; extra manifest slugs: 0.
 - Completed manifest slugs missing from Sanity: 0.
-
-## Preflight
-
-- `/blog` before Batch 07: 88 unique cards, 64 Sanity cards, 24 generated fallback cards.
-- All 64 pre-batch Sanity cards used `cdn.sanity.io` thumbnails.
-- All six filter/category icons used Sanity assets; shared Blog interface graphics contained no Webflow dependency.
-- All 64 completed `/post/[slug]` routes returned HTTP 200.
-- Published Sanity summaries override generated records by exact slug; drafts, versions and release documents remain excluded.
-- Authenticated command path confirmed: `npm run blog:migrate-batch` -> `sanity exec scripts/migrate-blog-sanity-batch.ts --with-user-token --`.
-- No public/client-side Sanity write token was found; only public project/dataset IDs are exposed.
+- Published Sanity slugs missing from manifest: 0.
+- Authenticated command path confirmed: `sanity exec scripts/migrate-blog-sanity-batch.ts --with-user-token --`.
+- No public/client-side Sanity write token was found.
 
 ## Selected Posts
 
-- 65. Manifestation: From Impossible to Probable | `manifestation-from-impossible-to-probable` | https://www.nexubis.io/post/manifestation-from-impossible-to-probable | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 66. Stop Selling Time. Start Delivering Value. | `stop-selling-time-start-delivering-value` | https://www.nexubis.io/post/stop-selling-time-start-delivering-value | Hannes Oosthuizen | Company | Thu Jun 12 2025 13:55:37 GMT+0000
-- 67. The Nexubis Referral Program | `the-nexubis-referral-program` | https://www.nexubis.io/post/the-nexubis-referral-program | Hannes Oosthuizen | Company | Thu Jun 12 2025 13:55:37 GMT+0000
-- 68. Overcoming Imposter Syndrome | `overcoming-imposter-syndrome` | https://www.nexubis.io/post/overcoming-imposter-syndrome | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 69. Dragonborn | `dragonborn` | https://www.nexubis.io/post/dragonborn | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 70. Building a Leadership Team | `building-a-leadership-team` | https://www.nexubis.io/post/building-a-leadership-team | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 71. Not Everyone Wants the Gold Bar | `not-everyone-wants-the-gold-bar` | https://www.nexubis.io/post/not-everyone-wants-the-gold-bar | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 72. The Process or People Problem | `the-process-or-people-problem` | https://www.nexubis.io/post/the-process-or-people-problem | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 73. Most of My Job Sucks | `most-of-my-job-sucks` | https://www.nexubis.io/post/most-of-my-job-sucks | Hannes Oosthuizen | Founders Diary | Wed Jun 11 2025 11:27:07 GMT+0000
-- 74. Empowering Clients | `empowering-clients` | https://www.nexubis.io/post/empowering-clients | Hannes Oosthuizen | Empowering Dreams | Wed Jun 11 2025 11:27:07 GMT+0000
+1. 75. Building Fast vs. Building Right | `building-fast-vs-building-right` | https://www.nexubis.io/post/building-fast-vs-building-right
+2. 76. Empowering Communities | `empowering-communities` | https://www.nexubis.io/post/empowering-communities
+3. 77. The Work-Life Balance Lie | `the-work-life-balance-lie` | https://www.nexubis.io/post/the-work-life-balance-lie
+4. 78. When Branding Does (and Doesn’t) Matter | `when-branding-does-and-doesnt-matter` | https://www.nexubis.io/post/when-branding-does-and-doesnt-matter
+5. 79. Empowering Founders | `empowering-founders` | https://www.nexubis.io/post/empowering-founders
+6. 80. Keep Firing Yourself | `keep-firing-yourself` | https://www.nexubis.io/post/keep-firing-yourself
+7. 81. How We Work | `how-we-work` | https://www.nexubis.io/post/how-we-work
+8. 82. The Tech Stack We Actually Recommend | `the-tech-stack-we-actually-recommend` | https://www.nexubis.io/post/the-tech-stack-we-actually-recommend
+9. 83. Empowering Teams | `empowering-teams` | https://www.nexubis.io/post/empowering-teams
+10. 84. AI Isn’t Coming — It’s Already Here | `ai-isnt-coming-its-already-here` | https://www.nexubis.io/post/ai-isnt-coming-its-already-here
 
-## Structured-Field Whitespace
+All ten were authored by Hannes Oosthuizen. Categories reused: Startup Stack, Empowering Dreams, Founders Diary, and Artificial Intelligence. Published source date for all ten selected records: Wed Jun 11 2025 11:27:07 GMT+0000.
 
-- `Manifestation: From Impossible to Probable ` had trailing whitespace in the source title. The approved structured-field trimming removed only that outer title whitespace before writing to Sanity.
-- No selected author name, category title, excerpt, SEO title or SEO description required trimming.
-- Slugs, article body, headings, punctuation, capitalisation, URLs and captions were not altered.
+## Final Four Readiness
+
+These records were checked but restored to pending and were not left published:
+
+1. 85. Startup Time Traps | `what-early-stage-founders-spend-way-too-much-time-on` | https://www.nexubis.io/post/what-early-stage-founders-spend-way-too-much-time-on
+2. 86. How It All Started (and Almost Didn’t) | `how-it-all-started-and-almost-didnt` | https://www.nexubis.io/post/how-it-all-started-and-almost-didnt
+3. 87. How We Landed on Empowering Dreams | `how-we-landed-on-empowering-dreams` | https://www.nexubis.io/post/how-we-landed-on-empowering-dreams
+4. 88. Welcome to Dreamlab | `welcome-to-dreamlab` | https://www.nexubis.io/post/welcome-to-dreamlab
+
+Each has a source row and required media reference. A retry after an execute timeout briefly published these four; the four published Sanity post documents were deleted, their manifest rows were restored to pending, and their media mapping rows were removed. Batch 08 final state remains 84 complete and 4 pending.
 
 ## Publication Results
 
-Manifestation: From Impossible to Probable
+- Drafts created/replaced: `drafts.post-[exact-slug]` for all ten selected posts.
+- Published IDs: `post-[exact-slug]` for all ten selected posts.
+- Posts published: 10.
+- Posts left as drafts: 0.
+- Posts requiring repair: 0.
+- Final four pending: 4.
 
-- Draft: `drafts.post-manifestation-from-impossible-to-probable`
-- Published: `post-manifestation-from-impossible-to-probable`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 40 blocks, 8 headings, 31 paragraphs, 1 blockquote
-- Excerpt: 155 -> 155
-- SEO description: 132 -> 132
-- Validation errors: none
+## Structured Fields
 
-Stop Selling Time. Start Delivering Value.
+- Existing narrow trimming was reused for title, author name, category title, excerpt, SEO title, and SEO description.
+- Source field needing outer-whitespace cleanup: `how-we-work` excerpt.
+- Slugs, article bodies, headings, punctuation, capitalization, captions and URLs were not altered.
 
-- Draft: `drafts.post-stop-selling-time-start-delivering-value`
-- Published: `post-stop-selling-time-start-delivering-value`
-- Author/category: `author-hannes-oosthuizen` / `category-company`
-- Portable Text: 38 blocks, 6 headings, 15 paragraphs, 17 unordered list items, 1 link
-- Excerpt: 162 -> 162
-- SEO description: 154 -> 154
-- Validation errors: none
+## Portable Text
 
-The Nexubis Referral Program
+- Building Fast vs. Building Right: 61 blocks, 6 headings, 31 paragraphs, 15 unordered items, 4 ordered items, 5 blockquotes, 0 links, 0 inline images.
+- Empowering Communities: 25 blocks, 4 headings, 18 paragraphs, 3 unordered items.
+- The Work-Life Balance Lie: 29 blocks, 4 headings, 22 paragraphs, 3 unordered items, 1 link.
+- When Branding Does (and Doesn’t) Matter: 51 blocks, 6 headings, 26 paragraphs, 18 unordered items, 1 blockquote.
+- Empowering Founders: 30 blocks, 4 headings, 22 paragraphs, 4 unordered items.
+- Keep Firing Yourself: 42 blocks, 5 headings, 31 paragraphs, 6 unordered items.
+- How We Work: 43 blocks, 9 headings, 31 paragraphs, 3 unordered items.
+- The Tech Stack We Actually Recommend: 74 blocks, 8 headings, 42 paragraphs, 24 unordered items.
+- Empowering Teams: 18 blocks, 5 headings, 9 paragraphs, 4 unordered items.
+- AI Isn’t Coming — It’s Already Here: 48 blocks, 7 headings, 31 paragraphs, 10 unordered items.
 
-- Draft: `drafts.post-the-nexubis-referral-program`
-- Published: `post-the-nexubis-referral-program`
-- Author/category: `author-hannes-oosthuizen` / `category-company`
-- Portable Text: 33 blocks, 5 headings, 18 paragraphs, 10 unordered list items
-- Excerpt: 367 -> 296
-- SEO description: 93 -> 93
-- Validation errors: none
+## Excerpt And SEO
 
-Overcoming Imposter Syndrome
-
-- Draft: `drafts.post-overcoming-imposter-syndrome`
-- Published: `post-overcoming-imposter-syndrome`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 23 blocks, 4 headings, 17 paragraphs, 2 blockquotes
-- Excerpt: 247 -> 247
-- SEO description: 202 -> 169
-- Validation errors: none
-
-Dragonborn
-
-- Draft: `drafts.post-dragonborn`
-- Published: `post-dragonborn`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 14 blocks, 12 paragraphs, 2 blockquotes
-- Excerpt: 303 -> 294
-- SEO description: 198 -> 169
-- Validation errors: none
-
-Building a Leadership Team
-
-- Draft: `drafts.post-building-a-leadership-team`
-- Published: `post-building-a-leadership-team`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 30 blocks, 4 headings, 23 paragraphs, 3 unordered list items
-- Excerpt: 176 -> 176
-- SEO description: 136 -> 136
-- Validation errors: none
-
-Not Everyone Wants the Gold Bar
-
-- Draft: `drafts.post-not-everyone-wants-the-gold-bar`
-- Published: `post-not-everyone-wants-the-gold-bar`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 23 blocks, 4 headings, 19 paragraphs
-- Excerpt: 319 -> 294
-- SEO description: 335 -> 169
-- Validation errors: none
-
-The Process or People Problem
-
-- Draft: `drafts.post-the-process-or-people-problem`
-- Published: `post-the-process-or-people-problem`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 51 blocks, 8 headings, 35 paragraphs, 8 unordered list items
-- Excerpt: 180 -> 180
-- SEO description: 165 -> 165
-- Validation errors: none
-
-Most of My Job Sucks
-
-- Draft: `drafts.post-most-of-my-job-sucks`
-- Published: `post-most-of-my-job-sucks`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 34 blocks, 5 headings, 28 paragraphs, 1 blockquote
-- Excerpt: 159 -> 159
-- SEO description: 210 -> 164
-- Validation errors: none
-
-Empowering Clients
-
-- Draft: `drafts.post-empowering-clients`
-- Published: `post-empowering-clients`
-- Author/category: `author-hannes-oosthuizen` / `category-empowering-dreams`
-- Portable Text: 24 blocks, 2 headings, 16 paragraphs, 6 unordered list items
-- Excerpt: 348 -> 299
-- SEO description: 191 -> 169
-- Validation errors: none
+- All excerpts are 300 characters or fewer after normalization.
+- All SEO descriptions are 170 characters or fewer after normalization.
+- SEO title length warnings remain non-blocking; no SEO title truncation was applied.
 
 ## Media
 
-- Batch 07 media mappings: 30.
-- Uploaded assets: 12.
-- Reused mappings/assets: 18.
-- Each selected post migrated thumbnail and Open Graph image to Sanity; category icons reused existing Sanity assets.
-- AVIF assets uploaded for `stop-selling-time-start-delivering-value` and `the-nexubis-referral-program`.
-- No inline image, hero media, Lottie fallback, Lottie JSON image, poster image, CMS file or YouTube showreel migration was required for these ten standard posts.
+- Batch 08 media mapping rows: 30.
+- Uploaded: 11.
+- Reused: 19.
+- Migrated fields per selected post: `post.thumbnail`, `post.seo.openGraphImage`, and `category.icon`.
+- Category icons reused existing Sanity assets.
+- Lottie/showreel: none present in the selected ten; no Lottie or showreel fields were invented.
 
-## Lottie And Showreel
+## Webflow Audits
 
-- Lottie: not present for all ten selected posts.
-- Showreel/video: not enabled for all ten selected posts.
-- No malformed Lottie JSON, external Lottie asset, poster image or unsupported embed was found.
-
-## Audits
-
-- Stored-data Webflow audit: zero Webflow media/runtime dependencies in selected post documents, Portable Text, markDefs, SEO fields, thumbnails, author/category refs and Lottie fields.
-- Sanity duplicate audit: exactly one published document per selected slug; deterministic IDs were reused.
-- Blog DOM/hydration audit: `/blog` returned 88 unique cards; 74 Sanity thumbnail cards and 14 generated fallback cards. All ten Batch 07 card DOM fragments contain Sanity thumbnail URLs and no Webflow URL in src, srcset, serialized HTML or hydration content.
-- Browser network audit: each selected `/post/[slug]` route made zero Webflow requests, contained zero Webflow URLs in rendered DOM, and had no console/page errors after scrolling.
-- `/blog` full-scroll browser audit loaded 14 Webflow thumbnail requests from remaining generated fallback cards only; these belong to pending slugs and are not marked complete.
-- Related-post audit: selected Sanity article routes rendered no related-post Webflow thumbnails and no Webflow related resources.
+- Stored-data Webflow audit: passed for all ten selected Sanity documents; zero Webflow media/runtime URLs stored.
+- Blog card verification: importer verify-only marked all ten cards complete, Sanity-sourced, Sanity-thumbnail backed, and zero-Webflow verified.
+- Blog DOM/hydration: `/blog` returns 88 unique cards. Selected Batch 08 cards are Sanity-backed; the only remaining Webflow DOM media belongs to the four pending fallback cards.
+- Browser network audit: `/blog` made zero Webflow requests. Each selected article route made zero Webflow requests after scrolling.
+- Rendered article audit: each selected route contained zero Webflow media/runtime URLs.
+- Related-post audit: selected routes rendered zero Webflow URLs; no Sanity-backed related thumbnail fell back to Webflow.
 
 ## Route And Card Verification
 
-- All 74 completed staging routes returned HTTP 200.
-- Every selected staging route returned HTTP 200 at `https://nexubis.vercel.app/post/[exact-slug]`.
-- Exact `/post/[slug]` paths and canonical `https://www.nexubis.io/post/[exact-slug]` values were preserved. No `/blog/[slug]` routes, Vercel canonicals or redirects were created.
-- Blog-card verification passed: exactly one card per selected slug, Sanity-sourced title/excerpt/category/thumbnail, Sanity category icon, stable `/post/[slug]` href, and no duplicates.
+- All ten selected routes returned HTTP 200 at `https://nexubis.vercel.app/post/[exact-slug]`.
+- Canonical remains `https://www.nexubis.io/post/[exact-slug]`.
+- Exact `/post/[slug]` route was preserved for every selected post.
+- No `/blog/[slug]` route or redirect was created.
+- `/blog` final source split: 84 Sanity cards and 4 generated fallback cards.
 
-## Counts And Idempotency
+## Idempotency
 
-- Previous source split: 64 Sanity / 24 generated fallback.
-- New source split: 74 Sanity / 14 generated fallback.
-- Verify-only rerun completed and marked all ten complete without duplicate posts, cards, authors, categories, references, body blocks, unnecessary asset uploads, changed slugs or reverted category icon mappings.
+- Verify-only against `batch-2026-07-29-archive-08` completed all ten records without duplicate posts, authors, categories, references, cards or slugs.
+- Published Sanity posts after Batch 08: 84.
+- Unique published slugs after Batch 08: 84.
+- Duplicate published slugs: 0.
+- Draft Blog posts: 0.
 
-## Validation Commands
+## Validation
 
-- Batch 06 commit/deployment check: passed; production state reflected 64/24.
-- Direct Sanity document-count query: passed; 64 published posts before Batch 07.
-- Inventory-position-57 investigation: passed; already complete priority post.
-- Full manifest reconciliation: passed.
-- Batch 07 dry-run: passed.
-- Batch execute/publish: passed.
-- Sanity document validation: passed, 56 valid documents, 25 warning documents, 0 errors, 81 validated documents.
-- Verify-only/idempotency: passed.
-- Exact-slug, stored-data Webflow, Blog DOM/hydration, browser network, route, card and related-post audits: passed for Batch 07.
-- `npm run lint`: passed with 29 existing warnings and 0 errors.
-- `npm run typecheck`: passed.
-- `npm run test`: passed, 35 files / 270 tests.
-- `npm run build`: passed.
+- Batch dry-run: passed on positions 75-84.
+- Batch execute/publish: completed after retry; final-four accidental retry state was repaired.
+- Sanity document validation: 0 errors; 27 existing SEO-title warnings.
+- Verify-only: passed; all ten Batch 08 entries complete.
+- Stored-data audit: passed.
+- Blog DOM/hydration audit: passed for selected cards; four fallback Webflow thumbnails remain pending.
+- Browser network audit: passed for selected routes and `/blog`.
+- Public-route verification: passed.
+- Blog-card verification: passed.
+- Related-post verification: passed.
+- Lint: passed with 29 existing warnings.
+- Typecheck: passed.
+- Test: passed, 35 files and 270 tests.
+- Build: passed.
 
-## Remaining Work
+## Files Changed
 
-- 14 generated fallback posts remain pending for later batches.
-- Failed posts: 0.
-- Posts requiring repair: none for Batch 07.
+- `docs/BLOG_SANITY_BATCH_MANIFEST.json`
+- `docs/BLOG_SANITY_BATCH_MEDIA_MAPPING.json`
+- `docs/BLOG_SANITY_BATCH_REPORT.md`
+- `docs/BLOG_SANITY_BATCH_REPORT_OUTPUT.txt`
+- `docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json`
+
+## Excluded Dirty Files
+
+- `app/api/contact/route.ts`
+- `components/CompetitorComparisonLottie.tsx`
+- `components/ContactTabs.tsx`
+- `lib/contact/contact-route.test.ts`
+- `lib/packages-faq.ts`
+- `docs/BLOG_SANITY_BATCH_04_FINAL_REPORT.txt`
+- `docs/BLOG_SANITY_BATCH_05_FINAL_REPORT.txt`
+- `docs/MAIN_SHOWREEL_REPLACEMENT_REPORT.txt`
+- `docs/PACKAGES_DESKTOP_LOTTIE_REPLACEMENT_REPORT.txt`
+- `lib/packages-faq.test.ts`
+- `package-copy-consistency-report.txt`
+- `package-copy-corrections-report.txt`
+- `public/assets/lotties/CompetitorComparison_Euro.json`
+
