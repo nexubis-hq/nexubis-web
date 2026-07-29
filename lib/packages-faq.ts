@@ -58,11 +58,11 @@ export function getPackagesFaq(currency: Currency): FaqEntry[] {
     },
     {
       q: "Do you build the website, or only design it?",
-      a: "Both. Design, build and launch in Webflow, then every update, new page and bug fix afterwards. You never hand a design file to a separate developer and hope.",
+      a: "Both. We design, build and launch, then handle every update, new page and bug fix afterwards. We are not tied to a single platform, we build in whatever the project needs, so you never hand a design file to a separate developer and hope.",
     },
     {
       q: "Do I own the files and the website?",
-      a: "Yes. Everything we make for you is yours, source files included, handed over through Figma and Webflow or whatever format your team works in. The only thing we keep is the right to show the work as a case study.",
+      a: "Yes, entirely. Everything we make for you is yours, source files included, handed over through Figma, Webflow or whatever format your team works in. We may also show the work as ours and say publicly that Nexubis made it, but only ever with your explicit sign-off first.",
     },
     {
       q: "Not sure which level is right for us?",

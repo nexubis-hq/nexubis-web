@@ -83,17 +83,17 @@ pattern and would not open reliably from hover.)
 `--steel: #5a6672` in `app/globals.css :root` — the muted blue-grey for the InfoTip
 glyph. Clears WCAG AA (5.8:1 on white) at the glyph's size.
 
-## AWAITING CLIENT CONFIRMATION
+## CLIENT-CONFIRMED (all resolved)
 
-Two FAQ answers assert claims a human should sign off:
+Everything previously flagged for sign-off has been confirmed and updated:
 
-- **Q11** asserts Webflow only (the old FAQ also offered Framer, Headless Shopify
-  and Figma Sites).
-- **Q12** asserts Nexubis retains case-study rights.
-
-(The earlier "unused requests roll over" claim was removed: the monthly request
-count is gone entirely, replaced by the work-streams model, so there is no cap and
-nothing to roll over.)
+- **Q11** — no longer Webflow-only. We build any development the project needs, not
+  just Webflow.
+- **Q12** — client owns everything; Nexubis may promote the work as ours (state
+  publicly that Nexubis made it) only with the client's explicit sign-off first.
+- **Partner strategy cadence** — set to Quarterly (that is how goals are usually set).
+- The earlier "unused requests roll over" claim was removed with the move to the
+  work-streams model (no monthly cap, so nothing to roll over).
 
 ## Deviations from the original brief (all per live client direction)
 

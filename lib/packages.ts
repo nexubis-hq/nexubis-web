@@ -46,7 +46,7 @@ export const TIERS: Tier[] = [
       },
       {
         label: "Website build & maintenance",
-        tip: "Full Webflow design, build and launch, plus every update, new page and bug fix afterwards. Your site never goes stale in the gap between projects.",
+        tip: "Full website design, build and launch, plus every update, new page and bug fix afterwards. Your site never goes stale in the gap between projects.",
       },
       {
         label: "SEO built in & monitored",
@@ -112,8 +112,8 @@ export const TIERS: Tier[] = [
         tip: "One named senior person owns your brand end to end and is your single point of contact. They set the standard and make the calls, so you are not the one arbitrating design decisions.",
       },
       {
-        label: "Strategy sessions built in",
-        tip: "Regular working sessions on where the business is going, not just what the brand looks like. We plan positioning, campaigns and what goes out next, then the same team executes it.",
+        label: "Quarterly strategy sessions",
+        tip: "Quarterly working sessions on where the business is going, not just what the brand looks like. We plan positioning, campaigns and what goes out next, then the same team executes it.",
       },
       {
         label: "Ongoing brand development",
