@@ -1,0 +1,62 @@
+Package Copy Consistency Report
+
+Source Truth Found
+
+- Package order: Momentum, Scale, Partner
+- Monthly-cycle prices from current Packages card data:
+  - Momentum: EUR 3 500 / month
+  - Scale: EUR 4 200 / month
+  - Partner: EUR 6 000 / month
+- Note: default rendered billing cycle is annual, so Partner can also render as EUR 5 000 / month with yearly savings. FAQ pricing was kept on monthly-cycle pricing.
+
+FAQ Change
+
+- Before: Momentum is EUR 3 500 a month, Scale is EUR 4 200, and Partner is EUR 6 000.
+- After: Momentum is EUR 3 500 / month, Scale is EUR 4 200 / month, and Partner is EUR 6 000 / month.
+- No unrelated FAQ copy, layout, accordion behavior, styling, or animation was changed.
+
+Contact Dropdown
+
+- Before: Momentum, Scale, Flex, I'm not sure
+- After: Momentum, Scale, Partner, Im not sure
+- Im not sure remains the final dropdown option.
+
+Backend/Type/Validation
+
+- Contact API allow-list changed from ["Momentum", "Scale", "Flex", "I'm not sure"] to ["Momentum", "Scale", "Partner", "Im not sure"].
+- Added route tests confirming every visible dropdown value is accepted and retired Flex is rejected.
+- Resend notification formatting did not need logic changes; it already renders the submitted package string.
+- Funnelr payload remains unchanged: still only sends name and email.
+
+Files Changed
+
+- lib/packages-faq.ts
+- components/ContactTabs.tsx
+- app/api/contact/route.ts
+- lib/contact/contact-route.test.ts
+- lib/packages-faq.test.ts
+
+Remaining Flex Matches
+
+- Historical/reference docs: PACKAGES_MAP.md, SITE.md, PACKAGES_V2.md, docs/PRE_CUTOVER_LINK_PARITY_AUDIT.csv, docs/BLOG_INDEX_MEDIA_PENDING.md, docs/BLOG_SANITY_BATCH_MANIFEST.json
+- Test assertions: lib/contact/contact-route.test.ts, lib/packages-faq.test.ts
+- Legacy inactive component: components/PackagesPricing.tsx still contains the old Flex card, but /packages no longer renders that component; it imports only PackagesServices from that file.
+
+Remaining Price Matches
+
+- lib/packages.ts: current source-of-truth Partner price 6000.
+- PACKAGES_V2.md: historical/current implementation notes about EUR 5 000 annual Partner pricing and EUR 6 000 formatting.
+- Other 5000/60000 matches are unrelated limits/timeouts/test values/asset data, not package copy.
+
+Validation
+
+- npx vitest run lib/contact/contact-route.test.ts lib/contact/notify.test.ts lib/contact/funnelr.test.ts lib/packages-faq.test.ts: passed, 25 tests.
+- npm run lint: passed with existing warnings only.
+- npm run typecheck: passed.
+- npm run build: passed.
+
+Confirmations
+
+- The Packages page itself was not modified.
+- app/packages/page.tsx, lib/packages.ts, and the active pricing card components were not modified.
+- Blog/Sanity, Funnelr routing/tags/lists/sequences, Resend recipients/routing/Reply-To, Scorecard logic, Last Name handling, CSS, layouts, animations, buttons, and deployment settings were not changed.

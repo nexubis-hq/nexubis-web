@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { submitContactLeadToFunnelr } from "@/lib/contact/funnelr";
 import { notifyContactSubmission } from "@/lib/contact/notify";
 
-const ALLOWED_PACKAGES = ["Momentum", "Scale", "Flex", "I'm not sure"] as const;
+const ALLOWED_PACKAGES = ["Momentum", "Scale", "Partner", "I'm not sure"] as const;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MIN_ELAPSED_MS = 2000;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;

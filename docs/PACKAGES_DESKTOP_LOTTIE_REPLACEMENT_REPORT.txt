@@ -1,0 +1,182 @@
+Nexubis Packages Desktop Lottie Replacement Report
+
+Scope
+- Focused replacement of the Packages desktop competitor-comparison Lottie only.
+- Route: /packages.
+- Section: All the Expert Skill, None of the Overhead.
+- Existing mobile implementation was not changed.
+- No staging, commit, or push performed.
+
+New uploaded source file
+- Source: C:\Users\shann\Downloads\CompetitorComparison_Euro.json
+- Local project copy: public/assets/lotties/CompetitorComparison_Euro.json
+
+Current desktop source before the change
+- /assets/lotties/CompetitorComparison.json
+
+Current mobile source
+- /assets/lotties/CompetitorComparison_Mobile.json
+
+Final desktop source
+- /assets/lotties/CompetitorComparison_Euro.json
+
+Mobile source confirmation
+- Mobile source was untouched.
+- Mobile still uses /assets/lotties/CompetitorComparison_Mobile.json.
+- The old desktop file public/assets/lotties/CompetitorComparison.json was not overwritten or deleted.
+
+Breakpoint logic
+- The source switches via window.matchMedia("(max-width: 767px)").
+- <= 767px: mobile source.
+- > 767px: desktop/laptop source.
+
+Lottie loading implementation
+- JSON is fetched by URL in components/CompetitorComparisonLottie.tsx.
+- JSON is not imported directly.
+- The component lazy-loads lottie-web with import("lottie-web").
+- Animation data is not memoised or cached in React state.
+- Existing conditional loading approach was preserved.
+- No duplicate Lottie players were added.
+- The component still loads one source based on the breakpoint.
+
+New Lottie composition metadata
+- Composition name: CompetitorComparison.
+- Width: 1656.
+- Height: 610.
+- Frame rate: 24 fps.
+- In point: 0.
+- Out point: 216.
+- Layers: 38.
+- JSON validity: valid JSON.
+
+Renderer and wrapper settings
+- No wrapper or CSS changes were needed.
+- Existing SVG renderer was preserved.
+- Existing rendererSettings were preserved: { progressiveLoad: true }.
+- Existing autoplay behavior was preserved.
+- Existing loop behavior was preserved.
+- Existing reduced-motion behavior was preserved.
+- Existing loading fallback behavior was preserved.
+- Existing desktop wrapper dimensions were preserved.
+- Existing mobile wrapper dimensions were preserved.
+- Rendered desktop SVG uses viewBox="0 0 1656 610".
+- Rendered desktop SVG uses preserveAspectRatio="xMidYMid meet".
+
+Files changed
+- components/CompetitorComparisonLottie.tsx
+- public/assets/lotties/CompetitorComparison_Euro.json
+- docs/PACKAGES_DESKTOP_LOTTIE_REPLACEMENT_REPORT.txt
+
+Implementation diff summary
+- components/CompetitorComparisonLottie.tsx:
+  - DESKTOP_PATH changed from /assets/lotties/CompetitorComparison.json to /assets/lotties/CompetitorComparison_Euro.json.
+- public/assets/lotties/CompetitorComparison_Euro.json:
+  - New local copy of the uploaded JSON.
+
+Breakpoint QA
+- Tested route: /packages.
+- Breakpoints tested:
+  - 1440px
+  - 1280px
+  - 1100px
+  - 1024px
+  - 991px
+  - 767px
+  - 390px
+  - 375px
+
+Desktop and laptop QA results
+- 1440px:
+  - Requested /assets/lotties/CompetitorComparison_Euro.json.
+  - Did not request /assets/lotties/CompetitorComparison.json.
+  - Did not request /assets/lotties/CompetitorComparison_Mobile.json.
+  - Lottie JSON status: 200.
+  - No horizontal overflow.
+  - SVG viewBox: 0 0 1656 610.
+  - preserveAspectRatio: xMidYMid meet.
+- 1280px:
+  - Requested /assets/lotties/CompetitorComparison_Euro.json.
+  - Did not request old desktop or mobile source.
+  - Lottie JSON status: 200.
+  - No horizontal overflow.
+- 1100px:
+  - Requested /assets/lotties/CompetitorComparison_Euro.json.
+  - Did not request old desktop or mobile source.
+  - Lottie JSON status: 200.
+  - No horizontal overflow.
+- 1024px:
+  - Requested /assets/lotties/CompetitorComparison_Euro.json.
+  - Did not request old desktop or mobile source.
+  - Lottie JSON status: 200.
+  - No horizontal overflow.
+- 991px:
+  - Requested /assets/lotties/CompetitorComparison_Euro.json.
+  - Did not request old desktop or mobile source.
+  - Lottie JSON status: 200.
+  - No horizontal overflow.
+
+Mobile QA results
+- 767px:
+  - Requested /assets/lotties/CompetitorComparison_Mobile.json.
+  - Did not request /assets/lotties/CompetitorComparison_Euro.json.
+  - Did not request /assets/lotties/CompetitorComparison.json.
+  - Lottie JSON status: 200.
+  - No horizontal overflow.
+- 390px:
+  - Requested /assets/lotties/CompetitorComparison_Mobile.json.
+  - Did not request /assets/lotties/CompetitorComparison_Euro.json.
+  - Did not request /assets/lotties/CompetitorComparison.json.
+  - Lottie JSON status: 200.
+  - No horizontal overflow.
+- 375px:
+  - Requested /assets/lotties/CompetitorComparison_Mobile.json.
+  - Did not request /assets/lotties/CompetitorComparison_Euro.json.
+  - Did not request /assets/lotties/CompetitorComparison.json.
+  - Lottie JSON status: 200.
+  - No horizontal overflow.
+
+Animation playback and loop results
+- Full SVG snapshots changed over time on desktop and mobile, confirming playback progression.
+- Snapshots continued changing beyond the 9s composition window, confirming loop progression.
+- No failed Lottie JSON requests were observed.
+- No Lottie console errors were observed.
+
+Desktop geometry result
+- The desktop composition stayed centred in the existing wrapper.
+- The complete composition remained visible.
+- The composition was not stretched.
+- The SVG preserved its natural 1656x610 aspect ratio.
+- No horizontal overflow was observed.
+- Visual desktop inspection confirmed Euro values render, including:
+  - €25 200/m
+  - €0/m
+
+Mobile safety result
+- Mobile source path was unchanged.
+- Mobile source routing was unchanged.
+- Mobile wrapper dimensions were unchanged.
+- Mobile layout was not edited.
+- Mobile still requests CompetitorComparison_Mobile.json at 767px, 390px, and 375px.
+
+Validation
+- npm run lint: passed with existing warnings.
+- npm run typecheck: passed.
+- npm run test: passed, 35 test files and 270 tests.
+- npm run build: passed.
+
+Final git status at report time
+ M app/api/contact/route.ts
+ M components/CompetitorComparisonLottie.tsx
+ M components/ContactTabs.tsx
+ M lib/contact/contact-route.test.ts
+ M lib/packages-faq.ts
+?? docs/BLOG_SANITY_BATCH_04_FINAL_REPORT.txt
+?? docs/BLOG_SANITY_BATCH_05_FINAL_REPORT.txt
+?? docs/MAIN_SHOWREEL_REPLACEMENT_REPORT.txt
+?? lib/packages-faq.test.ts
+?? package-copy-consistency-report.txt
+?? package-copy-corrections-report.txt
+?? public/assets/lotties/CompetitorComparison_Euro.json
+
+Note
+- This report file was created after the implementation report and remains unstaged.

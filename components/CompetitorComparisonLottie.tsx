@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const DESKTOP_PATH = "/assets/lotties/CompetitorComparison.json";
+const DESKTOP_PATH = "/assets/lotties/CompetitorComparison_Euro.json";
 const MOBILE_PATH = "/assets/lotties/CompetitorComparison_Mobile.json";
 
 export function CompetitorComparisonLottie() {

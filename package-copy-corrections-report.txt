@@ -1,0 +1,49 @@
+Package Copy Corrections Report
+
+1. Contact option
+
+Before: Im not sure
+After: I'm not sure
+
+It remains the final dropdown option.
+
+2. API allow-list
+
+Before: ["Momentum", "Scale", "Partner", "Im not sure"]
+After: ["Momentum", "Scale", "Partner", "I'm not sure"]
+
+Added test coverage confirming "I'm not sure" is accepted and accidental "Im not sure" is rejected.
+
+3. FAQ sentence
+
+Before:
+Three levels. Momentum is EUR 3 500 / month, Scale is EUR 4 200 / month, and Partner is EUR 6 000 / month. ...
+
+After:
+Three levels. Momentum is EUR 3 500 / month and Scale is EUR 4 200 / month on every billing cycle. Partner is EUR 6 000 / month on monthly billing, or EUR 5 000 / month on yearly billing, which is the default view on this page. ...
+
+4. Active package data checked
+
+- Momentum: monthly EUR 3 500 / month, annual EUR 3 500 / month
+- Scale: monthly EUR 4 200 / month, annual EUR 4 200 / month
+- Partner: monthly EUR 6 000 / month, annual EUR 5 000 / month
+
+5. Files changed
+
+- components/ContactTabs.tsx
+- app/api/contact/route.ts
+- lib/contact/contact-route.test.ts
+- lib/packages-faq.ts
+- lib/packages-faq.test.ts
+
+6. Validation
+
+- npx vitest run lib/contact/contact-route.test.ts lib/packages-faq.test.ts: passed, 12 tests
+- npm run typecheck: passed
+- npm run build: passed
+
+7. Confirmations
+
+- Packages page files and package pricing data were untouched.
+- Funnelr, Resend, Blog/Sanity, Scorecard, Vercel config, CSS, layouts, animations, and buttons were untouched.
+- Existing unrelated Blog/Sanity worktree changes were left alone.

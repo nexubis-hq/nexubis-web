@@ -6,19 +6,21 @@
 // Answer-first throughout, by design. Order is money, then commitment, then
 // process, then scope. Do not add warm-up sentences, soften openings or reorder.
 
-import { type Currency, formatMoney, tierById } from "./packages";
+import { type Currency, formatMoney, priceFor, tierById } from "./packages";
 
 export type FaqEntry = { q: string; a: string };
 
 export function getPackagesFaq(currency: Currency): FaqEntry[] {
   const momentum = formatMoney(currency, tierById("momentum").monthly[currency]);
   const scale = formatMoney(currency, tierById("scale").monthly[currency]);
-  const partner = formatMoney(currency, tierById("partner").monthly[currency]);
+  const partnerTier = tierById("partner");
+  const partnerMonthly = formatMoney(currency, partnerTier.monthly[currency]);
+  const partnerYearly = formatMoney(currency, priceFor(partnerTier, currency, "yearly"));
 
   return [
     {
       q: "How much does a Nexubis retainer cost?",
-      a: `Three levels. Momentum is ${momentum} a month, Scale is ${scale}, and Partner is ${partner}. One flat fee, one invoice, no per-project quotes and no hourly billing. What changes between the levels is how much of your brand we take on, not how hard we work.`,
+      a: `Three levels. Momentum is ${momentum} / month and Scale is ${scale} / month on every billing cycle. Partner is ${partnerMonthly} / month on monthly billing, or ${partnerYearly} / month on yearly billing, which is the default view on this page. One flat fee, one invoice, no per-project quotes and no hourly billing. What changes between the levels is how much of your brand we take on, not how hard we work.`,
     },
     {
       q: "Why a monthly retainer instead of hourly or per project?",

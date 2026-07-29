@@ -1,0 +1,141 @@
+Nexubis Main Showreel Replacement Report
+
+Scope
+- Focused replacement of the approved main Nexubis agency showreel.
+- No staging, commit, or push performed.
+- Client, case study, blog, decorative, and documentation/export videos were not replaced.
+
+New main showreel URL
+https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/nexubis-showreel-2026-07.mp4
+
+Central source of truth
+- File: lib/site-config.ts
+- Constant: NEXUBIS_SHOWREEL_URL
+
+Production files that referenced the old main showreel and were updated
+- app/page.tsx
+  - Homepage hero Nexubis showreel.
+- components/AboutReel.tsx
+  - About-page Nexubis showreel.
+
+Routes updated
+- /
+- /about
+
+Reference classification
+- MAIN_NEXUBIS_SHOWREEL: app/page.tsx homepage hero reel, replaced.
+- MAIN_NEXUBIS_SHOWREEL: components/AboutReel.tsx about reel, replaced.
+- CASE_STUDY_VIDEO: Altify project showreel and gallery videos in lib/work/data.ts, untouched.
+- CASE_STUDY_VIDEO: Circuit project showreel and gallery videos in lib/work/data.ts, untouched.
+- CASE_STUDY_VIDEO: Oxipack project showreel and gallery videos in lib/work/data.ts, untouched.
+- CLIENT_PROOF_VIDEO: Homepage Oxipack proof video, untouched.
+- BLOG_SHOWREEL: Blog YouTube/embed showreel fields/components, untouched.
+- DECORATIVE_VIDEO: booth-loop.mp4 success section video, untouched.
+- DECORATIVE_VIDEO: package background videos, untouched.
+- EXPORT_OR_DOCUMENTATION_REFERENCE: docs and webflow-export references, untouched.
+
+New MP4 metadata
+- Duration: 61.568s container, 61.542s video track observed in browser.
+- Dimensions: 1920x1080.
+- Aspect ratio: 16:9.
+- Video codec: H.264 avc1.4d4029.
+- Audio codec: AAC-family mp4a.
+- Audio exists: yes.
+- File size: 78,588,098 bytes, about 74.9 MiB.
+- Byte-range support: yes.
+- Range response observed: 206 Partial Content.
+
+Poster audit
+- Homepage poster retained: /assets/images/reel_draft.jpg.
+  - Local file.
+  - Runtime status: 200.
+  - Existing behavior and geometry preserved.
+- About poster retained: /assets/images/about-reel-poster.jpg.
+  - Local file.
+  - Runtime status: 200.
+  - Existing behavior and geometry preserved.
+- No Webflow-hosted poster remains for the confirmed main showreel locations.
+- No poster was replaced.
+
+Production reference confirmation
+- Active production source code no longer references:
+  https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/reel.mp4
+- Production build output in .next/server and .next/static no longer references the old reel URL.
+- A stale .next/dev cache had contained the old literal from a pre-existing dev server, but it is not production output and was not edited.
+
+Case study and client-specific video confirmation
+- Altify case study videos were untouched.
+- Circuit case study videos were untouched.
+- Oxipack case study videos were untouched.
+- Homepage Oxipack proof video was untouched.
+- Blog-specific showreel/embed data was untouched.
+- Decorative videos were untouched.
+
+Browser and playback QA
+- Runtime server used for QA: local production server on http://localhost:3001.
+- Breakpoints tested: 1440px, 1280px, 1100px, 991px, 767px, 390px, 375px.
+- Routes tested: / and /about.
+
+Homepage playback and mute-control results
+- New MP4 requested at every tested breakpoint.
+- Runtime MP4 response: 206 Partial Content.
+- Old MP4 URL was not requested.
+- Video begins successfully.
+- Autoplay preserved.
+- Muted initial state preserved.
+- Loop preserved.
+- playsInline preserved.
+- Desktop mute button works: muted -> unmuted -> muted.
+- Mobile behavior preserved: control switches to fullscreen-with-sound behavior.
+- No autoplay console errors from this change.
+- No broken poster requests.
+- No horizontal overflow.
+- No Webflow runtime requests.
+
+About playback results
+- New MP4 requested at every tested breakpoint.
+- Runtime MP4 response: 206 Partial Content.
+- Old MP4 URL was not requested.
+- Video begins successfully.
+- Autoplay preserved.
+- Muted initial state preserved.
+- Loop preserved.
+- playsInline preserved.
+- Desktop full-section treatment preserved.
+- Mobile 16:9 proportional treatment preserved.
+- Mobile About reel remained uncropped and proportional.
+- No timestamp or segment-seeking logic was introduced.
+- Full playback cycle watched on /about.
+- About full cycle looped after about 61.9s.
+- Seeking near the middle and end worked.
+- No broken poster requests.
+- No horizontal overflow.
+- No Webflow runtime requests.
+
+Validation
+- npm run lint: passed with existing warnings only.
+- npm run typecheck: passed.
+- npm run test: passed, 35 test files and 270 tests.
+- npm run build: passed.
+
+Files changed by this pass
+- app/page.tsx
+- components/AboutReel.tsx
+- lib/site-config.ts
+- docs/MAIN_SHOWREEL_REPLACEMENT_REPORT.txt
+
+Final git status at report time
+ M app/api/contact/route.ts
+ M app/page.tsx
+ M components/AboutReel.tsx
+ M components/ContactTabs.tsx
+ M lib/contact/contact-route.test.ts
+ M lib/packages-faq.ts
+ M lib/site-config.ts
+?? docs/BLOG_SANITY_BATCH_04_FINAL_REPORT.txt
+?? docs/BLOG_SANITY_BATCH_05_FINAL_REPORT.txt
+?? lib/packages-faq.test.ts
+?? package-copy-consistency-report.txt
+?? package-copy-corrections-report.txt
+
+Note: this .txt report file is newly added after the implementation report was produced and remains unstaged.

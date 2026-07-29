@@ -1,0 +1,90 @@
+Batch 05 is complete and pushed.
+
+Batch
+- Batch ID: batch-2026-07-29-archive-05
+- Branch: shannah
+- Commit: c39579e (Migrate Nexubis blog archive batch 05)
+- Push: succeeded to origin/shannah
+
+Counts
+- Preflight: 88 total, 44 Sanity / 44 generated fallback.
+- Final: 88 total, 54 Sanity / 34 generated fallback.
+- Manifest now marks 54 complete and 34 pending.
+- Failed posts: 0.
+
+Selected And Published
+1. the-new-creative-stack - The New Creative Stack
+2. solve-the-boring-problem-first - Solve the Boring Problem First
+3. startups-dont-need-more-features - Startups Don't Need More Features
+4. if-it-aint-broke-refine-it - If It Ain't Broke... Refine It
+5. dont-be-an-idiot-sandwich - Don't Be an Idiot Sandwich
+6. do-something-useful - Do Something Useful
+7. eat-the-rich - Eat The Rich
+8. startups-arent-a-family - Startups Aren't a Family
+9. the-flex-package - The Flex Package
+10. the-myth-of-the-perfect-hire - The Myth of the Perfect Hire
+
+All ten were published from deterministic drafts drafts.post-[slug] to deterministic published IDs post-[slug]. None were left as drafts.
+
+Verification
+- Exact slug comparison passed across generated inventory, Webflow CSV, live /post/[slug] path, and Sanity records.
+- All 54 completed article routes return HTTP 200.
+- Batch 05 staging routes return 200 at https://nexubis.vercel.app/post/[exact-slug].
+- Canonicals stayed on https://www.nexubis.io/post/[exact-slug].
+- No /blog/[slug], redirects, or Vercel canonicals were created.
+- Blog cards: exactly one card per Batch 05 slug, Sanity-sourced, cdn.sanity.io thumbnail, Sanity category icon, stable /post/[slug] href.
+- Blog DOM: Batch 05 cards contain no Webflow URLs; remaining Webflow DOM URLs belong to the 34 pending fallback cards only.
+- Browser network: /blog made zero Webflow requests; each Batch 05 route made zero Webflow requests and had zero rendered Webflow URLs.
+- Related-post audit: selected routes rendered no Webflow related-post media.
+- Lottie/showreel: none present for these ten standard posts.
+
+Category Identity
+- category-ai-x-nexubis correctly represents public category Artificial Intelligence.
+- Visible title: Artificial Intelligence.
+- Public slug: ai-x-nexubis.
+- Sanity icon asset present.
+- No duplicate Artificial Intelligence category found.
+- Internal document ID is not visitor-facing.
+
+Content And Media
+- Structured-field whitespace audit: no Batch 05 selected source fields required outer-whitespace trimming.
+- Portable Text conversion completed for all ten, preserving paragraphs, headings, lists, blockquotes and links found in source.
+- Excerpts are <= 300 chars; SEO descriptions are <= 170 chars.
+- Media mappings: 30 total.
+- Uploaded assets: 10.
+- Reused mappings/assets: 20.
+- Author reused: author-hannes-oosthuizen.
+- Categories reused: category-ai-x-nexubis, category-founders-diary, category-company.
+
+Validation
+- Preflight count verification: passed.
+- Batch dry-run: passed.
+- Batch execute/publish: passed.
+- Verify-only/idempotency: passed.
+- Stored-data Webflow audit: passed.
+- Blog DOM/hydration audit: passed.
+- Browser network audit: passed.
+- Route/card/related-post verification: passed.
+- npm run lint: passed, 29 existing warnings, 0 errors.
+- npm run typecheck: passed.
+- npm run test: first parallel run had one timeout while build was running; isolated rerun passed, 35 files / 270 tests.
+- npm run build: passed.
+
+Committed Files
+- docs/BLOG_SANITY_BATCH_MANIFEST.json
+- docs/BLOG_SANITY_BATCH_MEDIA_MAPPING.json
+- docs/BLOG_SANITY_BATCH_REPORT.md
+- docs/BLOG_SANITY_BATCH_REPORT_OUTPUT.txt
+- docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json
+
+Excluded Dirty Files
+- app/api/contact/route.ts
+- components/ContactTabs.tsx
+- lib/contact/contact-route.test.ts
+- lib/packages-faq.ts
+- docs/BLOG_SANITY_BATCH_04_FINAL_REPORT.txt
+- lib/packages-faq.test.ts
+- package-copy-consistency-report.txt
+- package-copy-corrections-report.txt
+
+Posts requiring repair: none for Batch 05. Batch 06 was not started.

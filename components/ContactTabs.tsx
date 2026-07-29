@@ -295,7 +295,7 @@ function ContactForm() {
             </option>
             <option value="Momentum">Momentum</option>
             <option value="Scale">Scale</option>
-            <option value="Flex">Flex</option>
+            <option value="Partner">Partner</option>
             <option value="I'm not sure">I&apos;m not sure</option>
           </select>
         </div>

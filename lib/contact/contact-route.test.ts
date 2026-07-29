@@ -102,6 +102,41 @@ test("Contact endpoint captures to Funnelr before notifying", async () => {
   assert.equal(notifyContactSubmissionMock.mock.calls[0][0].contactCreated, true);
 });
 
+test("Contact endpoint accepts every visible package option", async () => {
+  for (const packageValue of ["Momentum", "Scale", "Partner", "I'm not sure"]) {
+    submitContactLeadToFunnelrMock.mockClear();
+    notifyContactSubmissionMock.mockClear();
+
+    const localPart = packageValue.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const res = await POST(request(payload({ email: `${localPart}@example.com`, package: packageValue })));
+    const body = await res.json();
+
+    assert.equal(res.status, 200);
+    assert.equal(body.ok, true);
+    assert.equal(notifyContactSubmissionMock.mock.calls[0][0].package, packageValue);
+  }
+});
+
+test("Contact endpoint rejects accidental unpunctuated fallback package value", async () => {
+  const res = await POST(request(payload({ package: "Im not sure" })));
+  const body = await res.json();
+
+  assert.equal(res.status, 400);
+  assert.equal(body.error, "Choose a valid package.");
+  assert.equal(submitContactLeadToFunnelrMock.mock.calls.length, 0);
+  assert.equal(notifyContactSubmissionMock.mock.calls.length, 0);
+});
+
+test("Contact endpoint rejects retired package values", async () => {
+  const res = await POST(request(payload({ package: "Flex" })));
+  const body = await res.json();
+
+  assert.equal(res.status, 400);
+  assert.equal(body.error, "Choose a valid package.");
+  assert.equal(submitContactLeadToFunnelrMock.mock.calls.length, 0);
+  assert.equal(notifyContactSubmissionMock.mock.calls.length, 0);
+});
+
 test("Contact endpoint fails safely when Funnelr capture fails and does not notify", async () => {
   submitContactLeadToFunnelrMock.mockResolvedValue({ ok: false, error: "Funnelr down" });
   const res = await POST(request(payload({ email: "fail@example.com" })));

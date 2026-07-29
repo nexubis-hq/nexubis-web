@@ -1,0 +1,78 @@
+Batch 04 is complete and pushed.
+
+Batch
+- Batch ID: batch-2026-07-29-archive-04
+- Branch: shannah
+- Commit: bebf456 (Migrate Nexubis blog archive batch 04)
+- Push: succeeded to origin/shannah
+
+Preflight And Counts
+- Preflight source split: 88 total, 34 Sanity / 54 generated fallback.
+- Final source split: 88 total, 44 Sanity / 44 generated fallback.
+- Previous 34 completed manifest entries stayed complete.
+- No public/client-side Sanity write token found.
+- Authenticated command path confirmed through sanity exec scripts/migrate-blog-sanity-batch.ts --with-user-token --.
+
+Published Posts
+All ten were published and marked complete:
+
+1. your-perception-is-your-reality - Your Perception Is Your Reality
+2. make-complex-simple - Make Complex Simple
+3. 10-better-or-dont-bother - 10% Better or Don't Bother
+4. the-disruption - The Disruption
+5. the-personal-belief-vs-ai-paradox - The Personal Belief vs. AI Paradox
+6. straight-line-thinking - Straight Line Thinking
+7. the-builders-will-survive - The Builders Will Survive
+8. the-age-of-agi - The Age of AGI
+9. youre-not-ready-for-whats-coming - You're Not Ready for What's Coming
+10. automation-is-not-the-enemy - Automation Is Not the Enemy
+
+Original URLs remained exactly https://www.nexubis.io/post/[exact-slug]; staging routes verified at https://nexubis.vercel.app/post/[exact-slug].
+
+Whitespace
+- Confirmed Sanity post-the-legendary-play.title had trailing whitespace and patched only that title in place.
+- Batch 04 source had a trailing newline in one SEO description and one excerpt; existing normalisers trimmed those.
+- Added narrow structured-field trimming in the existing importer for title/category/SEO-title writes only. No slug/body/copy changes.
+
+Migration Results
+- Drafts created: all ten deterministic drafts.post-[slug].
+- Published IDs: all ten deterministic post-[slug].
+- Left as drafts: none.
+- Author reused: author-hannes-oosthuizen.
+- Categories reused: category-founders-diary, category-ai-x-nexubis.
+- Media mappings: 30 total, 10 uploaded, 20 reused.
+- Lottie/showreel: none present in Batch 04.
+
+Audits
+- Stored-data Webflow audit: passed, zero selected-post Webflow media/runtime dependencies.
+- Blog DOM audit: passed for all ten selected cards; remaining 44 Webflow thumbnail URLs belong only to pending fallback cards.
+- Browser network audit: /blog and all ten article routes made zero Webflow requests.
+- Related-post audit: selected article routes rendered no Webflow related-post media.
+- Exact slug, route, canonical, card uniqueness, Sanity thumbnail, and Blog-card checks passed.
+
+Validation
+- Batch dry-run: passed.
+- Execute/publish: passed.
+- Verify-only/idempotency: passed.
+- npm run lint: passed, 29 existing warnings, 0 errors.
+- npm run typecheck: passed.
+- npm run test: passed, 35 files / 269 tests.
+- npm run build: passed.
+
+Committed Files
+- scripts/migrate-blog-sanity-batch.ts
+- docs/BLOG_SANITY_BATCH_MANIFEST.json
+- docs/BLOG_SANITY_BATCH_MEDIA_MAPPING.json
+- docs/BLOG_SANITY_BATCH_REPORT.md
+- docs/BLOG_SANITY_BATCH_REPORT_OUTPUT.txt
+- docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json
+
+Excluded Dirty Files
+- app/api/contact/route.ts
+- components/ContactTabs.tsx
+- lib/contact/contact-route.test.ts
+- lib/packages-faq.ts
+- lib/packages-faq.test.ts
+- package-copy-consistency-report.txt
+
+Posts requiring repair: none for Batch 04. Batch 05 was not started.
