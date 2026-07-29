@@ -11,6 +11,7 @@ export const postBySlugQuery = groq`
     _id,
     title,
     "slug": slug.current,
+    legacyOrder,
     excerpt,
     publishedAt,
     updatedAt,
@@ -53,10 +54,11 @@ export const allPublishedPostSummariesQuery = groq`
     !(_id in path("releases.**")) &&
     !(_id in path("_.releases.**")) &&
     _type != "system.release"
-  ] | order(publishedAt desc) {
+  ] | order(legacyOrder asc) {
     _id,
     title,
     "slug": slug.current,
+    legacyOrder,
     excerpt,
     publishedAt,
     featured,

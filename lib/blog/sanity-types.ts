@@ -8,6 +8,7 @@ export type SanityPostDocument = {
   _id: string;
   title?: string | null;
   slug?: string | null;
+  legacyOrder?: number | null;
   excerpt?: string | null;
   publishedAt?: string | null;
   updatedAt?: string | null;
@@ -40,6 +41,7 @@ export type SanityPostSummaryDocument = {
   _id: string;
   title?: string | null;
   slug?: string | null;
+  legacyOrder?: number | null;
   excerpt?: string | null;
   publishedAt?: string | null;
   featured?: boolean | null;
