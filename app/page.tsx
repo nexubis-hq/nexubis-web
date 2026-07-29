@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, RocketIcon } from "@/components/SiteHeader";
 import { HeroAnimations } from "@/components/HeroAnimations";
+import { OxipackProofVideo } from "@/components/OxipackProofVideo";
 import { ScrollFillText } from "@/components/ScrollFillText";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { SuccessStage } from "@/components/SuccessStage";
@@ -29,6 +30,7 @@ import {
   LEARN_MORE_URL,
   SHOW_SCORECARD,
 } from "@/lib/site-config";
+import { getCaseStudyBySlug } from "@/lib/work/data";
 
 // Oxipack is intentionally not in this strip: it is named once, in the Proof
 // section case line, and never in link/logo text (proof-rule discipline).
@@ -131,6 +133,15 @@ const scorecardMicroProof =
 const proofPlaceholderQuote = "[DMN quote to collect: Before Nexubis, X. Now Y.]";
 const proofCaseLine =
   "One year with Oxipack: 35% more output at a 33% lower effective rate, with scope that kept expanding without a single re-quote.";
+const oxipackShowreel = getCaseStudyBySlug("oxipack")?.heroVideo;
+const oxipackProofVideo =
+  oxipackShowreel?.src && oxipackShowreel.poster && oxipackShowreel.title
+    ? {
+        src: oxipackShowreel.src,
+        poster: oxipackShowreel.poster,
+        title: oxipackShowreel.title,
+      }
+    : null;
 
 // Build-time guard: the Proof quote is a to-collect placeholder that must not ship.
 // This module runs during static generation, so the warning surfaces in build logs.
@@ -673,19 +684,13 @@ function Proof() {
           </figure>
 
           <article className="proof-case" data-reveal data-reveal-delay={0.1}>
-            <div className="proof-video">
-              <span className="proof-video-poster" aria-hidden="true" />
-              <span className="proof-video-play" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-              {process.env.NODE_ENV !== "production" ? (
-                <span className="proof-video-pending" aria-hidden="true">
-                  Video pending: oxipack-testimonial.mp4
-                </span>
-              ) : null}
-            </div>
+            {oxipackProofVideo ? (
+              <OxipackProofVideo
+                src={oxipackProofVideo.src}
+                poster={oxipackProofVideo.poster}
+                title={oxipackProofVideo.title}
+              />
+            ) : null}
             <p className="proof-case-line">
               {caseParts.map((part, i) =>
                 part === "35%" || part === "33%" ? (

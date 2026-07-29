@@ -1,0 +1,119 @@
+ABOUT PAGE VISUAL CORRECTION REPORT
+
+Route:
+- /about
+
+Summary:
+- Completed the focused About-page visual correction pass.
+- No commit, stage, or push was performed.
+
+Metric Lines:
+- Cause:
+  .about-stat had:
+  border-top: 1px solid color-mix(in srgb, var(--black) 15%, transparent)
+- Rule changed:
+  .about-stat { border-top: 0; }
+- Scoped safeguard added:
+  .about-page .about-stat { border-top: 0 !important; }
+- Result:
+  Thin lines above 80M+, 3x faster, 99.9%, and 45+ are removed only from the About hero metric items.
+
+About Media:
+- Previous 1440px dimensions:
+  Media section: 1440 x 810
+  Video: 480 x 480
+  Video was centered with transform: translate(-50%, -50%)
+- Final 1440px dimensions:
+  Media section: 1440 x 810
+  Video: 1440 x 810
+- Final media properties:
+  object-fit: cover
+  object-position: 50% 50%
+  position: absolute
+  inset: 0
+  width: 100%
+  height: 100%
+  max-width: none
+  transform: none
+- Result:
+  The visible square wrapper was completely removed.
+  The video now fills the full media section.
+  No hard square video edges remain.
+
+Abstract Segment:
+- The About media still uses the verified Nexubis R2 source:
+  https://pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev/nexubis/reel.mp4
+- The About-only loop was tightened from 27.4s to 28.2s.
+- The poster was replaced with a 16:9 frame extracted from the same verified R2 abstract segment.
+- No Sunbet or unrelated frame appeared during final checks.
+
+Files Changed:
+- app/globals.css
+- components/AboutReel.tsx
+- public/assets/images/about-reel-poster.png
+
+Breakpoints Checked:
+- 1440px
+- 1280px
+- 991px
+- 767px
+- 390px
+- 375px
+
+Screenshots:
+- Saved in untracked QA folder:
+  qa/about-visual-correction/
+
+About Route Validation:
+- /about at 1440px: 200
+- /about at 1280px: 200
+- /about at 991px: 200
+- /about at 767px: 200
+- /about at 390px: 200
+- /about at 375px: 200
+
+About Checks Passed At Every Breakpoint:
+- Video fills the full media section.
+- No visible square wrapper remains.
+- No top lines appear above the metrics.
+- Abstract video crop remains within the verified About segment.
+- No horizontal overflow.
+- SiteHeader renders once.
+- SiteFooter renders once.
+- No old Empowering Dreams content appears.
+- No Webflow runtime or media request occurs.
+- No failed network requests were recorded.
+
+Regression Checks:
+- /: 200
+  Note: existing pre-pass homepage horizontal overflow remains at 1440px, body width 1632px.
+  This was outside the About-scoped pass and was not changed.
+- /packages: 200
+- /contact: 200
+- /work/altify: 200
+
+Validation Commands:
+- npm run lint:
+  Exit 0.
+  Warnings only.
+- npm run typecheck:
+  Exit 0.
+- npm run test:
+  Exit 0.
+  30 test files passed.
+  233 tests passed.
+- npm run build:
+  Exit 0.
+  Build succeeded.
+  Existing placeholder-proof build warning remains:
+  Nexubis build warning: placeholder proof content is present in a production build.
+
+Final Git Status:
+- M app/globals.css
+- M components/AboutReel.tsx
+- M public/assets/images/about-reel-poster.png
+
+Commit Status:
+- Nothing was staged.
+- Nothing was committed.
+- Nothing was pushed.

@@ -1,0 +1,105 @@
+ABOUT VALUES PARITY REPORT
+
+Scope:
+- Final Values-section-only About page parity pass.
+- Route: /about
+- No staging, commit or push performed.
+- No intended changes to About hero, About reel, About metrics, Team section, SiteHeader, SiteFooter, Homepage, Work, Case Studies, Blog, Privacy, Packages or Contact.
+
+Work completed before interruption:
+- Read SITE.md before editing.
+- Inspected current About Values markup in app/about/page.tsx.
+- Inspected current About Values CSS in app/globals.css.
+- Measured the live /about Values label and heading with Playwright.
+- Restored the exact inline SVG used by the live Webflow Values pill.
+- Scoped Values label and heading CSS beneath .about-page selectors.
+
+Exact SVG source recovered:
+- Source: live /about Webflow DOM.
+- Live wrapper class observed: badge w-variant-cfd84ff3-45e5-09d7-6a77-0fd1443374ad.
+- SVG attributes:
+  - xmlns="http://www.w3.org/2000/svg"
+  - width="100%"
+  - viewBox="0 0 14 14"
+  - fill="none"
+  - color="red"
+- SVG content:
+  - Three path elements.
+  - First path uses fillRule/clipRule and fill="currentColor".
+  - Second and third paths use opacity="0.4" and fill="currentColor".
+
+Measured live SVG dimensions:
+- Rendered SVG size: 20px x 20px.
+- Icon colour: rgb(255, 0, 0).
+- Icon-to-text gap: 4px.
+
+Values pill measurement:
+- Previous local pill at 1440px:
+  - Text only.
+  - 105.34px x 25.19px.
+  - Font size: 12px.
+  - Font weight: 700.
+  - Line-height: 12px.
+  - Letter-spacing: 0.96px.
+  - Padding: 5.6px 8.8px.
+  - Background: rgba(255, 255, 255, 0.04).
+  - Border: 1px solid rgba(255, 255, 255, 0.1).
+- Live pill at 1440px:
+  - 130.17px x 36.56px.
+  - Includes 20px x 20px red SVG icon.
+  - Display: inline-flex.
+  - Gap: 4px.
+  - Padding: 6.08px 8px.
+  - Background: color(srgb 0.160351 0.155084 0.144551).
+  - Border: 1px solid color(srgb 0.298766 0.290439 0.273783).
+  - Text font size: 16px inherited on wrapper, label class paragraph-0-875.
+  - Text line-height: 25.6px.
+  - Text uppercase.
+
+Values heading measurement:
+- Previous local heading at 1440px:
+  - Width: 944px.
+  - Height: 197.2px.
+  - Font family: Helvetica Now Display, Arial, sans-serif.
+  - Font size: 59.76px.
+  - Font weight: 500.
+  - Line-height: 65.736px.
+  - Letter-spacing: normal.
+  - Wrapped into three lines:
+    1. At the heart of our work lies a
+    2. dedication to creativity, authenticity,
+    3. and excellence.
+- Live heading at 1440px:
+  - Width: 942.39px in the measured live DOM.
+  - Height: 216px.
+  - Font family: Helvetica Now Display, Arial, sans-serif.
+  - Font size: 60px.
+  - Font weight: 500.
+  - Line-height: 72px.
+  - Letter-spacing: -1.2px.
+- Correct reference target from attached Image 2:
+  - Desktop composition should read as two lines:
+    1. At the heart of our work lies a dedication
+    2. to creativity, authenticity, and excellence.
+
+Files edited:
+- app/about/page.tsx
+- app/globals.css
+
+Validation status:
+- Responsive recheck was started after the edit.
+- The first recheck showed the preview was still serving an older CSS cascade for the Values pill and heading.
+- Specificity was corrected by scoping the relevant rules as .about-page selectors.
+- A second recheck command timed out before producing final results.
+- Full validation was not completed because the user then sent the Blog/Sanity task and subsequently cancelled the scheduled prompt.
+
+Commands not completed for this pass:
+- npm run lint
+- npm run typecheck
+- npm run test
+- npm run build
+
+Final note:
+- Nothing was staged.
+- Nothing was committed.
+- Nothing was pushed.

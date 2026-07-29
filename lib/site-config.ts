@@ -46,7 +46,6 @@ export const FOOTER_LINKS = [
   { label: "Work / Case studies", href: "/work" },
   { label: "Brand Credibility Scorecard", href: SCORECARD_URL, scorecard: true },
   { label: "Contact", href: CONTACT_URL },
-  { label: "Privacy & terms", href: "/privacy" },
 ] as const;
 
 // Footer social links.

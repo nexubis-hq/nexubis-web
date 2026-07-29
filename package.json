@@ -23,15 +23,18 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",
     "@radix-ui/react-tooltip": "^1.2.16",
+    "@sanity/image-url": "^2.1.1",
     "@upstash/redis": "^1.38.0",
     "agentation": "^3.0.1",
     "cheerio": "^1.2.0",
     "gsap": "^3.12.7",
     "lottie-web": "^5.13.0",
     "next": "^16.2.9",
+    "next-sanity": "^13.2.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "resend": "^6.17.1",
+    "sanity": "^6.7.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

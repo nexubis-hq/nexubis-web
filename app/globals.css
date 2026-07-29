@@ -5109,28 +5109,48 @@ button.nav-link {
 
 .proof-video {
   position: relative;
-  display: grid;
-  place-items: center;
+  display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
   border-radius: 12px;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--work-black), #2c2420);
+  background: var(--white);
+}
+
+.proof-video-poster,
+.proof-video video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
 }
 
 .proof-video-poster {
+  z-index: 0;
+}
+
+.proof-video video {
+  z-index: 1;
+}
+
+.proof-video-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    120% 120% at 28% 18%,
-    color-mix(in srgb, var(--primary) 32%, transparent),
-    transparent 58%
-  );
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.proof-video.is-playing .proof-video-overlay {
+  opacity: 0;
 }
 
 .proof-video-play {
   position: relative;
-  z-index: 1;
   display: grid;
   place-items: center;
   width: 4rem;
@@ -5139,25 +5159,22 @@ button.nav-link {
   background: rgb(255 255 255 / 92%);
   color: var(--primary);
   box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 30%);
+  transition: opacity 0.2s ease, transform 0.3s ease;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.proof-video-play:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 4px;
 }
 
 .proof-video-play svg {
   width: 1.6rem;
   height: 1.6rem;
   margin-left: 0.2rem;
-}
-
-.proof-video-pending {
-  position: absolute;
-  left: 0.75rem;
-  top: 0.75rem;
-  z-index: 2;
-  padding: 0.25rem 0.6rem;
-  border-radius: 0.4rem;
-  background: rgb(0 0 0 / 55%);
-  color: rgb(255 255 255 / 85%);
-  font-size: 0.7rem;
-  letter-spacing: 0.02em;
 }
 
 .proof-case-line {
@@ -5193,7 +5210,6 @@ button.nav-link {
   .proof-video-play { animation: proof-play-pulse 3s ease-out infinite; }
   .proof-case:hover .proof-video-play {
     transform: scale(1.08);
-    transition: transform 0.3s ease;
   }
 }
 
@@ -11527,7 +11543,7 @@ summary {
 .about-stat {
   min-height: 11rem;
   padding-top: 2rem;
-  border-top: 1px solid color-mix(in srgb, var(--black) 15%, transparent);
+  border-top: 0;
   background: transparent;
 }
 
@@ -11564,11 +11580,10 @@ summary {
 .about-reel video {
   display: block;
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: clamp(20rem, 36vw, 30rem);
-  height: clamp(20rem, 36vw, 30rem);
-  transform: translate(-50%, -50%);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
   object-fit: cover;
   object-position: 50% 50%;
 }
@@ -11580,30 +11595,48 @@ summary {
 }
 
 .about-values-heading {
-  max-width: 59rem;
+  max-width: 74rem;
 }
 
-.about-eyebrow {
+.about-page .about-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  margin-bottom: 1.4rem;
-  padding: 0.35rem 0.55rem;
-  border: 1px solid rgb(255 255 255 / 10%);
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  padding: 0.38rem 0.5rem;
+  border: 1px solid rgb(76 74 70);
   border-radius: 999px;
-  background: rgb(255 255 255 / 4%);
-  color: rgb(255 255 255 / 82%);
-  font-size: 0.75rem;
+  background: rgb(41 40 37);
+  color: #fff;
+  font-size: 0.875rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  line-height: 1;
+  letter-spacing: 0;
+  line-height: 1.6;
   text-transform: uppercase;
 }
 
-.about-values-heading h2 {
+.about-page .about-eyebrow-icon {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 1.25rem;
+  color: red;
+}
+
+.about-page .about-eyebrow-icon svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.about-page .about-values-heading h2 {
   margin: 0;
-  font-size: clamp(2.6rem, 4.15vw, 3.75rem);
+  max-width: 74rem;
+  font-size: clamp(2rem, 4.17vw, 3.75rem);
   font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
   color: #fff !important;
 }
 
@@ -11624,10 +11657,10 @@ summary {
 
 .about-value-card h3 {
   margin: 0;
-  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-family: Inter, Arial, sans-serif;
   font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-weight: 600;
+  line-height: 1.6;
   letter-spacing: 0;
   padding: 1.25rem 0.875rem;
   border: 1px solid rgb(255 255 255 / 5%);
@@ -11735,6 +11768,18 @@ summary {
   height: 100%;
   object-fit: cover;
   object-position: center top;
+}
+
+.about-page .about-stat {
+  border-top: 0 !important;
+}
+
+.about-page .about-reel video {
+  inset: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  transform: none !important;
 }
 
 @media (max-width: 991px) {
