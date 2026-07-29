@@ -16,7 +16,7 @@ export function BlogPostMedia({ post }: BlogPostMediaProps) {
           title={post.title}
         />
       ) : post.thumbnail ? (
-        <img className={styles.heroImage} src={post.thumbnail} alt="" loading="eager" />
+        <img className={styles.heroImage} src={post.thumbnail} alt={post.thumbnailAlt ?? ""} loading="eager" />
       ) : null}
     </div>
   );

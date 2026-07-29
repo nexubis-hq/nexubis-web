@@ -10,13 +10,14 @@ import { sanitizeBlogPostHtml } from "@/lib/blog/sanitize-post-html";
 
 const STANDARD_SLUG = "how-it-all-started-and-almost-didnt";
 const LOTTIE_SLUG = "circuit-securing-nexubis";
+const getFixturePost = (slug: string) => getPostBySlug(slug, async () => null);
 
 describe("Blog post fixtures", () => {
-  it("resolves only the two Task 2A fixture slugs", () => {
+  it("resolves only the two Task 2A fixture slugs", async () => {
     expect(getBlogPostFixtureSlugs()).toEqual([STANDARD_SLUG, LOTTIE_SLUG]);
-    expect(getPostBySlug(STANDARD_SLUG)?.title).toBe("How It All Started (and Almost Didn’t)");
-    expect(getPostBySlug(LOTTIE_SLUG)?.title).toBe("Circuit: Securing Nexubis");
-    expect(getPostBySlug("not-a-real-post")).toBeNull();
+    expect((await getFixturePost(STANDARD_SLUG))?.title).toBe("How It All Started (and Almost Didn’t)");
+    expect((await getFixturePost(LOTTIE_SLUG))?.title).toBe("Circuit: Securing Nexubis");
+    expect(await getFixturePost("not-a-real-post")).toBeNull();
   });
 
   it("keeps exact /post/[slug] routing and does not create /blog/[slug]", () => {
@@ -28,9 +29,9 @@ describe("Blog post fixtures", () => {
     expect(existsSync(path.join(process.cwd(), "app", "blog", "[slug]", "page.tsx"))).toBe(false);
   });
 
-  it("preserves standard and Lottie media variants", () => {
-    const standard = getPostBySlug(STANDARD_SLUG);
-    const lottie = getPostBySlug(LOTTIE_SLUG);
+  it("preserves standard and Lottie media variants", async () => {
+    const standard = await getFixturePost(STANDARD_SLUG);
+    const lottie = await getFixturePost(LOTTIE_SLUG);
 
     expect(standard?.thumbnail).toContain("How%20It%20All%20Started");
     expect(standard?.lottieJson).toBeNull();
@@ -42,20 +43,20 @@ describe("Blog post fixtures", () => {
     expect(lottie?.showreelEnabled).toBe(true);
   });
 
-  it("renders showreel data only for the enabled fixture", () => {
-    const standard = getPostBySlug(STANDARD_SLUG);
-    const lottie = getPostBySlug(LOTTIE_SLUG);
+  it("renders showreel data only for the enabled fixture", async () => {
+    const standard = await getFixturePost(STANDARD_SLUG);
+    const lottie = await getFixturePost(LOTTIE_SLUG);
 
     expect(standard?.showreelUrl).toBeNull();
     expect(lottie?.showreelUrl).toBe("https://youtu.be/WKUUu8J0xYg");
     expect(toYouTubeEmbedUrl(lottie?.showreelUrl ?? "")).toBe(
       "https://www.youtube.com/embed/WKUUu8J0xYg",
     );
-    expect(lottie?.bodyHtml.indexOf("Showreel")).toBeGreaterThan(0);
+    expect(lottie?.bodyHtml?.indexOf("Showreel")).toBeGreaterThan(0);
   });
 
-  it("sanitizes rich text and creates stable table-of-contents heading IDs", () => {
-    const post = getPostBySlug(STANDARD_SLUG);
+  it("sanitizes rich text and creates stable table-of-contents heading IDs", async () => {
+    const post = await getFixturePost(STANDARD_SLUG);
     expect(post).toBeTruthy();
 
     const sanitized = sanitizeBlogPostHtml(
@@ -72,15 +73,15 @@ describe("Blog post fixtures", () => {
     expect(sanitized.toc.map((item) => item.id)).toContain("extra-heading");
   });
 
-  it("preserves semantic list markup in sanitized rich text", () => {
-    const standard = getPostBySlug(STANDARD_SLUG);
-    const lottie = getPostBySlug(LOTTIE_SLUG);
+  it("preserves semantic list markup in sanitized rich text", async () => {
+    const standard = await getFixturePost(STANDARD_SLUG);
+    const lottie = await getFixturePost(LOTTIE_SLUG);
 
     expect(standard).toBeTruthy();
     expect(lottie).toBeTruthy();
 
-    const standardHtml = sanitizeBlogPostHtml(standard!.bodyHtml).html;
-    const lottieHtml = sanitizeBlogPostHtml(lottie!.bodyHtml).html;
+    const standardHtml = sanitizeBlogPostHtml(standard!.bodyHtml ?? "").html;
+    const lottieHtml = sanitizeBlogPostHtml(lottie!.bodyHtml ?? "").html;
 
     expect(standardHtml).toContain("<ul");
     expect(standardHtml).toContain("<li");
@@ -89,8 +90,8 @@ describe("Blog post fixtures", () => {
     expect(lottieHtml).toContain("A principle-driven brand system");
   });
 
-  it("maps metadata to the exact /post/[slug] canonical path", () => {
-    const post = getPostBySlug(STANDARD_SLUG);
+  it("maps metadata to the exact /post/[slug] canonical path", async () => {
+    const post = await getFixturePost(STANDARD_SLUG);
     expect(post).toBeTruthy();
 
     const metadata = buildBlogPostMetadata(post!);
@@ -99,8 +100,8 @@ describe("Blog post fixtures", () => {
     expect(metadata.openGraph?.url).toBe(`/post/${STANDARD_SLUG}`);
   });
 
-  it("uses the recovered related-post fixture order from Blog summaries", () => {
-    const post = getPostBySlug(LOTTIE_SLUG);
+  it("uses the recovered related-post fixture order from Blog summaries", async () => {
+    const post = await getFixturePost(LOTTIE_SLUG);
     expect(post).toBeTruthy();
 
     expect(getRelatedPostSummaries(post!).map((related) => related.slug)).toEqual([

@@ -191,6 +191,11 @@
   font-weight: 600;
 }
 
+.accentText {
+  color: var(--primary);
+  font-weight: 600;
+}
+
 .richText :global(a) {
   text-decoration-color: color-mix(in srgb, var(--primary) 50%, transparent);
 }

@@ -5,6 +5,7 @@ const SITE_URL = "https://www.nexubis.io";
 
 export function buildBlogPostMetadata(post: BlogPost): Metadata {
   const canonicalPath = `/post/${post.slug}`;
+  const canonical = post.canonicalOverride || canonicalPath;
   const title = post.seoTitle || post.title;
   const description = post.seoDescription || post.excerpt;
   const ogImage = post.ogImage ? new URL(post.ogImage, SITE_URL).toString() : undefined;
@@ -14,12 +15,12 @@ export function buildBlogPostMetadata(post: BlogPost): Metadata {
     title,
     description,
     alternates: {
-      canonical: canonicalPath,
+      canonical,
     },
     openGraph: {
       title,
       description,
-      url: canonicalPath,
+      url: canonical,
       type: "article",
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,

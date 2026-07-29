@@ -36,6 +36,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+.vercel-old-link
 
 # typescript
 *.tsbuildinfo
@@ -57,3 +58,5 @@ next-env.d.ts
 
 # Local Funnelr migration/read-back evidence can contain live contact data.
 /docs/funnelr-snapshots/
+
+.vercel

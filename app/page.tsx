@@ -130,7 +130,8 @@ const scorecardExpectation =
 const scorecardMicroProof =
   "Free, no obligations. We take on two new partners a month; the Scorecard is where most start.";
 
-const proofPlaceholderQuote = "[DMN quote to collect: Before Nexubis, X. Now Y.]";
+const proofPlaceholderQuote =
+  "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.";
 const proofCaseLine =
   "One year with Oxipack: 35% more output at a 33% lower effective rate, with scope that kept expanding without a single re-quote.";
 const oxipackShowreel = getCaseStudyBySlug("oxipack")?.heroVideo;
@@ -658,16 +659,26 @@ function Proof() {
     <section className="section proof-section">
       <div className="site-container">
         <div className="proof-grid">
-          <figure className="proof-quote" data-reveal>
-            <div className="proof-bubble">
-              <svg viewBox="0 0 51 42" aria-hidden="true" className="quote-mark">
+          <figure className="proof-quote dmn-card" data-reveal>
+            <div className="proof-bubble dmn-quote-area">
+              <svg viewBox="0 0 51 42" aria-hidden="true" className="quote-mark quote-mark-start">
                 <path d="M4.327 6.373C7.903 2.476 13.315.5 20.41.5h2.549v7.224l-2.05.412c-3.492.702-5.921 2.083-7.221 4.11a7.1 7.1 0 0 0-1.117 3.629h7.839a2.56 2.56 0 0 1 2.549 2.563v17.937c0 2.826-2.287 5.125-5.099 5.125H2.565a2.56 2.56 0 0 1-2.549-2.563V26.125l.008-7.48c-.023-.284-.508-7.024 4.303-12.272ZM45.902 41.5H30.606a2.56 2.56 0 0 1-2.549-2.563V26.125l.008-7.48c-.023-.284-.507-7.024 4.303-12.272C35.944 2.476 41.356.5 48.451.5H51v7.224l-2.05.412c-3.492.702-5.921 2.083-7.221 4.11a7.1 7.1 0 0 0-1.117 3.629h7.839A2.56 2.56 0 0 1 51 18.438v17.937c0 2.826-2.287 5.125-5.098 5.125Z" />
               </svg>
               <blockquote className="proof-placeholder">{proofPlaceholderQuote}</blockquote>
+              <svg viewBox="0 0 51 42" aria-hidden="true" className="quote-mark quote-mark-end">
+                <path d="M4.327 6.373C7.903 2.476 13.315.5 20.41.5h2.549v7.224l-2.05.412c-3.492.702-5.921 2.083-7.221 4.11a7.1 7.1 0 0 0-1.117 3.629h7.839a2.56 2.56 0 0 1 2.549 2.563v17.937c0 2.826-2.287 5.125-5.099 5.125H2.565a2.56 2.56 0 0 1-2.549-2.563V26.125l.008-7.48c-.023-.284-.508-7.024 4.303-12.272ZM45.902 41.5H30.606a2.56 2.56 0 0 1-2.549-2.563V26.125l.008-7.48c-.023-.284-.507-7.024 4.303-12.272C35.944 2.476 41.356.5 48.451.5H51v7.224l-2.05.412c-3.492.702-5.921 2.083-7.221 4.11a7.1 7.1 0 0 0-1.117 3.629h7.839A2.56 2.56 0 0 1 51 18.438v17.937c0 2.826-2.287 5.125-5.098 5.125Z" />
+              </svg>
             </div>
-            <figcaption className="proof-attribution">
-              {/* Headshot placeholder - swap for <img> once Brigitte's photo lands. */}
-              <span className="proof-avatar" aria-hidden="true" />
+            <figcaption className="proof-attribution dmn-attribution">
+              <div className="dmn-avatar">
+                <img
+                  className="proof-avatar"
+                  src="/assets/work/oxipack/testimonial.avif"
+                  alt="Brigitte van der Watt"
+                  width={2018}
+                  height={2128}
+                />
+              </div>
               <img
                 className="proof-logo"
                 src="/assets/images/dmn-westinghouse.png"

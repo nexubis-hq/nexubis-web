@@ -1,0 +1,38 @@
+[
+  {
+    "field": "post.thumbnail",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/690c57e7ba3e964b48906644_Nexubis%20Blogs-Our%20Clients_Circuit%20(1).png",
+    "sanityAssetId": "image-b8102ff4630768d410473a86139e02f0fe1e2639-1921x1081-png",
+    "contentType": "image/png",
+    "width": 1921,
+    "height": 1081,
+    "status": "reused"
+  },
+  {
+    "field": "post.lottieThumbnail",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/690c57e7ba3e964b48906644_Nexubis%20Blogs-Our%20Clients_Circuit%20(1).png",
+    "sanityAssetId": "image-b8102ff4630768d410473a86139e02f0fe1e2639-1921x1081-png",
+    "contentType": "image/png",
+    "width": 1921,
+    "height": 1081,
+    "status": "reused"
+  },
+  {
+    "field": "post.seo.openGraphImage",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/690c57e7ba3e964b48906644_Nexubis%20Blogs-Our%20Clients_Circuit%20(1).png",
+    "sanityAssetId": "image-b8102ff4630768d410473a86139e02f0fe1e2639-1921x1081-png",
+    "contentType": "image/png",
+    "width": 1921,
+    "height": 1081,
+    "status": "reused"
+  },
+  {
+    "field": "category.icon",
+    "sourceUrl": "https://cdn.prod.website-files.com/679b76839dcb6eaedc2021a0/681a285a8ee955f6bfb99596_dreams.svg",
+    "sanityAssetId": "image-28eab2a2edd357ba311da36827a0ccff1d6e166b-24x24-svg",
+    "contentType": "image/svg+xml",
+    "width": 24,
+    "height": 24,
+    "status": "reused"
+  }
+]

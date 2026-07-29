@@ -1,0 +1,74 @@
+source_route,label,element_type,destination,response_status,classification,recommended_action
+ALL,Header logo,link,/,200,INTERNAL_VALID,None
+ALL,Case Studies nav item,button/menu,/work/*,200,FUNCTIONAL_ACTION,None
+ALL,Packages,link,/packages,200,INTERNAL_VALID,None
+ALL,Dreamlab,link,/blog,deferred,PENDING_BLOG_MIGRATION,Audit after Blog/Sanity migration
+ALL,Book an application call,link,https://cal.com/nexubis/30min,200,EXTERNAL_VALID,Manual booking/webhook test still required
+ALL,Footer About,link,/about,200,INTERNAL_VALID,None
+ALL,Footer What we do,link,/#what-we-do,200,INTERNAL_VALID,None
+ALL,Footer Work / Case studies,link,/work,200,INTERNAL_VALID,None
+ALL,Footer Brand Credibility Scorecard,link,/scorecard,200,INTERNAL_VALID,None
+ALL,Footer Contact,link,/contact,200,INTERNAL_VALID,None
+ALL,Footer LinkedIn,link,https://www.linkedin.com/company/nexubis/,not_probed_social,EXTERNAL_VALID,Manual social click optional
+ALL,Footer Instagram,link,https://www.instagram.com/nexubis.design/,not_probed_social,EXTERNAL_VALID,Manual social click optional
+/,Home mobile link,link,/,200,INTERNAL_VALID,None
+/,Pricing mobile link,link,/packages,200,INTERNAL_VALID,None
+/,Homepage scorecard CTA,link,/scorecard,200,INTERNAL_VALID,None
+/,Homepage learn more CTAs,link,/contact,200,INTERNAL_VALID,None
+/,Homepage Oxipack proof CTA,link,/work/oxipack,200,INTERNAL_VALID,None
+/,Homepage main showreel mute,button,video action,,FUNCTIONAL_ACTION,None
+/,Homepage Oxipack proof play,button,video action,,FUNCTIONAL_ACTION,None
+/,Altify client logo,link,https://altify.app/,301,EXTERNAL_VALID,None
+/,Sataya client logo,link,https://sataya.io/,200,EXTERNAL_VALID,None
+/,Circuit client logo,link,https://circuitprotect.com/,301,EXTERNAL_VALID,None
+/,Blue Knight client logo,link,https://www.blueknight.io/,301,EXTERNAL_VALID,None
+/,Usably client logo,link,https://www.usably.studio/,200,EXTERNAL_VALID,None
+/,Lathyrus client logo,link,https://www.lathyrus.io/,200,EXTERNAL_VALID,None
+/,View 16 client logo,link,https://www.lathyrus.io/,200,EXTERNAL_VALID,Verify whether View 16 intentionally shares Lathyrus URL
+/,Design Focus client logo,link,https://www.designfocus.io/,200,EXTERNAL_VALID,None
+/,Emprise Digital client logo,link,https://www.emprise.co.za/,301,EXTERNAL_VALID,None
+/about,Page nav/footer links,links,/,/about,/work,/packages,/contact,/scorecard,200,INTERNAL_VALID,None
+/work,Altify card,link,/work/altify,200,INTERNAL_VALID,None
+/work,Circuit card,link,/work/circuit,200,INTERNAL_VALID,None
+/work,Oxipack card,link,/work/oxipack,200,INTERNAL_VALID,None
+/work/altify,Client website,link,https://altify.app/,301,EXTERNAL_VALID,None
+/work/altify,Client LinkedIn,link,https://www.linkedin.com/company/altifyapp/,not_probed_social,EXTERNAL_VALID,Manual social click optional
+/work/altify,Client X,link,https://x.com/altify_app,not_probed_social,EXTERNAL_VALID,Manual social click optional
+/work/altify,Client Facebook,link,https://www.facebook.com/altifyapp,not_probed_social,EXTERNAL_VALID,Manual social click optional
+/work/altify,Story card,link,/post/altify-empowering-nexubis,deferred,PENDING_BLOG_MIGRATION,Audit after Blog/Sanity migration
+/work/altify,Related Circuit,link,/work/circuit,200,INTERNAL_VALID,None
+/work/altify,Related Oxipack,link,/work/oxipack,200,INTERNAL_VALID,None
+/work/altify,Hero mute button,button,video action,,FUNCTIONAL_ACTION,None
+/work/circuit,Client website,link,https://circuitprotect.com/,301,EXTERNAL_VALID,None
+/work/circuit,Client LinkedIn,link,https://www.linkedin.com/company/circuit-protect/,not_probed_social,EXTERNAL_VALID,Manual social click optional
+/work/circuit,Client X,link,https://x.com/circuitprotect,not_probed_social,EXTERNAL_VALID,Manual social click optional
+/work/circuit,Client Facebook,link,https://www.facebook.com/circuitprotect,not_probed_social,EXTERNAL_VALID,Manual social click optional
+/work/circuit,Story card,link,/post/circuit-securing-nexubis,deferred,PENDING_BLOG_MIGRATION,Audit after Blog/Sanity migration
+/work/circuit,Related Altify,link,/work/altify,200,INTERNAL_VALID,None
+/work/circuit,Related Oxipack,link,/work/oxipack,200,INTERNAL_VALID,None
+/work/circuit,Hero mute button,button,video action,,FUNCTIONAL_ACTION,None
+/work/oxipack,Client website,link,https://www.oxipack.com/,200,EXTERNAL_VALID,None
+/work/oxipack,Client LinkedIn,link,https://www.linkedin.com/company/oxipack/,not_probed_social,EXTERNAL_VALID,Manual social click optional
+/work/oxipack,Client X,link,https://x.com/oxipack,not_probed_social,EXTERNAL_VALID,Manual social click optional
+/work/oxipack,Client Facebook,link,https://www.facebook.com/oxipack,not_probed_social,EXTERNAL_VALID,Manual social click optional
+/work/oxipack,Story card,link,/post/oxipack-empowering-nexubis,deferred,PENDING_BLOG_MIGRATION,Audit after Blog/Sanity migration
+/work/oxipack,Related Altify,link,/work/altify,200,INTERNAL_VALID,None
+/work/oxipack,Related Circuit,link,/work/circuit,200,INTERNAL_VALID,None
+/work/oxipack,Hero mute button,button,video action,,FUNCTIONAL_ACTION,None
+/packages,Google reviews,link,https://www.google.com/search?q=Nexubis+Reviews,200,EXTERNAL_VALID,None
+/packages,Book an application call,link,https://cal.com/nexubis/30min,200,EXTERNAL_VALID,Manual booking/webhook test still required
+/packages,Package Learn More,link,/post/rethinking-the-nexubis-trial,deferred,PENDING_BLOG_MIGRATION,Audit after Blog/Sanity migration
+/packages,Partner Altify,link,https://altify.app/,301,EXTERNAL_VALID,None
+/packages,Partner Merkle Science,link,https://www.merklescience.com/,200,EXTERNAL_VALID,None
+/packages,Partner Cordial Systems,link,https://cordialsystems.com/,200,EXTERNAL_VALID,None
+/packages,Partner SoFi,link,https://www.sofi.com/,403,EXTERNAL_VALID,403 is bot-probe response; manual click optional
+/packages,Partner OX Security,link,https://www.ox.security/,200,EXTERNAL_VALID,None
+/packages,Partner Sataya,link,https://sataya.io/,200,EXTERNAL_VALID,None
+/packages,Partner Oxipack,link,https://www.oxipack.com/,200,EXTERNAL_VALID,None
+/packages,Package controls,buttons,currency/billing/feature toggles,,FUNCTIONAL_ACTION,None
+/contact,Learn More,link,/packages,200,INTERNAL_VALID,Opens in new tab by current implementation
+/contact,Book a Call tab,button,Cal embed action,,FUNCTIONAL_ACTION,Manual booking completion pending
+/contact,Send a Message tab,button,Contact form action,,FUNCTIONAL_ACTION,Manual form submission pending
+/contact,Empower Your Dream,button,Contact form submit,,PENDING_MANUAL_TEST,Requires approved QA email before POST
+/scorecard,Check my brand's credibility,button,Scorecard run action,,PENDING_MANUAL_TEST,Requires approved live Scorecard test
+SUMMARY,Total audited interactive elements,count,252,,SUMMARY,"117 INTERNAL_VALID; 73 EXTERNAL_VALID; 49 FUNCTIONAL_ACTION; 13 PENDING_BLOG_MIGRATION; 0 Webflow dependencies; 0 incorrect absolute same-site UI links"

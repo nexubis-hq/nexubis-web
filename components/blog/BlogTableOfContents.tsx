@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { MouseEvent } from "react";
-import type { TableOfContentsItem } from "@/lib/blog/sanitize-post-html";
+import type { TableOfContentsItem } from "@/lib/blog/types";
 import styles from "./BlogPost.module.css";
 
 type BlogTableOfContentsProps = {
