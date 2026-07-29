@@ -11438,42 +11438,6 @@ summary {
   }
 }
 
-/* --- Reassurance band --- */
-.pkg-reassure {
-  background: var(--surface);
-}
-
-.pkg-reassure-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 48rem) {
-  .pkg-reassure-row {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.pkg-reassure-title {
-  margin: 0 0 0.4rem;
-  color: var(--black);
-  font-weight: 600;
-  font-size: 1.125rem;
-}
-
-.pkg-reassure-body {
-  margin: 0;
-  color: var(--body);
-  line-height: 1.6;
-}
-
-.pkg-reassure-cta {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--s-4);
-}
-
 /* --- FAQ: keep the h3 visually identical to the old summary span --- */
 .packages-faq-q {
   margin: 0;

@@ -64,5 +64,9 @@ export function getPackagesFaq(currency: Currency): FaqEntry[] {
       q: "Do I own the files and the website?",
       a: "Yes. Everything we make for you is yours, source files included, handed over through Figma and Webflow or whatever format your team works in. The only thing we keep is the right to show the work as a case study.",
     },
+    {
+      q: "Not sure which level is right for us?",
+      a: "Book an application call and we will tell you honestly, including if the answer is not yet. We would rather point you to the level that actually fits, or say it is not the right time, than put you on the wrong one.",
+    },
   ];
 }

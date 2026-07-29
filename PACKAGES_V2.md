@@ -17,9 +17,10 @@ live site; only genuinely new pieces got new CSS.
 - **Only Partner discounts.** Choosing Quarterly/Annually drops Partner's per-month
   price and shows the saving in the green pill the site has always used. Momentum
   and Scale are flat rates and show the grey "No Discount Applied" pill.
-- **Per-feature InfoTips**, a per-card "Book an application call" CTA, a reassurance
-  band (One invoice / Two months' notice / Not sure which fits?) + closing CTA, and
-  a fully rewritten 12-question FAQ with `FAQPage` JSON-LD.
+- **Per-feature InfoTips**, a per-card "Book an application call" CTA, and a fully
+  rewritten 13-question FAQ with `FAQPage` JSON-LD. (An earlier reassurance band was
+  removed as redundant: "one invoice, one team" is already in the header subtitle,
+  "two months' notice" is FAQ Q7, and "not sure which fits?" is now the closing FAQ.)
 
 ## Pricing model — how to change a price
 
@@ -67,7 +68,7 @@ makes clear who they apply to.
 ## Commercial terms on the page
 
 Only these appear, and no others may be added without sign-off: the **two months'
-notice** line (reassurance band + FAQ Q7) and the **paid-up-front** line (Partner
+notice** line (FAQ Q7) and the **paid-up-front** line (Partner
 card). No refund policy, minimum initial period, cancellation fee or auto-renewal.
 
 ## Dependency added
