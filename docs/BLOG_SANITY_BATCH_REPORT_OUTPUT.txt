@@ -1,51 +1,164 @@
-Batch 02 is complete for the 10 selected posts and pushed.
+Nexubis Blog Migration Report
+Stage A + Batch 03
 
-Batch ID: batch-2026-07-29-archive-02
+Stage A category/filter icon fix:
+- Production commit initially detected: 76ee199.
+- Production includes Batch 02 commits 42090d5 and 4fcda4d through the merged main commit.
+- Cause of the old Webflow filter/category icon URLs: deployment/cache lag, plus local resolver hardening added in this task.
+- Shared category resolver now resolves by stable category slug and applies the Sanity category icon to filter buttons, Sanity-backed cards, and generated fallback cards.
+- Missing published Sanity category/icon data now fails clearly when Sanity category data is expected.
+- Blog article-body internal links now keep their hrefs but disable Next prefetching, so pending archive links do not create staging 404 console noise before their own batch is migrated.
 
-Published slugs:
-- the-power-of-linkedin
-- how-to-not-suck-at-job-applications
-- momentum-fever
-- keep-positioning-yourself
-- new-years-resolutions
-- goals-vs-movement
-- 2025-in-retrospect
-- long-term-greed
-- dick-proves-the-agency-stereotype
-- striving-for-culinary-perfection
+Six Sanity category icon assets:
+- Empowering Dreams: image-28eab2a2edd357ba311da36827a0ccff1d6e166b-24x24-svg
+- Founders Diary: image-01b72d472f33560457b6fa7077b45694e1ee0774-24x24-svg
+- Artificial Intelligence: image-a7561c0e42db6f97a91f48eef7c0d6e21d825aaf-24x24-svg
+- Startup Stack: image-53f1ce459b16abe9be2f6fadbefc7431335f5180-24x24-svg
+- Company: image-735f44b48009f5eaaff84297f6345d881856fb18-24x24-svg
+- For Professionals: image-f03b00ff9b29e161c94d1dc73d76d501b0e6a63e-24x24-svg
 
-Results:
-- Posts published: 10
-- Failed posts: 0
-- Sanity cards: 24
-- Generated fallback cards: 64
-- /blog: 88 unique cards
-- All 10 Batch 02 /post/[slug] routes return 200
-- All 10 Batch 02 cards use cdn.sanity.io thumbnails
-- Batch 02 post routes made zero Webflow requests in browser audit
-- All six Sanity category documents now have Sanity icon asset refs
+Stage A production audit:
+- /blog status: 200.
+- Unique Blog cards: 88.
+- Sanity cards before Batch 03: 24.
+- Generated fallback cards before Batch 03: 64.
+- Filter/category icons using cdn.sanity.io: 6 of 6.
+- Filter/category icon Webflow requests: 0.
+- Shared Blog icon Webflow dependency: 0.
+- Remaining Webflow media before Batch 03 belonged only to generated fallback thumbnails.
 
-Important caveat:
-- The shared category/filter icon code is committed and pushed, but the last production /blog check still rendered the old Webflow filter icon URLs.
-- That part is not production-verified yet.
+Batch 03:
+- Batch ID: batch-2026-07-29-archive-03.
+- Batch size: 10.
+- Automatic publication: enabled.
+- Failed posts: 0.
 
-Commits pushed to shannah:
-- 42090d5 - Batch 02 migration/code/report changes
-- 4fcda4d - corrected final verification .txt report
+Selected and published posts:
+- The Walter Mitty Effect | the-walter-mitty-effect | https://www.nexubis.io/post/the-walter-mitty-effect
+- The Discipline of Quitting | the-discipline-of-quitting | https://www.nexubis.io/post/the-discipline-of-quitting
+- Empowering Women with Project Flamingo | empowering-women-with-project-flamingo | https://www.nexubis.io/post/empowering-women-with-project-flamingo
+- The Legendary Play  | the-legendary-play | https://www.nexubis.io/post/the-legendary-play
+- Keep Firing Yourself (Part 2) | keep-firing-yourself-part-2 | https://www.nexubis.io/post/keep-firing-yourself-part-2
+- Skip the Ladder. Join a Startup. | skip-the-ladder-join-a-startup | https://www.nexubis.io/post/skip-the-ladder-join-a-startup
+- Fresh Out of College... Now What? | fresh-out-of-college-now-what | https://www.nexubis.io/post/fresh-out-of-college-now-what
+- For Professionals, By Professionals | for-professionals-by-professionals | https://www.nexubis.io/post/for-professionals-by-professionals
+- Pick Your Battles | pick-your-battles | https://www.nexubis.io/post/pick-your-battles
+- Make It Memorable | make-it-memorable | https://www.nexubis.io/post/make-it-memorable
 
-Report file:
-docs/BLOG_SANITY_BATCH_REPORT_OUTPUT.txt
+Draft and published document IDs:
+- drafts.post-the-walter-mitty-effect -> post-the-walter-mitty-effect
+- drafts.post-the-discipline-of-quitting -> post-the-discipline-of-quitting
+- drafts.post-empowering-women-with-project-flamingo -> post-empowering-women-with-project-flamingo
+- drafts.post-the-legendary-play -> post-the-legendary-play
+- drafts.post-keep-firing-yourself-part-2 -> post-keep-firing-yourself-part-2
+- drafts.post-skip-the-ladder-join-a-startup -> post-skip-the-ladder-join-a-startup
+- drafts.post-fresh-out-of-college-now-what -> post-fresh-out-of-college-now-what
+- drafts.post-for-professionals-by-professionals -> post-for-professionals-by-professionals
+- drafts.post-pick-your-battles -> post-pick-your-battles
+- drafts.post-make-it-memorable -> post-make-it-memorable
 
-Validation passed:
-- npm run lint passed with existing warnings
-- npm run typecheck passed
-- npm run test passed, 263 tests
-- npm run build passed
+Authors and categories:
+- Author reused: author-hannes-oosthuizen.
+- Categories reused: category-founders-diary, category-empowering-dreams, category-for-professionals.
+- Category icons reused from Sanity for every Batch 03 post.
 
-Unrelated dirty files remain excluded:
-- package.json
-- .qa/
-- pre-cutover docs
-- scorecard/site/work files
-- existing dirty Blog test/helper files
+Portable Text:
+- The Walter Mitty Effect: 30 blocks, 7 headings, 18 paragraphs, 4 unordered list items, 1 blockquote.
+- The Discipline of Quitting: 45 blocks, 7 headings, 34 paragraphs, 4 unordered list items, 4 links.
+- Empowering Women with Project Flamingo: 19 blocks, 4 headings, 15 paragraphs, 1 link.
+- The Legendary Play: 46 blocks, 9 headings, 28 paragraphs, 9 unordered list items, 3 links.
+- Keep Firing Yourself (Part 2): 36 blocks, 4 headings, 32 paragraphs.
+- Skip the Ladder. Join a Startup.: 38 blocks, 5 headings, 31 paragraphs, 2 blockquotes.
+- Fresh Out of College... Now What?: 43 blocks, 6 headings, 27 paragraphs, 8 unordered list items, 2 blockquotes.
+- For Professionals, By Professionals: 28 blocks, 4 headings, 17 paragraphs, 7 unordered list items, 2 links.
+- Pick Your Battles: 49 blocks, 6 headings, 36 paragraphs, 4 unordered list items, 3 blockquotes, 2 links.
+- Make It Memorable: 39 blocks, 5 headings, 27 paragraphs, 6 unordered list items, 1 blockquote.
 
+Excerpt and SEO description normalization:
+- All excerpts are 300 characters or fewer.
+- All SEO descriptions are 170 characters or fewer.
+- SEO title length warnings remained non-blocking; no blocking Sanity validation errors were returned.
+
+Media:
+- Batch 03 media mappings: 30.
+- Uploaded assets: 11.
+- Reused assets: 19.
+- All Batch 03 thumbnails and Open Graph images resolve to Sanity assets.
+- No Webflow-hosted thumbnail, OG image, hero/media field, category icon, or runtime asset remains for completed Batch 03 posts.
+
+Lottie and showreel:
+- Batch 03 posts have no Lottie payloads requiring migration.
+- Lottie validation passed for all selected posts.
+- No Webflow URLs were found in Lottie fields.
+- No intentional YouTube showreel migration was required.
+
+Stored-data Webflow audit:
+- Batch 03 stored Sanity post documents: zero Webflow media/runtime dependencies.
+- Referenced author/category documents: zero blocking Webflow media/runtime dependencies for the selected posts.
+- Intentional editorial Webflow links: none recorded for Batch 03.
+
+Route and slug verification:
+- All exact slugs were preserved.
+- All completed routes return 200 at https://nexubis.vercel.app/post/[slug].
+- Canonicals remain on https://www.nexubis.io/post/[slug].
+- No /blog/[slug] routes or redirects were created.
+
+Blog-card verification:
+- /blog status: 200.
+- Unique cards: 88.
+- Batch 03 cards found exactly once.
+- Batch 03 card thumbnails use cdn.sanity.io.
+- Batch 03 card hrefs remain /post/[exact-slug].
+- Filtering remains based on the approved six category records.
+- No duplicate Blog cards found.
+
+Rendered/browser network audit:
+- /blog Sanity cards after Batch 03: 34.
+- /blog generated fallback cards after Batch 03: 54.
+- /blog filter/category icon Webflow requests: 0.
+- /blog Webflow requests in the browser audit: 0 during the rendered pass; DOM still contains 54 generated fallback Webflow thumbnail URLs, which are expected until those posts migrate.
+- Batch 03 post routes made zero Webflow asset/runtime requests.
+- Batch 03 post route rendered HTML contains zero Webflow media/runtime URLs.
+- No horizontal overflow detected on /blog or Batch 03 routes.
+
+Idempotency:
+- Verify-only rerun passed for all 10 Batch 03 posts.
+- No duplicate posts, authors, categories, references, body blocks, or Blog cards were produced.
+- Existing asset hashes and Sanity asset IDs were reused where available.
+
+Source counts:
+- Previous Sanity cards: 24.
+- Previous generated fallback cards: 64.
+- New Sanity cards: 34.
+- New generated fallback cards: 54.
+- Remaining pending generated fallback posts: 54.
+- Failed posts: 0.
+
+Files changed:
+- components/blog/BlogRichText.tsx
+- lib/blog/get-blog-index-posts.ts
+- lib/blog/blog-index-precedence.test.ts
+- docs/BLOG_SANITY_BATCH_MANIFEST.json
+- docs/BLOG_SANITY_BATCH_MEDIA_MAPPING.json
+- docs/BLOG_SANITY_BATCH_REPORT.md
+- docs/BLOG_WEBFLOW_DEPENDENCY_AUDIT.json
+- docs/BLOG_SANITY_BATCH_REPORT_OUTPUT.txt
+
+Validation:
+- Batch dry-run passed.
+- Batch execute/publish passed.
+- Sanity document validation passed.
+- Verify-only/idempotency passed.
+- Exact-slug audit passed.
+- Stored-data Webflow audit passed.
+- Browser network audit passed for Webflow dependencies.
+- Focused category precedence tests passed.
+- npm run lint passed with 29 existing warnings and 0 errors.
+- npm run typecheck passed.
+- npm run test passed: 34 test files, 266 tests.
+- npm run build passed.
+
+Remaining work:
+- 54 generated fallback posts remain to migrate in later batches.
+- The full Blog archive is not yet Webflow-independent.
+- Do not begin Batch 04 until a new task requests it.

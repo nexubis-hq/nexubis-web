@@ -38,6 +38,33 @@ function imageUrl(image: SanityBlogCategoryIconDocument["icon"]) {
   return sanityImageUrl(image as { asset?: { _ref?: string } } | null | undefined);
 }
 
+function resolveCategoryIcons(
+  categories: BlogCategory[],
+  sanityCategories: SanityBlogCategoryIconDocument[],
+) {
+  const iconBySlug = new Map<string, string>();
+  const sanityCategoryBySlug = new Map(sanityCategories.filter((category) => category.slug).map((category) => [category.slug as string, category]));
+
+  for (const category of categories) {
+    const sanityCategory = sanityCategoryBySlug.get(category.slug);
+    if (!sanityCategory) {
+      if (sanityCategories.length > 0) {
+        throw new Error(`Published Sanity Blog category is missing for slug: ${category.slug}`);
+      }
+      if (category.icon) iconBySlug.set(category.slug, category.icon);
+      continue;
+    }
+
+    const icon = imageUrl(sanityCategory.icon);
+    if (!icon) {
+      throw new Error(`Published Sanity Blog category is missing a required icon asset: ${category.slug}`);
+    }
+    iconBySlug.set(category.slug, icon);
+  }
+
+  return iconBySlug;
+}
+
 function withGeneratedSource(post: BlogPostSummary): BlogPostSummary {
   return {
     ...post,
@@ -67,7 +94,8 @@ export async function getBlogIndexPosts(
     fetchPublishedCategoryIcons(),
   ]);
   const sanityBySlug = new Map<string, BlogPostSummary>();
-  const categoryIconBySlug = new Map<string, string>();
+  const generatedCategories = categoriesData.categories as BlogCategory[];
+  const categoryIconBySlug = resolveCategoryIcons(generatedCategories, sanityCategories);
 
   for (const sanityPost of sanityPosts) {
     const summary = mapSanityPostSummaryToBlogPostSummary(sanityPost);
@@ -79,13 +107,6 @@ export async function getBlogIndexPosts(
 
     if (!summary) continue;
     sanityBySlug.set(summary.slug, summary);
-    if (summary.categoryIcon) categoryIconBySlug.set(summary.categorySlug, summary.categoryIcon);
-  }
-
-  for (const category of sanityCategories) {
-    if (!category.slug) continue;
-    const icon = imageUrl(category.icon);
-    if (icon) categoryIconBySlug.set(category.slug, icon);
   }
 
   const seen = new Set<string>();
@@ -93,7 +114,12 @@ export async function getBlogIndexPosts(
   const mergedPosts = generatedSummaries
     .map((post) => {
       const sanityPost = sanityBySlug.get(post.slug);
-      if (sanityPost) return sanityPost;
+      if (sanityPost) {
+        return {
+          ...sanityPost,
+          categoryIcon: categoryIconBySlug.get(sanityPost.categorySlug) ?? sanityPost.categoryIcon,
+        };
+      }
       return {
         ...post,
         categoryIcon: categoryIconBySlug.get(post.categorySlug) ?? post.categoryIcon,
@@ -111,7 +137,7 @@ export async function getBlogIndexPosts(
 
   return {
     posts: [...mergedPosts, ...futureSanityPosts],
-    categories: (categoriesData.categories as BlogCategory[]).map((category) => ({
+    categories: generatedCategories.map((category) => ({
       ...category,
       icon: categoryIconBySlug.get(category.slug) ?? category.icon,
     })),

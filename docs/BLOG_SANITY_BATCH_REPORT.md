@@ -1,7 +1,7 @@
 # Blog Sanity Batch Report
 
-Last updated: 2026-07-29T17:01:45.591Z
-Batch ID: batch-2026-07-29-archive-02
+Last updated: 2026-07-29T17:33:26.739Z
+Batch ID: batch-2026-07-29-archive-03
 
 ## Task 3C2 Preflight
 
@@ -39,24 +39,24 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 
 ## Selected Posts
 
-- 14. The Power of LinkedIn | the-power-of-linkedin | https://www.nexubis.io/post/the-power-of-linkedin
-- 15. How to not suck at job applications | how-to-not-suck-at-job-applications | https://www.nexubis.io/post/how-to-not-suck-at-job-applications
-- 16. Momentum Fever | momentum-fever | https://www.nexubis.io/post/momentum-fever
-- 17. Keep positioning yourself | keep-positioning-yourself | https://www.nexubis.io/post/keep-positioning-yourself
-- 18. New Year’s Resolutions | new-years-resolutions | https://www.nexubis.io/post/new-years-resolutions
-- 19. Goals vs. Movement | goals-vs-movement | https://www.nexubis.io/post/goals-vs-movement
-- 20. 2025 In Retrospect | 2025-in-retrospect | https://www.nexubis.io/post/2025-in-retrospect
-- 21. Long-Term Greed | long-term-greed | https://www.nexubis.io/post/long-term-greed
-- 22. Dick Proves the Agency Stereotype | dick-proves-the-agency-stereotype | https://www.nexubis.io/post/dick-proves-the-agency-stereotype
-- 23. Striving for “Culinary” Perfection | striving-for-culinary-perfection | https://www.nexubis.io/post/striving-for-culinary-perfection
+- 24. The Walter Mitty Effect | the-walter-mitty-effect | https://www.nexubis.io/post/the-walter-mitty-effect
+- 25. The Discipline of Quitting | the-discipline-of-quitting | https://www.nexubis.io/post/the-discipline-of-quitting
+- 26. Empowering Women with Project Flamingo | empowering-women-with-project-flamingo | https://www.nexubis.io/post/empowering-women-with-project-flamingo
+- 27. The Legendary Play  | the-legendary-play | https://www.nexubis.io/post/the-legendary-play
+- 28. Keep Firing Yourself (Part 2) | keep-firing-yourself-part-2 | https://www.nexubis.io/post/keep-firing-yourself-part-2
+- 29. Skip the Ladder. Join a Startup. | skip-the-ladder-join-a-startup | https://www.nexubis.io/post/skip-the-ladder-join-a-startup
+- 30. Fresh Out of College… Now What? | fresh-out-of-college-now-what | https://www.nexubis.io/post/fresh-out-of-college-now-what
+- 31. For Professionals, By Professionals | for-professionals-by-professionals | https://www.nexubis.io/post/for-professionals-by-professionals
+- 32. Pick Your Battles | pick-your-battles | https://www.nexubis.io/post/pick-your-battles
+- 33. Make It Memorable | make-it-memorable | https://www.nexubis.io/post/make-it-memorable
 
 ## Results
 
-### The Power of LinkedIn
+### The Walter Mitty Effect
 
-- Slug: `the-power-of-linkedin`
-- Draft: `drafts.post-the-power-of-linkedin`
-- Published: `post-the-power-of-linkedin`
+- Slug: `the-walter-mitty-effect`
+- Draft: `drafts.post-the-walter-mitty-effect`
+- Published: `post-the-walter-mitty-effect`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -69,11 +69,79 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
 
-### How to not suck at job applications
+### The Discipline of Quitting
 
-- Slug: `how-to-not-suck-at-job-applications`
-- Draft: `drafts.post-how-to-not-suck-at-job-applications`
-- Published: `post-how-to-not-suck-at-job-applications`
+- Slug: `the-discipline-of-quitting`
+- Draft: `drafts.post-the-discipline-of-quitting`
+- Published: `post-the-discipline-of-quitting`
+- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
+- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
+- Excerpt: 0 -> 0
+- SEO description: 0 -> 0
+- Media records: 0
+- Lottie: not present; Webflow URLs: 0
+- Validation errors: none
+- Route verified: true
+- Blog card verified: true
+- Stored zero-Webflow check: passed
+- Rendered zero-Webflow verified: true
+
+### Empowering Women with Project Flamingo
+
+- Slug: `empowering-women-with-project-flamingo`
+- Draft: `drafts.post-empowering-women-with-project-flamingo`
+- Published: `post-empowering-women-with-project-flamingo`
+- Author/category: `author-hannes-oosthuizen` / `category-empowering-dreams`
+- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
+- Excerpt: 0 -> 0
+- SEO description: 0 -> 0
+- Media records: 0
+- Lottie: not present; Webflow URLs: 0
+- Validation errors: none
+- Route verified: true
+- Blog card verified: true
+- Stored zero-Webflow check: passed
+- Rendered zero-Webflow verified: true
+
+### The Legendary Play
+
+- Slug: `the-legendary-play`
+- Draft: `drafts.post-the-legendary-play`
+- Published: `post-the-legendary-play`
+- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
+- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
+- Excerpt: 0 -> 0
+- SEO description: 0 -> 0
+- Media records: 0
+- Lottie: not present; Webflow URLs: 0
+- Validation errors: none
+- Route verified: true
+- Blog card verified: true
+- Stored zero-Webflow check: passed
+- Rendered zero-Webflow verified: true
+
+### Keep Firing Yourself (Part 2)
+
+- Slug: `keep-firing-yourself-part-2`
+- Draft: `drafts.post-keep-firing-yourself-part-2`
+- Published: `post-keep-firing-yourself-part-2`
+- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
+- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
+- Excerpt: 0 -> 0
+- SEO description: 0 -> 0
+- Media records: 0
+- Lottie: not present; Webflow URLs: 0
+- Validation errors: none
+- Route verified: true
+- Blog card verified: true
+- Stored zero-Webflow check: passed
+- Rendered zero-Webflow verified: true
+
+### Skip the Ladder. Join a Startup.
+
+- Slug: `skip-the-ladder-join-a-startup`
+- Draft: `drafts.post-skip-the-ladder-join-a-startup`
+- Published: `post-skip-the-ladder-join-a-startup`
 - Author/category: `author-hannes-oosthuizen` / `category-for-professionals`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -86,11 +154,45 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
 
-### Momentum Fever
+### Fresh Out of College… Now What?
 
-- Slug: `momentum-fever`
-- Draft: `drafts.post-momentum-fever`
-- Published: `post-momentum-fever`
+- Slug: `fresh-out-of-college-now-what`
+- Draft: `drafts.post-fresh-out-of-college-now-what`
+- Published: `post-fresh-out-of-college-now-what`
+- Author/category: `author-hannes-oosthuizen` / `category-for-professionals`
+- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
+- Excerpt: 0 -> 0
+- SEO description: 0 -> 0
+- Media records: 0
+- Lottie: not present; Webflow URLs: 0
+- Validation errors: none
+- Route verified: true
+- Blog card verified: true
+- Stored zero-Webflow check: passed
+- Rendered zero-Webflow verified: true
+
+### For Professionals, By Professionals
+
+- Slug: `for-professionals-by-professionals`
+- Draft: `drafts.post-for-professionals-by-professionals`
+- Published: `post-for-professionals-by-professionals`
+- Author/category: `author-hannes-oosthuizen` / `category-for-professionals`
+- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
+- Excerpt: 0 -> 0
+- SEO description: 0 -> 0
+- Media records: 0
+- Lottie: not present; Webflow URLs: 0
+- Validation errors: none
+- Route verified: true
+- Blog card verified: true
+- Stored zero-Webflow check: passed
+- Rendered zero-Webflow verified: true
+
+### Pick Your Battles
+
+- Slug: `pick-your-battles`
+- Draft: `drafts.post-pick-your-battles`
+- Published: `post-pick-your-battles`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -103,11 +205,11 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
 
-### Keep positioning yourself
+### Make It Memorable
 
-- Slug: `keep-positioning-yourself`
-- Draft: `drafts.post-keep-positioning-yourself`
-- Published: `post-keep-positioning-yourself`
+- Slug: `make-it-memorable`
+- Draft: `drafts.post-make-it-memorable`
+- Published: `post-make-it-memorable`
 - Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
 - Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
 - Excerpt: 0 -> 0
@@ -119,106 +221,3 @@ Authoritative body/source comparison supports `Oxipack: Funding Nexubis`: Webflo
 - Blog card verified: true
 - Stored zero-Webflow check: passed
 - Rendered zero-Webflow verified: true
-
-### New Year’s Resolutions
-
-- Slug: `new-years-resolutions`
-- Draft: `drafts.post-new-years-resolutions`
-- Published: `post-new-years-resolutions`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-
-### Goals vs. Movement
-
-- Slug: `goals-vs-movement`
-- Draft: `drafts.post-goals-vs-movement`
-- Published: `post-goals-vs-movement`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-
-### 2025 In Retrospect
-
-- Slug: `2025-in-retrospect`
-- Draft: `drafts.post-2025-in-retrospect`
-- Published: `post-2025-in-retrospect`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-
-### Long-Term Greed
-
-- Slug: `long-term-greed`
-- Draft: `drafts.post-long-term-greed`
-- Published: `post-long-term-greed`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-
-### Dick Proves the Agency Stereotype
-
-- Slug: `dick-proves-the-agency-stereotype`
-- Draft: `drafts.post-dick-proves-the-agency-stereotype`
-- Published: `post-dick-proves-the-agency-stereotype`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-
-### Striving for “Culinary” Perfection
-
-- Slug: `striving-for-culinary-perfection`
-- Draft: `drafts.post-striving-for-culinary-perfection`
-- Published: `post-striving-for-culinary-perfection`
-- Author/category: `author-hannes-oosthuizen` / `category-founders-diary`
-- Portable Text: 0 blocks, 0 headings, 0 paragraphs, 0 bullet items, 0 ordered items, 0 blockquotes, 0 links, 0 inline images
-- Excerpt: 0 -> 0
-- SEO description: 0 -> 0
-- Media records: 0
-- Lottie: not present; Webflow URLs: 0
-- Validation errors: none
-- Route verified: true
-- Blog card verified: true
-- Stored zero-Webflow check: passed
-- Rendered zero-Webflow verified: true
-

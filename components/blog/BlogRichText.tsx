@@ -56,7 +56,7 @@ export function BlogRichText({ html, portableText }: BlogRichTextProps) {
           if (!href) return <>{children}</>;
 
           if (isInternalHref(href)) {
-            return <Link href={href}>{children}</Link>;
+            return <Link href={href} prefetch={false}>{children}</Link>;
           }
 
           const newTab = /^https?:\/\//.test(href);
