@@ -1,0 +1,24 @@
+# Blog Link Restoration Summary
+
+- Webflow posts inspected: 88
+- Sanity posts inspected: 88
+- Exact mappings: 88
+- Posts containing original links: 24
+- Total original links: 53
+- Links already correct: 41
+- High-confidence links restored: 0
+- Manual-review links left unchanged: 12
+- Invalid source links skipped: 0
+- Published Sanity posts after audit: 88
+- Live posts returning 200: 88
+- Live post failures: 0
+- Live already-correct source links verified: 41
+- Live source links awaiting cache or missing exact anchor: 0
+- Remaining direct Cal.com article links: 0
+- Remaining Webflow destinations: 0
+- Remaining old Vercel destinations: 0
+- Renderer issues: none detected in code inspection
+- Visible article wording changed: no, checked by Portable Text text extraction during mutations
+- Titles, slugs and metadata changed by this script: no
+- Backup: `.tmp-sanity-import/blog-link-restoration/sanity-blog-before-link-restoration.json`
+- Rollback: `docs/qa/post-cutover/blog-link-restoration/BLOG_LINK_RESTORATION_ROLLBACK.md`

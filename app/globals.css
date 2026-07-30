@@ -11553,6 +11553,10 @@ summary {
     padding-top: 2rem;
   }
 
+  .case-study-page .case-study-testimonial {
+    padding-top: 3rem;
+  }
+
   .case-study-page .case-study-title,
   .case-study-page .case-study-related h2 {
     font-size: 2rem;

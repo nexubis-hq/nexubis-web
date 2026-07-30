@@ -105,6 +105,7 @@ function assertNoUnsafeOperations(c: { calls: string[] }) {
     NEXUBIS_TAG_IDS.triggerStartNurture,
     NEXUBIS_TAG_IDS.pipelineCallBooked,
     NEXUBIS_TAG_IDS.pipelineReplied,
+    NEXUBIS_TAG_IDS.pipelineContacted,
     NEXUBIS_TAG_IDS.historyScorecardSalesStarted,
     NEXUBIS_TAG_IDS.historyNurtureStarted,
   ]) {

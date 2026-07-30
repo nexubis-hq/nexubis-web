@@ -56,12 +56,16 @@ export function BlogRichText({ html, portableText }: BlogRichTextProps) {
           if (!href) return <>{children}</>;
 
           if (isInternalHref(href)) {
-            return <Link href={href} prefetch={false}>{children}</Link>;
+            return (
+              <Link className={styles.articleLink} href={href} prefetch={false}>
+                {children}
+              </Link>
+            );
           }
 
           const newTab = /^https?:\/\//.test(href);
           return (
-            <a href={href} target={newTab ? "_blank" : undefined} rel={newTab ? "noreferrer" : undefined}>
+            <a className={styles.articleLink} href={href} target={newTab ? "_blank" : undefined} rel={newTab ? "noreferrer" : undefined}>
               {children}
             </a>
           );
