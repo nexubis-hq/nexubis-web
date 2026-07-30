@@ -37,6 +37,22 @@ const portableTextBody = [
     children: [{ _type: "span", _key: "s4", text: "Semantic bullet" }],
     markDefs: [],
   },
+  {
+    _type: "block",
+    _key: "p2",
+    style: "normal",
+    children: [
+      { _type: "span", _key: "s5", text: "Read " },
+      { _type: "span", _key: "s6", text: "the internal post", marks: ["strong", "internalLink"] },
+      { _type: "span", _key: "s7", text: " and " },
+      { _type: "span", _key: "s8", text: "external source", marks: ["em", "externalLink"] },
+      { _type: "span", _key: "s9", text: "." },
+    ],
+    markDefs: [
+      { _key: "internalLink", _type: "link", href: "/post/the-nexubis-effect" },
+      { _key: "externalLink", _type: "link", href: "https://example.com/source" },
+    ],
+  },
 ];
 
 function sanityPost(overrides: Partial<SanityPostDocument> = {}): SanityPostDocument {
@@ -124,5 +140,16 @@ describe("Sanity Blog post lookup", () => {
     expect(html).toContain("<li>Semantic bullet</li>");
     expect(html).toContain("accentText");
     expect(html).toContain('id="what-circuit-actually-does"');
+  });
+
+  it("renders Blog article links with the scoped article link class", () => {
+    const html = renderToStaticMarkup(createElement(BlogRichText, { portableText: portableTextBody }));
+
+    expect(html).toMatch(/class="[^"]*articleLink[^"]*" href="\/post\/the-nexubis-effect"/);
+    expect(html).toMatch(/<a class="[^"]*articleLink[^"]*" href="\/post\/the-nexubis-effect"><strong>the internal post<\/strong><\/a>/);
+    expect(html).toMatch(/class="[^"]*articleLink[^"]*" href="https:\/\/example\.com\/source"/);
+    expect(html).toContain('target="_blank"');
+    expect(html).toContain('rel="noreferrer"');
+    expect(html).toContain("<em>external source</em>");
   });
 });

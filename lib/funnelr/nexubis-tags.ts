@@ -18,6 +18,7 @@ export const NEXUBIS_TAGS = {
   triggerStartNurture: "Trigger: Nexubis | Start Credibility Brief Nurture",
   pipelineCallBooked: "Pipeline: Nexubis | Call Booked",
   pipelineReplied: "Pipeline: Nexubis | Replied",
+  pipelineContacted: "Pipeline: Nexubis | Contacted",
   historyScorecardSalesStarted: "History: Nexubis | Scorecard Sales Started",
   historyNurtureStarted: "History: Nexubis | Credibility Brief Nurture Started",
 } as const;
@@ -31,6 +32,7 @@ export const NEXUBIS_TAG_IDS = {
   triggerStartNurture: "E654E2FA-B55E-4904-9336-9D45AA6837AB",
   pipelineCallBooked: "93347D55-1901-4A2D-90A2-0FCBB6B8A492",
   pipelineReplied: "3B0905B4-D0C6-4A2D-861D-64D9579D7DE6",
+  pipelineContacted: "134F3411-5993-45FF-BA40-45D877513B2B",
   historyScorecardSalesStarted: "CD99688F-34FF-4942-9CDC-FF9A7E4A6735",
   historyNurtureStarted: "A4A6A094-AA39-4288-B2A7-54087866DC4B",
 } as const;

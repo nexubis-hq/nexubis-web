@@ -1,0 +1,63 @@
+BLOG ARTICLE LINK VISIBILITY AND CTA FIX OUTPUT
+
+Changed files:
+- components/blog/BlogRichText.tsx
+- components/blog/BlogPost.module.css
+- lib/blog/sanity-post-precedence.test.ts
+
+CTA status:
+- The visible CTA text "Book a 15-min intro" in /post/the-nexubis-effect did not have a link annotation.
+- A Sanity mutation was required.
+- The mutation was completed with a revision guard.
+- Final CTA destination: /contact
+- Live post verification: https://www.nexubis.io/post/the-nexubis-effect returns 200.
+- Live CTA href: /contact
+- /contact returns 200.
+- The CTA does not point to Cal.com.
+
+Article-body link styling:
+- Blog article-body Portable Text links now receive a scoped articleLink class.
+- Links use Nexubis red: #FF4141.
+- Links are underlined.
+- Underline thickness: 1.5px.
+- Underline offset: 3px.
+- Hover state keeps the underline and changes color without layout movement.
+- Keyboard focus state is visible.
+- Bold and italic link styling is preserved.
+
+Styling scope:
+- Styling is scoped to Blog article-body links.
+- Navigation links were not changed.
+- Footer links were not changed.
+- Blog cards were not changed.
+- Related-post cards were not changed.
+- Category filters were not changed.
+- Table-of-contents links were not changed.
+
+Verification:
+- Published Blog posts checked locally: 88
+- Posts with article-body links: 25
+- Article-body links checked locally: 54
+- Bad styled article-body links: 0
+- Horizontal overflow introduced: 0
+- Responsive checks passed at 1440px, 991px and 390px.
+- No visible article wording changed.
+- Title and slug unchanged for the-nexubis-effect.
+
+Validation:
+- Blog-link restoration verification script: passed
+- Focused Portable Text renderer test: passed
+- npm run typecheck: passed
+- npm run test: passed, 38 files / 282 tests
+- npm run build: passed
+
+Repository actions:
+- Nothing was committed.
+- Nothing was pushed.
+- Nothing was deployed.
+- Nothing from this task was intentionally staged.
+
+Note:
+The repo had unrelated staged files at final check:
+- app/globals.css
+- lib/work/data.ts

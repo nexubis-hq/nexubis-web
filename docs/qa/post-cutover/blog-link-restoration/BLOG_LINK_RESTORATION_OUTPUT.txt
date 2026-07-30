@@ -1,0 +1,54 @@
+BLOG LINK RESTORATION OUTPUT
+
+Important document to review:
+docs/qa/post-cutover/blog-link-restoration/BLOG_LINK_RESTORATION_MANUAL_REVIEW.md
+
+Why this matters:
+12 original Webflow article-body links were left unchanged because their exact
+anchor text no longer exists verbatim in the migrated Sanity article body. They
+need human review before any link can be safely restored.
+
+Summary:
+- Webflow posts inspected: 88
+- Sanity posts inspected: 88
+- Exact mappings: 88
+- Posts containing original links: 24
+- Total original Webflow body links: 53
+- Links already correct: 41
+- High-confidence links restored: 0
+- Blog-to-Blog links restored: 0
+- Booking links changed to /contact: 0
+- External links restored: 0
+- Invalid source links skipped: 0
+- Manual-review links left unchanged: 12
+- Documents changed: 0
+- Failed mutations: 0
+- Documents rolled back: 0
+- Live posts verified: 88
+- Posts awaiting cache revalidation: 0
+- Remaining direct Cal.com article links: 0
+- Remaining Webflow destinations: 0
+- Remaining old Vercel destinations: 0
+- Renderer issues: none found
+- Visible article wording changed: no
+- Titles, slugs and metadata changed: no
+
+Backup:
+.tmp-sanity-import/blog-link-restoration/sanity-blog-before-link-restoration.json
+
+Rollback procedure:
+docs/qa/post-cutover/blog-link-restoration/BLOG_LINK_RESTORATION_ROLLBACK.md
+
+Rollback command for one post:
+npx sanity exec scripts/maintenance/restore-blog-article-links.ts --with-user-token -- --rollback=[slug]
+
+Validation:
+- npm run typecheck: passed
+- npm run lint: passed with 29 existing warnings, 0 errors
+- npm run test: passed, 38 files / 281 tests
+- npm run build: passed, all 88 /post/[slug] routes generated
+
+No Sanity content was mutated because there were zero safe high-confidence
+restorations to apply.
+
+No files were staged, committed, pushed, or deployed.

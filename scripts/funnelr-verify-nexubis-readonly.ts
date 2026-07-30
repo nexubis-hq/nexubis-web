@@ -15,6 +15,7 @@ const ids = {
     nurture: "AB866C24-8D72-42AB-8D4A-AC97281FE5F0",
     booked: "5DC71700-3E79-42DB-92EE-04BDADC3BA83",
     replied: "5249EFD5-5193-4C73-9EF7-E8FD1E63A558",
+    contacted: "099C14E1-EFE1-401F-ABE6-0C1AAD1361FA",
     brandToAllContacts: "7C635FEF-2DDB-4EF0-ABB6-8A306B1322B7",
     manualHoldingTags: "601EA06F-412D-480E-A612-D033F964EB88",
   },
@@ -39,6 +40,7 @@ const ids = {
     triggerNurture: "E654E2FA-B55E-4904-9336-9D45AA6837AB",
     booked: "93347D55-1901-4A2D-90A2-0FCBB6B8A492",
     replied: "3B0905B4-D0C6-4A2D-861D-64D9579D7DE6",
+    contacted: "134F3411-5993-45FF-BA40-45D877513B2B",
     historySales: "CD99688F-34FF-4942-9CDC-FF9A7E4A6735",
     historyNurture: "A4A6A094-AA39-4288-B2A7-54087866DC4B",
     lekkeStoepTipNurture: "F2BA90FD-0B59-4B88-BE74-EA0B3E41CAF0",
@@ -67,6 +69,7 @@ const expectedNames = {
     [ids.tags.triggerNurture]: "Trigger: Nexubis | Start Credibility Brief Nurture",
     [ids.tags.booked]: "Pipeline: Nexubis | Call Booked",
     [ids.tags.replied]: "Pipeline: Nexubis | Replied",
+    [ids.tags.contacted]: "Pipeline: Nexubis | Contacted",
     [ids.tags.historySales]: "History: Nexubis | Scorecard Sales Started",
     [ids.tags.historyNurture]: "History: Nexubis | Credibility Brief Nurture Started",
     [ids.tags.lekkeStoepTipNurture]: "Trigger: LekkeWeb | Start Stoep Tip Nurture",
@@ -166,7 +169,7 @@ async function main() {
 
   await verifyAutomation(ids.automations.sales, "Nexubis | Start Scorecard Sales", (filters, actions) => {
     if (!hasFilter(filters, ids.tags.triggerSales, TAG_IS)) throw new Error("Sales trigger filter missing.");
-    for (const tagId of [ids.tags.historySales, ids.tags.booked, ids.tags.replied]) if (!hasFilter(filters, tagId, TAG_IS_NOT)) throw new Error(`Sales exclusion missing: ${tagId}`);
+    for (const tagId of [ids.tags.historySales, ids.tags.booked, ids.tags.replied, ids.tags.contacted]) if (!hasFilter(filters, tagId, TAG_IS_NOT)) throw new Error(`Sales exclusion missing: ${tagId}`);
     for (const action of [
       ["listId", ids.lists.sales, false],
       ["listId", ids.lists.manual, true],
@@ -180,7 +183,7 @@ async function main() {
 
   await verifyAutomation(ids.automations.nurture, "Nexubis | Start Credibility Brief Nurture", (filters, actions) => {
     if (!hasFilter(filters, ids.tags.triggerNurture, TAG_IS)) throw new Error("Nurture trigger filter missing.");
-    for (const tagId of [ids.tags.booked, ids.tags.replied, ids.tags.historyNurture]) if (!hasFilter(filters, tagId, TAG_IS_NOT)) throw new Error(`Nurture exclusion missing: ${tagId}`);
+    for (const tagId of [ids.tags.booked, ids.tags.replied, ids.tags.historyNurture, ids.tags.contacted]) if (!hasFilter(filters, tagId, TAG_IS_NOT)) throw new Error(`Nurture exclusion missing: ${tagId}`);
     for (const action of [
       ["sequenceId", ids.sequences.sales, true],
       ["listId", ids.lists.sales, true],
@@ -219,6 +222,26 @@ async function main() {
       ["tagId", ids.tags.triggerSales, true],
       ["tagId", ids.tags.triggerNurture, true],
     ] as const) if (!hasAction(actions, action[0], action[1], action[2])) throw new Error(`Replied action missing: ${action.join(" ")}`);
+  });
+
+  await verifyAutomation(ids.automations.contacted, "Nexubis | Contacted - Exit Campaigns", (filters, actions) => {
+    if (!hasFilter(filters, ids.tags.sourceContactForm, TAG_IS)) throw new Error("Contacted trigger filter missing.");
+    for (const action of [
+      ["tagId", ids.tags.contacted, false],
+      ["sequenceId", ids.sequences.sales, true],
+      ["sequenceId", ids.sequences.nurture, true],
+      ["listId", ids.lists.sales, true],
+      ["listId", ids.lists.nurture, true],
+      ["listId", ids.lists.manual, true],
+      ["tagId", ids.tags.triggerSales, true],
+      ["tagId", ids.tags.triggerNurture, true],
+    ] as const) if (!hasAction(actions, action[0], action[1], action[2])) throw new Error(`Contacted action missing: ${action.join(" ")}`);
+    if (actions.length !== 8) throw new Error("Contacted automation must have exactly eight actions.");
+    if (hasAction(actions, "listId", ids.lists.allContacts, true)) throw new Error("Contacted automation removes All Contacts.");
+    if (hasAction(actions, "listId", ids.lists.booked, false)) throw new Error("Contacted automation adds Call Booked list.");
+    for (const tagId of [ids.tags.contacted, ids.tags.booked, ids.tags.replied, ids.tags.historySales, ids.tags.historyNurture]) {
+      if (hasAction(actions, "tagId", tagId, true)) throw new Error(`Contacted automation removes preserved tag: ${tagId}`);
+    }
   });
 
   console.log("Nexubis Funnelr read-only verification passed.");

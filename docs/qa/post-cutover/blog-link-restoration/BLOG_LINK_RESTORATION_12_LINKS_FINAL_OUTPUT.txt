@@ -1,0 +1,36 @@
+BLOG LINK RESTORATION - 12 UNRESOLVED LINKS FINAL OUTPUT
+
+1. Twelve links reviewed: 12
+
+2. Links restored: 0
+
+3. Posts changed: 0
+
+4. Links still requiring manual review: 0
+
+5. Reasons links were not changed:
+All 12 links were already present in Sanity on clearly equivalent current text
+and were live-verified. No mutation was needed.
+
+6. Visible wording and formatting:
+No visible article wording changed.
+No article formatting changed.
+
+7. Destination verification:
+All 12 destinations return 200 and were verified live.
+
+8. Validation results:
+- Blog-link focused verification script: passed
+- npm run typecheck: passed
+- npm run test -- lib/blog: passed, 7 files / 46 tests
+- Published posts remain: 88
+- No direct Cal.com Blog links added
+- No Webflow Blog destinations added
+- No old Vercel Blog destinations added
+- Nothing staged
+- No commit, push, or deployment performed
+
+Updated reports:
+- docs/qa/post-cutover/blog-link-restoration/BLOG_LINK_RESTORATION_RESOLVED.csv
+- docs/qa/post-cutover/blog-link-restoration/BLOG_LINK_RESTORATION_REMAINING_REVIEW.md
+- docs/qa/post-cutover/blog-link-restoration/BLOG_LINK_RESTORATION_FINAL_SUMMARY.md
