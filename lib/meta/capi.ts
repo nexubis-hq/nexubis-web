@@ -96,10 +96,14 @@ export async function sendCapiEvent(input: CapiEventInput, now = new Date()): Pr
     ...(isStandardMetaEvent(input.eventName) ? {} : {}),
   };
 
-  // A test_event_code routes events into Events Manager > Test Events (for the
-  // "confirm your server's events" check). Temporary/testing only — leave unset
-  // in production, where it would divert real events into the test panel.
-  const testEventCode = process.env.META_TEST_EVENT_CODE?.trim();
+  // A test_event_code routes this server event into Events Manager > Test Events
+  // so the browser + server pair can be confirmed as deduplicated. Read from
+  // either env name (NEXT_PUBLIC_* is a convenience so one value can be set for
+  // both legs). The browser pixel has no test_event_code parameter — Meta's Test
+  // Events tool captures browser events automatically by pixel id — so setting
+  // the code here is all that is needed to see the deduplicated pair. Temporary/
+  // testing only: leave unset in production, where it diverts real events.
+  const testEventCode = (process.env.META_TEST_EVENT_CODE || process.env.NEXT_PUBLIC_META_TEST_EVENT_CODE)?.trim();
 
   try {
     const res = await fetch(
