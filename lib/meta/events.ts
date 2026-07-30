@@ -41,6 +41,16 @@ export const LEAD_CONTENT_NAME = "Nexubis Scorecard";
 // per event. The Meta ad account reports in ZAR, so currency defaults to ZAR
 // (override with META_CURRENCY). Values are a business input — set the env var to
 // include one; omitted entirely when unset, so we never send a guessed value.
+//
+// IMPORTANT when a value IS set: derive it from the EUR package economics and
+// convert to ZAR — do NOT type a round rand number. The packages are priced
+// EUR-first (Momentum ~EUR 3,500/mo, Partner ~EUR 6,000/mo) and the campaign is
+// Europe-targeted; the ZAR figure only exists because the ad account bills in
+// ZAR. It need not be exact, but a wrong ORDER OF MAGNITUDE distorts value
+// optimisation later. Example basis: expected value = first-period EUR retainer ×
+// realistic lead→close rate, then × the current EUR→ZAR rate. Left unset for now:
+// we have no cold-lead close rate yet (growth to date has been warm word of
+// mouth), and Meta ignores value unless value optimisation is switched on.
 const DEFAULT_CURRENCY = "ZAR";
 
 function eventValue(raw: string | undefined): { value: number; currency: string } | null {
