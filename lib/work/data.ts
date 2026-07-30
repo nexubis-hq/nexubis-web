@@ -346,7 +346,7 @@ const caseStudies: CaseStudy[] = [
       },
     ],
     testimonial: {
-      quote: "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.",
+      quote: "Nexubis combines creativity and expertise with a truly collaborative way of working. Their regular communication, strong understanding of our brand, and proactive approach to design and website development make them a valued partner for Oxipack.",
       name: "Kayleigh Smit",
       role: "Marketing Manager",
       image: {
