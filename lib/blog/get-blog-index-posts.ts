@@ -46,6 +46,13 @@ const CATEGORY_ORDER = [
 ];
 
 function mapSanityCategories(sanityCategories: SanityBlogCategoryIconDocument[]): BlogCategory[] {
+  // When Sanity isn't configured (e.g. local dev with no Sanity env vars, or
+  // nothing published yet) the fetcher hands back an empty array. Degrade to an
+  // empty blog instead of throwing, so the Dreamlab page renders a graceful
+  // empty state rather than a runtime error. Once Sanity has the categories,
+  // the normal (validating) path below runs and still catches partial data.
+  if (sanityCategories.length === 0) return [];
+
   const bySlug = new Map(sanityCategories.filter((category) => category.slug).map((category) => [category.slug as string, category]));
 
   return CATEGORY_ORDER.map((slug) => {

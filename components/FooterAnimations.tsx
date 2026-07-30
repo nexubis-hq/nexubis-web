@@ -18,12 +18,8 @@ export function FooterAnimations() {
     const wordmark = footer?.querySelector<HTMLElement>(".footer-wordmark");
     if (!footer || !wordmark) return;
 
-    // On phones the wordmark is small and the "rise from behind the nav" effect
-    // reads as broken, so (like reduced motion) it just rests in place.
-    if (
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      window.matchMedia("(max-width: 767px)").matches
-    ) {
+    // Under reduced motion the wordmark just rests in its finished position.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       wordmark.style.transform = "none";
       wordmark.style.opacity = "1";
       return;

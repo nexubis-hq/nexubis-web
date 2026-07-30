@@ -103,7 +103,8 @@ export function OxipackProofVideo({ src, poster, title }: OxipackProofVideoProps
     if (!video || hasError) return;
 
     if (video.paused || video.ended) {
-      video.muted = true;
+      // Clicking play is a user gesture, so we can start with sound on.
+      video.muted = false;
       void video
         .play()
         .then(() => setIsPlaying(true))
@@ -137,7 +138,7 @@ export function OxipackProofVideo({ src, poster, title }: OxipackProofVideoProps
         playsInline
         preload="metadata"
         poster={poster}
-        controls={false}
+        controls={isPlaying}
         style={{ ...mediaStyle, zIndex: 1 }}
       >
         <source src={src} type="video/mp4" />
@@ -150,7 +151,7 @@ export function OxipackProofVideo({ src, poster, title }: OxipackProofVideoProps
           aria-label={isPlaying ? "Pause Oxipack showreel" : "Play Oxipack showreel"}
           aria-pressed={isPlaying}
           onClick={togglePlayback}
-          style={buttonStyle}
+          style={{ ...buttonStyle, pointerEvents: isPlaying ? "none" : "auto" }}
         >
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M8 5v14l11-7z" />

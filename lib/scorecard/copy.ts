@@ -14,7 +14,7 @@ export const LANDING = {
   bullets: [
     "Your Credibility Score across the five places buyers look",
     "A side-by-side benchmark against the competitors buyers weigh you against",
-    "The first place to fix, explained in a short personal video",
+    "The first place to fix, explained clearly",
   ],
   formHeadline: "Check Your Brand's Credibility",
   formIntro: "Enter your website. We read the rest ourselves, and you'll see your result on the spot.",
@@ -45,26 +45,10 @@ export const UNLOCK = {
 } as const;
 
 // ── Report navigation + share ────────────────────────────────────────────────
-// The full report carries a sticky nav with two actions: book a call, and
-// share the report with a colleague. Share opens a prefilled email compose so
-// the sender only adds recipients. Never the banned word: this is the
-// Scorecard, never an audit.
+// The full report carries a sticky nav with a single action: book a call.
+// Never the banned word: this is the Scorecard, never an audit.
 export const REPORT_NAV = {
   book: "Book an application call",
-  share: "Share with your team",
-} as const;
-
-export const SHARE = {
-  subject: (company: string) => `Our Brand Credibility Scorecard: ${company}`,
-  body: (company: string, overall: number | null): string => {
-    const score = overall !== null ? `We scored ${overall} out of 100, ` : "";
-    return [
-      `Take a look at our Industrial Brand Credibility Scorecard for ${company}.`,
-      "",
-      `${score}benchmarked against the competitors buyers weigh us against. The full report has every category, the findings behind the scores, and the first place to fix:`,
-      "",
-    ].join("\n");
-  },
 } as const;
 
 // ── Report surfaces (Section 7) ──────────────────────────────────────────────

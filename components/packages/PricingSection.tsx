@@ -29,8 +29,6 @@ export function PricingSection({ currency }: { currency: Currency }) {
           </h1>
           <p>
             Three levels, one invoice, no per-project quotes.
-            <br />
-            Start where your problem is. Move up when your ambition does.
           </p>
         </div>
 

@@ -40,6 +40,11 @@ export function HeroAnimations() {
     // screens it stays a mute/unmute toggle. Evaluated per interaction so it
     // stays correct across rotation/resize.
     const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
+    // The scroll-grow only makes sense with the desktop hero layout (≥992px),
+    // where the reel starts small and expands. Below that the reel is already
+    // (near) full-width, so growing it would visibly shrink it on scroll. Gate
+    // the grow — and the row-height pin it relies on — to that same breakpoint.
+    const isReelGrowLayout = () => window.matchMedia("(min-width: 992px)").matches;
 
     const syncVideoControl = () => {
       if (isMobile()) {
@@ -99,13 +104,18 @@ export function HeroAnimations() {
           return container ? container.clientWidth / initialReelWidth : 1;
         };
 
-        gsap.set(reelRow, { height: reel.offsetHeight });
+        // Only pin the row height on the desktop layout that actually animates
+        // it; on smaller screens the reel keeps its natural (CSS) height.
+        if (isReelGrowLayout()) {
+          gsap.set(reelRow, { height: reel.offsetHeight });
+        }
 
         let reelTimeline: gsap.core.Timeline | undefined;
         const createReelTimeline = () => {
           if (reelTimeline) return;
-          // Mobile shows the reel full-width already, so skip the scroll-grow.
-          if (isMobile()) return;
+          // The scroll-grow only runs on the desktop layout (≥992px); below that
+          // the reel is already full-width, so skip it (no shrink-on-scroll).
+          if (!isReelGrowLayout()) return;
           gsap.set(reel, { transformOrigin: "top left", willChange: "transform" });
           gsap.set(reelControl, { transformOrigin: "bottom left", willChange: "transform" });
 
@@ -115,8 +125,11 @@ export function HeroAnimations() {
               gsap.set(reelControl, { scale: 1 / reelScale });
             },
             scrollTrigger: {
+              // The reel sits lower-left in the hero (~62% down at rest). Start
+              // the grow a little into the scroll — progress is 0 at rest (the
+              // reel is below the 50% line) and it begins expanding ~100px in.
               trigger: reel,
-              start: "top 40%",
+              start: "top 50%",
               end: "+=300",
               scrub: 0.3,
               invalidateOnRefresh: true,
