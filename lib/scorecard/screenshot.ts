@@ -1,3 +1,4 @@
+import { createHmac } from "node:crypto";
 import { isMockMode } from "./env";
 import { MOCK_PNG_BASE64 } from "./mock";
 
@@ -12,7 +13,18 @@ const MOBILE_VIEWPORT = { width: "390", height: "844" };
 // Build a ScreenshotOne /take URL that renders above the fold. cache=true keeps
 // us inside the free tier on repeat loads (30-day CDN cache per URL+params).
 // `extra` overrides or adds params; URLSearchParams encodes values for us.
-export function buildScreenshotUrl(targetUrl: string, accessKey: string, extra?: Record<string, string>): string {
+//
+// When a secret key is supplied the URL is SIGNED (HMAC-SHA256 of the query
+// string). This is what lets the access_key sit safely in the public report's
+// <img src>: with "Require signed requests" enabled on the ScreenshotOne
+// account, a lifted access_key is useless without the secret, which never
+// leaves the server.
+export function buildScreenshotUrl(
+  targetUrl: string,
+  accessKey: string,
+  extra?: Record<string, string>,
+  secretKey?: string,
+): string {
   const params = new URLSearchParams({
     access_key: accessKey,
     url: targetUrl,
@@ -29,15 +41,25 @@ export function buildScreenshotUrl(targetUrl: string, accessKey: string, extra?:
   if (extra) {
     for (const [k, v] of Object.entries(extra)) params.set(k, v);
   }
-  return `https://api.screenshotone.com/take?${params.toString()}`;
+  const query = params.toString();
+  if (secretKey) {
+    const signature = createHmac("sha256", secretKey).update(query).digest("hex");
+    return `https://api.screenshotone.com/take?${query}&signature=${signature}`;
+  }
+  return `https://api.screenshotone.com/take?${query}`;
 }
 
-export function buildMobileScreenshotUrl(targetUrl: string, accessKey: string): string {
-  return buildScreenshotUrl(targetUrl, accessKey, {
-    viewport_width: MOBILE_VIEWPORT.width,
-    viewport_height: MOBILE_VIEWPORT.height,
-    device_scale_factor: "2",
-  });
+export function buildMobileScreenshotUrl(targetUrl: string, accessKey: string, secretKey?: string): string {
+  return buildScreenshotUrl(
+    targetUrl,
+    accessKey,
+    {
+      viewport_width: MOBILE_VIEWPORT.width,
+      viewport_height: MOBILE_VIEWPORT.height,
+      device_scale_factor: "2",
+    },
+    secretKey,
+  );
 }
 
 // Screenshot bytes for the vision read. Same params as the report's <img>, so
@@ -81,8 +103,10 @@ export async function captureFirstImpression(targetUrl: string): Promise<FirstIm
   }
   const accessKey = process.env.SCREENSHOTONE_ACCESS_KEY;
   if (!accessKey) return { desktop: null, mobile: null, desktopUrl: null, mobileUrl: null };
-  const desktopUrl = buildScreenshotUrl(targetUrl, accessKey);
-  const mobileUrl = buildMobileScreenshotUrl(targetUrl, accessKey);
+  // Sign the URLs so the access_key in the public <img> cannot be abused.
+  const secretKey = process.env.SCREENSHOTONE_SECRET_KEY;
+  const desktopUrl = buildScreenshotUrl(targetUrl, accessKey, undefined, secretKey);
+  const mobileUrl = buildMobileScreenshotUrl(targetUrl, accessKey, secretKey);
   const [desktop, mobile] = await Promise.all([fetchShotBase64(desktopUrl), fetchShotBase64(mobileUrl)]);
   return { desktop, mobile, desktopUrl, mobileUrl };
 }
@@ -92,5 +116,5 @@ export function getHeroScreenshot(targetUrl: string): ScreenshotResult {
   if (isMockMode()) return { ok: true, url: `https://mock-shots.test/desktop?url=${encodeURIComponent(targetUrl)}` };
   const accessKey = process.env.SCREENSHOTONE_ACCESS_KEY;
   if (!accessKey) return { ok: false, reason: "Screenshot service not configured." };
-  return { ok: true, url: buildScreenshotUrl(targetUrl, accessKey) };
+  return { ok: true, url: buildScreenshotUrl(targetUrl, accessKey, undefined, process.env.SCREENSHOTONE_SECRET_KEY) };
 }

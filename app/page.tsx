@@ -29,7 +29,7 @@ import {
   NEXUBIS_SHOWREEL_URL,
   SCORECARD_URL,
   OXIPACK_CASE_URL,
-  LEARN_MORE_URL,
+  // LEARN_MORE_URL, // re-enable with the Solutions "Learn more" links
   SHOW_SCORECARD,
 } from "@/lib/site-config";
 import { getCaseStudyBySlug } from "@/lib/work/data";
@@ -129,7 +129,7 @@ const planOneLiner =
 const scorecardBullets = [
   "Your Credibility Score across the five places buyers look",
   "A side-by-side benchmark against two or three competitors you choose",
-  "The first place to fix, explained in a short personal video",
+  "The first place to fix, explained clearly",
 ];
 const scorecardSub =
   "Run the Industrial Brand Credibility Scorecard, powered by Nexubis AI. Enter your website and see, on the spot, how well your brand represents your product, how you benchmark against competitors you name, and the first place to fix.";
@@ -531,10 +531,12 @@ function Solutions() {
                 <div className="solution-row-body">
                   <div className="solution-row-copy">
                     <p>{solution.text}</p>
-                    <Link href={LEARN_MORE_URL} className="text-cta">
+                    {/* "Learn more" links hidden until per-solution pages exist.
+                        Restore this block to bring the buttons back. */}
+                    {/* <Link href={LEARN_MORE_URL} className="text-cta">
                       <span>Learn more</span>
                       <ArrowIcon />
-                    </Link>
+                    </Link> */}
                   </div>
                   {lottieSrc ? (
                     <div className="solution-row-vignette">

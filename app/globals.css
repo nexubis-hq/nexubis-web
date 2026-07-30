@@ -219,6 +219,18 @@ ul {
   color: var(--white);
 }
 
+/* Outlined-secondary hover: keep the resting outlined look (red text, red
+   border, same depth) and add only a very subtle red wash behind it, instead of
+   the global white-text solid-fill hover which reads as harsh on the outline.
+   The .light variant and the packages CTA keep their own hovers. */
+.btn-secondary:not(.light):hover {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary), transparent 92%);
+  box-shadow:
+    inset 0 -2px 4px rgb(0 0 0 / 20%),
+    inset 0 0 rgb(0 0 0 / 0%);
+}
+
 .btn-group {
   display: flex;
   flex-wrap: wrap;
@@ -703,7 +715,7 @@ ul {
 
 @media (max-width: 767px) {
   .packages-section { padding-top:2rem; padding-bottom:4rem; }
-  .billing-selector { width:100%; max-width:32.7168rem; flex-wrap:wrap; justify-content:flex-start; gap:.5rem; }
+  .billing-selector { width:100%; max-width:32.7168rem; flex-wrap:wrap; justify-content:center; gap:.5rem; }
   .package-card { min-height:auto; }
 }
 
@@ -1356,6 +1368,81 @@ button.nav-link {
     opacity: 0;
     transform: translateY(30px);
     animation: hero-intro-failsafe 0.01s 5s forwards;
+  }
+}
+
+/* Desktop: full-screen staggered hero — headline top-left, copy upper-right,
+   showreel lower-left, partner-logo strip full-bleed at the bottom. The video
+   lives in its OWN grid row BELOW the copy row (copy = row 2 / right column,
+   reel = row 3 / left column), so it never overlaps the copy — and because it
+   grows down-right from a fixed top-left corner, the scroll-grow can't reach
+   the text above it. The section fills the viewport when there's room; on
+   shorter screens it's fine for the logo strip to fall below the fold rather
+   than cram the video against the copy (logos are pushed to the bottom with an
+   auto margin, which simply collapses when space runs out). As the video
+   scales, its row grows, so the hero section grows in height and the logos push
+   down with it. */
+@media (min-width: 992px) {
+  /* full-screen staggered hero (reel below copy) */
+  .hero-section {
+    min-height: calc(100svh - 71px);
+    display: flex;
+    flex-direction: column;
+    padding-block: clamp(2rem, 1rem + 2vw, 3.5rem) clamp(1.75rem, 1rem + 1.5vw, 2.75rem);
+  }
+
+  .hero-inner {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto auto auto;
+    column-gap: 2rem;
+    row-gap: clamp(1.5rem, 0.6rem + 2vw, 2.75rem);
+  }
+
+  .hero-inner > .hero-row {
+    margin: 0;
+  }
+
+  .hero-inner > .hero-row > .hero-col {
+    margin-bottom: 0;
+    padding-inline: 0;
+  }
+
+  /* headline spans the full width on its own row */
+  .hero-inner > .hero-row:not(.hero-copy-row) {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  /* copy: upper-right */
+  .hero-copy-row {
+    grid-column: 2;
+    grid-row: 2;
+    justify-content: flex-start;
+    align-self: start;
+  }
+
+  .hero-copy {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+
+  /* reel: lower-left, in the row BELOW the copy (top-anchored, grows down) */
+  .hero-reel-row {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+    margin: 0;
+  }
+
+  /* logos pinned to the bottom of the section; the auto margin fills spare
+     space on tall screens and collapses on short ones (letting them go below
+     the fold instead of squeezing the video). */
+  .hero-logos-space {
+    flex: 0 0 auto;
+    margin-top: auto;
+    padding-top: clamp(1.5rem, 0.6rem + 2vw, 3rem);
   }
 }
 
@@ -4676,14 +4763,25 @@ button.nav-link {
 
 .plan-card-index {
   position: absolute;
-  top: 0.75rem;
-  right: 1.1rem;
-  z-index: 0;
-  color: color-mix(in srgb, var(--primary), var(--surface) 83%);
+  /* centred on the card title (its containing block is .plan-card-head, which
+     wraps the h3) so the badge sits at the title's height, not over the copy */
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--white);
   font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-size: calc(var(--h1) * 0.54);
+  font-size: 0.85rem;
   font-weight: 600;
   line-height: 1;
+  letter-spacing: 0.01em;
   pointer-events: none;
 }
 
@@ -7673,11 +7771,24 @@ button.nav-link {
   .stakes-scene {
     flex-direction: column;
     gap: 1rem;
+    /* Break out of the 88% site-container so the illustration runs
+       (almost) edge-to-edge on phones, giving the cards more room. */
+    width: 100vw;
+    max-width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    padding-inline: 1rem;
+    /* stretch the stacked cards to the full width (base is flex-start, which
+       otherwise leaves them clustered on the left) */
+    align-items: stretch;
   }
   .vs-left,
   .vs-card-comp {
     max-width: none;
     flex: 1 1 auto;
+    /* Competitor card carries a base `align-self: start`; clear it so it
+       stretches full-width like the top card (otherwise its image panel gets
+       squished tall). */
+    align-self: stretch;
   }
   .vs-card {
     gap: 0.8rem;
@@ -8095,6 +8206,9 @@ button.nav-link {
 }
 @media (max-width: 640px) {
   .sc-hero-card { padding: var(--s-4); }
+  /* Centre the hero heading on mobile so it lines up with the score card below. */
+  .sc-hero-kicker { display: flex; justify-content: center; }
+  .sc-hero-title { text-align: center; max-width: none; }
 }
 
 /* ── Body: category cards alongside the sticky "on this page" sidebar ───────── */
@@ -9236,6 +9350,29 @@ button.nav-link {
   text-underline-offset: 0.2em;
 }
 
+/* Proof quote and the Oxipack showreel side by side (stacks on mobile). */
+.sc-proof-inner {
+  display: grid;
+  gap: var(--s-5);
+  align-items: center;
+}
+.sc-proof-text {
+  min-width: 0;
+}
+.sc-proof-media {
+  width: 100%;
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px rgb(29 28 26 / 7%);
+}
+@media (min-width: 900px) {
+  .sc-proof-inner {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: var(--s-6);
+  }
+}
+
 /* 8. Next step */
 .sc-next-step {
   background: var(--white);
@@ -10234,6 +10371,9 @@ button.nav-link {
   .package-price strong { font-size:1.25rem; margin-bottom:.65em; }
   .package-benefits li span { min-width:0; overflow-wrap:anywhere; }
   .services-tags, .packages-faq-row { margin-inline:0; }
+  .services-tag { gap:.375rem; margin:0 .4375rem .4375rem 0; padding:.25rem .6875rem; font-size:.8125rem; }
+  .trial-button-group { width:100%; }
+  .trial-button-group a { width:100%; }
   .packages-faq-column { padding-inline:0; }
 }
 

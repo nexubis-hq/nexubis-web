@@ -15,6 +15,8 @@ import { BookCallButton } from "./BookCallButton";
 import { ReportSidebar, type ReportNavItem, type SectionTone } from "./ReportSidebar";
 import { REPORT, POWERED_BY, VERDICT_LINES, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
 import { OXIPACK_CASE_URL } from "@/lib/site-config";
+import { OxipackProofVideo } from "@/components/OxipackProofVideo";
+import { getCaseStudyBySlug } from "@/lib/work/data";
 import { RUBRIC } from "@/lib/scorecard/rubric";
 import { VERDICT_LABELS } from "@/lib/scorecard/scoring";
 import { prospectScores, type ScorecardResult, type CompanyExhibit } from "@/lib/scorecard/result";
@@ -27,6 +29,15 @@ function loomEmbedUrl(loomUrl: string): string | null {
 // The three "recommended next step" cards reuse the homepage plan vignettes,
 // which line up one-to-one: book a call, see it first, the team joins.
 const NEXT_STEP_VIGNETTES = [PlanCallVignette, PlanPreviewVignette, PlanSlackVignette];
+
+// The Oxipack case-study showreel, the same clip the homepage proof block uses,
+// shown beside the proof quote. Null (section renders text-only) if the case
+// study has no hero video.
+const OXIPACK_SHOWREEL = getCaseStudyBySlug("oxipack")?.heroVideo;
+const OXIPACK_PROOF_VIDEO =
+  OXIPACK_SHOWREEL?.src && OXIPACK_SHOWREEL.poster && OXIPACK_SHOWREEL.title
+    ? { src: OXIPACK_SHOWREEL.src, poster: OXIPACK_SHOWREEL.poster, title: OXIPACK_SHOWREEL.title }
+    : null;
 
 function ExhibitCard({ exhibit, label }: { exhibit: CompanyExhibit; label: string }) {
   return (
@@ -233,7 +244,7 @@ export function ReportView({
   return (
     <Shell className="sc-report">
       <RevealOnScroll />
-      {chrome ? <ReportNav company={result.meta.company} overall={overall} /> : null}
+      {chrome ? <ReportNav company={result.meta.company} /> : null}
 
       {/* 1. Hero: land straight on the score. Brand, score and benchmark share
           one section, so a stranger sees where they stand before scrolling. */}
@@ -370,16 +381,28 @@ export function ReportView({
             </section>
           ) : null}
 
-          {/* 7. Proof (the one place a client is named) */}
+          {/* 7. Proof (the one place a client is named), with the Oxipack
+              showreel beside the quote, the same clip the homepage uses. */}
           <section className="sc-proof section">
-            <div className="site-container">
-              <h2 data-reveal>{REPORT.proofTitle}</h2>
-              <blockquote data-reveal>
-                <p>{REPORT.proofBody}</p>
-              </blockquote>
-              <Link className="sc-proof-link" href={OXIPACK_CASE_URL} data-reveal>
-                {REPORT.proofLink}
-              </Link>
+            <div className="site-container sc-proof-inner">
+              <div className="sc-proof-text">
+                <h2 data-reveal>{REPORT.proofTitle}</h2>
+                <blockquote data-reveal>
+                  <p>{REPORT.proofBody}</p>
+                </blockquote>
+                <Link className="sc-proof-link" href={OXIPACK_CASE_URL} data-reveal>
+                  {REPORT.proofLink}
+                </Link>
+              </div>
+              {OXIPACK_PROOF_VIDEO ? (
+                <div className="sc-proof-media" data-reveal>
+                  <OxipackProofVideo
+                    src={OXIPACK_PROOF_VIDEO.src}
+                    poster={OXIPACK_PROOF_VIDEO.poster}
+                    title={OXIPACK_PROOF_VIDEO.title}
+                  />
+                </div>
+              ) : null}
             </div>
           </section>
 
