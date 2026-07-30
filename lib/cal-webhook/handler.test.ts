@@ -1,13 +1,14 @@
 import { beforeEach, test, vi } from "vitest";
 import assert from "node:assert/strict";
-import { handleCalWebhook, signCalWebhookBody, verifyCalSignature, type CalFunnelrClient } from "./handler";
+import { calEventSlug, handleCalWebhook, signCalWebhookBody, verifyCalSignature, type CalFunnelrClient } from "./handler";
 import type { FunnelrTag, FunnelrUser } from "@/lib/funnelr/client";
 
 const secret = "cal-secret";
-const slug = "application-call";
+const slug = "30min";
 const bookedTag: FunnelrTag = { tagId: "tag-booked", name: "Pipeline: Nexubis | Call Booked" };
 const user: FunnelrUser = { userId: 42, email: "lead@example.com", firstName: "Lead", lastName: "Example" };
 const env = { CAL_WEBHOOK_SECRET: secret, CAL_APPLICATION_EVENT_SLUG: slug };
+const logger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
 
 function signed(body: unknown): { raw: string; signature: string } {
   const raw = JSON.stringify(body);
@@ -66,6 +67,9 @@ function makeClient(existingUser: FunnelrUser | null = user, initialTags: string
 
 beforeEach(() => {
   vi.unstubAllGlobals();
+  logger.info.mockClear();
+  logger.warn.mockClear();
+  logger.error.mockClear();
 });
 
 test("valid webhook signature", () => {
@@ -88,21 +92,27 @@ test("missing signature", async () => {
 
 test("unrelated event slug is ignored", async () => {
   const client = makeClient();
-  const body = booking("BOOKING_CREATED", { type: "other-event" });
+  const body = booking("BOOKING_CREATED", { type: "other-event", eventType: { slug: "other-event" } });
   const { raw, signature } = signed(body);
-  const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false });
+  const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false, logger });
   assert.equal(res.status, 200);
   assert.equal(res.body.ignored, true);
   assert.deepEqual(client.calls, []);
+  assert.equal(logger.info.mock.calls[0]?.[1]?.reason, "ignored_event_type");
+  assert.equal(logger.info.mock.calls[0]?.[1]?.funnelrRequestAttempted, false);
 });
 
 test("BOOKING_CREATED with a matching Funnelr contact applies Call Booked", async () => {
   const client = makeClient(user);
   const { raw, signature } = signed(booking());
-  const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false });
+  const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false, logger });
   assert.equal(res.status, 200);
+  assert.ok(client.calls.includes("find:lead@example.com"));
   assert.equal(client.tags.has(bookedTag.tagId), true);
   assert.ok(client.calls.includes("add:tag-booked"));
+  assert.equal(client.calls.some((call) => call.includes("Pipeline: Call Booked")), false);
+  assert.equal(client.calls.some((call) => call.includes("Pipeline: LekkeWeb | Call Booked")), false);
+  assert.equal(logger.info.mock.calls.some((call) => call[1]?.reason === "funnelr_update_attempt"), true);
 });
 
 test("BOOKING_CREATED with no existing Funnelr contact creates one", async () => {
@@ -112,6 +122,26 @@ test("BOOKING_CREATED with no existing Funnelr contact creates one", async () =>
   assert.equal(res.status, 200);
   assert.ok(client.calls.includes("create:lead@example.com:Lead:Example"));
   assert.equal(client.tags.has(bookedTag.tagId), true);
+});
+
+test("BOOKING_CREATED eventType slug fixture reaches Funnelr", async () => {
+  const client = makeClient(user);
+  const body = booking("BOOKING_CREATED", { type: "nexubis/30min", eventType: { slug } });
+  const { raw, signature } = signed(body);
+  const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false, logger });
+  assert.equal(calEventSlug(body), slug);
+  assert.equal(res.status, 200);
+  assert.ok(client.calls.includes("find:lead@example.com"));
+  assert.ok(client.calls.includes("add:tag-booked"));
+});
+
+test("BOOKING_CREATED with attendeeEmail fallback applies Call Booked", async () => {
+  const client = makeClient(user);
+  const { raw, signature } = signed(booking("BOOKING_CREATED", { attendees: [], attendeeEmail: "Lead@Example.com" }));
+  const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false });
+  assert.equal(res.status, 200);
+  assert.ok(client.calls.includes("find:lead@example.com"));
+  assert.ok(client.calls.includes("add:tag-booked"));
 });
 
 test("repeated BOOKING_CREATED delivery is idempotent", async () => {
@@ -142,10 +172,12 @@ test("BOOKING_CANCELLED removes Call Booked and does not add Call Cancelled", as
 test("webhook ping/test request returns success without Funnelr changes", async () => {
   const client = makeClient(user);
   const { raw, signature } = signed({ triggerEvent: "PING", payload: { type: slug } });
-  const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false });
+  const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false, logger });
   assert.equal(res.status, 200);
   assert.equal(res.body.ignored, true);
   assert.deepEqual(client.calls, []);
+  assert.equal(logger.info.mock.calls[0]?.[1]?.reason, "ignored_trigger");
+  assert.equal(logger.info.mock.calls[0]?.[1]?.funnelrRequestAttempted, false);
 });
 
 test("missing attendee email fails without Funnelr changes", async () => {
@@ -154,4 +186,15 @@ test("missing attendee email fails without Funnelr changes", async () => {
   const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false });
   assert.equal(res.status, 400);
   assert.deepEqual(client.calls, []);
+});
+
+test("Funnelr API failure returns 500", async () => {
+  const client = makeClient(user);
+  client.addTagToContact = async () => {
+    throw new Error("Funnelr request failed with HTTP 500.");
+  };
+  const { raw, signature } = signed(booking());
+  const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false, logger });
+  assert.equal(res.status, 500);
+  assert.equal(logger.error.mock.calls[0]?.[1]?.reason, "funnelr_update_failed");
 });
