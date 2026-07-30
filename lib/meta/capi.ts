@@ -19,6 +19,13 @@ export interface CapiEventInput {
   eventSourceUrl?: string | null;
   // Raw email — hashed here, never sent or logged in the clear.
   email?: string | null;
+  // Raw first name — hashed here, same handling as email.
+  firstName?: string | null;
+  // Meta click/browser ids and our stable pseudonymous id. Sent RAW (never
+  // hashed; §7) — this is the single biggest lever on match quality.
+  fbc?: string | null;
+  fbp?: string | null;
+  externalId?: string | null;
   // Custom data; whitelisted to strings/numbers before it leaves the server.
   customData?: Record<string, unknown>;
 }
@@ -36,9 +43,9 @@ function sha256(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
-// Meta wants email normalised (trim + lowercase) then SHA-256 hashed.
-function hashEmail(email: string): string | null {
-  const clean = email.trim().toLowerCase();
+// Meta wants PII normalised (trim + lowercase) then SHA-256 hashed.
+function hashPii(value: string): string | null {
+  const clean = value.trim().toLowerCase();
   return clean ? sha256(clean) : null;
 }
 
@@ -56,11 +63,24 @@ function whitelistCustomData(data: Record<string, unknown> | undefined): Record<
 
 export async function sendCapiEvent(input: CapiEventInput, now = new Date()): Promise<CapiResult> {
   const token = process.env.META_CAPI_TOKEN;
-  if (!token) return { ok: true, skipped: true };
+  if (!token) {
+    // Loud, never a silent no-op (§7). A missing token in production means the
+    // whole server leg is dark and dedup is impossible — that must be visible.
+    console.warn(`[meta-capi] META_CAPI_TOKEN is not set; server event "${input.eventName}" was NOT sent.`);
+    return { ok: true, skipped: true };
+  }
 
-  const emailHash = input.email ? hashEmail(input.email) : null;
+  // Hashed PII (§7: only PII is hashed).
+  const emailHash = input.email ? hashPii(input.email) : null;
+  const firstNameHash = input.firstName ? hashPii(input.firstName) : null;
+
   const userData: Record<string, unknown> = {};
   if (emailHash) userData.em = [emailHash];
+  if (firstNameHash) userData.fn = [firstNameHash];
+  // Raw, unhashed identifiers — the highest-signal match keys.
+  if (input.fbc) userData.fbc = input.fbc;
+  if (input.fbp) userData.fbp = input.fbp;
+  if (input.externalId) userData.external_id = input.externalId;
   if (input.clientIp) userData.client_ip_address = input.clientIp;
   if (input.userAgent) userData.client_user_agent = input.userAgent;
 

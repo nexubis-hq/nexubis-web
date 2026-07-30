@@ -91,7 +91,7 @@ export function UnlockPanel({ runId }: { runId: string }) {
       trackMeta(
         META_EVENTS.lead,
         { content_name: LEAD_CONTENT_NAME, ...(value ? { value: value.value, currency: value.currency } : {}) },
-        { email },
+        { email, firstName },
       );
       // Route the lead to Funnelr's tag-only bridge (create/update contact, store
       // report URL, apply Brand/Source/Start-Sales tags). Fire-and-forget.

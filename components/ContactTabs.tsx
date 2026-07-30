@@ -4,6 +4,8 @@ import Link from "next/link";
 import type { KeyboardEvent } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 import { CAL_LINK } from "@/lib/booking";
+import { trackMeta } from "@/lib/meta/track";
+import { META_EVENTS } from "@/lib/meta/events";
 
 type ContactTab = "book" | "message";
 type FormState = "idle" | "submitting" | "success" | "error";
@@ -189,6 +191,10 @@ function ContactForm() {
         setMessage(body?.error ?? "Message delivery is temporarily unavailable. Try again later.");
         return;
       }
+
+      // Contact — a message submission. Deliberately NOT Lead, so contact-form
+      // traffic never lands in the event the scorecard ads optimise on.
+      trackMeta(META_EVENTS.contact, { content_name: "Nexubis Contact Form" }, { email, firstName: name });
 
       setState("success");
       setMessage("Thanks  your message has been received. Well get back to you shortly.");
