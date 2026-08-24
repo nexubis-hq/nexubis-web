@@ -68,6 +68,7 @@ Verify via the public API:
 - [ ] Lead value model: expected ZAR value = package price × close rate, one documented constant (LekkeWeb: `leadValue()` in `components/MetaPixel.tsx`). Keep any server-side copy in sync.
 - [ ] Internal/test email suppression on EVERY leg (conversions, webhooks, notify, leads DB), driven by one env var (`AUDIT_INTERNAL_EMAILS`), default-safe.
 - [ ] Meta-side (human task): custom conversions per `content_name`; know that `Schedule` counts drop when click-inflation is removed.
+- [x] **Audience gate REMOVED (2026-08-24, PR #25).** The run route used to block sites the Haiku classifier labelled `industryFit: "outside"`, but it wrongly rejected real manufacturers (tools, tiles) — a lost paid click each, firing after AuditStart, so a third invisible drain on the AuditStart→Lead gap. No submitted link is rejected now; off-topic sites are bounded only by the abuse rails (per-IP/per-target/global). The detected fit is recorded (never enforced) in the scan-outcome log and surfaced at `/scorecard/admin/scans`. Trade-off: off-topic submissions now cost a full scan.
 
 ## 4. Lead capture / unlock flow
 
