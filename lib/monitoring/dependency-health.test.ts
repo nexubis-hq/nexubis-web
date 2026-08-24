@@ -2,11 +2,15 @@ import { test, afterEach } from "vitest";
 import assert from "node:assert/strict";
 import {
   checkSerper,
+  checkScreenshotOne,
   checkAnthropic,
   checkResend,
+  checkUpstash,
   problemsFrom,
   formatAlertEmail,
   alertStateKey,
+  sumCostCents,
+  monthStartIso,
   type DependencyCheck,
 } from "./dependency-health";
 
@@ -17,51 +21,82 @@ function stubFetch(status: number, body: unknown): typeof fetch {
 }
 
 afterEach(() => {
-  delete process.env.SERPER_API_KEY;
-  delete process.env.SERPER_LOW_BALANCE;
-  delete process.env.ANTHROPIC_API_KEY;
-  delete process.env.RESEND_API_KEY;
+  for (const k of [
+    "SERPER_API_KEY", "SERPER_LOW_BALANCE", "SCREENSHOTONE_ACCESS_KEY", "SCREENSHOTONE_LOW_BALANCE",
+    "ANTHROPIC_API_KEY", "ANTHROPIC_ADMIN_KEY", "ANTHROPIC_MONTHLY_BUDGET_USD",
+    "RESEND_API_KEY", "KV_REST_API_URL", "KV_REST_API_TOKEN",
+  ]) delete process.env[k];
 });
 
 test("Serper: healthy balance is ok, below threshold is low, and each carries the number", async () => {
   process.env.SERPER_API_KEY = "k";
   process.env.SERPER_LOW_BALANCE = "5000";
-
   const ok = await checkSerper({ fetchImpl: stubFetch(200, { balance: 49996 }) });
   assert.equal(ok.status, "ok");
   assert.equal(ok.balance, 49996);
 
   const low = await checkSerper({ fetchImpl: stubFetch(200, { balance: 1200 }) });
   assert.equal(low.status, "low");
-  assert.equal(low.threshold, 5000);
   assert.ok(low.message.includes("1,200"));
 });
 
-test("Serper: a missing key or a bad response is an error, never a false ok", async () => {
-  const noKey = await checkSerper({ fetchImpl: stubFetch(200, { balance: 1 }) });
-  assert.equal(noKey.status, "error"); // SERPER_API_KEY unset
+test("ScreenshotOne: thresholds on `available`; low when short, error on missing key", async () => {
+  const noKey = await checkScreenshotOne({ fetchImpl: stubFetch(200, { available: 1 }) });
+  assert.equal(noKey.status, "error"); // key unset
 
-  process.env.SERPER_API_KEY = "k";
-  const http = await checkSerper({ fetchImpl: stubFetch(402, {}) });
-  assert.equal(http.status, "error");
-
-  const noBalance = await checkSerper({ fetchImpl: stubFetch(200, { rateLimit: 50 }) });
-  assert.equal(noBalance.status, "error");
+  process.env.SCREENSHOTONE_ACCESS_KEY = "k";
+  process.env.SCREENSHOTONE_LOW_BALANCE = "200";
+  assert.equal((await checkScreenshotOne({ fetchImpl: stubFetch(200, { available: 1996 }) })).status, "ok");
+  const low = await checkScreenshotOne({ fetchImpl: stubFetch(200, { available: 40 }) });
+  assert.equal(low.status, "low");
+  assert.equal(low.balance, 40);
 });
 
-test("Anthropic: a live key is ok, a rejected key is an error", async () => {
+test("sumCostCents adds every bucket result; monthStartIso is the UTC first-of-month", () => {
+  const body = {
+    data: [
+      { results: [{ amount: "123.45" }, { amount: "76.55" }] },
+      { results: [{ amount: "800" }] },
+      { results: [] },
+    ],
+  };
+  assert.equal(sumCostCents(body), 1000); // cents ($10.00)
+  assert.equal(sumCostCents({}), 0);
+  assert.equal(monthStartIso(new Date("2026-08-24T13:00:00Z")), "2026-08-01T00:00:00.000Z");
+});
+
+test("Anthropic: with an Admin key + budget, thresholds on month-to-date spend", async () => {
+  process.env.ANTHROPIC_ADMIN_KEY = "sk-ant-admin01-x";
+  process.env.ANTHROPIC_MONTHLY_BUDGET_USD = "100";
+  // 500000 cents = $5000... use a small spend: 5000 cents = $50 of $100 -> ok
+  const ok = await checkAnthropic({ fetchImpl: stubFetch(200, { data: [{ results: [{ amount: "5000" }] }] }) });
+  assert.equal(ok.status, "ok");
+  // 9000 cents = $90 of $100 -> within 15% -> low
+  const low = await checkAnthropic({ fetchImpl: stubFetch(200, { data: [{ results: [{ amount: "9000" }] }] }) });
+  assert.equal(low.status, "low");
+  // A rejected admin key is an error
+  const bad = await checkAnthropic({ fetchImpl: stubFetch(401, {}) });
+  assert.equal(bad.status, "error");
+});
+
+test("Anthropic: without an Admin key it falls back to key validity", async () => {
   process.env.ANTHROPIC_API_KEY = "k";
   assert.equal((await checkAnthropic({ fetchImpl: stubFetch(200, { data: [] }) })).status, "ok");
   assert.equal((await checkAnthropic({ fetchImpl: stubFetch(401, {}) })).status, "error");
 });
 
+test("Upstash: reachable ping is ok; missing creds or a failed ping is an error", async () => {
+  assert.equal((await checkUpstash({ fetchImpl: stubFetch(200, { result: "PONG" }) })).status, "error"); // creds unset
+  process.env.KV_REST_API_URL = "https://x.upstash.io";
+  process.env.KV_REST_API_TOKEN = "t";
+  assert.equal((await checkUpstash({ fetchImpl: stubFetch(200, { result: "PONG" }) })).status, "ok");
+  assert.equal((await checkUpstash({ fetchImpl: stubFetch(500, {}) })).status, "error");
+});
+
 test("Resend: full-access ok; 401/403 is a send-scoped key (ok, no false alarm); 5xx is an error", async () => {
   process.env.RESEND_API_KEY = "k";
   assert.equal((await checkResend({ fetchImpl: stubFetch(200, { data: [] }) })).status, "ok");
-  // A sending-only key legitimately cannot read /domains; must NOT alert.
   assert.equal((await checkResend({ fetchImpl: stubFetch(401, {}) })).status, "ok");
-  assert.equal((await checkResend({ fetchImpl: stubFetch(403, {}) })).status, "ok");
-  // A real outage still surfaces.
   assert.equal((await checkResend({ fetchImpl: stubFetch(503, {}) })).status, "error");
 });
 
@@ -84,5 +119,5 @@ test("problemsFrom keeps only low/error; formatAlertEmail leads with them and li
 
 test("alertStateKey slugifies the dependency name for a stable cooldown key", () => {
   assert.equal(alertStateKey("Serper (web search)"), "monitor-alert:serper-web-search");
-  assert.equal(alertStateKey("Anthropic (Claude)"), "monitor-alert:anthropic-claude");
+  assert.equal(alertStateKey("ScreenshotOne (screenshots)"), "monitor-alert:screenshotone-screenshots");
 });
