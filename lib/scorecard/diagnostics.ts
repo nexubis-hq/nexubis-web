@@ -14,6 +14,10 @@ export interface ScanRunLog {
   ms: number;
   /** Target host only (no path, no query): the public domain that was checked. */
   host: string | null;
+  /** What the classifier thought the site was (manufacturer/adjacent/outside/
+   *  unclear). Recorded for insight only; it no longer gates anything. Null when
+   *  detection did not run (e.g. an invalid URL). */
+  fit?: string | null;
   /** ISO timestamp of the terminal state. */
   at: string;
 }

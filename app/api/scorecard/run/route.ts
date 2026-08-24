@@ -11,7 +11,6 @@
 import { NextRequest } from "next/server";
 import { prospectFromRunInput, runInputIsValid, runIdFor, storeRunRecord, type RunInput } from "@/lib/scorecard/run";
 import { detectProspectContext, applyDetection } from "@/lib/scorecard/detect";
-import { OUT_OF_SCOPE_MESSAGE } from "@/lib/scorecard/copy";
 import { generateScorecard } from "@/lib/scorecard/generate";
 import type { ScanStage } from "@/lib/scorecard/orchestrator";
 import { redactForTeaser } from "@/lib/scorecard/result";
@@ -83,11 +82,15 @@ export async function POST(req: NextRequest) {
   // whichever terminal state the run reaches.
   const startedAt = Date.now();
   const targetHostForLog = scanTargetHost(input?.url);
+  // We no longer BLOCK on audience fit (a wrong reject costs a paid click), but
+  // we still record what the classifier thought, purely as insight in the admin
+  // Scans view. Populated once detection has run.
+  let detectedFit: string | null = null;
   let outcomeLogged = false;
   const logOutcome = async (outcome: ScanOutcome) => {
     if (outcomeLogged) return;
     outcomeLogged = true;
-    await recordScanOutcome({ outcome, ms: Date.now() - startedAt, host: targetHostForLog, at: new Date().toISOString() });
+    await recordScanOutcome({ outcome, ms: Date.now() - startedAt, host: targetHostForLog, fit: detectedFit, at: new Date().toISOString() });
   };
 
   const stream = new ReadableStream<Uint8Array>({
@@ -140,16 +143,12 @@ export async function POST(req: NextRequest) {
         // "reading" stage up front so the scan animation reflects it.
         send({ type: "stage", stage: "reading" });
         const detection = await detectProspectContext(prospect);
+        detectedFit = detection.industryFit;
 
-        // Audience gate: only a confident "outside" blocks; unreadable sites
-        // and unclear reads proceed, so a bad crawl can never lock out a real
-        // prospect. Gating here, before generation, is what keeps an abused
-        // run's cost at one cheap detection instead of a full scan.
-        if (detection.industryFit === "outside") {
-          console.log(`[scorecard-run] out-of-scope site blocked: ${prospect.url}`);
-          await fail(OUT_OF_SCOPE_MESSAGE, "out-of-scope");
-          return;
-        }
+        // No audience gate: we never turn a submitted link away, because a
+        // misclassified manufacturer is a lost paid click. Off-topic sites are
+        // held back only by the abuse rails above (per-IP, per-target, global).
+        // The detected fit is recorded (not enforced) for visibility.
 
         const enriched = applyDetection(prospect, detection);
         // The first personal beat of the scan: tell them what their site says

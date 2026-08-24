@@ -133,9 +133,8 @@ export async function detectProspectContextUncached(prospect: ProspectData): Pro
     .slice(0, MAX_COMPETITORS);
 
   // Too few rivals to benchmark: rescue from live search before giving up.
-  // Out-of-scope sites skip the rescue; the route blocks them anyway, so the
-  // searches would be spend for nothing.
-  if (competitors.length < MIN_COMPETITORS && detect.data.industryFit !== "outside") {
+  // The route no longer blocks any site, so every thin read gets the rescue.
+  if (competitors.length < MIN_COMPETITORS) {
     const rescued = await rescueCompetitors(companyName || prospect.company, oneLiner, prospect.url).catch(() => []);
     competitors = filterRescuedCompetitors([...competitors, ...rescued], companyName || prospect.company, prospect.url).slice(
       0,
