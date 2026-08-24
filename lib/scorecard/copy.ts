@@ -10,16 +10,16 @@ export const POWERED_BY = "Powered by Nexubis AI";
 export const LANDING = {
   headline: "How Credible Is Your Brand, Really?",
   subheadline:
-    "Run the Industrial Brand Credibility Scorecard, powered by Nexubis AI. Enter your website and see, on the spot, how well your brand represents your product, how you benchmark against the competitors you cross-shop with, and the first place to fix.",
+    "Run the Industrial Brand Credibility Scorecard, powered by Nexubis AI. Enter your website and see, in about a minute, how well your brand represents your product, how you benchmark against the competitors you cross-shop with, and the first place to fix.",
   bullets: [
     "Your Credibility Score across the five places buyers look",
     "A side-by-side benchmark against the competitors buyers weigh you against",
     "The first place to fix, explained clearly",
   ],
   formHeadline: "Check Your Brand's Credibility",
-  formIntro: "Enter your website. We read the rest ourselves, and you'll see your result on the spot.",
+  formIntro: "Enter your website. We read the rest ourselves, and your result appears in about a minute.",
   submitButton: "Check my brand's credibility",
-  expectationLine: "You see your result on the spot. Unlock the full report by email, no waiting.",
+  expectationLine: "Your result appears in about a minute. Unlock the full report by email, no waiting.",
   microProof: "Free, no obligations. We take on two new partners a month; the Scorecard is where most start.",
 } as const;
 
@@ -94,23 +94,37 @@ export const SCAN_STAGES: Record<"reading" | "impressions" | "competitors" | "sc
   scoring: "Scoring 25 checks",
 };
 
-// Rotating ticker under the scan checklist: what the pipeline is genuinely
-// doing, in buyer terms, with a couple of clearly-labelled waiting jokes mixed
-// in so the minute feels shorter. The detected line lands the moment the
-// server has read the site: the first personal touch.
-export const SCAN_TICKER = {
-  detected: (oneLiner: string) => `So you make ${oneLiner}. Good. Now we know exactly what to benchmark.`,
-  lines: (company: string) => [
-    `Loading ${company} on a desktop and a phone, the way a buyer first sees it.`,
-    "Running the five-second test: can a stranger tell what you make, for whom, and why it is worth more?",
-    "Measuring your loading speed with Google PageSpeed, mobile and desktop.",
-    "Searching the web for your brochures, spec sheets and trade show presence.",
-    "Dad joke while you wait: we asked your website to open up. It said it had too many tabs.",
-    "Checking how your competitors show up when the same buyer looks at them.",
-    "Counting the languages your site speaks to its export markets.",
-    "Dad joke while you wait: the scan wanted a coffee break. We told it to filter faster.",
-    "Scoring all 25 checks across the five places buyers look.",
-  ],
+// The fine-grained work narrated beneath the scan checklist. Each line maps to
+// something the pipeline genuinely does, grouped under the four real stages the
+// backend reports, so a line is only ever shown once its stage has started. The
+// Nexubis voice: present tense, no jokes, no exclamation marks, no emoji, no em
+// dashes (house rule). Kept short (~40 chars) so nothing wraps on a phone. The
+// wait is real work; saying what the work is earns the score the tool hands over.
+export const SCAN_STEPS: { stage: keyof typeof SCAN_STAGES; label: string }[] = [
+  { stage: "reading", label: "Fetching your website" },
+  { stage: "reading", label: "Mapping your site structure" },
+  { stage: "reading", label: "Reading your product story" },
+  { stage: "impressions", label: "Checking your message clarity" },
+  { stage: "impressions", label: "Reviewing your calls to action" },
+  { stage: "impressions", label: "Assessing your brand identity" },
+  { stage: "competitors", label: "Finding your closest competitors" },
+  { stage: "competitors", label: "Running the same checks on each" },
+  { stage: "scoring", label: "Scoring you side by side" },
+  { stage: "scoring", label: "Compiling your Credibility Score" },
+];
+
+// The sub-line under the active step. The detected beat lands the moment the
+// server has read the site (the first personal touch and it stays put after);
+// before that, and if detection returns nothing, a calm holding line per stage
+// keeps the screen moving. Same house rules: short, present tense, no em dashes.
+export const SCAN_SUBLINE = {
+  detected: (oneLiner: string) => `So you make ${oneLiner}. Now we know what to benchmark.`,
+  holding: {
+    reading: "Reading page titles and headings",
+    impressions: "Looking for proof and credentials",
+    competitors: "Comparing you against close rivals",
+    scoring: "Weighing all 25 checks",
+  } as Record<keyof typeof SCAN_STAGES, string>,
 } as const;
 
 // ── Verdict band scale (teaser + report) ─────────────────────────────────────

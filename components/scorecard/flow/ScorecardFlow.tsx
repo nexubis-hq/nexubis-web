@@ -61,17 +61,27 @@ export function ScorecardFlow() {
   // AuditStart fires once per visit, even if validation bounces the user back
   // and they resubmit (§3: once per visit, ref-guarded against retries).
   const auditStartFired = useRef(false);
+  // AuditComplete (diagnosis only) marks the scan finishing and the teaser/gate
+  // rendering. Once per visit too, so a retry never double-counts it.
+  const auditCompleteFired = useRef(false);
   const urlValid = looksLikeWebAddress(url);
 
-  async function submit(e: React.FormEvent) {
+  function submit(e: React.FormEvent) {
     e.preventDefault();
+    void runScan(url);
+  }
+
+  // The scan itself, callable from both the form submit and the failure-state
+  // "Try again" button (which replays the same address).
+  async function runScan(rawUrl: string) {
     setFieldError("");
-    if (!looksLikeWebAddress(url)) {
+    if (!looksLikeWebAddress(rawUrl)) {
       setFieldError("That website address does not look right. A plain domain like example.com works.");
+      setFlow({ step: "form" });
       return;
     }
 
-    const company = companyFromUrl(url);
+    const company = companyFromUrl(rawUrl);
     if (!auditStartFired.current) {
       auditStartFired.current = true;
       trackMeta(META_EVENTS.auditStart, { content_category: "scorecard", content_name: company });
@@ -81,7 +91,7 @@ export function ScorecardFlow() {
       const res = await fetch("/api/scorecard/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: cleanDomainInput(url) }),
+        body: JSON.stringify({ url: cleanDomainInput(rawUrl) }),
       });
       if (!res.ok || !res.body) {
         setFlow({ step: "error", message: "The check could not start. Give it another try in a moment." });
@@ -114,6 +124,12 @@ export function ScorecardFlow() {
           } else if (payload.type === "detected") {
             setFlow((f) => (f.step === "scanning" ? { ...f, detectedOneLiner: payload.oneLiner } : f));
           } else if (payload.type === "done") {
+            // Scan finished and the teaser/gate is about to render: the marker
+            // that splits abandonment-during-wait from refusal-at-gate.
+            if (!auditCompleteFired.current) {
+              auditCompleteFired.current = true;
+              trackMeta(META_EVENTS.auditComplete, { content_category: "scorecard", content_name: company });
+            }
             setFlow({ step: "teaser", runId: payload.runId, teaser: payload.teaser });
             requestAnimationFrame(() => teaserRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
           } else {
@@ -159,13 +175,24 @@ export function ScorecardFlow() {
         <div className="sc-landing-form-card" data-reveal>
           {flow.step === "scanning" ? (
             <ScanAnimation stage={flow.stage} company={flow.company} detectedOneLiner={flow.detectedOneLiner ?? null} />
+          ) : flow.step === "error" ? (
+            <div className="sc-scan-error" role="alert">
+              <p className="sc-scan-error-msg">{flow.message}</p>
+              <div className="sc-scan-error-actions">
+                <button className="btn btn-primary" type="button" onClick={() => void runScan(url)}>
+                  Try again
+                </button>
+                <button type="button" className="sc-scan-error-alt" onClick={() => setFlow({ step: "form" })}>
+                  Check a different address
+                </button>
+              </div>
+            </div>
           ) : (
             <>
               <div className="sc-card-visual">
                 <ScorecardPreviewRadar />
               </div>
               <form className="sc-landing-form" onSubmit={submit}>
-                {flow.step === "error" ? <p className="sc-form-error">{flow.message}</p> : null}
                 <label className={`sc-field${urlValid ? " sc-field-valid" : ""}`}>
                   <span className="sc-field-label">{FORM_FIELDS.website.label}</span>
                   <span className="sc-input-wrap">

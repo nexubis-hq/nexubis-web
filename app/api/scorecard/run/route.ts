@@ -17,6 +17,7 @@ import type { ScanStage } from "@/lib/scorecard/orchestrator";
 import { redactForTeaser } from "@/lib/scorecard/result";
 import { checkGeneration, bumpCounters, limitsConfigFromEnv, targetHash, type LimitsKv } from "@/lib/scorecard/limits";
 import { getKv } from "@/lib/scorecard/kv";
+import { recordScanOutcome, scanTargetHost, type ScanOutcome } from "@/lib/scorecard/diagnostics";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -77,6 +78,18 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const input = parseRunInput(body);
 
+  // Diagnosis-only telemetry (never a Meta event): outcome + duration per run,
+  // so an abandoned wait is distinguishable from a broken scan. Logged once, on
+  // whichever terminal state the run reaches.
+  const startedAt = Date.now();
+  const targetHostForLog = scanTargetHost(input?.url);
+  let outcomeLogged = false;
+  const logOutcome = async (outcome: ScanOutcome) => {
+    if (outcomeLogged) return;
+    outcomeLogged = true;
+    await recordScanOutcome({ outcome, ms: Date.now() - startedAt, host: targetHostForLog, at: new Date().toISOString() });
+  };
+
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const send = (obj: unknown) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
@@ -93,13 +106,14 @@ export async function POST(req: NextRequest) {
           // controller already closed; nothing to keep alive.
         }
       }, 10_000);
-      const fail = (error: string, reason: string) => {
+      const fail = async (error: string, reason: ScanOutcome) => {
         send({ type: "error", error, reason });
         controller.close();
+        await logOutcome(reason);
       };
       try {
         if (!input) {
-          fail("That website address does not look right. A plain domain like example.com works.", "invalid");
+          await fail("That website address does not look right. A plain domain like example.com works.", "invalid");
           return;
         }
         const prospect = prospectFromRunInput(input);
@@ -112,7 +126,7 @@ export async function POST(req: NextRequest) {
         try {
           const decision = await checkGeneration(ip, target, limitsKv(), cfg);
           if (!decision.allow) {
-            fail(LIMIT_MESSAGES[decision.reason] ?? LIMIT_MESSAGES.global, "limited");
+            await fail(LIMIT_MESSAGES[decision.reason] ?? LIMIT_MESSAGES.global, "limited");
             return;
           }
           await bumpCounters(target, limitsKv(), cfg);
@@ -133,7 +147,7 @@ export async function POST(req: NextRequest) {
         // run's cost at one cheap detection instead of a full scan.
         if (detection.industryFit === "outside") {
           console.log(`[scorecard-run] out-of-scope site blocked: ${prospect.url}`);
-          fail(OUT_OF_SCOPE_MESSAGE, "out-of-scope");
+          await fail(OUT_OF_SCOPE_MESSAGE, "out-of-scope");
           return;
         }
 
@@ -156,9 +170,10 @@ export async function POST(req: NextRequest) {
 
         send({ type: "done", runId, teaser: redactForTeaser(result) });
         controller.close();
+        await logOutcome("success");
       } catch (err) {
         console.error("[scorecard-run] failed:", err instanceof Error ? err.message : err);
-        fail("The check could not finish this time. Nothing is broken on your side; give it another try in a few minutes.", "failed");
+        await fail("The check could not finish this time. Nothing is broken on your side; give it another try in a few minutes.", "failed");
       } finally {
         clearInterval(heartbeat);
       }

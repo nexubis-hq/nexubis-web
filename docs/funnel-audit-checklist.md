@@ -61,6 +61,7 @@ Verify via the public API:
 - [ ] Server relay route (LekkeWeb: `app/api/meta-event/route.ts`): enriches with client IP + UA from headers (never from body), whitelists `customData` to strings/numbers, clean no-op 200 when the token env is unset (never errors client-side).
 - [ ] The four funnel events, with strict semantics:
   - **AuditStart** (custom): form submitted with website/business details. Once per visit (ref-guard against validation retries). `content_category`: entry mode.
+  - **AuditComplete** (custom, DIAGNOSIS ONLY): scan finished and the teaser/gate rendered. Once per visit (ref-guard). Splits abandonment-during-wait (AuditStart − AuditComplete) from refusal-at-gate (AuditComplete − Lead). NOT a custom conversion; never optimise on it. Mirrored server-side by a per-run outcome+duration log in Upstash (`lib/scorecard/diagnostics.ts`), internal only.
   - **Lead** (standard): email gate success. Distinct `content_name` per source so audit leads never blend with contact-form leads. Server-side leg includes SHA-256 hashed email.
   - **AuditBookClick** (custom): clicked the book CTA. A click is NOT a booking.
   - **Schedule** (standard): CONFIRMED bookings only (embed success + cal.com webhook, deduped via `cal_<uid>`). Never fired on clicks — this was a real bug in LekkeWeb, since fixed.
