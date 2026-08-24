@@ -8,7 +8,7 @@ const benefitColumns = [
   ],
   [
     "The first things to fix, clearly explained",
-    "Free, on the spot, and no call required",
+    "Free, in about a minute, and no call required",
   ],
 ];
 

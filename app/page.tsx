@@ -52,7 +52,7 @@ const HERO_SUB =
   "For European industrial manufacturers whose product is better than their brand shows, so buyers finally see why you're worth more than the cheaper alternative.";
 const HERO_SCORECARD_LINK = "Check your brand's credibility";
 const HERO_SUPPORT =
-  "Not ready to book? Run the instant check and see where you're being undersold, on the spot.";
+  "Not ready to book? Run the check and see where you're being undersold, in about a minute.";
 
 const BOOK_CTA_LABEL = "Book an application call";
 
@@ -132,9 +132,9 @@ const scorecardBullets = [
   "The first place to fix, explained clearly",
 ];
 const scorecardSub =
-  "Run the Industrial Brand Credibility Scorecard, powered by Nexubis AI. Enter your website and see, on the spot, how well your brand represents your product, how you benchmark against competitors you name, and the first place to fix.";
+  "Run the Industrial Brand Credibility Scorecard, powered by Nexubis AI. Enter your website and see, in about a minute, how well your brand represents your product, how you benchmark against competitors you name, and the first place to fix.";
 const scorecardExpectation =
-  "You see your result on the spot. Unlock the full report by email, no waiting.";
+  "Your result appears in about a minute. Unlock the full report by email, no waiting.";
 const scorecardMicroProof =
   "Free, no obligations. We take on two new partners a month; the Scorecard is where most start.";
 

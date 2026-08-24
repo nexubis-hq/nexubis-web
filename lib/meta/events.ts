@@ -11,6 +11,7 @@ export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "885652097
 export const META_EVENTS = {
   pageView: "PageView",
   auditStart: "AuditStart", // custom: scan started (website submitted). Once per visit.
+  auditComplete: "AuditComplete", // custom, DIAGNOSIS ONLY: scan finished, teaser/gate rendered. Splits abandonment-during-wait from refusal-at-gate. NOT a custom conversion; never optimise on it.
   lead: "Lead", // standard: email gate success.
   auditBookClick: "AuditBookClick", // custom: clicked a book CTA. NOT a booking.
   schedule: "Schedule", // standard: CONFIRMED booking only (cal.com webhook).
@@ -25,7 +26,6 @@ const STANDARD_META_EVENTS = new Set<string>([
   "Lead",
   "Schedule",
   "Purchase",
-  "CompleteRegistration",
   "Contact",
 ]);
 
