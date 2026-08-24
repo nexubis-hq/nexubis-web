@@ -3,6 +3,6 @@
   "framework": "nextjs",
   "crons": [
     { "path": "/api/cron/nurture-handoff", "schedule": "0 6 * * *" },
-    { "path": "/api/cron/dependency-health", "schedule": "0 7,19 * * *" }
+    { "path": "/api/cron/dependency-health", "schedule": "0 7 * * *" }
   ]
 }
