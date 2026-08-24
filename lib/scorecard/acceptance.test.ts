@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { REPORT, EMAIL_1, LANDING, UNLOCK, VERDICT_LINES, SCAN_STAGES } from "./copy";
+import { REPORT, EMAIL_1, LANDING, UNLOCK, VERDICT_LINES, SCAN_STAGES, SCAN_STEPS, SCAN_SUBLINE } from "./copy";
 import { verifyTurnstile } from "./unlock";
 import type { ScorecardResult } from "./result";
 
@@ -85,6 +85,25 @@ test("failure copy is honest, jargon-free and rule-clean", () => {
     assert.ok(!line.includes(EM));
     assert.ok(!/\baudit/i.test(line)); // audit-ok
     assert.ok(!/error code|exception|500|timeout/i.test(line), `no jargon: ${line}`);
+  }
+});
+
+// ── Scan narration obeys the loading-copy house rules ───────────────────────
+test("scan narration is calm and rule-clean: no jokes, no exclamations, no em dashes, phone-safe", () => {
+  const EM = String.fromCharCode(0x2014);
+  const holding = Object.values(SCAN_SUBLINE.holding);
+  const lines = [...SCAN_STEPS.map((s) => s.label), ...holding, SCAN_SUBLINE.detected("packaging machinery")];
+  for (const line of lines) {
+    assert.ok(!line.includes(EM), `em dash in "${line}"`);
+    assert.ok(!line.includes("!"), `exclamation mark in "${line}"`);
+    assert.ok(!/hang tight|almost there|dad joke|joke/i.test(line), `banned filler in "${line}"`);
+    // No emoji or pictographs: the Nexubis loading voice is plain text.
+    assert.ok(!/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(line), `emoji in "${line}"`);
+  }
+  // Short enough not to wrap on a narrow phone (the interpolated detected line
+  // is exempt: its length depends on the site's own one-liner).
+  for (const label of [...SCAN_STEPS.map((s) => s.label), ...holding]) {
+    assert.ok(label.length <= 45, `line too long (${label.length}): "${label}"`);
   }
 });
 

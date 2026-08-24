@@ -10043,22 +10043,39 @@ button.nav-link {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.2 5 9l5-6' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
 }
 
-/* The rotating "what we're doing right now" line. Re-keyed per message so the
-   fade-in replays; the detected line gets the brand red. */
-.sc-scan-ticker {
-  min-height: 2.6em;
-  color: var(--body);
-  font-size: 0.95rem;
-  line-height: 1.45;
+/* The fine-grained "what we're doing right now" line, re-keyed per message so
+   the fade-in replays as it cycles through the current stage's steps. */
+.sc-scan-label {
+  font-family: "Helvetica Now Display", Arial, sans-serif;
+  font-weight: 500;
+  font-size: 1.02rem;
+  color: var(--black);
+  margin: 0;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .sc-scan-ticker {
+  .sc-scan-label {
     animation: sc-ticker-in 0.45s ease;
   }
 }
 
-.sc-scan-ticker-detected {
+/* The sub-line: the detected beat once the site is read (brand red), or a calm
+   holding line per stage before then. Re-keyed so it fades on change too. */
+.sc-scan-subline {
+  min-height: 2.6em;
+  color: var(--body);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sc-scan-subline {
+    animation: sc-ticker-in 0.45s ease;
+  }
+}
+
+.sc-scan-subline-detected {
   color: var(--primary);
   font-weight: 500;
 }
@@ -10077,6 +10094,45 @@ button.nav-link {
 .sc-scan-note {
   color: var(--mid);
   font-size: 0.88rem;
+}
+
+/* Failure state inside the scan card: a human explanation plus an explicit way
+   back in. Every visitor who reaches the scan already cost a paid click, so a
+   dead end here is expensive; the retry keeps them from bouncing. */
+.sc-scan-error {
+  display: grid;
+  gap: 1.1rem;
+  padding-block: 0.5rem;
+}
+
+.sc-scan-error-msg {
+  color: var(--body);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.sc-scan-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.sc-scan-error-alt {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--mid);
+  font-size: 0.92rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.sc-scan-error-alt:hover {
+  color: var(--black);
 }
 
 @keyframes sc-tick-pulse {
