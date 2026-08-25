@@ -156,6 +156,9 @@ export function ScorecardFlow() {
     <section className="sc-landing">
       <div className="site-container sc-landing-grid">
         <div className="sc-landing-intro">
+          <span className="sc-landing-kicker" data-reveal>
+            {LANDING.kicker}
+          </span>
           <h1 data-reveal>{LANDING.headline}</h1>
           <p className="sc-landing-sub" data-reveal>
             {LANDING.subheadline}
@@ -167,9 +170,6 @@ export function ScorecardFlow() {
               </li>
             ))}
           </ul>
-          <p className="sc-landing-microproof" data-reveal>
-            {LANDING.microProof}
-          </p>
         </div>
 
         <div className="sc-landing-form-card" data-reveal>
@@ -220,7 +220,11 @@ export function ScorecardFlow() {
                 <button className="btn btn-primary sc-landing-submit" type="submit">
                   {LANDING.submitButton}
                 </button>
-                <p className="sc-landing-expectation">{LANDING.expectationLine}</p>
+                <p className="sc-landing-reassurance">
+                  <span className="sc-landing-reassurance-strong">{LANDING.reassurance.highlight}</span>
+                  <span className="sc-landing-reassurance-sep"> · </span>
+                  <span className="sc-landing-reassurance-note">{LANDING.reassurance.note}</span>
+                </p>
               </form>
             </>
           )}

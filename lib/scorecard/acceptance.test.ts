@@ -76,7 +76,7 @@ test("failure copy is honest, jargon-free and rule-clean", () => {
     "You have run a check recently. Your previous result is still at its link; try again in a few days.",
     "This company has been checked a few times today already. Try again tomorrow.",
     "The Scorecard is busy right now. Give it an hour and try again.",
-    "This check has expired. Run a fresh one; it takes about a minute.",
+    "This check has expired. Run a fresh one; it takes under 2 minutes.",
     "Use your work email. Your Scorecard link lands there and stays live for 180 days.",
     "The bot check did not pass. Reload the page and try again.",
   ];

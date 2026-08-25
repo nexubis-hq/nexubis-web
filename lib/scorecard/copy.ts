@@ -6,25 +6,31 @@
 export const SCORECARD_NAME = "The Industrial Brand Credibility Scorecard";
 export const POWERED_BY = "Powered by Nexubis AI";
 
-// ── Landing (Section 13 / Prompt 5 locked copy) ──────────────────────────────
+// ── Landing (hero rewrite, Copy Brief v1 §3) ─────────────────────────────────
+// The hero leads with the promise the ad made (a score out of 100), names the
+// audience in the kicker, and shows the client roster as proof. The website
+// field is the only thing the visitor fills in; everything else is detected
+// server-side.
 export const LANDING = {
-  headline: "How Credible Is Your Brand, Really?",
+  kicker: "For European industrial manufacturers",
+  headline: "Your Brand, Scored out of 100.",
   subheadline:
-    "Run the Industrial Brand Credibility Scorecard, powered by Nexubis. Enter your website and see, in about a minute, how well your brand represents your product, how you benchmark against the competitors you cross-shop with, and the first place to fix.",
+    "Enter your website. In under 2 minutes you get your score on the five things buyers judge you on, how you sit against your closest competitors, and the first thing to fix.",
   bullets: [
-    "Your Credibility Score across the five places buyers look",
-    "A side-by-side benchmark against the competitors buyers weigh you against",
-    "The first place to fix, explained clearly",
+    "Scored on five fronts: website, visuals, message, printed material and brand as a whole",
+    "Benchmarked side by side against the competitors you get cross-shopped with",
+    "One clear first fix, explained plainly, not a list of forty problems",
   ],
-  formHeadline: "Check Your Brand's Credibility",
-  formIntro: "Enter your website. We read the rest ourselves, and your result appears in about a minute.",
-  submitButton: "Check my brand's credibility",
-  expectationLine: "Your result appears in about a minute. Unlock the full report by email, no waiting.",
-  microProof: "Free, no obligations. We take on two new partners a month; the Scorecard is where most start.",
+  submitButton: "Scan my website",
+  // Sits directly under the button. The highlight is red, the note stays grey.
+  reassurance: {
+    highlight: "Free brand scorecard",
+    note: "Done in under 2 minutes",
+  },
 } as const;
 
 export const FORM_FIELDS = {
-  website: { label: "Company website", helper: "That's all we need. We read your site and work out the rest." },
+  website: { label: "Enter your company website", helper: "That's all we need. We read your site and work out the rest." },
   oneLiner: { label: "What do you make, in one line", helper: "Example: leak detection systems for packaging lines." },
   competitors: { label: "Two or three competitors you keep running into", helper: "Names or websites. We benchmark you against them." },
   firstName: { label: "First name", helper: "" },
