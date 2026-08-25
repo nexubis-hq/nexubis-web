@@ -150,7 +150,7 @@ export async function promoteRun(input: UnlockInput): Promise<UnlockOutcome> {
     return {
       ok: false,
       status: 410,
-      error: "This check has expired. Run a fresh one; it takes about a minute.",
+      error: "This check has expired. Run a fresh one; it takes under 2 minutes.",
       reason: "run-expired",
     };
   }

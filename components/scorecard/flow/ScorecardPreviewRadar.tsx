@@ -110,7 +110,6 @@ export function ScorecardPreviewRadar() {
 
   return (
     <figure className="sc-preview" aria-hidden="true">
-      <span className="sc-preview-kicker">Your 5-Point Scorecard</span>
       <svg className="sc-preview-radar" viewBox={`0 0 ${W} ${H}`} role="presentation">
         {rings.map((f, i) => (
           <polygon
@@ -156,10 +155,6 @@ export function ScorecardPreviewRadar() {
           );
         })}
       </svg>
-      <figcaption className="sc-preview-legend">
-        <span className="sc-preview-key sc-preview-key-you">You</span>
-        <span className="sc-preview-key sc-preview-key-bench">Your competitors</span>
-      </figcaption>
     </figure>
   );
 }

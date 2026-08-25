@@ -17,7 +17,7 @@ export default function ReportNotFound() {
           <h1>This report is not here anymore.</h1>
           <p>
             Report links stay live for 180 days. If yours has expired, or the address is not quite right, the quickest fix is to run a
-            fresh check. It takes about a minute.
+            fresh check. It takes under 2 minutes.
           </p>
           <Link className="btn btn-primary" href={SCORECARD_URL}>
             Run a fresh Credibility Check

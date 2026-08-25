@@ -3428,6 +3428,9 @@ button.nav-link {
     max-width: none;
     margin-inline: 0;
     gap: 0;
+    /* Keep the hamburger off the very edge so the header does not read as
+       overflowing on a phone (the logo already insets 10px on the left). */
+    padding-right: 0.625rem;
   }
 
   .nav-brand {
@@ -9736,14 +9739,9 @@ button.nav-link {
   background: var(--primary);
 }
 
-.sc-landing-microproof {
-  color: color-mix(in srgb, var(--white) 52%, transparent);
-  font-size: 0.95rem;
-  max-width: 44ch;
-}
-
 /* On the dark section the form card reads as a bright, slightly translucent
-   glass panel lifted off the backdrop with a soft red-tinted glow. */
+   glass panel lifted off the backdrop with a soft red-tinted glow. It is the
+   right-hand column and sticks as the intro scrolls past on desktop. */
 .sc-landing-form-card {
   background: color-mix(in srgb, var(--white) 96%, transparent);
   border: 1px solid color-mix(in srgb, var(--white) 12%, transparent);
@@ -9797,16 +9795,23 @@ button.nav-link {
   text-align: center;
 }
 
-.sc-landing-expectation {
+/* Sits directly under the submit button. Quiet reassurance, not a headline.
+   The highlight reads in Nexubis red, the note stays grey. */
+.sc-landing-reassurance {
   font-size: 0.88rem;
   color: var(--mid);
+}
+
+.sc-landing-reassurance-strong {
+  color: var(--primary);
+  font-weight: 600;
 }
 
 /* Landing intro kicker, matching the homepage section-eyebrow treatment. */
 .sc-landing-kicker {
   display: inline-block;
   margin-bottom: var(--s-2);
-  color: var(--primary);
+  color: var(--white);
   font-family: "Helvetica Now Display", Arial, sans-serif;
   font-weight: 600;
   font-size: 0.8rem;
@@ -9814,49 +9819,52 @@ button.nav-link {
   text-transform: uppercase;
 }
 
-/* The scorecard preview visual sits at the top of the form card, above the
-   website field, so the card reads as "here is what we measure, now enter your
-   site". */
+/* The five-point preview sits on top of the card, above the website field,
+   directly on the card surface (no inner box). The negative bottom margin pulls
+   the field up into the chart's empty lower area so the gap reads tighter on
+   desktop (overridden on mobile, where the chart sits below the field). */
 .sc-card-visual {
-  margin-bottom: var(--s-3);
-  padding: 1.75rem 1.25rem 1.5rem;
-  border-radius: 0.7rem;
-  background: color-mix(in srgb, var(--surface) 82%, var(--light));
-  border: 1px solid color-mix(in srgb, var(--mid) 32%, transparent);
-  box-shadow: inset 0 1px 2px rgb(0 0 0 / 5%);
+  margin-bottom: -2.5rem;
+  padding: 0.5rem 0.25rem;
 }
 
-/* Mobile only (< 960px): reorder the scorecard hero. The form card jumps up
-   directly under the heading, the descriptive text drops below it, and inside
-   the card the radar preview moves to the bottom (under the "your result
-   appears" line). Desktop keeps its two-column layout untouched. Flattening the
-   intro with display:contents lets the heading and the form card be reordered
-   as siblings of the grid without changing the markup. */
+/* Mobile only (< 960px): stack the hero as kicker, heading, then the form card
+   with the website field, button and reassurance on top and the five-point
+   preview below it, then the subhead and bullets. Desktop keeps its two-column
+   layout (heading + intro on the left, the card with the preview on top and the
+   form below on the right). Flattening the intro with display:contents lets the
+   kicker, heading and form card be reordered as siblings of the grid without
+   changing the markup. */
 @media (max-width: 959.98px) {
   .sc-landing-intro {
     display: contents;
   }
-  .sc-landing-intro h1 {
+  .sc-landing-kicker {
     order: 1;
+    /* Pull the heading up toward the kicker so the pair reads as one unit. */
+    margin-bottom: calc(var(--grid-gap) * -1);
+    /* Smaller and tighter so the audience line fits on one line at 390px. */
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+  }
+  .sc-landing-intro h1 {
+    order: 2;
     margin-bottom: 0;
   }
   .sc-landing-form-card {
-    order: 2;
+    order: 3;
     position: static;
     display: flex;
     flex-direction: column;
   }
   .sc-landing-sub {
-    order: 3;
+    order: 4;
     margin-bottom: 0;
   }
   .sc-landing-bullets {
-    order: 4;
-  }
-  .sc-landing-microproof {
     order: 5;
-    margin-top: 0;
   }
+  /* Inside the card on mobile: form first (input reachable), preview below. */
   .sc-landing-form-card .sc-landing-form {
     order: 1;
   }
@@ -9864,6 +9872,12 @@ button.nav-link {
     order: 2;
     margin-top: var(--s-3);
     margin-bottom: 0;
+  }
+  /* Reassurance on one centred line on mobile; sized down so it fits at 390px. */
+  .sc-landing-reassurance {
+    text-align: center;
+    font-size: 0.72rem;
+    white-space: nowrap;
   }
 }
 
@@ -9874,19 +9888,9 @@ button.nav-link {
   gap: 1.1rem;
 }
 
-.sc-preview-kicker {
-  color: var(--mid);
-  font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-weight: 700;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  text-align: center;
-}
-
 .sc-preview-radar {
   width: 100%;
-  max-width: 420px;
+  max-width: 520px;
   display: block;
   overflow: visible;
 }
@@ -9926,38 +9930,6 @@ button.nav-link {
   font-size: 13px;
   font-weight: 500;
   fill: var(--body);
-}
-
-.sc-preview-legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.3rem 0.8rem;
-  font-size: 0.72rem;
-  color: var(--body);
-}
-
-.sc-preview-key {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.sc-preview-key::before {
-  content: "";
-  width: 0.85rem;
-  height: 0;
-  border-top: 2px solid var(--mid);
-}
-
-.sc-preview-key-you::before {
-  border-top-color: var(--primary);
-  border-top-width: 3px;
-}
-
-.sc-preview-key-bench::before {
-  border-top-style: dashed;
-  border-top-color: color-mix(in srgb, var(--mid) 50%, transparent);
 }
 
 /* Inside the card the heading sits above the field; the grid gap governs the
