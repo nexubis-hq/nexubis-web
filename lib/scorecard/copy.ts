@@ -10,7 +10,7 @@ export const POWERED_BY = "Powered by Nexubis AI";
 export const LANDING = {
   headline: "How Credible Is Your Brand, Really?",
   subheadline:
-    "Run the Industrial Brand Credibility Scorecard, powered by Nexubis AI. Enter your website and see, in about a minute, how well your brand represents your product, how you benchmark against the competitors you cross-shop with, and the first place to fix.",
+    "Run the Industrial Brand Credibility Scorecard, powered by Nexubis. Enter your website and see, in about a minute, how well your brand represents your product, how you benchmark against the competitors you cross-shop with, and the first place to fix.",
   bullets: [
     "Your Credibility Score across the five places buyers look",
     "A side-by-side benchmark against the competitors buyers weigh you against",

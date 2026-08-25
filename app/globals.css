@@ -9826,6 +9826,47 @@ button.nav-link {
   box-shadow: inset 0 1px 2px rgb(0 0 0 / 5%);
 }
 
+/* Mobile only (< 960px): reorder the scorecard hero. The form card jumps up
+   directly under the heading, the descriptive text drops below it, and inside
+   the card the radar preview moves to the bottom (under the "your result
+   appears" line). Desktop keeps its two-column layout untouched. Flattening the
+   intro with display:contents lets the heading and the form card be reordered
+   as siblings of the grid without changing the markup. */
+@media (max-width: 959.98px) {
+  .sc-landing-intro {
+    display: contents;
+  }
+  .sc-landing-intro h1 {
+    order: 1;
+    margin-bottom: 0;
+  }
+  .sc-landing-form-card {
+    order: 2;
+    position: static;
+    display: flex;
+    flex-direction: column;
+  }
+  .sc-landing-sub {
+    order: 3;
+    margin-bottom: 0;
+  }
+  .sc-landing-bullets {
+    order: 4;
+  }
+  .sc-landing-microproof {
+    order: 5;
+    margin-top: 0;
+  }
+  .sc-landing-form-card .sc-landing-form {
+    order: 1;
+  }
+  .sc-landing-form-card .sc-card-visual {
+    order: 2;
+    margin-top: var(--s-3);
+    margin-bottom: 0;
+  }
+}
+
 .sc-preview {
   margin: 0;
   display: grid;
