@@ -1,0 +1,190 @@
+// Presentation-layer derivations for the report: everything here is computed
+// from the stored ScorecardResult (rubric check scores + evidence sentences),
+// never generated, so reports created long before this layout existed render
+// the same sections. Client-safe: types and pure functions only.
+import { RUBRIC, FIRST_FIX_ORDER, categoryLabel, type CategoryKey, type CheckDef } from "./rubric";
+import { prospectScores, type ScorecardResult } from "./result";
+import type { CategoryScore, CheckScore } from "./scoring";
+
+export interface ReportListItem {
+  key: string;
+  /** Short bold title: the check's label. */
+  title: string;
+  /** One-sentence explanation: the check's evidence sentence. */
+  body: string;
+  score: number;
+}
+
+function checkDef(catKey: CategoryKey, checkKey: string): CheckDef | null {
+  return RUBRIC.find((c) => c.key === catKey)?.checks.find((ch) => ch.key === checkKey) ?? null;
+}
+
+function itemFrom(catKey: CategoryKey, check: CheckScore): ReportListItem | null {
+  if (!check.assessable || check.score === null) return null;
+  const def = checkDef(catKey, check.key);
+  return {
+    key: check.key,
+    title: def?.label ?? check.key,
+    body: check.evidence,
+    score: check.score,
+  };
+}
+
+/** Checks that scored well (3-4): the "What is working" list, best first. */
+export function workingItems(cat: CategoryScore): ReportListItem[] {
+  return cat.checks
+    .map((ch) => itemFrom(cat.key, ch))
+    .filter((i): i is ReportListItem => i !== null && i.score >= 3)
+    .sort((a, b) => b.score - a.score);
+}
+
+/** Checks that scored 0-2: the "What to fix" list, worst first. */
+export function fixItems(cat: CategoryScore): ReportListItem[] {
+  return cat.checks
+    .map((ch) => itemFrom(cat.key, ch))
+    .filter((i): i is ReportListItem => i !== null && i.score <= 2)
+    .sort((a, b) => a.score - b.score);
+}
+
+/** Every assessable check scoring 0-2 counts as one issue. */
+export function issuesCount(result: ScorecardResult): number {
+  const p = prospectScores(result);
+  if (!p) return 0;
+  return p.categories.reduce((n, cat) => n + fixItems(cat).length, 0);
+}
+
+// One-line pillar summaries, three tiers per pillar. Plain and calm; the
+// specifics live in the lists underneath.
+const PILLAR_SUMMARY: Record<CategoryKey, { high: string; mid: string; low: string }> = {
+  "brand-identity": {
+    high: "The brand holds together and reads like it belongs at the front of the market.",
+    mid: "The brand holds together in places, but it undersells the company in others.",
+    low: "The brand reads smaller and older than the company behind it.",
+  },
+  website: {
+    high: "The site does its job: a stranger quickly sees what you make and why it matters.",
+    mid: "The site works, but it makes a buyer do more work than it should.",
+    low: "The site is costing you buyers before they ever reach a conversation.",
+  },
+  "product-visuals": {
+    high: "The product is shown properly, at a level buyers will compare favourably.",
+    mid: "The product is visible, but not shown at the level the machines deserve.",
+    low: "Buyers cannot see the product working, and that gap decides shortlists.",
+  },
+  "trade-show-print": {
+    high: "A researching buyer finds proper documents that match the brand.",
+    mid: "Some material exists, but a researching buyer has to dig for it.",
+    low: "A buyer doing homework finds little to take to their team.",
+  },
+  "message-clarity": {
+    high: "The message lands: a buyer can tell why this is worth more.",
+    mid: "Parts of the story land, but the value case is not immediate.",
+    low: "The words never make the case for why this is worth more.",
+  },
+};
+
+export function pillarSummary(cat: CategoryScore): string {
+  const t = PILLAR_SUMMARY[cat.key];
+  if (cat.total === null) return "This pillar could not be fully assessed from what is publicly visible.";
+  if (cat.total >= 14) return t.high;
+  if (cat.total >= 9) return t.mid;
+  return t.low;
+}
+
+// Short pillar chip labels (same set the homepage radar uses).
+export const PILLAR_CHIP_LABELS: Record<CategoryKey, string> = {
+  "brand-identity": "Brand",
+  website: "Website",
+  "product-visuals": "Visuals",
+  "trade-show-print": "Print",
+  "message-clarity": "Message",
+};
+
+export interface TopIssue {
+  rank: number;
+  title: string;
+  body: string;
+  impact: string;
+}
+
+// Deterministic impact estimates per pillar. Deliberately ranges and
+// "likely", never a precise claim; the wording names the mechanism the
+// pillar controls.
+const IMPACT_LINES: Record<CategoryKey, string> = {
+  website: "Likely 30-50% of warm visitors lost before they read a word",
+  "message-clarity": "Likely a meaningful share of serious enquiries never sent",
+  "product-visuals": "Likely losing shortlists to rivals who show their machines working",
+  "brand-identity": "Likely compared on price rather than capability",
+  "trade-show-print": "Likely dropped early by buyers who research before they call",
+};
+
+// Buyer-visibility priority for ranking equal scores: same order the
+// first-fix tie-break uses.
+function visibilityRank(key: CategoryKey): number {
+  return FIRST_FIX_ORDER.indexOf(key);
+}
+
+/** The three worst assessable checks across all pillars, ranked by score then
+ *  buyer visibility, each with its pillar's impact estimate. */
+export function topIssues(result: ScorecardResult): TopIssue[] {
+  const p = prospectScores(result);
+  if (!p) return [];
+  const all: Array<ReportListItem & { cat: CategoryKey }> = p.categories.flatMap((cat) =>
+    fixItems(cat).map((i) => ({ ...i, cat: cat.key })),
+  );
+  all.sort((a, b) => a.score - b.score || visibilityRank(a.cat) - visibilityRank(b.cat));
+  return all.slice(0, 3).map((i, idx) => ({
+    rank: idx + 1,
+    title: i.title,
+    body: i.body,
+    impact: IMPACT_LINES[i.cat],
+  }));
+}
+
+// One action line per pillar for the "where we would start" list.
+const START_ACTIONS: Record<CategoryKey, string> = {
+  website: "Make the homepage pass the five-second test, so a stranger instantly sees what you make and for whom",
+  "message-clarity": "Rewrite the core message around why the product is worth more, backed by the proof you already have",
+  "product-visuals": "Show the machines working, in video and 3D, at the level buyers expect from a leader",
+  "brand-identity": "Tighten the brand so every touchpoint reads premium and consistent",
+  "trade-show-print": "Give researching buyers proper brochures and spec sheets that match the brand",
+};
+
+/** Prioritised fix list: the first fix leads, then the remaining pillars from
+ *  weakest up, capped at 4 lines. */
+export function startList(result: ScorecardResult): string[] {
+  const p = prospectScores(result);
+  if (!p) return [];
+  const first = result.firstFix?.category ?? null;
+  const rest = p.categories
+    .filter((c) => c.key !== first && c.total !== null && c.total < 14)
+    .sort((a, b) => (a.total ?? 20) - (b.total ?? 20))
+    .map((c) => c.key);
+  const order: CategoryKey[] = [...(first ? [first] : []), ...rest];
+  return order.slice(0, 4).map((k) => START_ACTIONS[k]);
+}
+
+/** The one-line cost of doing nothing, from the verdict band and benchmark. */
+export function stayingSameLine(result: ScorecardResult): string {
+  const rival = result.verdict.bestRival;
+  const against = rival ? `${rival.company} keeps winning the comparisons buyers run` : "the competitors keep winning the comparisons buyers run";
+  switch (result.verdict.band) {
+    case "wide":
+      return `What staying the same costs you: every week, buyers who need exactly what you make judge you on this and ${against}.`;
+    case "visible":
+      return `What staying the same costs you: the gaps above stay visible to every buyer who compares, and ${against}.`;
+    default:
+      return `What staying the same costs you: the few specifics above stay the difference between shortlisted and chosen.`;
+  }
+}
+
+/** "For a [industry descriptor], here is where [Company] stands online." */
+export function industryDescriptor(result: ScorecardResult): string {
+  const one = result.meta.productOneLiner.trim().replace(/\.$/, "");
+  if (!one) return "European industrial manufacturer";
+  const lower = one.charAt(0).toLowerCase() + one.slice(1);
+  return `maker of ${lower}`;
+}
+
+/** One-line verdict under the gauge: the fixed band lines. */
+export { categoryLabel };
