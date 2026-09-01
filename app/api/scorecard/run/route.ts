@@ -16,6 +16,7 @@ import { generateScorecard } from "@/lib/scorecard/generate";
 import type { ScanStage } from "@/lib/scorecard/orchestrator";
 import {
   validateCaptureInput,
+  verifyEmailMx,
   verifyTurnstile,
   promoteResult,
   readExistingCapture,
@@ -23,7 +24,19 @@ import {
   runLeadPlumbing,
   type LeadCaptureInput,
 } from "@/lib/scorecard/unlock";
-import { checkGeneration, bumpCounters, limitsConfigFromEnv, targetHash, type LimitsKv } from "@/lib/scorecard/limits";
+import { validateUrl } from "@/lib/scorecard/fetch-site";
+import { prospectScores } from "@/lib/scorecard/result";
+import { notifyFailedScan, notifyBreakerTripped } from "@/lib/scorecard/notify";
+import {
+  checkGeneration,
+  bumpCounters,
+  markIpGenerated,
+  ipLastKey,
+  shouldNotifyBreaker,
+  limitsConfigFromEnv,
+  targetHash,
+  type LimitsKv,
+} from "@/lib/scorecard/limits";
 import { getKv } from "@/lib/scorecard/kv";
 import { recordScanOutcome, scanTargetHost, type ScanOutcome } from "@/lib/scorecard/diagnostics";
 
@@ -92,10 +105,29 @@ function limitsKv(): LimitsKv {
 }
 
 const LIMIT_MESSAGES: Record<string, string> = {
-  ip: "You have run a check recently. Your previous result is still at its link; try again in a few days.",
+  ip: "You have run a check recently. Here is your previous report; try a fresh one again in a few days.",
   target: "This company has been checked a few times today already. Try again tomorrow.",
-  global: "The audit is busy right now. Give it an hour and try again.",
+  global: "The audit is at capacity right now. Give it an hour and try again.",
 };
+
+// The whole generation races this deadline. Nested budgets: each external
+// call caps at 8-110s, this ceiling bounds the sum, and Vercel's maxDuration
+// (300s) backstops the route itself. Losing the race is a failed scan: the
+// visitor gets the friendly failure message and the team gets the lead.
+const GENERATION_DEADLINE_MS = 240_000;
+class DeadlineError extends Error {}
+function withDeadline<T>(work: Promise<T>): Promise<T> {
+  return Promise.race([
+    work,
+    new Promise<never>((_, reject) => setTimeout(() => reject(new DeadlineError("generation-deadline")), GENERATION_DEADLINE_MS)),
+  ]);
+}
+
+// A scan failed after a valid email capture: apologise honestly, promise the
+// manual follow-up we are actually going to do (the team was just emailed),
+// and never lose the lead.
+const FAILED_SCAN_MESSAGE =
+  "The check could not finish this time. Nothing is broken on your side: we have your address, we will run your audit ourselves and email you the report.";
 
 export async function POST(req: NextRequest) {
   const encoder = new TextEncoder();
@@ -138,18 +170,33 @@ export async function POST(req: NextRequest) {
         }
         const { input, capture } = parsed;
 
-        // Email + bot checks first: nothing generates (and nothing costs)
-        // until the capture passes. These were the unlock gate's rails; the
-        // gate is gone, so they guard the run itself now.
+        // Email + URL + bot checks first, cheapest first: nothing generates
+        // (and nothing costs) until the capture passes.
         const validation = validateCaptureInput(capture);
         if (!validation.ok) {
           await fail(validation.error, "invalid");
+          return;
+        }
+        // Full URL validation (scheme, parseability, SSRF blocklist) with the
+        // specific plain-English reason, BEFORE any spend. fetchSite would
+        // catch these later, but later means a wasted scan and a vague error.
+        const urlCheck = validateUrl(input.url ?? "");
+        if (!urlCheck.ok) {
+          await fail(urlCheck.reason, "invalid");
           return;
         }
         const ip = clientIp(req);
         const human = await verifyTurnstile(capture.turnstileToken, ip);
         if (!human) {
           await fail("The bot check did not pass. Reload the page and try again.", "invalid");
+          return;
+        }
+        // MX lookup: catches typo domains before a scan is spent on them.
+        // Fails open on anything transient; only a definitive "this domain
+        // cannot receive mail" rejects.
+        const mx = await verifyEmailMx(capture.email);
+        if (!mx.ok) {
+          await fail(mx.error ?? "That email address does not look right.", "invalid");
           return;
         }
 
@@ -174,7 +221,28 @@ export async function POST(req: NextRequest) {
         try {
           const decision = await checkGeneration(ip, target, limitsKv(), cfg);
           if (!decision.allow) {
-            await fail(LIMIT_MESSAGES[decision.reason] ?? LIMIT_MESSAGES.global, "limited");
+            if (decision.reason === "global" && (await shouldNotifyBreaker(limitsKv(), cfg))) {
+              await notifyBreakerTripped(cfg.globalHourlyCap).catch(() => {});
+            }
+            // The IP bounce carries the visitor's previous report link, so
+            // the dead end becomes a way back to their result.
+            let previousUrl: string | null = null;
+            if (decision.reason === "ip") {
+              try {
+                const last = await getKv().get<string>(ipLastKey(ip));
+                if (last) previousUrl = `/audit/r/${last}`;
+              } catch {
+                // best-effort; the message still works without the link
+              }
+            }
+            send({
+              type: "error",
+              error: LIMIT_MESSAGES[decision.reason] ?? LIMIT_MESSAGES.global,
+              reason: "limited",
+              ...(previousUrl ? { reportUrl: previousUrl } : {}),
+            });
+            controller.close();
+            await logOutcome("limited");
             return;
           }
           await bumpCounters(target, limitsKv(), cfg);
@@ -182,35 +250,68 @@ export async function POST(req: NextRequest) {
           console.error("[scorecard-run] limits unavailable, failing open:", err instanceof Error ? err.message : err);
         }
 
-        // Auto-detect: read the prospect's own site and infer what they make
-        // and who they cross-shop against. Deterministic and cached per site.
-        send({ type: "stage", stage: "reading" });
-        const detection = await detectProspectContext(prospect);
-        detectedFit = detection.industryFit;
-        const enriched = applyDetection(prospect, detection);
-        if (detection.productOneLiner) send({ type: "detected", oneLiner: detection.productOneLiner });
-
-        // Generate (or replay). Stage events stream as the pipeline reaches
-        // each real phase boundary.
-        const { result } = await generateScorecard(enriched, {
-          onStage: (stage: ScanStage) => send({ type: "stage", stage }),
-        });
-
-        // No gate: the finished result goes straight to its permanent shared
-        // slug, and the lead plumbing (KV lead, team alert, flag-gated Email 1
-        // with the report link) runs before "done" so a frozen serverless
-        // instance can never swallow it. Funnelr capture stays browser-fired.
-        const outcome = await promoteResult(enriched, result, email);
-        await markCaptured(email, runId, outcome.slug);
+        // The generation itself races a hard deadline; a valid email is in
+        // hand from here on, so every failure below becomes a captured lead,
+        // never a lost one.
         try {
-          await runLeadPlumbing(outcome.record, email, outcome.slug, originOf(req));
-        } catch (err) {
-          console.error("[scorecard-run] lead plumbing failed:", err instanceof Error ? err.message : err);
-        }
+          const outcome = await withDeadline(
+            (async () => {
+              // Auto-detect: read the prospect's own site and infer what they
+              // make and who they cross-shop against. Cached per site.
+              send({ type: "stage", stage: "reading" });
+              const detection = await detectProspectContext(prospect);
+              detectedFit = detection.industryFit;
+              const enriched = applyDetection(prospect, detection);
+              if (detection.productOneLiner) send({ type: "detected", oneLiner: detection.productOneLiner });
 
-        send({ type: "done", reportUrl: outcome.reportUrl, slug: outcome.slug });
-        controller.close();
-        await logOutcome("success");
+              // Generate (or replay). Stage events stream as the pipeline
+              // reaches each real phase boundary.
+              const { result } = await generateScorecard(enriched, {
+                onStage: (stage: ScanStage) => send({ type: "stage", stage }),
+              });
+
+              // Readiness gate: a report scored on fewer than 3 of the 5
+              // pillars is too degraded to ship as "your audit". (A fully
+              // unscorable prospect already threw inside generation.)
+              const scoredPillars = prospectScores(result)?.categories.filter((c) => c.total !== null).length ?? 0;
+              if (scoredPillars < 3) {
+                throw new Error(`report-not-ready: only ${scoredPillars} of 5 pillars scored`);
+              }
+
+              // No gate: straight to the permanent slug; the lead plumbing
+              // runs before "done" so a frozen instance can never swallow it.
+              // Funnelr capture stays browser-fired.
+              const promoted = await promoteResult(enriched, result, email);
+              await markCaptured(email, runId, promoted.slug);
+              try {
+                await runLeadPlumbing(promoted.record, email, promoted.slug, originOf(req));
+              } catch (plumbErr) {
+                console.error("[scorecard-run] lead plumbing failed:", plumbErr instanceof Error ? plumbErr.message : plumbErr);
+              }
+              return promoted;
+            })(),
+          );
+
+          // Success: burn the visitor's IP allowance (never on failure) and
+          // remember their report for the rate-limit bounce screen.
+          try {
+            await markIpGenerated(ip, outcome.slug, limitsKv(), cfg);
+            await getKv().set(ipLastKey(ip), outcome.slug, { ex: cfg.windowDays * 86_400 });
+          } catch {
+            // best-effort
+          }
+
+          send({ type: "done", reportUrl: outcome.reportUrl, slug: outcome.slug });
+          controller.close();
+          await logOutcome("success");
+        } catch (err) {
+          // Failed or timed out AFTER a valid email capture: the lead goes to
+          // the team for a manual run, and the visitor hears exactly that.
+          const detail = err instanceof DeadlineError ? "generation exceeded the deadline" : err instanceof Error ? err.message : String(err);
+          console.error("[scorecard-run] failed after capture:", detail);
+          await notifyFailedScan(email, prospect.url, detail).catch(() => {});
+          await fail(FAILED_SCAN_MESSAGE, err instanceof DeadlineError ? "timeout" : "failed");
+        }
       } catch (err) {
         console.error("[scorecard-run] failed:", err instanceof Error ? err.message : err);
         await fail("The check could not finish this time. Nothing is broken on your side; give it another try in a few minutes.", "failed");

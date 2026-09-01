@@ -6,7 +6,7 @@ import { getKv } from "./kv";
 // how long it took, server-side. It is internal only: never a Meta event, never
 // a custom conversion. Failures here must never break a real scan.
 
-export type ScanOutcome = "success" | "invalid" | "out-of-scope" | "limited" | "failed";
+export type ScanOutcome = "success" | "invalid" | "out-of-scope" | "limited" | "failed" | "timeout";
 
 export interface ScanRunLog {
   outcome: ScanOutcome;

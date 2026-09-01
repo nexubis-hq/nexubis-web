@@ -13,16 +13,17 @@ export const dynamic = "force-dynamic";
 // were off-topic that we scanned anyway.
 
 const OUTCOME_LABEL: Record<ScanOutcome, string> = {
-  success: "reached teaser",
+  success: "reached report",
   failed: "broke",
-  invalid: "bad URL",
+  timeout: "hit the deadline",
+  invalid: "bad input",
   limited: "rate-limited",
   "out-of-scope": "rejected (legacy)",
 };
 
 function outcomeClass(o: ScanOutcome): string {
   if (o === "success") return "sc-admin-band sc-admin-band-narrow";
-  if (o === "failed" || o === "out-of-scope") return "sc-admin-band sc-admin-band-wide";
+  if (o === "failed" || o === "timeout" || o === "out-of-scope") return "sc-admin-band sc-admin-band-wide";
   return "sc-admin-band sc-admin-band-visible";
 }
 

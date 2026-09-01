@@ -25,7 +25,7 @@ declare global {
 type FlowState =
   | { step: "form" }
   | { step: "scanning"; stage: ScanStage; company: string; detectedOneLiner?: string }
-  | { step: "error"; message: string };
+  | { step: "error"; message: string; reportUrl?: string };
 
 // Trim and drop trailing dots/slashes so a fully-qualified "example.com." or a
 // pasted "example.com/" is accepted, not rejected as malformed. The server
@@ -167,7 +167,7 @@ export function ScorecardFlow() {
             | { type: "stage"; stage: ScanStage }
             | { type: "detected"; oneLiner: string }
             | { type: "done"; reportUrl: string; slug: string }
-            | { type: "error"; error: string };
+            | { type: "error"; error: string; reportUrl?: string };
           if (payload.type === "stage") {
             setFlow((f) => ({
               step: "scanning",
@@ -211,7 +211,7 @@ export function ScorecardFlow() {
             // Straight to the full permanent report; no gate, no teaser.
             window.location.assign(payload.reportUrl);
           } else {
-            setFlow({ step: "error", message: payload.error });
+            setFlow({ step: "error", message: payload.error, reportUrl: payload.reportUrl });
           }
         }
       }
@@ -251,9 +251,15 @@ export function ScorecardFlow() {
             <div className="sc-scan-error" role="alert">
               <p className="sc-scan-error-msg">{flow.message}</p>
               <div className="sc-scan-error-actions">
-                <button className="btn btn-primary" type="button" onClick={() => void runScan(url)}>
-                  Try again
-                </button>
+                {flow.reportUrl ? (
+                  <a className="btn btn-primary" href={flow.reportUrl}>
+                    See your previous report
+                  </a>
+                ) : (
+                  <button className="btn btn-primary" type="button" onClick={() => void runScan(url)}>
+                    Try again
+                  </button>
+                )}
                 <button type="button" className="sc-scan-error-alt" onClick={() => setFlow({ step: "form" })}>
                   Check a different address
                 </button>

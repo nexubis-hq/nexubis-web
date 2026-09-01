@@ -59,6 +59,32 @@ export function validateCaptureInput(input: LeadCaptureInput): CaptureValidation
   return { ok: true, status: 200, error: "", reason: "" };
 }
 
+// MX lookup: does the email's domain actually receive mail? Rejects ONLY on
+// a definitive no (NXDOMAIN / no MX records); any transient DNS error or the
+// 4s timeout fails open, because a DNS wobble must never cost a real lead.
+const MX_TIMEOUT_MS = 4000;
+export async function verifyEmailMx(email: string): Promise<{ ok: boolean; error?: string }> {
+  const domain = emailDomain(email);
+  if (!domain) return { ok: true };
+  try {
+    const { resolveMx } = await import("node:dns/promises");
+    const records = await Promise.race([
+      resolveMx(domain),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("mx-timeout")), MX_TIMEOUT_MS)),
+    ]);
+    if (Array.isArray(records) && records.length === 0) {
+      return { ok: false, error: "That email domain cannot receive mail. Check the spelling." };
+    }
+    return { ok: true };
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException)?.code;
+    if (code === "ENOTFOUND" || code === "ENODATA") {
+      return { ok: false, error: "That email domain cannot receive mail. Check the spelling." };
+    }
+    return { ok: true };
+  }
+}
+
 // Cloudflare Turnstile verification. Skips (open) only when the secret is not
 // configured, so dev keeps working before the nexubis.io keys exist; with a
 // secret set, a missing or bad token fails closed.

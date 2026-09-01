@@ -66,6 +66,40 @@ export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, ad
 }
 
 // Fallback Email 1, exact copy from the build doc. Only while the flag is on.
+// A scan that failed AFTER a valid email capture is still a lead: the team
+// hears about it immediately and follows up by hand, so a pipeline failure
+// never silently discards a prospect (the LekkeWeb "needs a human eye"
+// lesson, adapted to the gateless flow).
+export async function notifyFailedScan(email: string, url: string, reason: string): Promise<boolean> {
+  const to = leadNotifyRecipients();
+  if (to.length === 0) return false;
+  return sendEmail({
+    to,
+    subject: `Failed audit scan, follow up by hand: ${url}`,
+    text: [
+      `A scan failed after the visitor gave their email. Run it manually and send them the report.`,
+      ``,
+      `Email: ${email}`,
+      `Website: ${url}`,
+      `Reason: ${reason}`,
+      `Time: ${new Date().toISOString()}`,
+    ].join("\n"),
+    replyTo: email,
+  });
+}
+
+// The global hourly breaker tripped: tell the team once per hour at most
+// (the caller consults shouldNotifyBreaker before calling this).
+export async function notifyBreakerTripped(cap: number): Promise<boolean> {
+  const to = leadNotifyRecipients();
+  if (to.length === 0) return false;
+  return sendEmail({
+    to,
+    subject: `Audit breaker tripped: over ${cap} runs this hour`,
+    text: `The global hourly audit cap (${cap}) was reached. Visitors are being asked to try again later. If this is real demand, raise SCORECARD_GLOBAL_HOURLY_CAP; if it is abuse, check the scans log.`,
+  });
+}
+
 export async function sendFallbackEmail1(lead: LeadRecord, absoluteReportUrl: string): Promise<"sent" | "skipped" | "failed"> {
   if (!shouldSendEmail1()) return "skipped";
   const ok = await sendEmail({
