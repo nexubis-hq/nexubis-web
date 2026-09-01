@@ -122,9 +122,12 @@ export interface JsonCall {
   schema?: {
     safeParse(value: unknown): { success: boolean; error?: { issues?: Array<{ path?: unknown; message?: string }> } };
   };
+  /** Per-call timeout override. The default suits short calls; the deck-copy
+   *  pass writes far more tokens and needs longer. */
+  timeoutMs?: number;
 }
 
-export async function runJson<T>({ label, model, user, maxTokens, images, outputFormat, schema }: JsonCall): Promise<WrapperResult<T>> {
+export async function runJson<T>({ label, model, user, maxTokens, images, outputFormat, schema, timeoutMs }: JsonCall): Promise<WrapperResult<T>> {
   const client = getClient();
   if (!client) return { ok: false, reason: "ai-not-configured" };
 
@@ -178,7 +181,7 @@ export async function runJson<T>({ label, model, user, maxTokens, images, output
           ...(outputFormat ? { output_config: { format: { type: "json_schema" as const, schema: outputFormat } } } : {}),
           messages: [{ role: "user", content }],
         },
-        { timeout: CALL_TIMEOUT_MS },
+        { timeout: timeoutMs ?? CALL_TIMEOUT_MS },
       );
       const usage = buildUsage(model, msg.usage, Date.now() - started);
       const replyText = extractText(msg.content);
@@ -354,7 +357,7 @@ From the SITE CONTENT below, return:
 - industryFit: whose site this is. "manufacturer" = makes or builds physical industrial products, machinery, equipment or components for business customers. "adjacent" = industrial B2B but not a manufacturer (system integrator, industrial service or engineering firm, technical distributor). "outside" = clearly none of that (consumer products or services, software, agencies, shops, restaurants, media, personal sites). "unclear" = the content does not say enough to tell. Choose "outside" ONLY when you are certain; when torn between two values, pick the more industrial one.
 - companyName: the company's own name exactly as it writes it on its site (max 6 words, e.g. "DMN-Westinghouse"). No legal suffixes unless the site leads with them. Empty string if the site never states a name.
 - productOneLiner: what this company makes or does, in one buyer-facing line (max 15 words). Say it the way the company would to a buyer, plain and specific. Example shape: "leak detection systems for packaging lines".
-- competitors: up to 4 real companies a buyer would cross-shop against this one, as company names or domains. Name ONLY companies you are genuinely confident exist in this industry; a company name that is right beats four that are guesses. If you are unsure, return fewer. Never invent a plausible-sounding name. Do not list the company itself, marketplaces, directories or trade bodies.
+- competitors: up to 4 real companies a buyer would cross-shop against this one, as company names or domains. Name ONLY companies you are genuinely confident exist in this industry; a company name that is right beats four that are guesses. If you are unsure, return fewer. Never invent a plausible-sounding name. Do not list the company itself, marketplaces, directories or trade bodies. When the company is Dutch (a .nl domain or a Dutch-language site), prefer credible Dutch competitors where they genuinely exist; when they do not, name the real closest competitors regardless of country.
 - The industry fingerprint. EXTRACTIVE ONLY: each field may contain ONLY what the site content literally states. Empty arrays and empty strings are correct answers; a wrong entry is far worse than a missing one.
   - industries: industries or sectors the site names serving (max 5, as written, e.g. "dairy", "pharmaceutical").
   - certifications: certification and standard names literally present in the text (max 6, e.g. "ATEX", "EHEDG", "FDA"). Never add one the text does not contain.
@@ -592,19 +595,37 @@ export interface DeckCopyInput {
 export async function writeDeckCopy(input: DeckCopyInput): Promise<WrapperResult<DeckCopyReply>> {
   if (isMockMode()) {
     const data: DeckCopyReply = {
+      verdictLine: `A solid base, yet ${input.firstFixLabel.toLowerCase()} is leaking buyers (mock).`,
       verdictParagraph: `Mock verdict for ${input.company}: the overall score is ${input.overall} and the gap is ${input.verdictBand}. The benchmark stance is ${input.stance}.`,
-      categories: RUBRIC.map((c) => ({
+      categories: RUBRIC.map((c, ci) => ({
         key: c.key,
         findings: [
           `Mock finding one for ${c.label} at ${input.company}.`,
           `Mock finding two for ${c.label}, citing real evidence in production.`,
         ],
         competitorNote: `Mock competitor note for ${c.label}.`,
+        working: [
+          { title: `Mock strength ${ci + 1}`, body: `Mock sentence on what is working in ${c.label.toLowerCase()}.` },
+        ],
+        fix: [
+          { title: `Mock gap ${ci + 1}`, body: `Mock sentence on what to fix in ${c.label.toLowerCase()}, with the fix hinted.` },
+        ],
       })),
       firstFix: {
         why: `Mock reasoning: ${input.firstFixLabel} scored lowest, and it is where buyers look first.`,
         inPractice: `Mock practice paragraph for fixing ${input.firstFixLabel}.`,
       },
+      topIssues: [
+        { title: "Mock issue one", body: "Mock sentence on what this costs and why.", impact: "Likely 20-40% of undecided buyers lost" },
+        { title: "Mock issue two", body: "Mock sentence on what this costs and why.", impact: "Likely a meaningful share of enquiries never sent" },
+        { title: "Mock issue three", body: "Mock sentence on what this costs and why.", impact: "Likely shortlists lost to better-presented rivals" },
+      ],
+      startList: [
+        "Clear homepage message so buyers know why to choose you (mock)",
+        "Show the machines working so buyers can judge the product (mock)",
+        "Proper brochures so researching buyers have something to share (mock)",
+      ],
+      stayingSame: `Mock staying-the-same sentence for ${input.company}.`,
     };
     return { ok: true, data, usage: zeroUsage("mock") };
   }
@@ -629,7 +650,7 @@ export async function writeDeckCopy(input: DeckCopyInput): Promise<WrapperResult
     ? `\nCONCRETE COMPETITOR ADVANTAGES (measured on their sites by the same pipeline; use these in findings and competitorNotes where relevant, never invent others):\n${input.competitorEdges.map((e) => `- ${e}`).join("\n")}\n`
     : "";
 
-  const user = `Write the report copy blocks for the Industrial Brand Credibility Scorecard of "${input.company}" (they make: ${input.productOneLiner}).
+  const user = `Write the report copy blocks for The Online Credibility Audit of "${input.company}" (they make: ${input.productOneLiner}).
 
 ${input.companyContext ? `${input.companyContext}\n\n` : ""}THE NUMBERS (already computed, never change them):
 - Overall Credibility Score: ${input.overall}/100. Verdict: ${input.verdictBand} gap.
@@ -640,21 +661,32 @@ PER-CATEGORY SCORES AND EVIDENCE:
 ${input.scoreSummary}
 ${edgesBlock}
 WRITE THESE BLOCKS:
-1. verdictParagraph: one paragraph, maximum 85 words. State the verdict plainly, weave the benchmark stance per the rule above, end on the first place to fix. ${bandTone}
-2. categories: for EVERY category key, exactly 2 or 3 findings (each maximum 26 words) stating specifically what is working and what is costing them, referencing the real evidence above (name competitors where the evidence does), plus one competitorNote (maximum 22 words) on where the named competitors stand on this category. If a category's checks were mostly not assessable, one finding must say plainly what could not be assessed and why that matters.
-3. firstFix: "why" (maximum 75 words): why this category comes first, tied to where buyers look and, where the company context supports it, to THEIR buyer specifically. "inPractice" (maximum 85 words): what fixing it looks like in practice, concrete and specific to their evidence; name their actual product families, industries or certifications where the context above states them. Describe the work, do not sell anything and do not mention any company that would do it.
+1. verdictLine: ONE line for the report header, maximum 14 words, plain language, naming the biggest leak specifically. Same spirit as "A real foundation, yet the basics and getting found are leaking customers." Never restate the score.
+2. verdictParagraph: one paragraph, maximum 85 words. State the verdict plainly, weave the benchmark stance per the rule above, end on the first place to fix. ${bandTone}
+3. categories: for EVERY category key:
+   - findings: exactly 2 or 3 (each maximum 26 words) stating specifically what is working and what is costing them, referencing the real evidence above (name competitors where the evidence does). If a category's checks were mostly not assessable, one finding must say plainly what could not be assessed and why that matters.
+   - competitorNote: one note (maximum 22 words) on where the named competitors stand on this category.
+   - working: one entry per check that scored 3 or 4 in this category ([3] or [4] in the evidence above). Each entry: "title" = a short plain label for the strength (maximum 6 words, never the raw check name), "body" = ONE sentence (maximum 24 words) grounded in that check's evidence.
+   - fix: one entry per check that scored 0, 1 or 2. Each entry: "title" = a short plain label for the gap (maximum 6 words), "body" = ONE sentence (maximum 24 words) that names the problem AND hints at the fix ("Add X so buyers can Y"), grounded in that check's evidence. Skip not-assessable checks in both lists. Empty arrays are correct when nothing qualifies.
+4. topIssues: EXACTLY 3 entries, the three problems across all categories most likely to be costing them customers, worst first. Each: "title" (maximum 8 words, plain, e.g. "No proof of expertise online"), "body" = ONE sentence (maximum 26 words) on what it costs and why, "impact" = one short estimate line, maximum 12 words, starting with "Likely", stated as a RANGE or an order of magnitude a reasonable person could defend from the findings (e.g. "Likely 20-40% of undecided buyers lost", "Likely a meaningful share of enquiries never sent"). No justification clause after it; never invent precision; never exceed what the evidence supports.
+5. startList: 3 to 5 lines, the prioritised fixes in the order we would do them, each written as an OUTCOME, maximum 16 words, no trailing clauses (e.g. "Clear homepage message so buyers know why to choose you"). Start from the first place to fix.
+6. stayingSame: ONE sentence (maximum 34 words) naming what stays broken if they change nothing, concrete to their findings${input.bestRival ? ` and to ${input.bestRival.company} as the comparison buyers keep running` : ""}.
+7. firstFix: "why" (maximum 75 words): why this category comes first, tied to where buyers look and, where the company context supports it, to THEIR buyer specifically. "inPractice" (maximum 85 words): what fixing it looks like in practice, concrete and specific to their evidence; name their actual product families, industries or certifications where the context above states them. Describe the work, do not sell anything and do not mention any company that would do it.
 
 HARD RULES: When you need a name for this assessment, call it the audit, the check or the report. The reader should feel helped, then concerned, then clear on what to do, in that order. Findings are facts, never sneering, about the prospect or the competitors. No hype words, no jargon, no em dashes, no selling anywhere in these blocks. Never mention Nexubis or any agency. Never invent anything not present in the evidence. Industry terms, certification names, product family names and buyer descriptions may ONLY come from the company context or the evidence above, exactly as written there.
 
 ${COPY_DIET}
 
-Return ONLY: { "verdictParagraph": "...", "categories": [ { "key": "...", "findings": ["..."], "competitorNote": "..." } ], "firstFix": { "why": "...", "inPractice": "..." } }`;
+Return ONLY: { "verdictLine": "...", "verdictParagraph": "...", "categories": [ { "key": "...", "findings": ["..."], "competitorNote": "...", "working": [ { "title": "...", "body": "..." } ], "fix": [ { "title": "...", "body": "..." } ] } ], "firstFix": { "why": "...", "inPractice": "..." }, "topIssues": [ { "title": "...", "body": "...", "impact": "..." } ], "startList": ["..."], "stayingSame": "..." }`;
 
   return runJson<DeckCopyReply>({
     label: "deck-copy",
     model: MODEL_SONNET,
     user,
-    maxTokens: 2500,
+    maxTokens: 4000,
+    // The copy pass now writes every layout block (working/fix lists, top
+    // issues, start list) in one call: give it room the short calls never need.
+    timeoutMs: 110_000,
     outputFormat: DECK_COPY_OUTPUT,
     schema: deckCopySchema,
   });

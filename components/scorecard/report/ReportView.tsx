@@ -18,15 +18,16 @@ import { CollapsibleList } from "./CollapsibleList";
 import { JumpToNav } from "./JumpToNav";
 import { MobileCtaBar } from "./MobileCtaBar";
 import { ReportSidebar, type ReportNavItem, type SectionTone } from "./ReportSidebar";
-import { REPORT, REPORT2, BOOK_CALL, POWERED_BY, VERDICT_LINES, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
+import { REPORT, REPORT2, BOOK_CALL, POWERED_BY, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
 import {
-  workingItems,
-  fixItems,
-  issuesCount,
+  resolvedWorking,
+  resolvedFix,
+  resolvedIssuesCount,
+  resolvedTopIssues,
+  resolvedStartList,
+  resolvedStayingSame,
+  resolvedVerdictLine,
   pillarSummary,
-  topIssues,
-  startList,
-  stayingSameLine,
   industryDescriptor,
   PILLAR_CHIP_LABELS,
 } from "@/lib/scorecard/report-derive";
@@ -120,9 +121,9 @@ export function ReportView({
   const overall = p?.overall ?? null;
   const rivals = result.scores.filter((s) => !s.isProspect);
   const embed = loomUrl ? loomEmbedUrl(loomUrl) : null;
-  const issues = issuesCount(result);
-  const top3 = topIssues(result);
-  const starts = startList(result);
+  const issues = resolvedIssuesCount(result);
+  const top3 = resolvedTopIssues(result);
+  const starts = resolvedStartList(result);
   const company = result.meta.company;
 
   // Nav sections: the five pillars (dot toned by score) plus the cross-pillar
@@ -165,7 +166,7 @@ export function ReportView({
                 <BandScale overall={overall} band={result.verdict.band} />
               </div>
               <div className="sc-hero-verdict">
-                <h1 className="sc-hero-line">{VERDICT_LINES[result.verdict.band]}</h1>
+                <h1 className="sc-hero-line">{resolvedVerdictLine(result)}</h1>
                 <p className="sc-hero-issues">
                   <strong>{issues}</strong> {REPORT2.issuesFound(issues)}
                 </p>
@@ -252,8 +253,8 @@ export function ReportView({
                       <p className="sc-pillar-summary">{pillarSummary(cat)}</p>
                     </div>
                   </header>
-                  <CollapsibleList items={workingItems(cat)} tone="working" />
-                  <CollapsibleList items={fixItems(cat)} tone="fix" />
+                  <CollapsibleList items={resolvedWorking(copy, cat)} tone="working" />
+                  <CollapsibleList items={resolvedFix(copy, cat)} tone="fix" />
                   {copy?.competitorNote ? (
                     <p className="sc-competitor-note" data-reveal>
                       <span>{REPORT.whereCompetitorsStand}:</span> {copy.competitorNote}
@@ -304,7 +305,7 @@ export function ReportView({
                       <li key={line}>{line}</li>
                     ))}
                   </ul>
-                  <p className="sc-start-cost">{stayingSameLine(result)}</p>
+                  <p className="sc-start-cost">{resolvedStayingSame(result)}</p>
                 </div>
               </section>
             ) : null}

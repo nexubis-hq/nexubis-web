@@ -3,6 +3,8 @@
 // numbers only, so it can never invent evidence. Duller than the generated
 // copy by design: safe beats sparkling when the generated block was unsafe.
 import { categoryLabel, type CategoryKey } from "./rubric";
+import { VERDICT_LINES } from "./copy";
+import { workingItems, fixItems, deriveTopIssues, deriveStartList, deriveStayingSame } from "./report-derive";
 import type { Benchmark, CompanyScores, VerdictBand } from "./scoring";
 import type { CategoryCopy, DeckCopy } from "./result";
 
@@ -55,6 +57,11 @@ export function fallbackCategoryCopy(prospect: CompanyScores, rivals: CompanySco
       key: cat.key,
       findings,
       competitorNote: rivalTotals.length ? `Competitors here: ${rivalTotals.join(", ")}.` : "The competitors could not be compared on this category.",
+      // Working/fix lists from the check scores and evidence sentences: the
+      // same deterministic derivation the report used before the generator
+      // produced these, so the fallback stays complete.
+      working: workingItems(cat).map((i) => ({ title: i.title, body: i.body })),
+      fix: fixItems(cat).map((i) => ({ title: i.title, body: i.body })),
     };
   });
 }
@@ -77,6 +84,7 @@ export function fallbackDeckCopy(args: {
   rivals: CompanyScores[];
 }): DeckCopy {
   return {
+    verdictLine: VERDICT_LINES[args.band],
     verdictParagraph: fallbackVerdictParagraph({
       company: args.company,
       overall: args.overall,
@@ -86,5 +94,8 @@ export function fallbackDeckCopy(args: {
     }),
     categories: fallbackCategoryCopy(args.prospect, args.rivals),
     firstFix: args.firstFix ? fallbackFirstFix(args.firstFix) : { why: "", inPractice: "" },
+    topIssues: deriveTopIssues(args.prospect).map((t) => ({ title: t.title, body: t.body, impact: t.impact })),
+    startList: deriveStartList(args.prospect, args.firstFix),
+    stayingSame: deriveStayingSame(args.band, args.benchmark.bestRival?.company ?? null),
   };
 }

@@ -96,22 +96,35 @@ export const rubricScoresSchema = z
 export type RubricScoresReply = z.infer<typeof rubricScoresSchema>;
 
 // ── Report copy pass ─────────────────────────────────────────────────────────
+const CLAIM_ITEM = {
+  type: "object",
+  additionalProperties: false,
+  required: ["title", "body"],
+  properties: {
+    title: { type: "string" },
+    body: { type: "string" },
+  },
+} as const;
+
 export const DECK_COPY_OUTPUT: Record<string, unknown> = {
   type: "object",
   additionalProperties: false,
-  required: ["verdictParagraph", "categories", "firstFix"],
+  required: ["verdictLine", "verdictParagraph", "categories", "firstFix", "topIssues", "startList", "stayingSame"],
   properties: {
+    verdictLine: { type: "string" },
     verdictParagraph: { type: "string" },
     categories: {
       type: "array",
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["key", "findings", "competitorNote"],
+        required: ["key", "findings", "competitorNote", "working", "fix"],
         properties: {
           key: { type: "string", enum: [...CATEGORY_KEYS] },
           findings: { type: "array", items: { type: "string" } },
           competitorNote: { type: "string" },
+          working: { type: "array", items: CLAIM_ITEM },
+          fix: { type: "array", items: CLAIM_ITEM },
         },
       },
     },
@@ -124,11 +137,29 @@ export const DECK_COPY_OUTPUT: Record<string, unknown> = {
         inPractice: { type: "string" },
       },
     },
+    topIssues: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["title", "body", "impact"],
+        properties: {
+          title: { type: "string" },
+          body: { type: "string" },
+          impact: { type: "string" },
+        },
+      },
+    },
+    startList: { type: "array", items: { type: "string" } },
+    stayingSame: { type: "string" },
   },
 };
 
+const claimItemSchema = z.object({ title: z.string(), body: z.string() }).passthrough();
+
 export const deckCopySchema = z
   .object({
+    verdictLine: z.string(),
     verdictParagraph: z.string(),
     categories: z.array(
       z
@@ -136,10 +167,15 @@ export const deckCopySchema = z
           key: z.enum(CATEGORY_KEYS as [string, ...string[]]),
           findings: z.array(z.string()),
           competitorNote: z.string(),
+          working: z.array(claimItemSchema),
+          fix: z.array(claimItemSchema),
         })
         .passthrough(),
     ),
     firstFix: z.object({ why: z.string(), inPractice: z.string() }).passthrough(),
+    topIssues: z.array(z.object({ title: z.string(), body: z.string(), impact: z.string() }).passthrough()),
+    startList: z.array(z.string()),
+    stayingSame: z.string(),
   })
   .passthrough();
 

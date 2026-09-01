@@ -43,16 +43,41 @@ export interface CompanyExhibit {
   pageSpeed: PageSpeedScores | null;
 }
 
+/** A working/fix list entry: short bold title plus one-sentence explanation. */
+export interface ClaimItem {
+  title: string;
+  body: string;
+}
+
+export interface TopIssueCopy {
+  title: string;
+  body: string;
+  /** Defensible range, e.g. "Likely 20-40% of undecided buyers lost". */
+  impact: string;
+}
+
 export interface CategoryCopy {
   key: CategoryKey;
   findings: string[];
   competitorNote: string;
+  /** Generated working/fix lists. Optional: reports stored before the
+   *  generator produced them fall back to the rubric-derived lists. */
+  working?: ClaimItem[];
+  fix?: ClaimItem[];
 }
 
 export interface DeckCopy {
+  /** One-line verdict for the report header, naming the biggest leak. */
+  verdictLine?: string;
   verdictParagraph: string;
   categories: CategoryCopy[];
   firstFix: { why: string; inPractice: string };
+  /** The three highest-impact problems across all pillars. */
+  topIssues?: TopIssueCopy[];
+  /** Prioritised fix list, written as outcomes. */
+  startList?: string[];
+  /** One sentence naming what stays broken if they do nothing. */
+  stayingSame?: string;
 }
 
 export interface ScorecardResult {

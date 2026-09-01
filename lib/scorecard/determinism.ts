@@ -54,7 +54,7 @@ export function scorecardIdentity(input: DeterminismInput): string {
     .map((c) => normaliseUrl(c) || normaliseText(c))
     .filter(Boolean)
     .sort();
-  return ["scorecard-v3", normaliseUrl(input.url), competitors.join(","), normaliseText(input.productOneLiner)].join("|");
+  return ["scorecard-v4", normaliseUrl(input.url), competitors.join(","), normaliseText(input.productOneLiner)].join("|");
 }
 
 // The KV key the full run result is cached under. Same inputs, same key,

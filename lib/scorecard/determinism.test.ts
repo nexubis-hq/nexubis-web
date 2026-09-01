@@ -59,7 +59,7 @@ test("scorecardCacheKey changes when the run identity changes", () => {
 
 test("scorecardIdentity is business-keyed and normalised", () => {
   const id = scorecardIdentity(base);
-  assert.ok(id.startsWith("scorecard-v3|example-machinery.de|"));
+  assert.ok(id.startsWith("scorecard-v4|example-machinery.de|"));
   assert.ok(id.includes("dosatech.de"));
   assert.ok(id.includes("leak detection systems for packaging lines"));
 });

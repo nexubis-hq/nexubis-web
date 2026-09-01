@@ -18,25 +18,60 @@ export function clampWords(text: string, max: number): string {
 import type { DeckCopy } from "./result";
 
 export const DECK_COPY_CAPS = {
+  verdictLine: 16,
   verdictParagraph: 95,
   finding: 30,
   competitorNote: 26,
+  claimTitle: 8,
+  claimBody: 28,
+  maxClaimsPerList: 5,
+  topIssueTitle: 10,
+  topIssueBody: 30,
+  topIssueImpact: 20,
+  maxTopIssues: 3,
+  startItem: 24,
+  maxStartItems: 5,
+  stayingSame: 42,
   firstFixWhy: 85,
   firstFixInPractice: 95,
   maxFindingsPerCategory: 3,
 } as const;
 
+function clampClaims(items: Array<{ title: string; body: string }> | undefined) {
+  if (!items) return undefined;
+  return items.slice(0, DECK_COPY_CAPS.maxClaimsPerList).map((i) => ({
+    title: clampWords(i.title, DECK_COPY_CAPS.claimTitle),
+    body: clampWords(i.body, DECK_COPY_CAPS.claimBody),
+  }));
+}
+
 export function clampDeckCopy(copy: DeckCopy): DeckCopy {
   return {
+    ...(copy.verdictLine !== undefined ? { verdictLine: clampWords(copy.verdictLine, DECK_COPY_CAPS.verdictLine) } : {}),
     verdictParagraph: clampWords(copy.verdictParagraph, DECK_COPY_CAPS.verdictParagraph),
     categories: copy.categories.map((c) => ({
       ...c,
       findings: c.findings.slice(0, DECK_COPY_CAPS.maxFindingsPerCategory).map((f) => clampWords(f, DECK_COPY_CAPS.finding)),
       competitorNote: clampWords(c.competitorNote, DECK_COPY_CAPS.competitorNote),
+      ...(c.working !== undefined ? { working: clampClaims(c.working) } : {}),
+      ...(c.fix !== undefined ? { fix: clampClaims(c.fix) } : {}),
     })),
     firstFix: {
       why: clampWords(copy.firstFix.why, DECK_COPY_CAPS.firstFixWhy),
       inPractice: clampWords(copy.firstFix.inPractice, DECK_COPY_CAPS.firstFixInPractice),
     },
+    ...(copy.topIssues !== undefined
+      ? {
+          topIssues: copy.topIssues.slice(0, DECK_COPY_CAPS.maxTopIssues).map((t) => ({
+            title: clampWords(t.title, DECK_COPY_CAPS.topIssueTitle),
+            body: clampWords(t.body, DECK_COPY_CAPS.topIssueBody),
+            impact: clampWords(t.impact, DECK_COPY_CAPS.topIssueImpact),
+          })),
+        }
+      : {}),
+    ...(copy.startList !== undefined
+      ? { startList: copy.startList.slice(0, DECK_COPY_CAPS.maxStartItems).map((i) => clampWords(i, DECK_COPY_CAPS.startItem)) }
+      : {}),
+    ...(copy.stayingSame !== undefined ? { stayingSame: clampWords(copy.stayingSame, DECK_COPY_CAPS.stayingSame) } : {}),
   };
 }

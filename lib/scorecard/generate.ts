@@ -96,10 +96,19 @@ export function competitorEdges(prospect: CompanyEvidence, rivals: CompanyEviden
 // (a mixed report would read inconsistently).
 function deckCopyIsClean(copy: DeckCopy, allow: string[]): boolean {
   const texts = [
+    copy.verdictLine ?? "",
     copy.verdictParagraph,
-    ...copy.categories.flatMap((c) => [...c.findings, c.competitorNote]),
+    ...copy.categories.flatMap((c) => [
+      ...c.findings,
+      c.competitorNote,
+      ...(c.working ?? []).flatMap((i) => [i.title, i.body]),
+      ...(c.fix ?? []).flatMap((i) => [i.title, i.body]),
+    ]),
     copy.firstFix.why,
     copy.firstFix.inPractice,
+    ...(copy.topIssues ?? []).flatMap((t) => [t.title, t.body, t.impact]),
+    ...(copy.startList ?? []),
+    copy.stayingSame ?? "",
   ];
   return texts.every((t) => {
     const check = sanitizeCopy(t, { allow });
@@ -227,13 +236,19 @@ export async function generateScorecardUncached(
   if (copyRes.ok) {
     usages.push(copyRes.usage);
     const clamped = clampDeckCopy({
+      verdictLine: copyRes.data.verdictLine,
       verdictParagraph: copyRes.data.verdictParagraph,
       categories: copyRes.data.categories.map((c) => ({
         key: c.key as DeckCopy["categories"][number]["key"],
         findings: c.findings,
         competitorNote: c.competitorNote,
+        working: c.working,
+        fix: c.fix,
       })),
       firstFix: copyRes.data.firstFix,
+      topIssues: copyRes.data.topIssues,
+      startList: copyRes.data.startList,
+      stayingSame: copyRes.data.stayingSame,
     });
     if (deckCopyIsClean(clamped, allow)) {
       deckCopy = clamped;

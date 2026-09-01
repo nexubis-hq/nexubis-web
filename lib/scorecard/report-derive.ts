@@ -3,8 +3,9 @@
 // never generated, so reports created long before this layout existed render
 // the same sections. Client-safe: types and pure functions only.
 import { RUBRIC, FIRST_FIX_ORDER, categoryLabel, type CategoryKey, type CheckDef } from "./rubric";
-import { prospectScores, type ScorecardResult } from "./result";
-import type { CategoryScore, CheckScore } from "./scoring";
+import { VERDICT_LINES } from "./copy";
+import { prospectScores, type ScorecardResult, type CategoryCopy } from "./result";
+import type { CategoryScore, CheckScore, CompanyScores, VerdictBand } from "./scoring";
 
 export interface ReportListItem {
   key: string;
@@ -13,6 +14,14 @@ export interface ReportListItem {
   /** One-sentence explanation: the check's evidence sentence. */
   body: string;
   score: number;
+}
+
+/** What the list components render: generated claim items and rubric-derived
+ *  items both reduce to this. */
+export interface DisplayListItem {
+  key: string;
+  title: string;
+  body: string;
 }
 
 function checkDef(catKey: CategoryKey, checkKey: string): CheckDef | null {
@@ -126,9 +135,7 @@ function visibilityRank(key: CategoryKey): number {
 
 /** The three worst assessable checks across all pillars, ranked by score then
  *  buyer visibility, each with its pillar's impact estimate. */
-export function topIssues(result: ScorecardResult): TopIssue[] {
-  const p = prospectScores(result);
-  if (!p) return [];
+export function deriveTopIssues(p: CompanyScores): TopIssue[] {
   const all: Array<ReportListItem & { cat: CategoryKey }> = p.categories.flatMap((cat) =>
     fixItems(cat).map((i) => ({ ...i, cat: cat.key })),
   );
@@ -139,6 +146,11 @@ export function topIssues(result: ScorecardResult): TopIssue[] {
     body: i.body,
     impact: IMPACT_LINES[i.cat],
   }));
+}
+
+export function topIssues(result: ScorecardResult): TopIssue[] {
+  const p = prospectScores(result);
+  return p ? deriveTopIssues(p) : [];
 }
 
 // One action line per pillar for the "where we would start" list.
@@ -152,23 +164,24 @@ const START_ACTIONS: Record<CategoryKey, string> = {
 
 /** Prioritised fix list: the first fix leads, then the remaining pillars from
  *  weakest up, capped at 4 lines. */
-export function startList(result: ScorecardResult): string[] {
-  const p = prospectScores(result);
-  if (!p) return [];
-  const first = result.firstFix?.category ?? null;
+export function deriveStartList(p: CompanyScores, firstFix: CategoryKey | null): string[] {
   const rest = p.categories
-    .filter((c) => c.key !== first && c.total !== null && c.total < 14)
+    .filter((c) => c.key !== firstFix && c.total !== null && c.total < 14)
     .sort((a, b) => (a.total ?? 20) - (b.total ?? 20))
     .map((c) => c.key);
-  const order: CategoryKey[] = [...(first ? [first] : []), ...rest];
+  const order: CategoryKey[] = [...(firstFix ? [firstFix] : []), ...rest];
   return order.slice(0, 4).map((k) => START_ACTIONS[k]);
 }
 
+export function startList(result: ScorecardResult): string[] {
+  const p = prospectScores(result);
+  return p ? deriveStartList(p, result.firstFix?.category ?? null) : [];
+}
+
 /** The one-line cost of doing nothing, from the verdict band and benchmark. */
-export function stayingSameLine(result: ScorecardResult): string {
-  const rival = result.verdict.bestRival;
-  const against = rival ? `${rival.company} keeps winning the comparisons buyers run` : "the competitors keep winning the comparisons buyers run";
-  switch (result.verdict.band) {
+export function deriveStayingSame(band: VerdictBand, rivalName: string | null): string {
+  const against = rivalName ? `${rivalName} keeps winning the comparisons buyers run` : "the competitors keep winning the comparisons buyers run";
+  switch (band) {
     case "wide":
       return `What staying the same costs you: every week, buyers who need exactly what you make judge you on this and ${against}.`;
     case "visible":
@@ -176,6 +189,52 @@ export function stayingSameLine(result: ScorecardResult): string {
     default:
       return `What staying the same costs you: the few specifics above stay the difference between shortlisted and chosen.`;
   }
+}
+
+export function stayingSameLine(result: ScorecardResult): string {
+  return deriveStayingSame(result.verdict.band, result.verdict.bestRival?.company ?? null);
+}
+
+// ── Resolved sections: prefer what the generator wrote, fall back to the
+//    rubric-derived versions for reports stored before the generator
+//    produced these fields ─────────────────────────────────────────────────
+function toDisplay(items: Array<{ title: string; body: string }>): DisplayListItem[] {
+  return items.map((i, idx) => ({ key: `${idx}:${i.title}`, title: i.title, body: i.body }));
+}
+
+export function resolvedWorking(copy: CategoryCopy | undefined, cat: CategoryScore): DisplayListItem[] {
+  if (copy?.working) return toDisplay(copy.working);
+  return workingItems(cat);
+}
+
+export function resolvedFix(copy: CategoryCopy | undefined, cat: CategoryScore): DisplayListItem[] {
+  if (copy?.fix) return toDisplay(copy.fix);
+  return fixItems(cat);
+}
+
+export function resolvedIssuesCount(result: ScorecardResult): number {
+  const generated = result.deckCopy.categories.every((c) => c.fix !== undefined);
+  if (generated) return result.deckCopy.categories.reduce((n, c) => n + (c.fix?.length ?? 0), 0);
+  return issuesCount(result);
+}
+
+export function resolvedTopIssues(result: ScorecardResult): TopIssue[] {
+  if (result.deckCopy.topIssues?.length) {
+    return result.deckCopy.topIssues.map((t, i) => ({ rank: i + 1, title: t.title, body: t.body, impact: t.impact }));
+  }
+  return topIssues(result);
+}
+
+export function resolvedStartList(result: ScorecardResult): string[] {
+  return result.deckCopy.startList?.length ? result.deckCopy.startList : startList(result);
+}
+
+export function resolvedStayingSame(result: ScorecardResult): string {
+  return result.deckCopy.stayingSame || stayingSameLine(result);
+}
+
+export function resolvedVerdictLine(result: ScorecardResult): string {
+  return result.deckCopy.verdictLine || VERDICT_LINES[result.verdict.band];
 }
 
 /** "For a [industry descriptor], here is where [Company] stands online." */

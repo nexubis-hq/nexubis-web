@@ -4,11 +4,11 @@
 // "View more (N)" button, LekkeWeb-style. Server parents pass plain data;
 // only the expand state lives here.
 import { useState } from "react";
-import type { ReportListItem } from "@/lib/scorecard/report-derive";
+import type { DisplayListItem } from "@/lib/scorecard/report-derive";
 
 const VISIBLE = 3;
 
-export function CollapsibleList({ items, tone }: { items: ReportListItem[]; tone: "working" | "fix" }) {
+export function CollapsibleList({ items, tone }: { items: DisplayListItem[]; tone: "working" | "fix" }) {
   const [expanded, setExpanded] = useState(false);
   if (items.length === 0) return null;
   const shown = expanded ? items : items.slice(0, VISIBLE);

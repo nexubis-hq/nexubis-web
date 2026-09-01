@@ -41,10 +41,11 @@ export interface DetectionResult {
   flags: string[];
 }
 
-// v3: companyName joined the detection (v2 added the fingerprint). Bumping the
-// key retires older cached detections instead of replaying them for 180 days.
+// v4: the Dutch-competitor preference joined the detect prompt (v3 added
+// companyName). Bumping the key retires older cached detections instead of
+// replaying them for 180 days.
 function detectEnvelopeKey(url: string): string {
-  return `scorecard-detect:v3:${normaliseUrl(url)}`;
+  return `scorecard-detect:v4:${normaliseUrl(url)}`;
 }
 
 // Competitor rescue: niche industries can leave the site-only detection with
@@ -72,8 +73,13 @@ export function filterRescuedCompetitors(candidates: string[], company: string, 
 
 async function rescueCompetitors(company: string, productOneLiner: string, ownUrl: string): Promise<string[]> {
   if (!productOneLiner) return [];
+  // Netherlands emphasis: a Dutch prospect gets a Dutch-slanted category
+  // search, so credible Dutch rivals surface when they exist. The picker and
+  // resolver still validate every candidate, so this is a preference, never
+  // a filter.
+  const dutch = (hostFromUrl(ownUrl) ?? "").endsWith(".nl");
   const [categoryRes, rivalRes] = await Promise.all([
-    searchWeb(`${productOneLiner} manufacturers`),
+    searchWeb(dutch ? `${productOneLiner} manufacturers Netherlands` : `${productOneLiner} manufacturers`),
     searchWeb(`"${company}" competitors OR alternatives`),
   ]);
   const searchBlock = formatSearchBlock([categoryRes, rivalRes]);
