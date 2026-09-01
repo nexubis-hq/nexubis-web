@@ -54,11 +54,7 @@ export const LANDING_BELOW = {
 
 export const FORM_FIELDS = {
   website: { label: "Enter your company website", helper: "That's all we need. We read your site and work out the rest." },
-  oneLiner: { label: "What do you make, in one line", helper: "Example: leak detection systems for packaging lines." },
-  competitors: { label: "Two or three competitors you keep running into", helper: "Names or websites. We benchmark you against them." },
-  firstName: { label: "First name", helper: "" },
   workEmail: { label: "Work email", helper: "We'll email a copy of your audit to this address." },
-  role: { label: "Role", options: ["Marketing manager", "Marketing director", "Brand or comms manager", "CEO or MD", "Other"] },
 } as const;
 
 // ── Report navigation + share ────────────────────────────────────────────────

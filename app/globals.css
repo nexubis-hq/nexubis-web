@@ -41,7 +41,7 @@
 }
 
 :root {
-  --sc-build: 20; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
+  --sc-build: 21; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
   --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
@@ -8068,10 +8068,6 @@ button.nav-link {
   padding: 0.55em 1em;
 }
 
-.sc-report-nav-share {
-  gap: 0.45em;
-}
-
 .sc-report-nav-book-icon {
   display: inline-flex;
   width: 1rem;
@@ -8114,48 +8110,11 @@ button.nav-link {
   padding-block: var(--s-8) var(--s-7);
 }
 
-.sc-cover-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: color-mix(in srgb, var(--white) 88%, transparent);
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-bottom: var(--s-4);
-}
-
-.sc-cover-kicker::before {
-  content: "";
-  width: 0.85rem;
-  height: 0.28rem;
-  background: var(--white);
-}
-
 .sc-cover h1 {
   font-size: var(--h2);
   line-height: 1.08;
   max-width: 30ch;
   color: var(--white);
-}
-
-/* The company name is the cover's display element: white, a touch bolder and
-   much bigger than the title line above it. clamp() keeps it comfortable on a
-   phone; break-word stops a long single-word name from overflowing. */
-.sc-cover-company {
-  display: block;
-  color: var(--white);
-  font-weight: 600;
-  font-size: clamp(2.6rem, 1.4rem + 5.2vw, 5.75rem);
-  line-height: 1.02;
-  letter-spacing: -0.015em;
-  margin-top: 0.08em;
-  overflow-wrap: break-word;
-}
-
-.sc-cover-date {
-  margin-top: var(--s-3);
-  color: color-mix(in srgb, var(--white) 80%, transparent);
 }
 
 /* ── Merged hero: brand + score in one landing section ─────────────────────── */
@@ -8180,23 +8139,6 @@ button.nav-link {
   height: 0.28rem;
   background: var(--white);
 }
-.sc-hero-title {
-  font-size: var(--h4);
-  font-weight: 500;
-  line-height: 1.12;
-  max-width: 34ch;
-  color: color-mix(in srgb, var(--white) 90%, transparent);
-}
-.sc-hero-company {
-  display: block;
-  color: var(--white);
-  font-weight: 600;
-  font-size: clamp(2.2rem, 1.2rem + 4.2vw, 4.25rem);
-  line-height: 1.02;
-  letter-spacing: -0.015em;
-  margin-top: 0.1em;
-  overflow-wrap: break-word;
-}
 /* The score sits on a white card on the red band: no restyling of the ring or
    radar, and the reader lands on the number the moment the page loads. */
 .sc-hero-card {
@@ -8211,7 +8153,6 @@ button.nav-link {
   .sc-hero-card { padding: var(--s-4); }
   /* Centre the hero heading on mobile so it lines up with the score card below. */
   .sc-hero-kicker { display: flex; justify-content: center; }
-  .sc-hero-title { text-align: center; max-width: none; }
 }
 
 /* ── Body: category cards alongside the sticky "on this page" sidebar ───────── */
@@ -8406,122 +8347,6 @@ button.nav-link {
   border: 0;
 }
 
-/* 3. First impression */
-.sc-first-impression h2,
-.sc-score h2 {
-  font-size: var(--h3);
-  margin-bottom: var(--s-4);
-}
-
-.sc-exhibit-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: var(--grid-gap);
-}
-
-.sc-exhibit {
-  margin: 0;
-}
-
-.sc-exhibit-frame {
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  border-radius: 0.4rem;
-  border: 1px solid var(--light);
-  background: var(--surface);
-  box-shadow: 0 10px 30px rgb(0 0 0 / 8%);
-}
-
-/* The client's own screenshot leads the section: red frame, a warmer shadow,
-   and much larger than the competitor row that follows. */
-.sc-exhibit-prospect .sc-exhibit-frame {
-  border: 3px solid var(--primary);
-  box-shadow: 0 18px 48px color-mix(in srgb, var(--primary) 28%, transparent);
-}
-
-.sc-exhibit-hero {
-  max-width: 760px;
-  margin-bottom: var(--s-3);
-}
-
-.sc-exhibit-hero figcaption {
-  margin-top: 0.7rem;
-}
-
-.sc-exhibit-hero .sc-exhibit-you {
-  font-size: 1.2rem;
-}
-
-/* The competitor row: smaller shots, muted so the hero above stays dominant. */
-.sc-exhibit-grid-rivals {
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-}
-
-.sc-exhibit-grid-rivals .sc-exhibit-name {
-  font-size: 0.9rem;
-  color: var(--body);
-}
-
-.sc-exhibit-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-  display: block;
-}
-
-.sc-exhibit-missing {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  color: var(--body);
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.sc-exhibit figcaption {
-  margin-top: 0.6rem;
-  font-size: 0.9rem;
-  color: var(--body);
-}
-
-.sc-exhibit-you {
-  font-weight: 600;
-  color: var(--black);
-  border-bottom: 2px solid var(--primary);
-  padding-bottom: 0.15rem;
-}
-
-.sc-first-impression-line {
-  margin-top: var(--s-4);
-  font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-weight: 500;
-  font-size: var(--h4);
-  color: var(--black);
-}
-
-/* 4. Score */
-.sc-score {
-  background: var(--surface);
-}
-
-.sc-score-grid {
-  display: grid;
-  gap: var(--grid-gap);
-  align-items: center;
-}
-
-@media (min-width: 900px) {
-  .sc-score-grid {
-    /* ring | verdict copy | radar. The copy needs real width inside the hero
-       card, so the radar column is capped rather than greedy. */
-    grid-template-columns: minmax(150px, 190px) minmax(0, 1fr) minmax(320px, 430px);
-    column-gap: var(--s-5);
-  }
-}
-
 .sc-ring {
   width: 100%;
   max-width: 220px;
@@ -8570,13 +8395,6 @@ button.nav-link {
   font-weight: 500;
   font-size: 1.15rem;
   color: var(--primary);
-}
-
-.sc-verdict-paragraph {
-  font-size: var(--p-lg);
-  line-height: 1.55;
-  color: var(--black);
-  max-width: 58ch;
 }
 
 /* The 0-100 band scale under the ring: shows WHERE the score sits and what
@@ -8785,65 +8603,6 @@ button.nav-link {
   border-top-style: dotted;
 }
 
-/* 5. Category sections */
-.sc-category {
-  border-top: 1px solid var(--light);
-}
-
-.sc-category-head {
-  display: flex;
-  align-items: baseline;
-  gap: 1.2rem;
-  margin-bottom: var(--s-4);
-  position: relative;
-}
-
-.sc-ghost-numeral {
-  font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-weight: 500;
-  font-size: clamp(3.5rem, 8vw, 6rem);
-  line-height: 0.9;
-  color: var(--light);
-  user-select: none;
-}
-
-.sc-category-head h2 {
-  font-size: var(--h3);
-}
-
-.sc-category-score {
-  margin-top: 0.35rem;
-  color: var(--body);
-}
-
-.sc-category-score strong {
-  font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-weight: 500;
-  font-size: 1.6rem;
-  color: var(--primary);
-}
-
-.sc-category-grid {
-  display: grid;
-  gap: var(--grid-gap);
-}
-
-@media (min-width: 900px) {
-  .sc-category-grid {
-    grid-template-columns: 1.5fr 1fr;
-    align-items: start;
-  }
-}
-
-.sc-finding {
-  font-size: var(--p-lg);
-  line-height: 1.55;
-  max-width: 62ch;
-  padding-left: 1.1rem;
-  border-left: 3px solid var(--primary);
-  margin-bottom: var(--s-3);
-}
-
 .sc-competitor-note {
   color: var(--body);
   max-width: 62ch;
@@ -8852,28 +8611,6 @@ button.nav-link {
 .sc-competitor-note span {
   font-weight: 600;
   color: var(--black);
-}
-
-.sc-unassessed {
-  margin-top: var(--s-3);
-  background: var(--surface);
-  border-radius: 0.4rem;
-  padding: 1rem 1.2rem;
-}
-
-.sc-unassessed h4 {
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--mid);
-  margin-bottom: 0.5rem;
-}
-
-.sc-unassessed li {
-  color: var(--body);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: 0.35rem;
 }
 
 .sc-looked-at {
@@ -8948,83 +8685,6 @@ button.nav-link {
 .sc-pagespeed .sc-row-you td {
   color: var(--black);
   font-weight: 600;
-}
-
-/* Locked categories (teaser) */
-.sc-category-locked .sc-locked-pill {
-  display: inline-block;
-  background: var(--black);
-  color: var(--white);
-  border-radius: 999px;
-  padding: 0.2rem 0.8rem;
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.sc-locked-lines {
-  display: grid;
-  gap: 0.8rem;
-  max-width: 40rem;
-}
-
-.sc-locked-lines span {
-  display: block;
-  height: 0.95rem;
-  border-radius: 999px;
-  background: var(--surface);
-}
-
-.sc-locked-lines span:nth-child(2) {
-  width: 82%;
-}
-
-.sc-locked-lines span:nth-child(3) {
-  width: 64%;
-}
-
-/* The quiet per-section nudge to the unlock form. */
-.sc-locked-nudge {
-  display: inline-block;
-  margin-top: 1.1rem;
-  font-size: 0.88rem;
-  color: var(--body);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: color-mix(in srgb, var(--primary) 60%, transparent);
-}
-
-.sc-locked-nudge:hover {
-  color: var(--primary);
-}
-
-/* Unlock panel */
-.sc-unlock-section {
-  background: var(--work-black);
-}
-
-.sc-unlock {
-  max-width: 34rem;
-  margin-inline: auto;
-  background: var(--white);
-  border-radius: 0.6rem;
-  padding: clamp(1.4rem, 4vw, 2.4rem);
-  box-shadow: 0 30px 60px rgb(0 0 0 / 30%);
-}
-
-.sc-unlock-headline {
-  font-size: var(--h4);
-  margin-bottom: 0.5rem;
-}
-
-.sc-unlock-intro {
-  color: var(--body);
-  margin-bottom: var(--s-3);
-}
-
-.sc-unlock-form {
-  display: grid;
-  gap: 1rem;
 }
 
 .sc-field {
@@ -9119,83 +8779,9 @@ button.nav-link {
   overflow: hidden;
 }
 
-.sc-privacy {
-  font-size: 0.82rem;
-  color: var(--mid);
-}
-
-.sc-privacy a {
-  color: var(--body);
-  text-decoration: underline;
-}
-
 .sc-form-error {
   color: var(--primary);
   font-size: 0.92rem;
-}
-
-.sc-unlock-submit {
-  justify-self: start;
-}
-
-.sc-unlock-after {
-  font-size: var(--p-lg);
-  line-height: 1.55;
-  margin-bottom: var(--s-3);
-}
-
-/* Sticky unlock bar (teaser): the unlock action stays one tap away on desktop
-   and mobile. Hidden while the inline unlock form is on screen, and in print. */
-.sc-unlock-bar {
-  position: fixed;
-  inset-inline: 0;
-  bottom: 0;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 0.8rem 5%;
-  padding-bottom: calc(0.8rem + env(safe-area-inset-bottom, 0px));
-  background: color-mix(in srgb, var(--work-black) 94%, transparent);
-  backdrop-filter: blur(8px);
-  color: var(--white);
-  box-shadow: 0 -12px 30px rgb(0 0 0 / 25%);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.sc-unlock-bar-line {
-  font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-weight: 500;
-  font-size: 0.98rem;
-}
-
-.sc-unlock-bar-button {
-  white-space: nowrap;
-  position: relative;
-  isolation: isolate;
-}
-
-/* An expanding ring that pulses out from the button, plus a gentle scale
-   breath, to nudge the eye toward unlocking. The ring lives on a pseudo so
-   the button keeps its own base shadow. Both stop under reduced motion. */
-.sc-unlock-bar-button::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .sc-unlock-bar-button {
-    animation: sc-unlock-breathe 2.8s ease-in-out infinite;
-  }
-
-  .sc-unlock-bar-button::after {
-    animation: sc-unlock-ring 2.8s ease-out infinite;
-  }
 }
 
 @keyframes sc-unlock-breathe {
@@ -9216,116 +8802,6 @@ button.nav-link {
   100% {
     box-shadow: 0 0 0 14px color-mix(in srgb, var(--primary) 0%, transparent);
   }
-}
-
-@media (max-width: 640px) {
-  .sc-unlock-bar-line {
-    display: none;
-  }
-
-  .sc-unlock-bar-button {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-/* Unlock modal: the same UnlockPanel, opened from the sticky bar. */
-.sc-unlock-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 70;
-  display: grid;
-  place-items: center;
-  padding: 1rem;
-}
-
-.sc-unlock-modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgb(0 0 0 / 55%);
-  backdrop-filter: blur(3px);
-}
-
-.sc-unlock-modal-card {
-  position: relative;
-  width: min(34rem, 100%);
-  max-height: calc(100vh - 2rem);
-  overflow-y: auto;
-  border-radius: 0.8rem;
-}
-
-.sc-unlock-modal-card .sc-unlock {
-  max-width: none;
-}
-
-.sc-unlock-modal-close {
-  position: absolute;
-  top: 0.9rem;
-  right: 0.9rem;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 2.1rem;
-  height: 2.1rem;
-  border: 0;
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--black);
-  cursor: pointer;
-}
-
-.sc-unlock-modal-close:hover {
-  background: var(--light);
-}
-
-@media print {
-  .sc-unlock-bar,
-  .sc-unlock-modal {
-    display: none;
-  }
-}
-
-/* 6. First fix */
-.sc-first-fix {
-  background: var(--primary);
-  color: var(--white);
-}
-
-.sc-first-fix h2 {
-  font-size: var(--h3);
-  color: color-mix(in srgb, var(--white) 88%, transparent);
-  margin-bottom: var(--s-3);
-}
-
-.sc-first-fix-category {
-  font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-weight: 600;
-  font-size: var(--h2);
-  color: var(--white);
-  margin-bottom: var(--s-4);
-}
-
-.sc-first-fix-grid {
-  display: grid;
-  gap: var(--grid-gap);
-}
-
-@media (min-width: 800px) {
-  .sc-first-fix-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.sc-first-fix-grid h3 {
-  font-size: var(--h4);
-  color: var(--white);
-  margin-bottom: 0.6rem;
-}
-
-.sc-first-fix-grid p {
-  color: color-mix(in srgb, var(--white), transparent 25%);
-  line-height: 1.6;
-  max-width: 52ch;
 }
 
 /* 7. Proof */
@@ -9394,49 +8870,6 @@ button.nav-link {
 .sc-next-step h2 {
   font-size: var(--h3);
   margin-bottom: var(--s-4);
-}
-
-.sc-steps {
-  display: grid;
-  gap: var(--grid-gap);
-  margin: 0 0 var(--s-4);
-  padding: 0;
-  list-style: none;
-  counter-reset: sc-step;
-}
-
-@media (min-width: 800px) {
-  .sc-steps {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.sc-steps li {
-  counter-increment: sc-step;
-  background: var(--white);
-  border-radius: 0.5rem;
-  padding: 1.4rem;
-  position: relative;
-}
-
-.sc-steps li::before {
-  content: counter(sc-step, decimal-leading-zero);
-  font-family: "Helvetica Now Display", Arial, sans-serif;
-  font-weight: 500;
-  color: var(--primary);
-  display: block;
-  margin-bottom: 0.6rem;
-}
-
-.sc-steps h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.4rem;
-}
-
-.sc-steps p {
-  color: var(--body);
-  font-size: 0.95rem;
-  line-height: 1.55;
 }
 
 /* 9. Soft close */
@@ -9762,11 +9195,6 @@ button.nav-link {
 .sc-landing-form-card h2 {
   font-size: var(--h4);
   margin-bottom: 0.4rem;
-}
-
-.sc-landing-form-intro {
-  color: var(--body);
-  margin-bottom: var(--s-3);
 }
 
 .sc-landing-form {
@@ -12956,4 +12384,27 @@ summary {
   font-size: 0.9rem;
   font-weight: 500;
   letter-spacing: 0.02em;
+}
+
+/* First-fix detail inside the "where we would start" card: the generated
+   why/in-practice paragraphs, restored after the layout rebuild dropped the
+   standalone section. */
+.sc-start-firstfix {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--light);
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 800px) {
+  .sc-start-firstfix { grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+}
+.sc-start-firstfix h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+.sc-start-firstfix p {
+  color: var(--body);
+  line-height: 1.55;
 }

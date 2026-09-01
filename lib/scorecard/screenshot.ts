@@ -2,8 +2,6 @@ import { createHmac } from "node:crypto";
 import { isMockMode } from "./env";
 import { MOCK_PNG_BASE64 } from "./mock";
 
-export type ScreenshotResult = { ok: true; url: string } | { ok: false; reason: string };
-
 // First-impression exhibits: the above-the-fold homepage exactly as a buyer
 // first sees it. Captured on first load, no scroll, ads and cookie banners
 // blocked. Desktop is 1440x900; mobile is 390x844 (a current iPhone viewport).
@@ -128,12 +126,4 @@ export async function captureFirstImpression(
     mobileUrl ? fetchShotBase64(mobileUrl) : Promise.resolve(null),
   ]);
   return { desktop, mobile, desktopUrl, mobileUrl };
-}
-
-// The report needs a plain URL for its <img>; no key means an honest failure.
-export function getHeroScreenshot(targetUrl: string): ScreenshotResult {
-  if (isMockMode()) return { ok: true, url: `https://mock-shots.test/desktop?url=${encodeURIComponent(targetUrl)}` };
-  const accessKey = process.env.SCREENSHOTONE_ACCESS_KEY;
-  if (!accessKey) return { ok: false, reason: "Screenshot service not configured." };
-  return { ok: true, url: buildScreenshotUrl(targetUrl, accessKey, undefined, process.env.SCREENSHOTONE_SECRET_KEY) };
 }

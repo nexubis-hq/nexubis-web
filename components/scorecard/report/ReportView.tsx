@@ -305,6 +305,18 @@ export function ReportView({
                       <li key={line}>{line}</li>
                     ))}
                   </ul>
+                  {result.firstFix ? (
+                    <div className="sc-start-firstfix">
+                      <div>
+                        <h3>Why {result.firstFix.categoryLabel.toLowerCase()} comes first</h3>
+                        <p>{result.firstFix.why}</p>
+                      </div>
+                      <div>
+                        <h3>What fixing it looks like</h3>
+                        <p>{result.firstFix.inPractice}</p>
+                      </div>
+                    </div>
+                  ) : null}
                   <p className="sc-start-cost">{resolvedStayingSame(result)}</p>
                 </div>
               </section>

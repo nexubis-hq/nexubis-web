@@ -1,6 +1,5 @@
 import { test, vi, beforeEach, afterEach } from "vitest";
 import assert from "node:assert/strict";
-import { createHmac } from "node:crypto";
 
 // In-memory KV shared by run records, shared reports, leads and dedupe keys.
 const { store, lists } = vi.hoisted(() => ({
@@ -33,7 +32,6 @@ vi.mock("./kv", () => ({
     },
   }),
 }));
-import { buildFunnelrPayload, fireFunnelrWebhook, signPayload } from "./funnelr";
 import { buildLeadRecord, runLeadPlumbing, readExistingCapture, markCaptured, promoteResult, dedupeKey } from "./unlock";
 import { listLeads, readLead, type LeadRecord } from "./leads";
 import { generateScorecardUncached } from "./generate";
@@ -75,70 +73,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-test("the Funnelr payload carries the full lead snapshot with the scorecard source tag", async () => {
-  const record = await makeSharedRecord();
-  const lead = buildLeadRecord(record, captureEmail, "slug1234");
-  const payload = buildFunnelrPayload(lead, "https://www.nexubis.io/scorecard/r/slug1234");
-  assert.equal(payload.source, "scorecard");
-  // The name is derived from the email local part; the form no longer asks
-  // for a role.
-  assert.deepEqual(payload.contact, { firstName: "Mark", email: "Mark@Veltkamp-Dosing.nl", role: "" });
-  assert.equal(payload.company, "Veltkamp Dosing");
-  assert.equal(payload.website, "https://veltkamp-dosing.nl");
-  assert.equal(payload.reportUrl, "https://www.nexubis.io/scorecard/r/slug1234");
-  assert.equal(typeof payload.credibilityScore, "number");
-  assert.ok(["narrow", "visible", "wide"].includes(payload.verdict));
-  assert.equal(payload.competitors.length, 2);
-  assert.ok(payload.firstFixCategory);
-});
-
-test("the webhook is HMAC-signed over the exact body", () => {
-  const body = JSON.stringify({ a: 1 });
-  const sig = signPayload(body, "secret-1");
-  assert.equal(sig, createHmac("sha256", "secret-1").update(body).digest("hex"));
-  assert.notEqual(sig, signPayload(body, "secret-2"));
-  assert.notEqual(sig, signPayload(JSON.stringify({ a: 2 }), "secret-1"));
-});
-
-test("the webhook retries 3 times with backoff, then reports failure", async () => {
-  process.env.FUNNELR_WEBHOOK_URL = "https://funnelr.test/hook";
-  process.env.FUNNELR_WEBHOOK_SECRET = "s";
-  const calls: Array<{ url: string; sig: string | null }> = [];
-  const fetchImpl = vi.fn(async (url: string | URL | Request, init?: RequestInit) => {
-    const headers = new Headers(init?.headers);
-    calls.push({ url: String(url), sig: headers.get("X-Nexubis-Signature") });
-    return new Response("nope", { status: 500 });
-  }) as unknown as typeof fetch;
-  const sleeps: number[] = [];
-  const record = await makeSharedRecord();
-  const lead = buildLeadRecord(record, captureEmail, "slug1234");
-  const res = await fireFunnelrWebhook(buildFunnelrPayload(lead, "https://x/r/slug1234"), {
-    fetchImpl,
-    sleep: async (ms) => {
-      sleeps.push(ms);
-    },
-  });
-  assert.equal(res.ok, false);
-  assert.equal(res.attempts, 3);
-  assert.equal(calls.length, 3);
-  assert.deepEqual(sleeps, [1500, 4000]);
-  // Every attempt carried the same valid signature.
-  for (const c of calls) assert.ok(c.sig && c.sig.length === 64);
-});
-
-test("a first-attempt success fires exactly one request", async () => {
-  process.env.FUNNELR_WEBHOOK_URL = "https://funnelr.test/hook";
-  const fetchImpl = vi.fn(async () => new Response("ok", { status: 200 })) as unknown as typeof fetch;
-  const record = await makeSharedRecord();
-  const lead = buildLeadRecord(record, captureEmail, "slug1234");
-  const res = await fireFunnelrWebhook(buildFunnelrPayload(lead, "https://x/r/slug1234"), { fetchImpl });
-  assert.deepEqual(res, { ok: true, attempts: 1 });
-  assert.equal((fetchImpl as unknown as { mock: { calls: unknown[] } }).mock.calls.length, 1);
-});
-
-// The failed-webhook path sits through the real retry backoff (1.5s + 4s),
-// so this test carries its own timeout.
-test("lead plumbing persists a complete lead, notifies the team, and skips Email 1 when the flag is off", { timeout: 15000 }, async () => {
+test("lead plumbing persists a complete lead, notifies the team, and skips Email 1 when the flag is off", async () => {
   process.env.RESEND_API_KEY = "re_test";
   const sent: Array<{ url: string; body: Record<string, unknown> }> = [];
   vi.stubGlobal(
