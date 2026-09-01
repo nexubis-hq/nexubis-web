@@ -24,11 +24,11 @@ export async function POST(req: NextRequest) {
   if (validation.reportUrl) {
     const slug = scorecardSlugFromReportUrl(validation.reportUrl, originOf(req));
     if (!slug) {
-      return NextResponse.json({ ok: false, error: "Report URL is not a valid Nexubis Scorecard URL." }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "Report URL is not a valid Nexubis audit report URL." }, { status: 400 });
     }
     savedReport = await readShared(slug).catch(() => null);
     if (!savedReport) {
-      return NextResponse.json({ ok: false, error: "Report URL does not match a saved Scorecard." }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "Report URL does not match a saved audit." }, { status: 400 });
     }
   }
 

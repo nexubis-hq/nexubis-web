@@ -82,7 +82,7 @@ test("promoteRun turns a run record into a permanent shared report with contact 
     assert.ok(outcome.ok);
     if (outcome.ok) {
       assert.match(outcome.slug, /^[a-z2-9]{8}$/);
-      assert.equal(outcome.reportUrl, `/scorecard/r/${outcome.slug}`);
+      assert.equal(outcome.reportUrl, `/audit/r/${outcome.slug}`);
       assert.equal(outcome.record.result.meta.contactName, "Mark");
       assert.equal(outcome.record.result.meta.role, "CEO or MD");
       assert.equal(outcome.record.result.routing.roleSeniority, "ceo");

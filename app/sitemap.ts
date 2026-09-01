@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   if (SHOW_SCORECARD) {
-    routes.push(entry("/scorecard", 0.7, "monthly"));
+    routes.push(entry("/audit", 0.7, "monthly"));
   }
 
   return routes;

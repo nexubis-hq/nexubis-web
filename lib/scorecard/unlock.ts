@@ -64,7 +64,7 @@ export function validateUnlockInput(input: UnlockInput): UnlockValidation {
     return bad(400, "That email address does not look right.", "email");
   }
   if (isDisposableEmail(input.email.trim())) {
-    return bad(400, "Use your work email. Your Scorecard link lands there and stays live for 180 days.", "disposable");
+    return bad(400, "Use your work email. Your audit link lands there and stays live for 180 days.", "disposable");
   }
   if (!input.role || input.role.trim().length === 0 || input.role.trim().length > 60) {
     return bad(400, "Choose your role.", "role");
@@ -167,7 +167,7 @@ export async function promoteRun(input: UnlockInput): Promise<UnlockOutcome> {
     roleSeniority: result.routing.roleSeniority,
   };
   await writeShared(slug, record);
-  return { ok: true, slug, reportUrl: `/scorecard/r/${slug}`, record };
+  return { ok: true, slug, reportUrl: `/audit/r/${slug}`, record };
 }
 
 // ── The lead plumbing, in order (Part 2B / build pack Prompt 6) ──────────────
@@ -203,8 +203,8 @@ export function buildLeadRecord(record: SharedScorecard, input: UnlockInput, slu
 
 export async function runLeadPlumbing(record: SharedScorecard, input: UnlockInput, slug: string, origin: string): Promise<LeadRecord> {
   const lead = buildLeadRecord(record, input, slug);
-  const absoluteReportUrl = `${origin}/scorecard/r/${slug}`;
-  const adminUrl = `${origin}/scorecard/admin/${slug}`;
+  const absoluteReportUrl = `${origin}/audit/r/${slug}`;
+  const adminUrl = `${origin}/audit/admin/${slug}`;
 
   // 1. The lead record lands first, so even a total email/webhook outage
   //    leaves the lead queryable in admin.

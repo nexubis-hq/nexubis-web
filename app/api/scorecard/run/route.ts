@@ -69,7 +69,7 @@ function limitsKv(): LimitsKv {
 const LIMIT_MESSAGES: Record<string, string> = {
   ip: "You have run a check recently. Your previous result is still at its link; try again in a few days.",
   target: "This company has been checked a few times today already. Try again tomorrow.",
-  global: "The Scorecard is busy right now. Give it an hour and try again.",
+  global: "The audit is busy right now. Give it an hour and try again.",
 };
 
 export async function POST(req: NextRequest) {

@@ -23,7 +23,7 @@ async function requireSession(): Promise<void> {
 export async function adminLogin(formData: FormData): Promise<void> {
   const password = String(formData.get("password") ?? "");
   if (!adminConfigured() || !passwordMatches(password)) {
-    redirect("/scorecard/admin?error=1");
+    redirect("/audit/admin?error=1");
   }
   const jar = await cookies();
   jar.set(SESSION_COOKIE, expectedSessionToken(), {
@@ -31,15 +31,15 @@ export async function adminLogin(formData: FormData): Promise<void> {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     maxAge: SESSION_TTL_S,
-    path: "/scorecard/admin",
+    path: "/audit/admin",
   });
-  redirect("/scorecard/admin/leads");
+  redirect("/audit/admin/leads");
 }
 
 export async function adminLogout(): Promise<void> {
   const jar = await cookies();
   jar.delete(SESSION_COOKIE);
-  redirect("/scorecard/admin");
+  redirect("/audit/admin");
 }
 
 export async function saveLeadNote(formData: FormData): Promise<void> {
@@ -48,8 +48,8 @@ export async function saveLeadNote(formData: FormData): Promise<void> {
   const note = String(formData.get("note") ?? "").slice(0, 2000);
   if (!slug) return;
   await updateLead(slug, { note });
-  revalidatePath("/scorecard/admin/leads");
-  revalidatePath(`/scorecard/admin/${slug}`);
+  revalidatePath("/audit/admin/leads");
+  revalidatePath(`/audit/admin/${slug}`);
 }
 
 const LOOM_STATUSES: LoomStatus[] = ["none", "selected", "recorded", "sent"];
@@ -60,8 +60,8 @@ export async function setLoomStatus(formData: FormData): Promise<void> {
   const status = String(formData.get("loomStatus") ?? "") as LoomStatus;
   if (!slug || !LOOM_STATUSES.includes(status)) return;
   await updateLead(slug, { loomStatus: status });
-  revalidatePath("/scorecard/admin/leads");
-  revalidatePath(`/scorecard/admin/${slug}`);
+  revalidatePath("/audit/admin/leads");
+  revalidatePath(`/audit/admin/${slug}`);
 }
 
 // Attach or replace the Loom on a shared report. Attaching flips the report's
@@ -74,12 +74,12 @@ export async function attachLoom(formData: FormData): Promise<void> {
   if (!slug) return;
   const loomUrl = raw.length === 0 ? null : raw;
   if (loomUrl && !/^https:\/\/(www\.)?loom\.com\/(share|embed)\/[a-zA-Z0-9]+/.test(loomUrl)) {
-    redirect(`/scorecard/admin/${slug}?error=loom`);
+    redirect(`/audit/admin/${slug}?error=loom`);
   }
   await patchShared(slug, { loomUrl });
   if (loomUrl) await updateLead(slug, { loomStatus: "recorded" });
-  revalidatePath(`/scorecard/admin/${slug}`);
-  revalidatePath(`/scorecard/r/${slug}`);
+  revalidatePath(`/audit/admin/${slug}`);
+  revalidatePath(`/audit/r/${slug}`);
 }
 
 // Re-run the pipeline for a report. The determinism envelope still memoizes
@@ -99,6 +99,6 @@ export async function regenerateReport(formData: FormData): Promise<void> {
     routing: { ...result.routing, roleSeniority: shared.result.routing.roleSeniority },
   };
   await patchShared(slug, { result: merged });
-  revalidatePath(`/scorecard/admin/${slug}`);
-  revalidatePath(`/scorecard/r/${slug}`);
+  revalidatePath(`/audit/admin/${slug}`);
+  revalidatePath(`/audit/r/${slug}`);
 }

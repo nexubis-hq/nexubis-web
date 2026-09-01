@@ -22,7 +22,7 @@ export default async function AdminReportPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const jar = await cookies();
-  if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/scorecard/admin");
+  if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/audit/admin");
   const { slug } = await params;
   const { error } = await searchParams;
   const shared = await readShared(slug);
@@ -42,8 +42,8 @@ export default async function AdminReportPage({
             </p>
           </div>
           <div className="sc-admin-ops">
-            <CopyLinkButton path={`/scorecard/r/${slug}`} />
-            <Link className="btn btn-secondary" href={`/scorecard/r/${slug}`}>
+            <CopyLinkButton path={`/audit/r/${slug}`} />
+            <Link className="btn btn-secondary" href={`/audit/r/${slug}`}>
               Open public report
             </Link>
             <form action={regenerateReport}>

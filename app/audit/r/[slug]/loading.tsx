@@ -2,7 +2,7 @@
 // rhythm (cover band, exhibit row, score block), all on tokens.
 export default function ReportLoading() {
   return (
-    <main className="sc-report" aria-busy="true" aria-label="Loading your Scorecard">
+    <main className="sc-report" aria-busy="true" aria-label="Loading your audit">
       <div className="sc-cover sc-skeleton-cover">
         <div className="site-container">
           <span className="sc-skeleton-line sc-skeleton-kicker" />

@@ -263,7 +263,7 @@ function scanFiles(dir: string, patterns: string[], out: Array<{ path: string; p
 }
 
 function staticBaselinePaths() {
-  return ["/", "/about", "/packages", "/contact", "/work", "/work/altify", "/work/circuit", "/work/oxipack", "/blog", "/scorecard"];
+  return ["/", "/about", "/packages", "/contact", "/work", "/work/altify", "/work/circuit", "/work/oxipack", "/blog", "/audit"];
 }
 
 function classifyParity(pathname: string, result: FetchResult, htmlTitle: string) {

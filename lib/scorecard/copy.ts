@@ -1,9 +1,10 @@
-// Client-facing Scorecard copy, locked from Part 2B (Sections 4, 7, 10, 13).
+// Client-facing copy for The Online Credibility Audit (renamed from the
+// Industrial Brand Credibility Scorecard; strings locked from Part 2B).
 // English only at launch; keeping every string here is what lets Dutch and
 // German arrive later without touching components. House rules apply to every
-// string in this file: no em dashes, never the banned word, no hype.
+// string in this file: no em dashes, no hype.
 
-export const SCORECARD_NAME = "The Industrial Brand Credibility Scorecard";
+export const SCORECARD_NAME = "The Online Credibility Audit";
 export const POWERED_BY = "Powered by Nexubis AI";
 
 // ── Landing (hero rewrite, Copy Brief v1 §3) ─────────────────────────────────
@@ -24,7 +25,7 @@ export const LANDING = {
   submitButton: "Scan my website",
   // Sits directly under the button. The highlight is red, the note stays grey.
   reassurance: {
-    highlight: "Free brand scorecard",
+    highlight: "Free credibility audit",
     note: "Done in under 2 minutes",
   },
 } as const;
@@ -34,7 +35,7 @@ export const FORM_FIELDS = {
   oneLiner: { label: "What do you make, in one line", helper: "Example: leak detection systems for packaging lines." },
   competitors: { label: "Two or three competitors you keep running into", helper: "Names or websites. We benchmark you against them." },
   firstName: { label: "First name", helper: "" },
-  workEmail: { label: "Work email", helper: "Your Scorecard link lands here." },
+  workEmail: { label: "Work email", helper: "Your audit link lands here." },
   role: { label: "Role", options: ["Marketing manager", "Marketing director", "Brand or comms manager", "CEO or MD", "Other"] },
 } as const;
 
@@ -52,14 +53,13 @@ export const UNLOCK = {
 
 // ── Report navigation + share ────────────────────────────────────────────────
 // The full report carries a sticky nav with a single action: book a call.
-// Never the banned word: this is the Scorecard, never an audit.
 export const REPORT_NAV = {
   book: "Book an application call",
 } as const;
 
 // ── Report surfaces (Section 7) ──────────────────────────────────────────────
 export const REPORT = {
-  coverTitlePrefix: "The Industrial Brand Credibility Scorecard for",
+  coverTitlePrefix: "The Online Credibility Audit for",
   loomLine: (name: string) => `Watch this first. ${name} walks you through your results.`,
   firstImpressionTitle: "First impression",
   firstImpressionLine: "This is what a buyer sees before reading a single word.",
@@ -75,7 +75,7 @@ export const REPORT = {
   nextStepTitle: "Recommended next step",
   nextStepButton: "Book an application call",
   nextStepSteps: [
-    { title: "Book the call", body: "A short application call. We look at your Scorecard together and decide if there is a fit." },
+    { title: "Book the call", body: "A short application call. We look at your audit together and decide if there is a fit." },
     { title: "See it before you commit", body: "We build something real for your brand first, so you judge work, not promises." },
     { title: "Our team becomes your team", body: "Brand, web, 3D, video and print, one in-house-style team on one flat retainer." },
   ],
@@ -143,11 +143,11 @@ export const BAND_SCALE = [
 ] as const;
 
 // ── Audience gate ────────────────────────────────────────────────────────────
-// Shown when the entered site is clearly outside the Scorecard's audience.
+// Shown when the entered site is clearly outside the audit's audience.
 // Warm and honest: the tool is for industrial manufacturers, and the reader
 // gets a way to object if we misread their site.
 export const OUT_OF_SCOPE_MESSAGE =
-  "The Scorecard is built for industrial manufacturers and machine builders, and this site does not look like one, so we did not run the check. If we have that wrong, email hello@nexubis.io and we will run it for you.";
+  "The Online Credibility Audit is built for industrial manufacturers and machine builders, and this site does not look like one, so we did not run the check. If we have that wrong, email hello@nexubis.io and we will run it for you.";
 
 // ── Teaser nudges (locked sections + sticky unlock bar) ──────────────────────
 export const TEASER = {
@@ -161,12 +161,12 @@ export const TEASER = {
 // ── Email 1 fallback (Section 10, exact copy; used only while
 //    SCORECARD_SEND_EMAIL1=true, before Funnelr owns the sequence) ────────────
 export const EMAIL_1 = {
-  subject: (name: string) => `Your Brand Credibility Scorecard is ready, ${name}`,
+  subject: (name: string) => `Your Online Credibility Audit is ready, ${name}`,
   body: (name: string, reportUrl: string, senderFirstName: string) =>
     [
       `Hi ${name},`,
       ``,
-      `Your Scorecard is ready: ${reportUrl}`,
+      `Your audit is ready: ${reportUrl}`,
       ``,
       `Inside you'll find your Credibility Score, how your brand compares against the competitors you named, and the first place to fix.`,
       ``,

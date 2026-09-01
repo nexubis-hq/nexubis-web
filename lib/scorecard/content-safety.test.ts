@@ -47,14 +47,14 @@ test("sanitizeCopy flags placeholder and provenance language", () => {
   assert.equal(sanitizeCopy("The crawl saw nothing.").clean, false);
 });
 
-test("sanitizeCopy flags the banned client-facing word", () => {
-  const r = sanitizeCopy("Your free website audit is ready."); // audit-ok
-  assert.equal(r.clean, false);
-  assert.ok(r.hits.some((h) => h.category === "banned-word"));
-  assert.equal(sanitizeCopy("We audited your homepage.").clean, false); // audit-ok
+// The former "audit" word ban was retired on 2026-09-01 when the tool was
+// renamed to The Online Credibility Audit. The banned-word plumbing stays.
+test("sanitizeCopy no longer flags the audit word after the rename", () => {
+  assert.equal(sanitizeCopy("Your free website audit is ready.").clean, true);
+  assert.equal(sanitizeCopy("We audited your homepage.").clean, true);
 });
 
-test("sanitizeCopy passes clean Scorecard copy", () => {
+test("sanitizeCopy passes clean audit copy", () => {
   const r = sanitizeCopy("Your homepage buries the offer. Lead with what you make.");
   assert.equal(r.clean, true);
   assert.deepEqual(r.hits, []);

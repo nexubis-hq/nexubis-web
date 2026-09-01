@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     // Idempotency: a repeat unlock returns the existing link, fires nothing.
     const existing = await readExistingUnlock(input);
     if (existing) {
-      return NextResponse.json({ reportUrl: `/scorecard/r/${existing}`, slug: existing });
+      return NextResponse.json({ reportUrl: `/audit/r/${existing}`, slug: existing });
     }
 
     const outcome = await promoteRun(input);

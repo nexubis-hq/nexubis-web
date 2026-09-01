@@ -1,12 +1,10 @@
-// Content-safety utilities for the Scorecard. Because no human reviews a report
+// Content-safety utilities for the Online Credibility Audit. Because no human reviews a report
 // before a stranger reads it, every string that reaches the renderer (static or
 // AI-generated) passes through here at the boundary.
 //
 // This module is the single home for the em-dash rule. Other modules import
 // from here rather than rolling their own replace, so the behaviour cannot
-// drift. It also hosts the audit-word rule: that word never appears in
-// anything client-facing. It is the Scorecard, the Credibility Check,
-// everywhere.
+// drift.
 
 // Replace em dashes (and en dashes used as sentence punctuation) with commas, so
 // the long-dash character never reaches the page. A hyphen-minus "-" and an en
@@ -78,9 +76,10 @@ const PROVENANCE: RegExp[] = [
   /\bwe (found|could not)\b/i,
 ];
 
-// House rule: the audit word never reaches a prospect. Client-facing copy
-// says Scorecard or Credibility Check.
-const BANNED_WORDS: RegExp[] = [/\baudits?\b/i, /\baudited\b/i, /\bauditing\b/i]; // audit-ok
+// Banned client-facing words. The old "audit" ban was retired on 2026-09-01
+// when the tool was renamed to The Online Credibility Audit; the category and
+// plumbing stay so a future ban is a one-line change.
+const BANNED_WORDS: RegExp[] = [];
 
 // Detect unsafe copy. Returns every hit so the caller can log precisely which
 // rule tripped, then swap that section to its templated fallback. `opts.allow`

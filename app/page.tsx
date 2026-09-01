@@ -132,11 +132,11 @@ const scorecardBullets = [
   "The first place to fix, explained clearly",
 ];
 const scorecardSub =
-  "Run the Industrial Brand Credibility Scorecard, powered by Nexubis AI. Enter your website and see, in under 2 minutes, how well your brand represents your product, how you benchmark against competitors you name, and the first place to fix.";
+  "Run the Online Credibility Audit, powered by Nexubis AI. Enter your website and see, in under 2 minutes, how well your brand represents your product, how you benchmark against competitors you name, and the first place to fix.";
 const scorecardExpectation =
   "Your result appears in under 2 minutes. Unlock the full report by email, no waiting.";
 const scorecardMicroProof =
-  "Free, no obligations. We take on two new partners a month; the Scorecard is where most start.";
+  "Free, no obligations. We take on two new partners a month; the audit is where most start.";
 
 const proofPlaceholderQuote =
   "Nexubis brought structure, speed, and creativity to every project we tackled together. They didn't just rebuild our website - they elevated how we communicate as a brand. Working with them feels effortless: they understand our needs, move fast, and always deliver more than expected.";

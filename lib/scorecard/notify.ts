@@ -40,12 +40,12 @@ async function sendEmail(args: { to: string | string[]; subject: string; text: s
   return sendResendEmail({ from: FROM, to, subject: args.subject, text: args.text, replyTo: args.replyTo });
 }
 
-// Internal notification: new Scorecard lead, the working details, links to the
+// Internal notification: new audit lead, the working details, links to the
 // report and the admin view. Subject pattern per the build pack.
 export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, adminUrl: string): Promise<boolean> {
-  const subject = `Scorecard lead: ${lead.company}, ${lead.credibilityScore}/100, ${lead.verdict} gap`;
+  const subject = `Audit lead: ${lead.company}, ${lead.credibilityScore}/100, ${lead.verdict} gap`;
   const lines = [
-    `New Scorecard lead.`,
+    `New audit lead.`,
     ``,
     `Company: ${lead.company} (${lead.url})`,
     `Contact: ${lead.name}, ${lead.role}, ${lead.email}`,

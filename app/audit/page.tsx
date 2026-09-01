@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: `${SCORECARD_NAME} | Nexubis`,
   description: LANDING.subheadline,
   alternates: {
-    canonical: "https://www.nexubis.io/scorecard",
+    canonical: "https://www.nexubis.io/audit",
   },
 };
 

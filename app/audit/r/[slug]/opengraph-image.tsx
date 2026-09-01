@@ -6,7 +6,7 @@ import { VERDICT_LABELS } from "@/lib/scorecard/scoring";
 import { prospectScores } from "@/lib/scorecard/result";
 import { SCORECARD_NAME, POWERED_BY } from "@/lib/scorecard/copy";
 
-export const alt = "Industrial Brand Credibility Scorecard";
+export const alt = "The Online Credibility Audit";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

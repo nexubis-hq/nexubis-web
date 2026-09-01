@@ -9,13 +9,13 @@ export const dynamic = "force-dynamic";
 // everyone else gets the password form.
 export default async function AdminIndex({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const jar = await cookies();
-  if (isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/scorecard/admin/leads");
+  if (isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/audit/admin/leads");
   const { error } = await searchParams;
 
   return (
     <section className="section">
       <div className="site-container sc-admin-login">
-        <h1>Scorecard admin</h1>
+        <h1>Audit admin</h1>
         {!adminConfigured() ? (
           <p className="sc-form-error">
             SCORECARD_ADMIN_PASSWORD / SCORECARD_SESSION_SECRET are not set. Configure them in the environment first.

@@ -199,7 +199,7 @@ function classifyAndNormaliseHref(anchorText: string, href: string, publishedSlu
       "/work/circuit",
       "/work/oxipack",
       "/blog",
-      "/scorecard",
+      "/audit",
       "/about",
       "/",
     ]);

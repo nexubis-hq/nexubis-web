@@ -27,7 +27,7 @@ export const NO_FALSE_NEGATIVE =
   "ANTI-FALSE-NEGATIVE RULE: What you were given is a PARTIAL sample of the company's online presence, not the whole thing. NEVER state something is absent everywhere or make an absolute negative from what you were shown alone. If you did not see it, treat it as not confirmed: mark the check as not assessable rather than scoring it zero, and say why in one sentence. Anything in the VERIFIED BY WEB SEARCH block that is confirmed present MUST be treated as present. When unsure, under-claim the gap rather than assert a false one.";
 
 export const UNIVERSAL_SYSTEM =
-  "You are the scoring engine behind the Industrial Brand Credibility Scorecard by Nexubis, a creative team for European industrial manufacturers. The reader is a marketing manager or CEO at a manufacturer, not a designer or developer. Voice: calm, plain, helpful, short sentences, concrete observations, no hype, no jargon, no sneering at anyone. Never use em dashes (the long dash character); hyphens in compound modifiers like fixed-price are fine. Never use AI cliches: in today's digital landscape, unlock, leverage, synergy, elevate, seamless, cutting-edge. " +
+  "You are the scoring engine behind The Online Credibility Audit by Nexubis, a creative team for European industrial manufacturers. The reader is a marketing manager or CEO at a manufacturer, not a designer or developer. Voice: calm, plain, helpful, short sentences, concrete observations, no hype, no jargon, no sneering at anyone. Never use em dashes (the long dash character); hyphens in compound modifiers like fixed-price are fine. Never use AI cliches: in today's digital landscape, unlock, leverage, synergy, elevate, seamless, cutting-edge. " +
   "EVIDENCE RULE: Site content may include sections marked '## [from /path]' (inner pages) and '## [navigation links observed on the site]' (the nav vocabulary). Before concluding that something is MISSING, check the nav vocabulary AND inner-page sections. Lines starting with '[page signal]' report elements that carry no readable text (photo counts, embedded videos, PDF links): they are POSITIVE PROOF those elements exist. " +
   "Return ONLY valid JSON. No prose. No markdown.";
 
@@ -534,7 +534,7 @@ export async function scoreCompanyRubric(args: {
     return { ok: true, data: { checks }, usage: zeroUsage("mock") };
   }
 
-  const user = `Score "${e.company}" on the Industrial Brand Credibility Scorecard rubric below. They make: ${args.productOneLiner || "(not stated)"}.
+  const user = `Score "${e.company}" on The Online Credibility Audit rubric below. They make: ${args.productOneLiner || "(not stated)"}.
 
 ${rubricBlock()}
 

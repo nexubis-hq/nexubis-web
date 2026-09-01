@@ -170,7 +170,7 @@ test("lead plumbing persists a complete lead, notifies the team, and skips Email
   // Team email sent; Email 1 skipped (flag off).
   assert.equal(sent.length, 1);
   const teamEmail = sent[0].body as { subject: string; text: string; to: string[] };
-  assert.ok(teamEmail.subject.startsWith(`Scorecard lead: Veltkamp Dosing, ${lead.credibilityScore}/100`));
+  assert.ok(teamEmail.subject.startsWith(`Audit lead: Veltkamp Dosing, ${lead.credibilityScore}/100`));
   assert.ok(!teamEmail.text.includes("webhook FAILED"));
 });
 
@@ -192,11 +192,10 @@ test("Email 1 goes to the lead only while SCORECARD_SEND_EMAIL1=true, with the e
   await runLeadPlumbing(record, unlockInput, "slug7777", "https://www.nexubis.io");
   const email1 = sent.find((e) => (e.to as string[])[0] === "Mark@Veltkamp-Dosing.nl") as { subject: string; text: string };
   assert.ok(email1, "Email 1 should be sent when the flag is on");
-  assert.equal(email1.subject, "Your Brand Credibility Scorecard is ready, Mark");
+  assert.equal(email1.subject, "Your Online Credibility Audit is ready, Mark");
   assert.ok(email1.text.startsWith("Hi Mark,"));
-  assert.ok(email1.text.includes("https://www.nexubis.io/scorecard/r/slug7777"));
+  assert.ok(email1.text.includes("https://www.nexubis.io/audit/r/slug7777"));
   assert.ok(email1.text.includes("the first place to fix"));
-  assert.ok(!/\baudit/i.test(email1.text)); // audit-ok
   assert.ok(!email1.text.includes(String.fromCharCode(0x2014)));
 });
 

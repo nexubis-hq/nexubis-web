@@ -32,7 +32,7 @@ export default async function LeadsPage({
   searchParams: Promise<{ verdict?: string; role?: string; view?: string }>;
 }) {
   const jar = await cookies();
-  if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/scorecard/admin");
+  if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/audit/admin");
   const { verdict, role, view } = await searchParams;
   const loomView = view === "loom";
 
@@ -49,7 +49,7 @@ export default async function LeadsPage({
       .filter(([, v]) => v)
       .map(([k, v]) => `${k}=${encodeURIComponent(v!)}`)
       .join("&");
-    return `/scorecard/admin/leads${q ? `?${q}` : ""}`;
+    return `/audit/admin/leads${q ? `?${q}` : ""}`;
   };
 
   return (
@@ -110,7 +110,7 @@ export default async function LeadsPage({
                 {leads.map((l) => (
                   <tr key={l.reportSlug} className={loomView && fitScore(l) >= 5 ? "sc-row-hot" : undefined}>
                     <td>
-                      <Link href={`/scorecard/admin/${l.reportSlug}`}>{l.company}</Link>
+                      <Link href={`/audit/admin/${l.reportSlug}`}>{l.company}</Link>
                       {l.note ? <span className="sc-admin-notedot" title={l.note} /> : null}
                     </td>
                     <td>
@@ -144,7 +144,7 @@ export default async function LeadsPage({
                     </td>
                     <td className="sc-admin-dim">{l.createdAt.slice(0, 10)}</td>
                     <td>
-                      <Link href={`/scorecard/r/${l.reportSlug}`}>report</Link>
+                      <Link href={`/audit/r/${l.reportSlug}`}>report</Link>
                     </td>
                   </tr>
                 ))}

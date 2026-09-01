@@ -119,7 +119,9 @@ export function scorecardSlugFromReportUrl(reportUrl: string, allowedOrigin?: st
   try {
     const parsed = new URL(reportUrl);
     if (allowedOrigin && parsed.origin !== allowedOrigin) return null;
-    const match = parsed.pathname.match(/^\/scorecard\/r\/([abcdefghjkmnpqrstuvwxyz23456789]{8})$/);
+    // Accept both the current /audit path and the pre-rename /scorecard path:
+    // report URLs stored in Funnelr or old emails keep the old prefix forever.
+    const match = parsed.pathname.match(/^\/(?:audit|scorecard)\/r\/([abcdefghjkmnpqrstuvwxyz23456789]{8})$/);
     return match?.[1] ?? null;
   } catch {
     return null;
@@ -178,7 +180,7 @@ function isScorecardReportUrl(value: unknown): boolean {
   if (value !== value.trim()) return false;
   try {
     const parsed = new URL(value);
-    return parsed.protocol === "https:" && /^\/scorecard\/r\/[abcdefghjkmnpqrstuvwxyz23456789]{8}$/.test(parsed.pathname);
+    return parsed.protocol === "https:" && /^\/(?:audit|scorecard)\/r\/[abcdefghjkmnpqrstuvwxyz23456789]{8}$/.test(parsed.pathname);
   } catch {
     return false;
   }

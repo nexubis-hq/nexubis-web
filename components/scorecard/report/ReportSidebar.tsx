@@ -79,7 +79,7 @@ export function ReportSidebar({
             <span className="sc-side-cta-role">Chief Operations Officer</span>
           </div>
         </div>
-        <p className="sc-side-cta-copy">Book a call and we&rsquo;ll walk your Scorecard together, no obligation.</p>
+        <p className="sc-side-cta-copy">Book a call and we&rsquo;ll walk your audit together, no obligation.</p>
         <BookCallButton className="btn btn-primary sc-side-cta-btn" personName={contactName} business={company}>
           Book your free call
         </BookCallButton>

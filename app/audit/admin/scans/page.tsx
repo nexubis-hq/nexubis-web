@@ -28,7 +28,7 @@ function outcomeClass(o: ScanOutcome): string {
 
 export default async function ScansPage() {
   const jar = await cookies();
-  if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/scorecard/admin");
+  if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/audit/admin");
 
   const [log, counts] = await Promise.all([readRecentScanLog(300), readScanCounts()]);
 
