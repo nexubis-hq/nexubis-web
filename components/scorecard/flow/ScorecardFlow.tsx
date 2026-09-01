@@ -7,6 +7,8 @@
 // lib/scorecard/copy.ts; nothing is hardcoded here.
 import { useEffect, useRef, useState } from "react";
 import { LANDING, FORM_FIELDS } from "@/lib/scorecard/copy";
+import { PILLAR_CHIP_LABELS } from "@/lib/scorecard/report-derive";
+import { RUBRIC } from "@/lib/scorecard/rubric";
 import { trackMeta } from "@/lib/meta/track";
 import { META_EVENTS, LEAD_CONTENT_NAME, leadValue } from "@/lib/meta/events";
 import { firstNameFromEmail } from "@/lib/scorecard/lead-name";
@@ -240,6 +242,11 @@ export function ScorecardFlow() {
               <li key={b} data-reveal data-reveal-delay={i * 0.06}>
                 {b}
               </li>
+            ))}
+          </ul>
+          <ul className="sc-landing-chips" aria-label="The five pillars">
+            {RUBRIC.map((cat) => (
+              <li key={cat.key}>{PILLAR_CHIP_LABELS[cat.key]}</li>
             ))}
           </ul>
         </div>

@@ -14,19 +14,41 @@ export const POWERED_BY = "Powered by Nexubis AI";
 // server-side.
 export const LANDING = {
   kicker: "For European industrial manufacturers",
-  headline: "Your Brand, Scored out of 100.",
+  headline: "The buyer who didn't trust your website shortlisted your competitor.",
   subheadline:
-    "Enter your website. In under 2 minutes you get your score on the five things buyers judge you on, how you sit against your closest competitors, and the first thing to fix.",
+    "See exactly where serious buyers lose confidence in your company. We read your online presence the way a procurement team does, score you on the five things buyers judge you on, and hand you the first fix.",
   bullets: [
-    "Scored on five fronts: website, visuals, message, printed material and brand as a whole",
+    "Scored on five fronts: brand, website, visuals, print and message",
     "Benchmarked side by side against the competitors you get cross-shopped with",
     "One clear first fix, explained plainly, not a list of forty problems",
   ],
-  submitButton: "Scan my website",
+  submitButton: "Run my free audit",
   // Sits directly under the button. The highlight is red, the note stays grey.
   reassurance: {
-    highlight: "Free credibility audit",
-    note: "Done in under 2 minutes",
+    highlight: "Free",
+    note: "Your full audit in about 2 minutes, unlocked instantly",
+  },
+} as const;
+
+// ── Landing, below the fold ──────────────────────────────────────────────────
+// The page sells one action; these three short strips answer "what do I get",
+// show one proof, and hold the space for Laine's intro clip. The Oxipack
+// mention here is the landing page's own; the once-per-REPORT rule (see
+// acceptance.test.ts) covers the report copy, not this page.
+export const LANDING_BELOW = {
+  whatYouGet: {
+    title: "What you get",
+    items: [
+      { title: "Your Gap score out of 100", body: "One number for how credible you look to a buyer, and which band it puts you in." },
+      { title: "You, next to named competitors", body: "The same 25 checks run on the rivals buyers weigh you against, side by side." },
+      { title: "The first thing to fix", body: "One clear starting point, with what fixing it looks like in practice." },
+    ],
+  },
+  proofLine: "One year with Oxipack in the Netherlands: 35% more output at a 33% lower effective rate.",
+  proofLink: "Read the case study",
+  video: {
+    title: "Why we built this audit",
+    comingNote: "Video coming soon",
   },
 } as const;
 
