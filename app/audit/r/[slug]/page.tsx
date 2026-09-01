@@ -62,21 +62,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function SharedReportPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ teaser?: string }>;
-}) {
+export default async function SharedReportPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const record = await loadRecord(slug);
   if (!record) notFound();
   if (slug !== "demo") incrementViews(slug).catch(() => {});
-  // The teaser variant is a dev/QA affordance on the demo slug only; real
-  // teasers render inside the run flow, and a real shared slug is always the
-  // full unlocked report.
-  const { teaser } = await searchParams;
-  const showTeaser = slug === "demo" && teaser === "1";
-  return <ReportView result={record.result} loomUrl={record.loomUrl} teaser={showTeaser} runId={showTeaser ? "demo" : undefined} />;
+  // Always the full report: the unlock gate is gone, and reports generated
+  // before the gate was removed render identically under this layout.
+  return <ReportView result={record.result} loomUrl={record.loomUrl} />;
 }

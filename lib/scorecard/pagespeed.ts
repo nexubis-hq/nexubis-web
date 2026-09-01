@@ -38,10 +38,11 @@ async function runStrategy(url: string, strategy: Strategy, key: string): Promis
   const endpoint = new URL("https://www.googleapis.com/pagespeedonline/v5/runPagespeed");
   endpoint.searchParams.set("url", url);
   endpoint.searchParams.set("strategy", strategy);
+  // Performance only: the speed check weighs mobile/desktop performance and
+  // LCP (a performance audit). SEO/accessibility/best-practices were fetched
+  // for months and never read anywhere; dropping them makes Lighthouse
+  // measurably faster per call.
   endpoint.searchParams.append("category", "performance");
-  endpoint.searchParams.append("category", "seo");
-  endpoint.searchParams.append("category", "accessibility");
-  endpoint.searchParams.append("category", "best-practices");
   endpoint.searchParams.set("key", key);
 
   const controller = new AbortController();
@@ -112,6 +113,8 @@ export async function runPageSpeed(url: string, options: { fresh?: boolean } = {
       : null,
     lcp: mobileRaw?.lighthouseResult?.audits?.["largest-contentful-paint"]?.displayValue ?? null,
   };
+  // The unused categories now come back null (only "performance" is
+  // requested); the shape stays so stored results keep deserialising.
 
   try {
     await getKv().set(cacheKey, result, { ex: CACHE_TTL_S });

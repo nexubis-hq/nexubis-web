@@ -10,7 +10,7 @@
 // cached under the run key.
 import { fetchSite } from "./fetch-site";
 import { captureFirstImpression } from "./screenshot";
-import { runPageSpeed } from "./pagespeed";
+import { runPageSpeed, type PageSpeedScores } from "./pagespeed";
 import { gatherOffsiteEvidence, newQueryBudget, type QueryBudget } from "./offsite";
 import { readFirstImpression, type Usage } from "./anthropic";
 import { resolveCompetitors } from "./competitors";
@@ -19,13 +19,37 @@ import { withCallEnvelope } from "./call-cache";
 import { RUN_BUDGET, type CompanyEvidence, type EvidenceBundleSet } from "./evidence";
 import type { CompetitorRef, ProspectData } from "./types";
 
-// Coarse pipeline stages, emitted at real phase boundaries so the scan
-// animation reflects what the server is actually doing (not a pure timer).
-// The route maps these to the user-facing status lines.
-export type ScanStage = "reading" | "impressions" | "competitors" | "scoring";
+// Pipeline stages, emitted at real phase boundaries so the scan animation
+// reflects what the server is actually doing (not a pure timer). The route
+// maps these to the user-facing status lines: reading (detection + crawl),
+// speed (fan-out starts, PageSpeed underway), competitors (rival gathering),
+// scoring (rubric calls), writing (the copy pass).
+export type ScanStage = "reading" | "speed" | "competitors" | "scoring" | "writing";
 export interface GatherOptions {
   fresh?: boolean;
   onStage?: (stage: ScanStage) => void;
+  /** When provided, PageSpeed is NOT awaited inside the gather. Each company's
+   *  pending PageSpeed promise lands in this map (keyed by its CompanyEvidence
+   *  object) and the caller joins it later, before score assembly. PageSpeed
+   *  is the slowest external call (30 to 55s) and the scoring model only ever
+   *  sees it as context, so deferring it takes it off the critical path. */
+  pageSpeedOut?: Map<CompanyEvidence, Promise<PageSpeedScores | null>>;
+}
+
+/** Resolve every deferred PageSpeed promise into its company's evidence.
+ *  Called once, after model scoring, before deterministic score assembly. */
+export async function joinDeferredPageSpeed(
+  companies: CompanyEvidence[],
+  pending: Map<CompanyEvidence, Promise<PageSpeedScores | null>>,
+): Promise<void> {
+  await Promise.all(
+    companies.map(async (c) => {
+      const p = pending.get(c);
+      if (!p) return;
+      c.pageSpeed = await p;
+      if (!c.pageSpeed) c.flags.push("PageSpeed could not be measured");
+    }),
+  );
 }
 
 export function generateCacheKey(input: ProspectData): string {
@@ -47,7 +71,9 @@ async function gatherCompanyEvidence(
   budget: QueryBudget,
   usages: Usage[],
   /** Product one-liner, prospect only: powers the category-findability search. */
-  categoryTerm?: string,
+  categoryTerm: string | undefined,
+  fresh: boolean,
+  pageSpeedOut: Map<CompanyEvidence, Promise<PageSpeedScores | null>> | undefined,
 ): Promise<CompanyEvidence> {
   const flags: string[] = [];
   const base: CompanyEvidence = {
@@ -82,11 +108,23 @@ async function gatherCompanyEvidence(
   }
 
   const url = target.url;
+  // Wall-clock per evidence stream, logged per company: this is what tells us
+  // where a slow run actually spends its time.
+  const t0 = Date.now();
+  const timed = <T,>(label: string, p: Promise<T>): Promise<T> =>
+    p.finally(() => console.log(`[scorecard-timing] ${target.company} ${label} ${Date.now() - t0}ms`));
   // All four evidence streams fire together. Each is individually best-effort.
-  const sitePromise = fetchSite(url).catch((err) => ({ ok: false as const, reason: err instanceof Error ? err.message : "fetch failed" }));
+  const sitePromise = timed(
+    "site",
+    fetchSite(url).catch((err) => ({ ok: false as const, reason: err instanceof Error ? err.message : "fetch failed" })),
+  );
   const shotsAndVisionPromise = (async () => {
     try {
-      const shots = await captureFirstImpression(url);
+      // The report displays desktop exhibits only; the mobile render exists
+      // for the vision read, where the prospect's mobile view genuinely
+      // informs scoring. Rivals are read from desktop alone.
+      const shots = await captureFirstImpression(url, { includeMobile: target.isProspect });
+      console.log(`[scorecard-timing] ${target.company} shots ${Date.now() - t0}ms`);
       if (!shots.desktop && !shots.mobile) {
         return { shots, vision: null as Awaited<ReturnType<typeof readFirstImpression>> | null };
       }
@@ -95,24 +133,29 @@ async function gatherCompanyEvidence(
         mobileBase64: shots.mobile,
         company: target.company,
       });
+      console.log(`[scorecard-timing] ${target.company} vision ${Date.now() - t0}ms`);
       return { shots, vision };
     } catch (err) {
       flags.push(`Screenshots failed (${err instanceof Error ? err.message : "error"})`);
       return { shots: { desktop: null, mobile: null, desktopUrl: null, mobileUrl: null }, vision: null };
     }
   })();
-  const pageSpeedPromise = runPageSpeed(url).catch(() => null);
-  const offsitePromise = gatherOffsiteEvidence(target.company, url, budget, {
-    categoryTerm: target.isProspect ? categoryTerm : undefined,
-  }).catch((err) => {
-    flags.push(`Off-site retrieval failed (${err instanceof Error ? err.message : "error"})`);
-    return { facts: [], searchBlock: "", queriesUsed: 0 };
-  });
+  const pageSpeedPromise = timed("pagespeed", runPageSpeed(url, { fresh }).catch(() => null));
+  if (pageSpeedOut) pageSpeedOut.set(base, pageSpeedPromise);
+  const offsitePromise = timed(
+    "offsite",
+    gatherOffsiteEvidence(target.company, url, budget, {
+      categoryTerm: target.isProspect ? categoryTerm : undefined,
+    }).catch((err) => {
+      flags.push(`Off-site retrieval failed (${err instanceof Error ? err.message : "error"})`);
+      return { facts: [], searchBlock: "", queriesUsed: 0 };
+    }),
+  );
 
   const [site, shotsAndVision, pageSpeed, offsite] = await Promise.all([
     sitePromise,
     shotsAndVisionPromise,
-    pageSpeedPromise,
+    pageSpeedOut ? Promise.resolve(null) : pageSpeedPromise,
     offsitePromise,
   ]);
 
@@ -143,8 +186,10 @@ async function gatherCompanyEvidence(
     }
   }
 
-  base.pageSpeed = pageSpeed;
-  if (!pageSpeed) flags.push("PageSpeed could not be measured");
+  if (!pageSpeedOut) {
+    base.pageSpeed = pageSpeed;
+    if (!pageSpeed) flags.push("PageSpeed could not be measured");
+  }
 
   base.offsiteFacts = offsite.facts;
   base.searchBlock = offsite.searchBlock;
@@ -184,18 +229,23 @@ export async function gatherEvidenceUncached(
 
   // 1. Resolve competitors (names -> sites). Cheap, must precede the fan-out.
   stage("reading");
+  const tResolve = Date.now();
   const competitors = await resolveCompetitors(input);
+  console.log(`[scorecard-timing] resolve-competitors ${Date.now() - tResolve}ms`);
   for (const c of competitors) {
     if (!c.resolved) flags.push(`Competitor "${c.raw}" could not be resolved to a website`);
   }
 
   // 2. Fan out: every company through the identical pipeline, in parallel.
-  stage("impressions");
+  //    PageSpeed fires here for every company, so "speed" is honest.
+  stage("speed");
   const targets = companyTargets(input, competitors);
   if (input.competitors.length + 1 > RUN_BUDGET.maxCompanies) {
     flags.push(`Company list capped at ${RUN_BUDGET.maxCompanies}`);
   }
-  const gatherAll = Promise.all(targets.map((t) => gatherCompanyEvidence(t, budget, usages, input.productOneLiner)));
+  const gatherAll = Promise.all(
+    targets.map((t) => gatherCompanyEvidence(t, budget, usages, input.productOneLiner, options.fresh === true, options.pageSpeedOut)),
+  );
   // The competitor stage is cosmetic for the scan animation: flip to it once
   // the prospect's own gather has had a head start.
   const staged = gatherAll.then((companies) => {

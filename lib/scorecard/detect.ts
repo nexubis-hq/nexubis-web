@@ -72,10 +72,10 @@ export function filterRescuedCompetitors(candidates: string[], company: string, 
 
 async function rescueCompetitors(company: string, productOneLiner: string, ownUrl: string): Promise<string[]> {
   if (!productOneLiner) return [];
-  const [categoryRes, rivalRes] = [
-    await searchWeb(`${productOneLiner} manufacturers`),
-    await searchWeb(`"${company}" competitors OR alternatives`),
-  ];
+  const [categoryRes, rivalRes] = await Promise.all([
+    searchWeb(`${productOneLiner} manufacturers`),
+    searchWeb(`"${company}" competitors OR alternatives`),
+  ]);
   const searchBlock = formatSearchBlock([categoryRes, rivalRes]);
   const pick = await pickCompetitorsFromSearch({ company, productOneLiner, searchBlock });
   if (!pick.ok) return [];
@@ -103,10 +103,13 @@ export function fingerprintFromDetect(d: DetectedContext): DetectedFingerprint {
 // thin evidence).
 export async function detectProspectContextUncached(prospect: ProspectData): Promise<DetectionResult> {
   const flags: string[] = [];
+  const t0 = Date.now();
+  const mark = (label: string) => console.log(`[scorecard-timing] detect ${label} ${Date.now() - t0}ms`);
   const site = await fetchSite(prospect.url).catch((err) => ({
     ok: false as const,
     reason: err instanceof Error ? err.message : "fetch failed",
   }));
+  mark("site-fetched");
 
   if (!site.ok) {
     flags.push(`Auto-detect could not read the site (${site.reason})`);
@@ -119,6 +122,7 @@ export async function detectProspectContextUncached(prospect: ProspectData): Pro
     siteText: site.text,
     siteTitle: site.title,
   });
+  mark("model-read");
 
   if (!detect.ok) {
     flags.push(`Auto-detect of product and competitors failed (${detect.reason})`);
@@ -140,6 +144,7 @@ export async function detectProspectContextUncached(prospect: ProspectData): Pro
       0,
       MAX_COMPETITORS,
     );
+    mark("competitor-rescue");
   }
   if (competitors.length === 0) flags.push("Auto-detect found no competitors to benchmark against");
 

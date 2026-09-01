@@ -1,24 +1,30 @@
 "use client";
 
-// The instant Credibility Check flow: a website-only landing form (the product
-// one-liner and competitors are detected from the site server-side), the scan,
-// then the teaser preview with the unlock gate (step 2 lives inside the
-// teaser's UnlockPanel). Locked copy comes from lib/scorecard/copy.ts; nothing
-// is hardcoded here.
-import { useRef, useState } from "react";
+// The instant Credibility Check flow, gateless: the landing form asks for the
+// website AND the work email up front, the scan runs with a staged progress
+// narration, and the moment generation finishes the browser lands on the FULL
+// permanent report (no teaser, no unlock). Locked copy comes from
+// lib/scorecard/copy.ts; nothing is hardcoded here.
+import { useEffect, useRef, useState } from "react";
 import { LANDING, FORM_FIELDS } from "@/lib/scorecard/copy";
 import { trackMeta } from "@/lib/meta/track";
-import { META_EVENTS } from "@/lib/meta/events";
+import { META_EVENTS, LEAD_CONTENT_NAME, leadValue } from "@/lib/meta/events";
+import { firstNameFromEmail } from "@/lib/scorecard/lead-name";
 import { ScanAnimation } from "./ScanAnimation";
 import { ScorecardPreviewRadar } from "./ScorecardPreviewRadar";
-import { ReportView } from "@/components/scorecard/report/ReportView";
 import type { ScanStage } from "@/lib/scorecard/orchestrator";
-import type { ScorecardResult } from "@/lib/scorecard/result";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (el: HTMLElement, opts: { sitekey: string; callback: (token: string) => void; "error-callback"?: () => void }) => string;
+    };
+  }
+}
 
 type FlowState =
   | { step: "form" }
   | { step: "scanning"; stage: ScanStage; company: string; detectedOneLiner?: string }
-  | { step: "teaser"; runId: string; teaser: ScorecardResult }
   | { step: "error"; message: string };
 
 // Trim and drop trailing dots/slashes so a fully-qualified "example.com." or a
@@ -43,6 +49,8 @@ function looksLikeWebAddress(raw: string): boolean {
   }
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 function companyFromUrl(raw: string): string {
   const s = cleanDomainInput(raw);
   try {
@@ -56,15 +64,49 @@ function companyFromUrl(raw: string): string {
 export function ScorecardFlow() {
   const [flow, setFlow] = useState<FlowState>({ step: "form" });
   const [url, setUrl] = useState("");
+  const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
   const [fieldError, setFieldError] = useState("");
-  const teaserRef = useRef<HTMLDivElement>(null);
   // AuditStart fires once per visit, even if validation bounces the user back
   // and they resubmit (§3: once per visit, ref-guarded against retries).
   const auditStartFired = useRef(false);
-  // AuditComplete (diagnosis only) marks the scan finishing and the teaser/gate
-  // rendering. Once per visit too, so a retry never double-counts it.
+  // AuditComplete (diagnosis only) marks the scan finishing. Lead fires with
+  // it: the email was captured up front and the full report is now theirs.
   const auditCompleteFired = useRef(false);
+  // The "human took time" clock, stamped on mount (long before a person can
+  // type a URL and an email).
+  const startedAt = useRef(0);
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const urlValid = looksLikeWebAddress(url);
+  const emailValid = EMAIL_RE.test(email.trim());
+
+  useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
+
+  useEffect(() => {
+    if (!siteKey || !turnstileRef.current) return;
+    const render = () => {
+      if (window.turnstile && turnstileRef.current) {
+        window.turnstile.render(turnstileRef.current, {
+          sitekey: siteKey,
+          callback: (token) => setTurnstileToken(token),
+          "error-callback": () => setTurnstileToken(""),
+        });
+      }
+    };
+    if (window.turnstile) {
+      render();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.async = true;
+    script.onload = render;
+    document.head.appendChild(script);
+  }, [siteKey]);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -80,6 +122,11 @@ export function ScorecardFlow() {
       setFlow({ step: "form" });
       return;
     }
+    if (!EMAIL_RE.test(email.trim())) {
+      setFieldError("That email address does not look right.");
+      setFlow({ step: "form" });
+      return;
+    }
 
     const company = companyFromUrl(rawUrl);
     if (!auditStartFired.current) {
@@ -91,7 +138,13 @@ export function ScorecardFlow() {
       const res = await fetch("/api/scorecard/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: cleanDomainInput(rawUrl) }),
+        body: JSON.stringify({
+          url: cleanDomainInput(rawUrl),
+          email: email.trim(),
+          honeypot,
+          turnstileToken,
+          elapsedMs: Date.now() - startedAt.current,
+        }),
       });
       if (!res.ok || !res.body) {
         setFlow({ step: "error", message: "The check could not start. Give it another try in a moment." });
@@ -100,6 +153,7 @@ export function ScorecardFlow() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
+      let navigated = false;
       for (;;) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -112,7 +166,7 @@ export function ScorecardFlow() {
           const payload = JSON.parse(line.slice(5).trim()) as
             | { type: "stage"; stage: ScanStage }
             | { type: "detected"; oneLiner: string }
-            | { type: "done"; runId: string; teaser: ScorecardResult }
+            | { type: "done"; reportUrl: string; slug: string }
             | { type: "error"; error: string };
           if (payload.type === "stage") {
             setFlow((f) => ({
@@ -124,32 +178,50 @@ export function ScorecardFlow() {
           } else if (payload.type === "detected") {
             setFlow((f) => (f.step === "scanning" ? { ...f, detectedOneLiner: payload.oneLiner } : f));
           } else if (payload.type === "done") {
-            // Scan finished and the teaser/gate is about to render: the marker
-            // that splits abandonment-during-wait from refusal-at-gate.
+            navigated = true;
             if (!auditCompleteFired.current) {
               auditCompleteFired.current = true;
               trackMeta(META_EVENTS.auditComplete, { content_category: "scorecard", content_name: company });
+              // Lead: the email was captured up front and the report is now
+              // theirs. Distinct content_name so audit leads never blend with
+              // contact-form leads; email flows to the server leg (hashed
+              // there, never sent to the browser pixel in the clear).
+              const value = leadValue();
+              trackMeta(
+                META_EVENTS.lead,
+                { content_name: LEAD_CONTENT_NAME, ...(value ? { value: value.value, currency: value.currency } : {}) },
+                { email: email.trim() },
+              );
+              // Route the lead to Funnelr's tag-only bridge (create/update
+              // contact, store report URL, apply Brand/Source/Start-Sales
+              // tags). Fire-and-forget; keepalive survives the navigation.
+              const leadReportUrl = new URL(payload.reportUrl, window.location.origin).toString();
+              void fetch("/api/leads/scorecard", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                keepalive: true,
+                body: JSON.stringify({
+                  firstName: firstNameFromEmail(email.trim()) ?? company,
+                  email: email.trim(),
+                  marketingConsent: true,
+                  reportUrl: leadReportUrl,
+                }),
+              }).catch(() => {});
             }
-            setFlow({ step: "teaser", runId: payload.runId, teaser: payload.teaser });
-            requestAnimationFrame(() => teaserRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+            // Straight to the full permanent report; no gate, no teaser.
+            window.location.assign(payload.reportUrl);
           } else {
             setFlow({ step: "error", message: payload.error });
           }
         }
       }
       // Stream ended without a terminal event: treat as failure, never hang.
-      setFlow((f) => (f.step === "scanning" ? { step: "error", message: "The check could not finish this time. Give it another try in a few minutes." } : f));
+      if (!navigated) {
+        setFlow((f) => (f.step === "scanning" ? { step: "error", message: "The check could not finish this time. Give it another try in a few minutes." } : f));
+      }
     } catch {
       setFlow({ step: "error", message: "The check could not finish this time. Give it another try in a few minutes." });
     }
-  }
-
-  if (flow.step === "teaser") {
-    return (
-      <div ref={teaserRef}>
-        <ReportView result={flow.teaser} teaser runId={flow.runId} chrome={false} />
-      </div>
-    );
   }
 
   return (
@@ -216,6 +288,48 @@ export function ScorecardFlow() {
                   </span>
                   {urlValid ? <span className="sc-field-valid-note">Looks good. We can read this one.</span> : null}
                 </label>
+                <label className={`sc-field${emailValid ? " sc-field-valid" : ""}`}>
+                  <span className="sc-field-label">{FORM_FIELDS.workEmail.label}</span>
+                  <span className="sc-input-wrap">
+                    <input
+                      type="email"
+                      name="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      placeholder="you@yourcompany.com"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    {emailValid ? (
+                      <span className="sc-input-check" aria-hidden="true">
+                        <svg viewBox="0 0 12 12" width="12" height="12">
+                          <path d="M2 6.2 5 9l5-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="sc-field-helper">{FORM_FIELDS.workEmail.helper}</span>
+                </label>
+                {/* Honeypot: invisible to people, tempting to bots. The field
+                    name is deliberately non-semantic (semantic names get filled
+                    by browser autofill, which would block real users); the
+                    data-* hints tell password managers to skip it. */}
+                <label className="sc-hp" aria-hidden="true">
+                  Leave this field empty
+                  <input
+                    type="text"
+                    name="nx_extra_field"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    data-lpignore="true"
+                    data-1p-ignore
+                    data-form-type="other"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                  />
+                </label>
+                {siteKey ? <div ref={turnstileRef} className="sc-turnstile" /> : null}
                 {fieldError ? <p className="sc-form-error">{fieldError}</p> : null}
                 <button className="btn btn-primary sc-landing-submit" type="submit">
                   {LANDING.submitButton}

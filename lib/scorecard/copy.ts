@@ -35,20 +35,8 @@ export const FORM_FIELDS = {
   oneLiner: { label: "What do you make, in one line", helper: "Example: leak detection systems for packaging lines." },
   competitors: { label: "Two or three competitors you keep running into", helper: "Names or websites. We benchmark you against them." },
   firstName: { label: "First name", helper: "" },
-  workEmail: { label: "Work email", helper: "Your audit link lands here." },
+  workEmail: { label: "Work email", helper: "We'll email a copy of your audit to this address." },
   role: { label: "Role", options: ["Marketing manager", "Marketing director", "Brand or comms manager", "CEO or MD", "Other"] },
-} as const;
-
-// ── Unlock gate ──────────────────────────────────────────────────────────────
-export const UNLOCK = {
-  headline: "Unlock your full report",
-  intro: "Your full report has every category, the findings behind the scores, and the first place to fix.",
-  submitButton: "Unlock the full report",
-  afterSubmit:
-    "Here's your result. Your full report has your Credibility Score, the competitor comparison, and the first place to fix. We'll also email you the link so you have it.",
-  // TODO CONFIRM WITH LEON: exact EU privacy wording. Placeholder kept plain
-  // and honest until confirmed.
-  privacyNotice: "We use these details to send your report link and follow up about your results.",
 } as const;
 
 // ── Report navigation + share ────────────────────────────────────────────────
@@ -92,12 +80,15 @@ export const VERDICT_LINES: Record<"narrow" | "visible" | "wide", string> = {
   wide: "Your brand is costing you sales. The first fix is clear.",
 };
 
-// ── Scan stages (Prompt 5) ───────────────────────────────────────────────────
-export const SCAN_STAGES: Record<"reading" | "impressions" | "competitors" | "scoring", string> = {
-  reading: "Reading your site",
-  impressions: "Capturing first impressions",
-  competitors: "Checking your competitors",
-  scoring: "Scoring 25 checks",
+// ── Scan stages ──────────────────────────────────────────────────────────────
+// Five stages, each tied to a real pipeline phase boundary (the server emits
+// the stage the moment that work genuinely starts).
+export const SCAN_STAGES: Record<"reading" | "speed" | "competitors" | "scoring" | "writing", string> = {
+  reading: "Reading your website",
+  speed: "Measuring loading speed on mobile and desktop",
+  competitors: "Finding the competitors buyers weigh you against",
+  scoring: "Scoring your five pillars",
+  writing: "Writing your report",
 };
 
 // The fine-grained work narrated beneath the scan checklist. Each line maps to
@@ -110,13 +101,15 @@ export const SCAN_STEPS: { stage: keyof typeof SCAN_STAGES; label: string }[] = 
   { stage: "reading", label: "Fetching your website" },
   { stage: "reading", label: "Mapping your site structure" },
   { stage: "reading", label: "Reading your product story" },
-  { stage: "impressions", label: "Checking your message clarity" },
-  { stage: "impressions", label: "Reviewing your calls to action" },
-  { stage: "impressions", label: "Assessing your brand identity" },
+  { stage: "speed", label: "Capturing first impressions" },
+  { stage: "speed", label: "Timing your pages on mobile" },
+  { stage: "speed", label: "Timing your pages on desktop" },
   { stage: "competitors", label: "Finding your closest competitors" },
   { stage: "competitors", label: "Running the same checks on each" },
   { stage: "scoring", label: "Scoring you side by side" },
-  { stage: "scoring", label: "Compiling your Credibility Score" },
+  { stage: "scoring", label: "Weighing all 25 checks" },
+  { stage: "writing", label: "Writing your findings in plain words" },
+  { stage: "writing", label: "Compiling your Credibility Score" },
 ];
 
 // The sub-line under the active step. The detected beat lands the moment the
@@ -127,9 +120,10 @@ export const SCAN_SUBLINE = {
   detected: (oneLiner: string) => `So you make ${oneLiner}. Now we know what to benchmark.`,
   holding: {
     reading: "Reading page titles and headings",
-    impressions: "Looking for proof and credentials",
+    speed: "Running Google PageSpeed on both",
     competitors: "Comparing you against close rivals",
-    scoring: "Weighing all 25 checks",
+    scoring: "Judging evidence, never guessing",
+    writing: "Turning findings into plain words",
   } as Record<keyof typeof SCAN_STAGES, string>,
 } as const;
 
@@ -149,22 +143,19 @@ export const BAND_SCALE = [
 export const OUT_OF_SCOPE_MESSAGE =
   "The Online Credibility Audit is built for industrial manufacturers and machine builders, and this site does not look like one, so we did not run the check. If we have that wrong, email hello@nexubis.io and we will run it for you.";
 
-// ── Teaser nudges (locked sections + sticky unlock bar) ──────────────────────
+// ── Score chips (report hero) ────────────────────────────────────────────────
 export const TEASER = {
   chipsLabel: "Overall scores, you and the competitors buyers weigh you against:",
   rivalNotScored: "could not be checked",
-  lockedNudge: "Unlock the full report to read what we found here",
-  stickyLine: "Your full report is ready.",
-  stickyButton: "Unlock full report",
 } as const;
 
 // ── Email 1 fallback (Section 10, exact copy; used only while
 //    SCORECARD_SEND_EMAIL1=true, before Funnelr owns the sequence) ────────────
 export const EMAIL_1 = {
-  subject: (name: string) => `Your Online Credibility Audit is ready, ${name}`,
+  subject: (name: string) => (name ? `Your Online Credibility Audit is ready, ${name}` : "Your Online Credibility Audit is ready"),
   body: (name: string, reportUrl: string, senderFirstName: string) =>
     [
-      `Hi ${name},`,
+      name ? `Hi ${name},` : `Hi,`,
       ``,
       `Your audit is ready: ${reportUrl}`,
       ``,

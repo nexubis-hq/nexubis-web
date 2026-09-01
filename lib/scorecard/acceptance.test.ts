@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { REPORT, EMAIL_1, LANDING, UNLOCK, VERDICT_LINES, SCAN_STAGES, SCAN_STEPS, SCAN_SUBLINE } from "./copy";
+import { REPORT, EMAIL_1, LANDING, VERDICT_LINES, SCAN_STAGES, SCAN_STEPS, SCAN_SUBLINE } from "./copy";
 import { verifyTurnstile } from "./unlock";
 import type { ScorecardResult } from "./result";
 
@@ -22,7 +22,7 @@ afterEach(() => {
 
 // ── Oxipack is named exactly once per report, on the proof page ──────────────
 test("Oxipack appears exactly once in the report's fixed copy, with the locked result line", () => {
-  const allCopy = JSON.stringify({ REPORT, EMAIL_1, LANDING, UNLOCK, VERDICT_LINES, SCAN_STAGES });
+  const allCopy = JSON.stringify({ REPORT, EMAIL_1, LANDING, VERDICT_LINES, SCAN_STAGES });
   const mentions = allCopy.match(/oxipack/gi) ?? [];
   assert.equal(mentions.length, 1, "Oxipack must be named exactly once across all fixed client-facing copy");
   assert.ok(REPORT.proofBody.includes("Oxipack"));

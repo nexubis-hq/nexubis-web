@@ -3,7 +3,7 @@
 // Section 15 structured result. The whole run lives inside its determinism
 // envelope and the finished result is cached under the run key, so identical
 // inputs replay for free.
-import { gatherEvidenceUncached, generateCacheKey, type GatherOptions } from "./orchestrator";
+import { gatherEvidenceUncached, generateCacheKey, joinDeferredPageSpeed, type GatherOptions } from "./orchestrator";
 import { scoreCompanyRubric, writeDeckCopy, competitorContextBlock, companyContextBlock, type Usage, type DeckCopyInput } from "./anthropic";
 import {
   assembleCompanyScores,
@@ -22,6 +22,7 @@ import { withCallEnvelope } from "./call-cache";
 import { cachedJson, SCORECARD_RECORD_TTL_S } from "./determinism";
 import { hostFromUrl } from "./web-search";
 import type { CompanyEvidence, EvidenceBundleSet } from "./evidence";
+import type { PageSpeedScores } from "./pagespeed";
 import type { DeckCopy, ScorecardResult } from "./result";
 import type { ProspectData } from "./types";
 
@@ -121,16 +122,27 @@ export async function generateScorecardUncached(
 ): Promise<ScorecardResult> {
   const usages: Usage[] = [];
   const flags: string[] = [];
+  const t0 = Date.now();
+  const mark = (label: string) => console.log(`[scorecard-timing] phase ${label} ${Date.now() - t0}ms`);
 
   // 1. Evidence: prospect + competitors through the identical pipeline.
-  const evidence: EvidenceBundleSet = options.evidenceOverride ?? (await gatherEvidenceUncached(input, options));
+  //    PageSpeed is deferred: it starts with the gather but is only awaited
+  //    after model scoring (the model sees it as context at most; the actual
+  //    speed check is computed deterministically at assembly). A fixture
+  //    override arrives with PageSpeed already inline, so the map stays empty.
+  const pageSpeedPending = new Map<CompanyEvidence, Promise<PageSpeedScores | null>>();
+  const evidence: EvidenceBundleSet =
+    options.evidenceOverride ?? (await gatherEvidenceUncached(input, { ...options, pageSpeedOut: pageSpeedPending }));
   flags.push(...evidence.flags);
+  mark("evidence-complete");
 
-  // 2. Score every resolved company in parallel, identical rubric. The
-  //    PageSpeed check is overridden deterministically inside assembly.
+  // 2. Score every resolved company in parallel, identical rubric. The model
+  //    pass runs first (without waiting for PageSpeed); the deterministic
+  //    assembly, which is what actually consumes PageSpeed, happens after the
+  //    deferred join below.
   const prospectContext = companyContextBlock(input.fingerprint);
-  const scoreOne = async (e: CompanyEvidence): Promise<CompanyScores> => {
-    if (!e.resolved) return unscoredCompany(e.company, e.isProspect);
+  const scoreOneRaw = async (e: CompanyEvidence) => {
+    if (!e.resolved) return { e, raw: null };
     const others = evidence.companies.filter((o) => o !== e && o.resolved);
     const res = await scoreCompanyRubric({
       evidence: e,
@@ -141,17 +153,24 @@ export async function generateScorecardUncached(
     });
     if (!res.ok) {
       flags.push(`Scoring failed for ${e.company} (${res.reason})`);
-      return unscoredCompany(e.company, e.isProspect);
+      return { e, raw: null };
     }
     usages.push(res.usage);
-    return assembleCompanyScores({
-      company: e.company,
-      isProspect: e.isProspect,
-      rawChecks: res.data.checks,
-      pageSpeed: e.pageSpeed,
-    });
+    return { e, raw: res.data.checks };
   };
-  const scores = await Promise.all(evidence.companies.map(scoreOne));
+  const rawScores = await Promise.all(evidence.companies.map(scoreOneRaw));
+  mark("scoring-complete");
+
+  // PageSpeed joins here: usually finished long ago, worst case a short wait
+  // instead of the old 30-55s hold inside the gather.
+  await joinDeferredPageSpeed(evidence.companies, pageSpeedPending);
+  mark("pagespeed-joined");
+  options.onStage?.("writing");
+  const scores: CompanyScores[] = rawScores.map(({ e, raw }) =>
+    raw
+      ? assembleCompanyScores({ company: e.company, isProspect: e.isProspect, rawChecks: raw, pageSpeed: e.pageSpeed })
+      : unscoredCompany(e.company, e.isProspect),
+  );
 
   const prospect = scores.find((s) => s.isProspect);
   if (!prospect || !prospect.scored || prospect.overall === null) {
@@ -204,6 +223,7 @@ export async function generateScorecardUncached(
   });
   let deckCopy: DeckCopy = fallback;
   const copyRes = await writeDeckCopy(copyInput);
+  mark("copy-complete");
   if (copyRes.ok) {
     usages.push(copyRes.usage);
     const clamped = clampDeckCopy({

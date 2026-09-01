@@ -14,10 +14,10 @@ import { useEffect, useRef, useState } from "react";
 import { SCAN_STAGES, SCAN_STEPS, SCAN_SUBLINE } from "@/lib/scorecard/copy";
 import type { ScanStage } from "@/lib/scorecard/orchestrator";
 
-const STAGE_ORDER: ScanStage[] = ["reading", "impressions", "competitors", "scoring"];
+const STAGE_ORDER: ScanStage[] = ["reading", "speed", "competitors", "scoring", "writing"];
 // Each stage's progress ceiling: the bar crawls toward it while the stage
 // runs, jumps past it when the next real event arrives.
-const CEILINGS: Record<ScanStage, number> = { reading: 22, impressions: 48, competitors: 72, scoring: 93 };
+const CEILINGS: Record<ScanStage, number> = { reading: 18, speed: 40, competitors: 60, scoring: 82, writing: 95 };
 // How long each narration line holds before the next one in the stage. Kept
 // under four seconds so no line ever feels stuck.
 const STEP_INTERVAL_MS = 3600;

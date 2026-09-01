@@ -73,33 +73,3 @@ export function prospectScores(result: ScorecardResult): CompanyScores | null {
   return result.scores.find((s) => s.isProspect) ?? null;
 }
 
-// The teaser payload sent to the browser BEFORE unlock. Redaction happens
-// server-side so gated content (findings, evidence sentences, the verdict
-// paragraph, first-fix copy, routing) never reaches the network, not merely
-// hidden in the DOM. Kept: meta, exhibits, category totals (the promised
-// "score across the five places buyers look"), overall, band and stance.
-export function redactForTeaser(result: ScorecardResult): ScorecardResult {
-  return {
-    ...result,
-    scores: result.scores.map((s) => ({
-      ...s,
-      categories: s.categories.map((c) => ({ ...c, checks: [] })),
-    })),
-    verdict: { ...result.verdict, paragraph: "" },
-    firstFix: null,
-    deckCopy: {
-      verdictParagraph: "",
-      categories: [],
-      firstFix: { why: "", inPractice: "" },
-    },
-    routing: {
-      roleSeniority: "unknown",
-      verticalGuess: "",
-      geoGuess: "",
-      followUpTiming: "",
-      loomCandidate: false,
-    },
-    flags: [],
-    estimatedCostUsd: 0,
-  };
-}

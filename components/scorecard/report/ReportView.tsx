@@ -1,19 +1,18 @@
-// The client-facing Scorecard report: a mobile-first single-scroll page in the
+// The client-facing audit report: a mobile-first single-scroll page in the
 // Nexubis skin, print-friendly, every colour and font from the repo tokens.
-// Renders the nine report pages of Part 2B Section 7 in order, or the teaser
-// variant (cover, first impression, score and verdict line, locked categories,
-// one unlock panel). Server component; motion comes from RevealOnScroll's
+// Renders the nine report pages of Part 2B Section 7 in order, always in
+// full: the unlock gate is gone, so there is no teaser variant and nothing is
+// ever locked. Server component; motion comes from RevealOnScroll's
 // data-reveal hook only, so nothing here couples to homepage animation markup.
 import Link from "next/link";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { PlanCallVignette, PlanPreviewVignette, PlanSlackVignette } from "@/components/vignettes/PlanVignettes";
 import { ScoreRing } from "./ScoreRing";
 import { BenchmarkRadar } from "./BenchmarkRadar";
-import { UnlockBar } from "./UnlockBar";
 import { ReportNav } from "./ReportNav";
 import { BookCallButton } from "./BookCallButton";
 import { ReportSidebar, type ReportNavItem, type SectionTone } from "./ReportSidebar";
-import { REPORT, POWERED_BY, VERDICT_LINES, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
+import { REPORT, POWERED_BY, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
 import { OXIPACK_CASE_URL } from "@/lib/site-config";
 import { OxipackProofVideo } from "@/components/OxipackProofVideo";
 import { getCaseStudyBySlug } from "@/lib/work/data";
@@ -153,37 +152,6 @@ function CategorySection({ result, index, catKey }: { result: ScorecardResult; i
   );
 }
 
-// The teaser's locked stand-in for a category: header real, body placeholder
-// bars. Placeholder markup, not blurred real content, so nothing gated ever
-// reaches the DOM before unlock. Each carries a quiet nudge to the unlock
-// form, so a reader skimming the locked sections always has the next step in
-// reach.
-function LockedCategory({ index, label }: { index: number; label: string }) {
-  return (
-    <section className="sc-category sc-category-locked section" aria-label={`${label} (locked)`}>
-      <div className="site-container">
-        <header className="sc-category-head">
-          <span className="sc-ghost-numeral" aria-hidden="true">
-            {index}
-          </span>
-          <div>
-            <h2>{label}</h2>
-            <p className="sc-category-score sc-locked-pill">Locked</p>
-          </div>
-        </header>
-        <div className="sc-locked-lines" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
-        <a className="sc-locked-nudge" href="#sc-unlock">
-          {TEASER.lockedNudge}
-        </a>
-      </div>
-    </section>
-  );
-}
-
 // Where the score sits on the 0 to 100 scale, with the three bands marked, so
 // the band name carries its meaning instead of floating as a label.
 function BandScale({ overall, band }: { overall: number | null; band: "wide" | "visible" | "narrow" }) {
@@ -211,17 +179,12 @@ function BandScale({ overall, band }: { overall: number | null; band: "wide" | "
 export function ReportView({
   result,
   loomUrl = null,
-  teaser = false,
-  runId,
   chrome = true,
 }: {
   result: ScorecardResult;
   loomUrl?: string | null;
-  teaser?: boolean;
-  /** Required in teaser mode: the unlock panel promotes this run. */
-  runId?: string;
   /** False when embedded inside a page that already owns the main landmark
-   *  and top bar (the instant-check flow); true for the standalone route. */
+   *  and top bar; true for the standalone route. */
   chrome?: boolean;
 }) {
   const p = prospectScores(result);
@@ -264,11 +227,7 @@ export function ReportView({
                 <BandScale overall={overall} band={result.verdict.band} />
               </div>
               <div className="sc-score-copy">
-                {teaser ? (
-                  <p className="sc-verdict-paragraph">{VERDICT_LINES[result.verdict.band]}</p>
-                ) : (
-                  <p className="sc-verdict-paragraph">{result.verdict.paragraph}</p>
-                )}
+                <p className="sc-verdict-paragraph">{result.verdict.paragraph}</p>
                 <p className="sc-chips-label">{TEASER.chipsLabel}</p>
                 <ul className="sc-overall-chips">
                   {result.scores.map((s) => (
@@ -334,17 +293,7 @@ export function ReportView({
         </div>
       </section>
 
-      {teaser ? (
-        <>
-          {/* Locked category placeholders. The sticky bar is the single
-              unlock surface: its button (and every locked-section nudge)
-              opens the form in a modal, so no form sits at the page bottom. */}
-          {RUBRIC.map((cat, i) => (
-            <LockedCategory key={cat.key} index={i + 1} label={cat.label} />
-          ))}
-          {runId ? <UnlockBar runId={runId} /> : null}
-        </>
-      ) : (
+      {(
         <>
           {/* 5. Five category pages, alongside the sticky "on this page" nav +
               Laine's book-a-call card (desktop; the nav collapses on mobile). */}

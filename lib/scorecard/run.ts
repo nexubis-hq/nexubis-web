@@ -1,4 +1,3 @@
-import { getKv } from "./kv";
 import { scorecardCacheKey, prospectDeterminismInput } from "./determinism";
 import type { CompetitorRef, ProspectData } from "./types";
 
@@ -74,21 +73,7 @@ export function runIdFor(prospect: ProspectData): string {
   return scorecardCacheKey(prospectDeterminismInput(prospect)).replace(/^scorecard-gen:/, "");
 }
 
-// The run record holds whatever the pipeline produced. Typed loosely here on
-// purpose: the result shape belongs to the scoring layer (Prompt 3), and this
-// plumbing must not import it.
-export interface RunRecord<TResult = unknown> {
-  prospectData: ProspectData;
-  result: TResult;
-  createdAt: string;
-}
-
-const RUN_PREFIX = "scorecard-run:";
-const RUN_TTL_S = 2 * 60 * 60; // 2 hours: long enough to scan, read the teaser, unlock
-
-export async function storeRunRecord<T>(id: string, record: RunRecord<T>): Promise<void> {
-  await getKv().set(RUN_PREFIX + id, record, { ex: RUN_TTL_S });
-}
-export async function readRunRecord<T>(id: string): Promise<RunRecord<T> | null> {
-  return (await getKv().get<RunRecord<T>>(RUN_PREFIX + id)) ?? null;
-}
+// Run records (the short-lived KV hop between scan and unlock) are gone: the
+// gateless flow promotes a finished generation straight to its permanent
+// shared slug, so there is nothing to park in between. runIdFor stays as the
+// stable per-site key for capture dedupe.

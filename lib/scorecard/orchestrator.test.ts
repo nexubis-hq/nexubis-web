@@ -149,7 +149,7 @@ test("an unresolved competitor stays in the run with resolved:false and off-site
 test("stage callbacks fire in pipeline order", async () => {
   const stages: ScanStage[] = [];
   await gatherEvidenceUncached(prospect, { onStage: (s) => stages.push(s) });
-  assert.deepEqual(stages, ["reading", "impressions", "competitors", "scoring"]);
+  assert.deepEqual(stages, ["reading", "speed", "competitors", "scoring"]);
 });
 
 test("search query usage is counted and capped", async () => {

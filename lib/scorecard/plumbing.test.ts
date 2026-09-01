@@ -34,19 +34,13 @@ vi.mock("./kv", () => ({
   }),
 }));
 import { buildFunnelrPayload, fireFunnelrWebhook, signPayload } from "./funnelr";
-import { buildLeadRecord, runLeadPlumbing, readExistingUnlock, markUnlocked, promoteRun, dedupeKey, type UnlockInput } from "./unlock";
+import { buildLeadRecord, runLeadPlumbing, readExistingCapture, markCaptured, promoteResult, dedupeKey } from "./unlock";
 import { listLeads, readLead, type LeadRecord } from "./leads";
 import { generateScorecardUncached } from "./generate";
-import { prospectFromRunInput, runIdFor, storeRunRecord } from "./run";
+import { prospectFromRunInput, runIdFor } from "./run";
 import type { SharedScorecard } from "./share";
 
-const unlockInput: UnlockInput = {
-  runId: "run-x",
-  firstName: "Mark",
-  email: "Mark@Veltkamp-Dosing.nl",
-  role: "CEO or MD",
-  elapsedMs: 20_000,
-};
+const captureEmail = "Mark@Veltkamp-Dosing.nl";
 
 async function makeSharedRecord(): Promise<SharedScorecard> {
   process.env.SCORECARD_MOCK = "1";
@@ -83,10 +77,12 @@ afterEach(() => {
 
 test("the Funnelr payload carries the full lead snapshot with the scorecard source tag", async () => {
   const record = await makeSharedRecord();
-  const lead = buildLeadRecord(record, unlockInput, "slug1234");
+  const lead = buildLeadRecord(record, captureEmail, "slug1234");
   const payload = buildFunnelrPayload(lead, "https://www.nexubis.io/scorecard/r/slug1234");
   assert.equal(payload.source, "scorecard");
-  assert.deepEqual(payload.contact, { firstName: "Mark", email: "Mark@Veltkamp-Dosing.nl", role: "CEO or MD" });
+  // The name is derived from the email local part; the form no longer asks
+  // for a role.
+  assert.deepEqual(payload.contact, { firstName: "Mark", email: "Mark@Veltkamp-Dosing.nl", role: "" });
   assert.equal(payload.company, "Veltkamp Dosing");
   assert.equal(payload.website, "https://veltkamp-dosing.nl");
   assert.equal(payload.reportUrl, "https://www.nexubis.io/scorecard/r/slug1234");
@@ -115,7 +111,7 @@ test("the webhook retries 3 times with backoff, then reports failure", async () 
   }) as unknown as typeof fetch;
   const sleeps: number[] = [];
   const record = await makeSharedRecord();
-  const lead = buildLeadRecord(record, unlockInput, "slug1234");
+  const lead = buildLeadRecord(record, captureEmail, "slug1234");
   const res = await fireFunnelrWebhook(buildFunnelrPayload(lead, "https://x/r/slug1234"), {
     fetchImpl,
     sleep: async (ms) => {
@@ -134,7 +130,7 @@ test("a first-attempt success fires exactly one request", async () => {
   process.env.FUNNELR_WEBHOOK_URL = "https://funnelr.test/hook";
   const fetchImpl = vi.fn(async () => new Response("ok", { status: 200 })) as unknown as typeof fetch;
   const record = await makeSharedRecord();
-  const lead = buildLeadRecord(record, unlockInput, "slug1234");
+  const lead = buildLeadRecord(record, captureEmail, "slug1234");
   const res = await fireFunnelrWebhook(buildFunnelrPayload(lead, "https://x/r/slug1234"), { fetchImpl });
   assert.deepEqual(res, { ok: true, attempts: 1 });
   assert.equal((fetchImpl as unknown as { mock: { calls: unknown[] } }).mock.calls.length, 1);
@@ -155,16 +151,16 @@ test("lead plumbing persists a complete lead, notifies the team, and skips Email
   );
 
   const record = await makeSharedRecord();
-  const lead = await runLeadPlumbing(record, unlockInput, "slug9999", "https://www.nexubis.io");
+  const lead = await runLeadPlumbing(record, captureEmail, "slug9999", "https://www.nexubis.io");
 
   // Lead record complete and queryable. Funnelr capture is handled by the
-  // unlock form calling /api/leads/scorecard after the permanent URL exists.
+  // flow calling /api/leads/scorecard once the permanent URL exists.
   const storedLead = await readLead("slug9999");
   assert.ok(storedLead);
   assert.equal(storedLead.webhookStatus, "skipped");
   assert.equal(storedLead.email, "Mark@Veltkamp-Dosing.nl");
   assert.equal(storedLead.loomStatus, "none");
-  assert.equal(storedLead.routing.roleSeniority, "unknown"); // routing from record; role applied at promote in prod
+  assert.equal(storedLead.routing.roleSeniority, "unknown"); // no role collected in the gateless flow
   assert.equal((await listLeads()).length, 1);
 
   // Team email sent; Email 1 skipped (flag off).
@@ -189,7 +185,7 @@ test("Email 1 goes to the lead only while SCORECARD_SEND_EMAIL1=true, with the e
     }),
   );
   const record = await makeSharedRecord();
-  await runLeadPlumbing(record, unlockInput, "slug7777", "https://www.nexubis.io");
+  await runLeadPlumbing(record, captureEmail, "slug7777", "https://www.nexubis.io");
   const email1 = sent.find((e) => (e.to as string[])[0] === "Mark@Veltkamp-Dosing.nl") as { subject: string; text: string };
   assert.ok(email1, "Email 1 should be sent when the flag is on");
   assert.equal(email1.subject, "Your Online Credibility Audit is ready, Mark");
@@ -199,7 +195,7 @@ test("Email 1 goes to the lead only while SCORECARD_SEND_EMAIL1=true, with the e
   assert.ok(!email1.text.includes(String.fromCharCode(0x2014)));
 });
 
-test("unlock idempotency: the dedupe marker returns the same slug and prevents a second fire", async () => {
+test("capture idempotency: the dedupe marker returns the same slug and prevents a second fire", async () => {
   process.env.SCORECARD_MOCK = "1";
   const prospect = prospectFromRunInput({
     url: "veltkamp-dosing.nl",
@@ -208,24 +204,19 @@ test("unlock idempotency: the dedupe marker returns the same slug and prevents a
   });
   const result = await generateScorecardUncached(prospect);
   const runId = runIdFor(prospect);
-  await storeRunRecord(runId, { prospectData: prospect, result, createdAt: new Date().toISOString() });
 
-  const input = { ...unlockInput, runId };
-  assert.equal(await readExistingUnlock(input), null);
-  const first = await promoteRun(input);
-  assert.ok(first.ok);
-  if (first.ok) {
-    await markUnlocked(input, first.slug);
-    assert.equal(await readExistingUnlock(input), first.slug);
-    // Same email in a different case still dedupes.
-    assert.equal(await readExistingUnlock({ ...input, email: "mark@veltkamp-dosing.nl" }), first.slug);
-    assert.ok(store.has(dedupeKey(input.email, runId)));
-  }
+  assert.equal(await readExistingCapture(captureEmail, runId), null);
+  const first = await promoteResult(prospect, result, captureEmail);
+  await markCaptured(captureEmail, runId, first.slug);
+  assert.equal(await readExistingCapture(captureEmail, runId), first.slug);
+  // Same email in a different case still dedupes.
+  assert.equal(await readExistingCapture("mark@veltkamp-dosing.nl", runId), first.slug);
+  assert.ok(store.has(dedupeKey(captureEmail, runId)));
 });
 
 test("lead updates preserve the slug and bump updatedAt", async () => {
   const record = await makeSharedRecord();
-  const lead: LeadRecord = buildLeadRecord(record, unlockInput, "slugupd1");
+  const lead: LeadRecord = buildLeadRecord(record, captureEmail, "slugupd1");
   const { pushLead, updateLead } = await import("./leads");
   await pushLead(lead);
   const updated = await updateLead("slugupd1", { note: "call after interpack", loomStatus: "selected" });

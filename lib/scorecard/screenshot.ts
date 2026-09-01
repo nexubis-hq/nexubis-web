@@ -25,12 +25,17 @@ export function buildScreenshotUrl(
   extra?: Record<string, string>,
   secretKey?: string,
 ): string {
+  // JPEG at quality 80: visually identical for homepage exhibits, but the
+  // file is roughly a tenth of the PNG, so the render fetch and the vision
+  // upload are both much faster. Reports generated before this change keep
+  // their stored PNG URLs and render unchanged.
   const params = new URLSearchParams({
     access_key: accessKey,
     url: targetUrl,
     viewport_width: DESKTOP_VIEWPORT.width,
     viewport_height: DESKTOP_VIEWPORT.height,
-    format: "png",
+    format: "jpg",
+    image_quality: "80",
     full_page: "false",
     block_ads: "true",
     block_cookie_banners: "true",
@@ -64,7 +69,10 @@ export function buildMobileScreenshotUrl(targetUrl: string, accessKey: string, s
 
 // Screenshot bytes for the vision read. Same params as the report's <img>, so
 // ScreenshotOne serves it from cache, no extra credit.
-const SHOT_FETCH_TIMEOUT_MS = 40_000;
+// 25s: long enough for a slow site to render, short enough that one hung
+// render no longer holds the whole evidence gather at the 40s ceiling it
+// used to (the vision read simply proceeds without that image).
+const SHOT_FETCH_TIMEOUT_MS = 25_000;
 async function fetchShotBase64(url: string): Promise<string | null> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), SHOT_FETCH_TIMEOUT_MS);
@@ -92,7 +100,15 @@ export interface FirstImpressionShots {
 
 // Capture the first-five-seconds exhibits for one company. Best-effort: a null
 // field is "could not be captured" and must be surfaced as such, never guessed.
-export async function captureFirstImpression(targetUrl: string): Promise<FirstImpressionShots> {
+// The mobile render exists ONLY for the vision read (the report displays
+// desktop exhibits alone), and the vision read for rivals works from desktop:
+// rivals skip mobile entirely, halving their renders and keeping a full run
+// inside ScreenshotOne's concurrency limit.
+export async function captureFirstImpression(
+  targetUrl: string,
+  options: { includeMobile?: boolean } = {},
+): Promise<FirstImpressionShots> {
+  const includeMobile = options.includeMobile !== false;
   if (isMockMode()) {
     return {
       desktop: MOCK_PNG_BASE64,
@@ -106,8 +122,11 @@ export async function captureFirstImpression(targetUrl: string): Promise<FirstIm
   // Sign the URLs so the access_key in the public <img> cannot be abused.
   const secretKey = process.env.SCREENSHOTONE_SECRET_KEY;
   const desktopUrl = buildScreenshotUrl(targetUrl, accessKey, undefined, secretKey);
-  const mobileUrl = buildMobileScreenshotUrl(targetUrl, accessKey, secretKey);
-  const [desktop, mobile] = await Promise.all([fetchShotBase64(desktopUrl), fetchShotBase64(mobileUrl)]);
+  const mobileUrl = includeMobile ? buildMobileScreenshotUrl(targetUrl, accessKey, secretKey) : null;
+  const [desktop, mobile] = await Promise.all([
+    fetchShotBase64(desktopUrl),
+    mobileUrl ? fetchShotBase64(mobileUrl) : Promise.resolve(null),
+  ]);
   return { desktop, mobile, desktopUrl, mobileUrl };
 }
 

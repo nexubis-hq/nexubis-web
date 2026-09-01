@@ -162,7 +162,7 @@ export async function runJson<T>({ label, model, user, maxTokens, images, output
         ? [
             ...allImages.map((img): Anthropic.Messages.ContentBlockParam => ({
               type: "image",
-              source: { type: "base64", media_type: img.mediaType as "image/png", data: img.data },
+              source: { type: "base64", media_type: img.mediaType as "image/jpeg", data: img.data },
             })),
             { type: "text", text },
           ]
@@ -260,8 +260,8 @@ export async function readFirstImpression(args: {
     return { ok: true, data, usage: zeroUsage("mock") };
   }
   const images = [
-    ...(args.desktopBase64 ? [{ data: args.desktopBase64, mediaType: "image/png" }] : []),
-    ...(args.mobileBase64 ? [{ data: args.mobileBase64, mediaType: "image/png" }] : []),
+    ...(args.desktopBase64 ? [{ data: args.desktopBase64, mediaType: "image/jpeg" }] : []),
+    ...(args.mobileBase64 ? [{ data: args.mobileBase64, mediaType: "image/jpeg" }] : []),
   ];
   if (images.length === 0) return { ok: false, reason: "no-screenshots" };
   const both = images.length === 2;
@@ -540,7 +540,7 @@ ${rubricBlock()}
 
 SCORING RULES:
 - Score each check 0 to 4 (integers). 4 is genuinely strong against the wider industrial market, 2 is unremarkable, 0 is a real liability.
-- ONE evidence sentence per check, citing what was actually seen: a screenshot observation, a crawled page, a PageSpeed number, a web finding. Maximum 25 words.\n- Never use the word audit in any sentence; when you need a name for this assessment, call it the Scorecard.
+- ONE evidence sentence per check, citing what was actually seen: a screenshot observation, a crawled page, a PageSpeed number, a web finding. Maximum 25 words.\n- When you need a name for this assessment, call it the audit.
 - If a check cannot be assessed from the evidence, set score null and assessable false, and say why in the evidence sentence. Do NOT guess and do NOT punish missing evidence with a low score. Exception: for "brochures-findable", nothing found in the verified web evidence IS the finding; score it 0 with that evidence, not null.
 - For the "pagespeed" check: always return score null, assessable false, evidence "Filled by the pipeline." The pipeline supplies it from measured numbers.
 - Relative checks ("design-quality", "competitor-level") are judged against the other companies listed below; if no other company has a first-impression read, mark those checks not assessable.
@@ -644,7 +644,7 @@ WRITE THESE BLOCKS:
 2. categories: for EVERY category key, exactly 2 or 3 findings (each maximum 26 words) stating specifically what is working and what is costing them, referencing the real evidence above (name competitors where the evidence does), plus one competitorNote (maximum 22 words) on where the named competitors stand on this category. If a category's checks were mostly not assessable, one finding must say plainly what could not be assessed and why that matters.
 3. firstFix: "why" (maximum 75 words): why this category comes first, tied to where buyers look and, where the company context supports it, to THEIR buyer specifically. "inPractice" (maximum 85 words): what fixing it looks like in practice, concrete and specific to their evidence; name their actual product families, industries or certifications where the context above states them. Describe the work, do not sell anything and do not mention any company that would do it.
 
-HARD RULES: Never use the word audit anywhere; this is the Scorecard, the check, the report. The reader should feel helped, then concerned, then clear on what to do, in that order. Findings are facts, never sneering, about the prospect or the competitors. No hype words, no jargon, no em dashes, no selling anywhere in these blocks. Never mention Nexubis or any agency. Never invent anything not present in the evidence. Industry terms, certification names, product family names and buyer descriptions may ONLY come from the company context or the evidence above, exactly as written there.
+HARD RULES: When you need a name for this assessment, call it the audit, the check or the report. The reader should feel helped, then concerned, then clear on what to do, in that order. Findings are facts, never sneering, about the prospect or the competitors. No hype words, no jargon, no em dashes, no selling anywhere in these blocks. Never mention Nexubis or any agency. Never invent anything not present in the evidence. Industry terms, certification names, product family names and buyer descriptions may ONLY come from the company context or the evidence above, exactly as written there.
 
 ${COPY_DIET}
 
