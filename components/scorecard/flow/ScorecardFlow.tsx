@@ -14,6 +14,7 @@ import { META_EVENTS, LEAD_CONTENT_NAME, leadValue } from "@/lib/meta/events";
 import { firstNameFromEmail } from "@/lib/scorecard/lead-name";
 import { ScanAnimation } from "./ScanAnimation";
 import { ScorecardPreviewRadar } from "./ScorecardPreviewRadar";
+import { LAINE_VIDEO_SRC, LAINE_VIDEO_POSTER } from "./laine-video-config";
 import type { ScanStage } from "@/lib/scorecard/orchestrator";
 
 declare global {
@@ -273,8 +274,14 @@ export function ScorecardFlow() {
             </div>
           ) : (
             <>
-              <div className="sc-card-visual">
-                <ScorecardPreviewRadar />
+              <div className={LAINE_VIDEO_SRC ? "sc-card-visual sc-card-visual-video" : "sc-card-visual"}>
+                {LAINE_VIDEO_SRC ? (
+                  // Laine's intro replaces the radar the moment the clip
+                  // exists (laine-video-config.ts). 16:9 talking head.
+                  <video controls preload="metadata" playsInline poster={LAINE_VIDEO_POSTER} src={LAINE_VIDEO_SRC} />
+                ) : (
+                  <ScorecardPreviewRadar />
+                )}
               </div>
               <form className="sc-landing-form" onSubmit={submit}>
                 <label className={`sc-field${urlValid ? " sc-field-valid" : ""}`}>

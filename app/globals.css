@@ -41,7 +41,7 @@
 }
 
 :root {
-  --sc-build: 21; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
+  --sc-build: 22; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
   --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
@@ -12407,4 +12407,15 @@ summary {
 .sc-start-firstfix p {
   color: var(--body);
   line-height: 1.55;
+}
+
+/* Laine's intro in the form-card visual slot (replaces the radar when the
+   clip exists). 16:9, rounded, sits where the radar sat. */
+.sc-card-visual-video video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 0.8rem;
+  display: block;
+  background: var(--black);
 }
