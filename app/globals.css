@@ -41,7 +41,7 @@
 }
 
 :root {
-  --sc-build: 16; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
+  --sc-build: 17; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
   --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
@@ -12691,6 +12691,73 @@ summary {
 }
 .sc-book-btn {
   margin-top: 0.4rem;
+}
+
+/* Book-a-call offer internals */
+.sc-book-lead {
+  color: color-mix(in srgb, var(--white) 82%, transparent);
+  line-height: 1.6;
+  max-width: 56ch;
+  margin-bottom: var(--s-2);
+}
+.sc-book-claims {
+  list-style: none;
+  margin: 0 0 var(--s-2);
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+@media (min-width: 720px) {
+  .sc-book-claims {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.1rem;
+  }
+}
+.sc-book-claims li {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  background: color-mix(in srgb, var(--white) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--white) 12%, transparent);
+  border-radius: 0.8rem;
+  padding: 1.1rem;
+}
+.sc-book-claim-icon {
+  flex: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.sc-book-claim-title {
+  display: block;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 0.25rem;
+  line-height: 1.35;
+}
+.sc-book-claim-body {
+  display: block;
+  color: color-mix(in srgb, var(--white) 72%, transparent);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.sc-book-stakes {
+  color: color-mix(in srgb, var(--white) 82%, transparent);
+  line-height: 1.6;
+  max-width: 56ch;
+  margin-bottom: var(--s-2);
+}
+.sc-book-fineprint {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--white) 58%, transparent);
+  line-height: 1.5;
+  max-width: 52ch;
 }
 
 /* Mobile: the sidebar's nav is replaced by the jump-to bar, but Laine's card

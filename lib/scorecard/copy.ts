@@ -85,9 +85,34 @@ export const REPORT2 = {
   startTitle: (company: string) => `Where we would start with ${company}`,
   startIntro: "Based on your audit, here is what we would fix first.",
   proofTitle: "What we've achieved for another client in the Netherlands",
-  bookTitle: "See what your brand could look like",
-  bookBody: "A short application call. We look at your audit together and decide if there is a fit. No pressure, no obligations.",
-  bookButton: "Book an application call",
+} as const;
+
+// ── Book-a-call offer (report close) ─────────────────────────────────────────
+// The full offer copy in one block for review (Leon, Grand Slam pass).
+// Claim language, never unlock language: this is something they get, not
+// something we gate. No pricing anywhere. The stakes line names the top
+// competitor from their own audit; the fallback covers reports where no
+// rival could be scored.
+export const BOOK_CALL = {
+  heading: "Book a call to claim your free landing page rework and feedback Loom",
+  leadIn:
+    "Based on this audit, if there is a fit, we will rework the top of your homepage before you pay us anything. You judge the work, not the promises.",
+  claims: [
+    {
+      title: "A free rework of the top of your homepage.",
+      body: "We redesign your hero section with repositioned copy and current best practice, so you see exactly what your first impression could look like.",
+    },
+    {
+      title: "A short Loom walking you through it.",
+      body: "We go through your audit on video and explain why we redesigned your homepage the way we did, plus what we would look at next.",
+    },
+  ],
+  stakes: (rival: string | null) =>
+    rival
+      ? `Skip it and nothing changes: the buyers comparing you to ${rival} keep choosing the company that looks more credible.`
+      : "Skip it and nothing changes: the buyers comparing you to your competitors keep choosing the company that looks more credible.",
+  button: "Book your free call",
+  reassurance: "A short application call. No invoice, no pressure, and you keep the audit and the rework either way.",
 } as const;
 
 // Fixed one-line verdict meanings (Section 5), used where the full paragraph

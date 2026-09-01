@@ -18,7 +18,7 @@ import { CollapsibleList } from "./CollapsibleList";
 import { JumpToNav } from "./JumpToNav";
 import { MobileCtaBar } from "./MobileCtaBar";
 import { ReportSidebar, type ReportNavItem, type SectionTone } from "./ReportSidebar";
-import { REPORT, REPORT2, POWERED_BY, VERDICT_LINES, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
+import { REPORT, REPORT2, BOOK_CALL, POWERED_BY, VERDICT_LINES, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
 import {
   workingItems,
   fixItems,
@@ -333,13 +333,40 @@ export function ReportView({
               </div>
             </section>
 
-            {/* 10. Book a call (copy placeholder until Prompt 4; no pricing). */}
+            {/* 10. The book-a-call offer: claim language, two claim cards,
+                the stakes line naming their top competitor, no pricing. */}
             <section className="sc-card sc-book" id="sc-book" data-reveal>
-              <h2>{REPORT2.bookTitle}</h2>
-              <p>{REPORT2.bookBody}</p>
+              <h2>{BOOK_CALL.heading}</h2>
+              <p className="sc-book-lead">{BOOK_CALL.leadIn}</p>
+              <ul className="sc-book-claims">
+                {BOOK_CALL.claims.map((claim, i) => (
+                  <li key={claim.title}>
+                    <span className="sc-book-claim-icon" aria-hidden="true">
+                      {i === 0 ? (
+                        <svg viewBox="0 0 20 20" width="20" height="20">
+                          <rect x="2.5" y="3.5" width="15" height="13" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                          <path d="M2.5 7h15" stroke="currentColor" strokeWidth="1.6" />
+                          <path d="M5.5 10.5h5M5.5 13h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 20 20" width="20" height="20">
+                          <circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                          <path d="M8.4 7.2 13 10l-4.6 2.8z" fill="currentColor" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="sc-book-claim-text">
+                      <span className="sc-book-claim-title">{claim.title}</span>
+                      <span className="sc-book-claim-body">{claim.body}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="sc-book-stakes">{BOOK_CALL.stakes(result.verdict.bestRival?.company ?? null)}</p>
               <BookCallButton className="btn btn-primary sc-book-btn" personName={result.meta.contactName} business={company}>
-                {REPORT2.bookButton}
+                {BOOK_CALL.button}
               </BookCallButton>
+              <p className="sc-book-fineprint">{BOOK_CALL.reassurance}</p>
             </section>
           </div>
 
