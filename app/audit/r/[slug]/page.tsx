@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ReportView } from "@/components/scorecard/report/ReportView";
+import { ReportViewTracker } from "@/components/scorecard/report/ReportViewTracker";
 import { readShared, incrementViews, type SharedScorecard } from "@/lib/scorecard/share";
 import { SCORECARD_NAME } from "@/lib/scorecard/copy";
 import type { ScorecardResult } from "@/lib/scorecard/result";
@@ -68,6 +69,13 @@ export default async function SharedReportPage({ params }: { params: Promise<{ s
   if (!record) notFound();
   if (slug !== "demo") incrementViews(slug).catch(() => {});
   // Always the full report: the unlock gate is gone, and reports generated
-  // before the gate was removed render identically under this layout.
-  return <ReportView result={record.result} loomUrl={record.loomUrl} />;
+  // before the gate was removed render identically under this layout. The
+  // tracker fires ReportViewed once the page hydrates (demo excluded: it is
+  // a marketing surface, not a delivered report).
+  return (
+    <>
+      {slug !== "demo" ? <ReportViewTracker slug={slug} company={record.result.meta.company} /> : null}
+      <ReportView result={record.result} loomUrl={record.loomUrl} />
+    </>
+  );
 }

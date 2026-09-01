@@ -10,11 +10,12 @@ export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "885652097
 // Schedule) are DIFFERENT events — a click is never a booking (§3, §9).
 export const META_EVENTS = {
   pageView: "PageView",
-  auditStart: "AuditStart", // custom: scan started (website submitted). Once per visit.
-  auditComplete: "AuditComplete", // custom, DIAGNOSIS ONLY: scan finished, teaser/gate rendered. Splits abandonment-during-wait from refusal-at-gate. NOT a custom conversion; never optimise on it.
-  lead: "Lead", // standard: email gate success.
+  auditStart: "AuditStart", // custom: the URL+email form submitted successfully. Once per visit. THE campaign optimisation event; fires pixel + CAPI with one event_id and the raw email on the server leg.
+  auditComplete: "AuditComplete", // custom, DIAGNOSIS ONLY: the scan finished and the report was handed over. Splits abandonment-during-wait from completion. NOT a custom conversion; never optimise on it.
+  lead: "Lead", // standard: details submitted. Fires WITH AuditStart at the same form submit (the gateless flow captures the email up front); kept distinct so Events Manager still shows the funnel split.
+  reportViewed: "ReportViewed", // custom: a generated report rendered fully (per page load, per slug).
   auditBookClick: "AuditBookClick", // custom: clicked a book CTA. NOT a booking.
-  schedule: "Schedule", // standard: CONFIRMED booking only (cal.com webhook).
+  schedule: "Schedule", // standard: CONFIRMED booking only (cal.com webhook, event_id cal_<uid>).
   contact: "Contact", // standard: contact-form message. Kept distinct from Lead.
 } as const;
 

@@ -70,11 +70,12 @@ export function ScorecardFlow() {
   const [honeypot, setHoneypot] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
   const [fieldError, setFieldError] = useState("");
-  // AuditStart fires once per visit, even if validation bounces the user back
-  // and they resubmit (§3: once per visit, ref-guarded against retries).
-  const auditStartFired = useRef(false);
-  // AuditComplete (diagnosis only) marks the scan finishing. Lead fires with
-  // it: the email was captured up front and the full report is now theirs.
+  // AuditStart + Lead both fire at the successful form submit, once per visit
+  // (ref-guarded against retries). AuditStart is the campaign optimisation
+  // event; Lead marks the details captured. Distinct events, so Events
+  // Manager still shows the funnel split.
+  const submitEventsFired = useRef(false);
+  // AuditComplete (diagnosis only) marks the scan finishing.
   const auditCompleteFired = useRef(false);
   // The "human took time" clock, stamped on mount (long before a person can
   // type a URL and an email).
@@ -131,9 +132,17 @@ export function ScorecardFlow() {
     }
 
     const company = companyFromUrl(rawUrl);
-    if (!auditStartFired.current) {
-      auditStartFired.current = true;
-      trackMeta(META_EVENTS.auditStart, { content_category: "scorecard", content_name: company });
+    if (!submitEventsFired.current) {
+      submitEventsFired.current = true;
+      // Both legs (pixel + CAPI) share one event_id inside trackMeta; the raw
+      // email rides the server leg only, hashed there, for match quality.
+      trackMeta(META_EVENTS.auditStart, { content_category: "scorecard", content_name: company }, { email: email.trim() });
+      const value = leadValue();
+      trackMeta(
+        META_EVENTS.lead,
+        { content_name: LEAD_CONTENT_NAME, ...(value ? { value: value.value, currency: value.currency } : {}) },
+        { email: email.trim() },
+      );
     }
     setFlow({ step: "scanning", stage: "reading", company });
     try {
@@ -183,17 +192,7 @@ export function ScorecardFlow() {
             navigated = true;
             if (!auditCompleteFired.current) {
               auditCompleteFired.current = true;
-              trackMeta(META_EVENTS.auditComplete, { content_category: "scorecard", content_name: company });
-              // Lead: the email was captured up front and the report is now
-              // theirs. Distinct content_name so audit leads never blend with
-              // contact-form leads; email flows to the server leg (hashed
-              // there, never sent to the browser pixel in the clear).
-              const value = leadValue();
-              trackMeta(
-                META_EVENTS.lead,
-                { content_name: LEAD_CONTENT_NAME, ...(value ? { value: value.value, currency: value.currency } : {}) },
-                { email: email.trim() },
-              );
+              trackMeta(META_EVENTS.auditComplete, { content_category: "scorecard", content_name: company }, { email: email.trim() });
               // Route the lead to Funnelr's tag-only bridge (create/update
               // contact, store report URL, apply Brand/Source/Start-Sales
               // tags). Fire-and-forget; keepalive survives the navigation.
