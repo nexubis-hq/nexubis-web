@@ -59,9 +59,9 @@ export const FORM_FIELDS = {
 } as const;
 
 // ── Report navigation + share ────────────────────────────────────────────────
-// The full report carries a sticky nav with a single action: book a call.
+// The full report carries a sticky nav with a single action: unlock the session.
 export const REPORT_NAV = {
-  book: "Book an application call",
+  book: "Unlock my session",
 } as const;
 
 // ── Report surfaces (Section 7) ──────────────────────────────────────────────
@@ -79,14 +79,6 @@ export const REPORT = {
   proofBody:
     "One year with Oxipack: 35% more output at a 33% lower effective rate, and the scope kept expanding without a single re-quote.",
   proofLink: "Read the case study",
-  nextStepTitle: "Recommended next step",
-  nextStepButton: "Book an application call",
-  nextStepSteps: [
-    { title: "Book the call", body: "A short application call. We look at your audit together and decide if there is a fit." },
-    { title: "See it before you commit", body: "We build something real for your brand first, so you judge work, not promises." },
-    { title: "Our team becomes your team", body: "Brand, web, 3D, video and print, one in-house-style team on one flat retainer." },
-  ],
-  softClose: "You've done good work to get here. This is about taking it further.",
   contactEmail: "hello@nexubis.io",
   contactSite: "www.nexubis.io",
 } as const;
@@ -106,32 +98,35 @@ export const REPORT2 = {
   proofTitle: "What we've achieved for another client in the Netherlands",
 } as const;
 
-// ── Book-a-call offer (report close) ─────────────────────────────────────────
-// The full offer copy in one block for review (Leon, Grand Slam pass).
-// Claim language, never unlock language: this is something they get, not
-// something we gate. No pricing anywhere. The stakes line names the top
-// competitor from their own audit; the fallback covers reports where no
-// rival could be scored.
+// ── Offer block (report close) ───────────────────────────────────────────────
+// The full offer copy in one block. The prospect UNLOCKS a live session with
+// their homepage already reworked; this is never framed as booking a sales
+// call. No pricing anywhere. The stakes line names the top competitor from
+// their own audit; the fallback covers reports where no rival could be scored.
 export const BOOK_CALL = {
-  heading: "Book a call to claim your free landing page rework and feedback Loom",
+  eyebrow: "Your next step",
+  heading: "Unlock a live session on your audit, with your homepage already reworked.",
   leadIn:
-    "Based on this audit, if there is a fit, we will rework the top of your homepage before you pay us anything. You judge the work, not the promises.",
+    "Pick a time and our design team walks these results with you. Before that call we rework the top of your homepage using what this audit found, so you are not looking at theory. You see what your company looks like when the brand finally matches the engineering.",
   claims: [
     {
-      title: "A free rework of the top of your homepage.",
-      body: "We redesign your hero section with repositioned copy and current best practice, so you see exactly what your first impression could look like.",
+      title: "Your homepage, reworked before we meet.",
+      body: "We redesign the top of your page off the back of this audit: repositioned copy, current best practice, your brand. Real work you can look at, not a proposal.",
     },
     {
-      title: "A short Loom walking you through it.",
-      body: "We go through your audit on video and explain why we redesigned your homepage the way we did, plus what we would look at next.",
+      title: "Thirty minutes, live, nothing for sale.",
+      body: "We go through your results together, show you the reworked page, and tell you plainly where we would start if this were our company. If it feels like a fit on both sides, we book a second session and build out the full page in between, within five working days.",
     },
   ],
+  riskReversal:
+    "You keep everything either way. The audit, and the reworked design as a PDF you can use or hand to whoever builds your site.",
+  scarcity: "We run five of these sessions a week.",
   stakes: (rival: string | null) =>
     rival
       ? `Skip it and nothing changes: the buyers comparing you to ${rival} keep choosing the company that looks more credible.`
       : "Skip it and nothing changes: the buyers comparing you to your competitors keep choosing the company that looks more credible.",
-  button: "Book your free call",
-  reassurance: "A short application call. No invoice, no pressure, and you keep the audit and the rework either way.",
+  button: "Unlock my free session",
+  underButton: "Pick a time that suits you. Thirty minutes, no pricing, no obligation, nothing to prepare.",
 } as const;
 
 // Fixed one-line verdict meanings (Section 5), used where the full paragraph

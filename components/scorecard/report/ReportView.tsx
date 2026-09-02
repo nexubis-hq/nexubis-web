@@ -133,7 +133,7 @@ export function ReportView({
     ...(top3.length ? [{ id: "sc-top3", label: REPORT2.top3Title, tone: "neutral" as SectionTone }] : []),
     ...(starts.length ? [{ id: "sc-start", label: "Where we would start", tone: "neutral" as SectionTone }] : []),
     { id: "sc-proof", label: "Client proof", tone: "neutral" },
-    { id: "sc-book", label: "Book a call", tone: "neutral" },
+    { id: "sc-book", label: "Your next step", tone: "neutral" },
   ];
 
   const Shell = chrome ? "main" : "div";
@@ -338,6 +338,7 @@ export function ReportView({
             {/* 10. The book-a-call offer: claim language, two claim cards,
                 the stakes line naming their top competitor, no pricing. */}
             <section className="sc-card sc-book" id="sc-book" data-reveal>
+              <p className="sc-book-eyebrow">{BOOK_CALL.eyebrow}</p>
               <h2>{BOOK_CALL.heading}</h2>
               <p className="sc-book-lead">{BOOK_CALL.leadIn}</p>
               <ul className="sc-book-claims">
@@ -364,11 +365,13 @@ export function ReportView({
                   </li>
                 ))}
               </ul>
+              <p className="sc-book-guarantee">{BOOK_CALL.riskReversal}</p>
+              <p className="sc-book-scarcity">{BOOK_CALL.scarcity}</p>
               <p className="sc-book-stakes">{BOOK_CALL.stakes(result.verdict.bestRival?.company ?? null)}</p>
               <BookCallButton className="btn btn-primary sc-book-btn" personName={result.meta.contactName} business={company}>
                 {BOOK_CALL.button}
               </BookCallButton>
-              <p className="sc-book-fineprint">{BOOK_CALL.reassurance}</p>
+              <p className="sc-book-fineprint">{BOOK_CALL.underButton}</p>
             </section>
           </div>
 

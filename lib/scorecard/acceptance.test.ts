@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { REPORT, EMAIL_1, LANDING, VERDICT_LINES, SCAN_STAGES, SCAN_STEPS, SCAN_SUBLINE } from "./copy";
+import { REPORT, REPORT_NAV, BOOK_CALL, EMAIL_1, LANDING, VERDICT_LINES, SCAN_STAGES, SCAN_STEPS, SCAN_SUBLINE } from "./copy";
 import { verifyTurnstile } from "./unlock";
 import type { ScorecardResult } from "./result";
 
@@ -51,7 +51,11 @@ test("the CTA lives only in the fixed closing copy, never in findings", { skip: 
     ...result.deckCopy.categories.flatMap((c) => [...c.findings, c.competitorNote]),
   ].join(" ");
   assert.ok(!/book (a|an|your) (call|application)/i.test(findings));
-  assert.ok(REPORT.nextStepButton === "Book an application call");
+  // The offer is unlocking a live session, never a "book a call" / sales call.
+  assert.equal(BOOK_CALL.button, "Unlock my free session");
+  for (const s of [BOOK_CALL.heading, BOOK_CALL.button, BOOK_CALL.underButton, REPORT_NAV.book]) {
+    assert.ok(!/book a call|application call|sales call|loom/i.test(s), `forbidden offer phrase in: ${s}`);
+  }
 });
 
 // ── Turnstile fails closed when configured ───────────────────────────────────

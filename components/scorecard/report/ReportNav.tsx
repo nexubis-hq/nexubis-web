@@ -1,7 +1,7 @@
 "use client";
 
 // Sticky top navigation for the full (unlocked) report. Carries the single
-// report action: book an application call (primary). The light, branded
+// report action: unlock the session (primary). The light, branded
 // homepage treatment replaces the old dark bar.
 import Link from "next/link";
 import { NexubisLogo } from "@/components/NexubisLogo";

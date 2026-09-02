@@ -1,6 +1,6 @@
 "use client";
 
-// The report's "book a call" CTA. A non-embed link that opens cal.com prefilled
+// The report's unlock-session CTA. A non-embed link that opens cal.com prefilled
 // with the person's name, their business, and THIS report's URL, so an
 // email/report-originated booking correlates back to the exact Scorecard (section 1).
 // Fires AuditBookClick on click; a click is intent, NOT a booking. The confirmed

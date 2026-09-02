@@ -41,7 +41,7 @@
 }
 
 :root {
-  --sc-build: 25; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
+  --sc-build: 26; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
   --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
@@ -12184,6 +12184,46 @@ summary {
   color: color-mix(in srgb, var(--white) 58%, transparent);
   line-height: 1.5;
   max-width: 52ch;
+}
+/* Eyebrow above the offer heading. */
+.sc-book-eyebrow {
+  margin-bottom: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+/* Risk-reversal line: its own visually distinct block above the stakes line,
+   a tinted panel with a red keep-marker so "you keep everything" stands out. */
+.sc-book-guarantee {
+  margin-bottom: var(--s-2);
+  padding: 0.85rem 1.1rem 0.85rem 2.6rem;
+  position: relative;
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
+  color: var(--white);
+  font-weight: 500;
+  line-height: 1.55;
+  max-width: none;
+}
+.sc-book-guarantee::before {
+  content: "";
+  position: absolute;
+  left: 1.05rem;
+  top: 1.05rem;
+  width: 0.7rem;
+  height: 0.4rem;
+  border-left: 2px solid var(--primary);
+  border-bottom: 2px solid var(--primary);
+  transform: rotate(-45deg);
+}
+/* Scarcity: small and quiet, no urgency dressing. */
+.sc-book-scarcity {
+  margin-bottom: var(--s-2);
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--white) 55%, transparent);
 }
 
 /* Mobile: the sidebar's nav is replaced by the jump-to bar, but Laine's card
