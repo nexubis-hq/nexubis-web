@@ -12,6 +12,7 @@ import { RUBRIC } from "@/lib/scorecard/rubric";
 import { trackMeta } from "@/lib/meta/track";
 import { META_EVENTS, LEAD_CONTENT_NAME, leadValue } from "@/lib/meta/events";
 import { ScanAnimation } from "./ScanAnimation";
+import { ScorecardPreviewRadar } from "./ScorecardPreviewRadar";
 import { LAINE_VIDEO_SRC, LAINE_VIDEO_POSTER } from "./laine-video-config";
 import type { ScanStage } from "@/lib/scorecard/orchestrator";
 
@@ -270,33 +271,30 @@ export function ScorecardFlow() {
               <div className="sc-scan-error-actions">
                 {flow.reportUrl ? (
                   <a className="btn btn-primary" href={flow.reportUrl}>
-                    See your previous report
+                    See Your Previous Report
                   </a>
                 ) : (
                   <button className="btn btn-primary" type="button" onClick={() => void runScan(url)}>
-                    Try again
+                    Try Again
                   </button>
                 )}
                 <button type="button" className="sc-scan-error-alt" onClick={() => setFlow({ step: "form" })}>
-                  Check a different address
+                  Check a Different Address
                 </button>
               </div>
             </div>
           ) : (
             <>
-              <div className="sc-card-visual sc-card-visual-video">
+              <div className={LAINE_VIDEO_SRC ? "sc-card-visual sc-card-visual-video" : "sc-card-visual"}>
                 {LAINE_VIDEO_SRC ? (
                   // Laine's 16:9 intro. Set LAINE_VIDEO_SRC in
                   // laine-video-config.ts when the clip is shot.
                   <video controls preload="metadata" playsInline poster={LAINE_VIDEO_POSTER} src={LAINE_VIDEO_SRC} />
                 ) : (
-                  // Until the clip lands, the slot holds the poster + a quiet
-                  // coming-soon chip, so the layout is already the final one.
-                  <div className="sc-card-video-coming">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={LAINE_VIDEO_POSTER} alt="Laine du Toit, Chief Operations Officer at Nexubis" loading="lazy" />
-                    <span className="sc-laine-video-chip">Video coming soon</span>
-                  </div>
+                  // Until the clip lands, the slot holds the five-pillar radar
+                  // preview (the visual we had before the video slot). The video
+                  // takes this spot automatically once LAINE_VIDEO_SRC is set.
+                  <ScorecardPreviewRadar />
                 )}
               </div>
               <form className="sc-landing-form" onSubmit={submit}>

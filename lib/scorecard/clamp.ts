@@ -13,8 +13,8 @@ export function clampWords(text: string, max: number): string {
 }
 
 // The per-block clamp table for the report copy. Caps sit a few words above
-// each prompt budget (verdict 85, finding 26, competitor note 22, first-fix
-// why 75 / in-practice 85), so normal output passes untouched.
+// each prompt budget (start item 11, staying-same 20, first-fix why 26 /
+// in-practice 30), so normal output passes untouched.
 import type { DeckCopy } from "./result";
 
 export const DECK_COPY_CAPS = {
@@ -29,11 +29,11 @@ export const DECK_COPY_CAPS = {
   topIssueBody: 26,
   topIssueImpact: 20,
   maxTopIssues: 3,
-  startItem: 24,
-  maxStartItems: 5,
-  stayingSame: 34,
-  firstFixWhy: 48,
-  firstFixInPractice: 54,
+  startItem: 14,
+  maxStartItems: 4,
+  stayingSame: 26,
+  firstFixWhy: 32,
+  firstFixInPractice: 36,
   maxFindingsPerCategory: 3,
 } as const;
 

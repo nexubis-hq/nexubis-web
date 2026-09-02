@@ -8161,7 +8161,7 @@ button.nav-link {
 @media (min-width: 1000px) {
   .sc-body-inner {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
+    grid-template-columns: minmax(0, 1fr) 330px;
     gap: var(--grid-gap);
     align-items: start;
     /* Reading-width column + rail, centred: the reference report caps its
@@ -8263,13 +8263,14 @@ button.nav-link {
 .sc-side-dot-poor { background: var(--primary); }
 .sc-side-dot-neutral { background: var(--mid); }
 
-/* Laine's book-a-call card: dark, so it reads as the one action in the rail. */
+/* Laine's book-a-call card: dark, so it reads as the one action in the rail.
+   Sits close under the nav card (tightened gap). */
 .sc-side-cta {
-  margin-top: var(--s-4);
+  margin-top: var(--s-3);
   background: var(--black);
   color: var(--white);
   border-radius: 1rem;
-  padding: 1.4rem;
+  padding: 1.4rem 1.2rem;
 }
 .sc-side-cta-head {
   display: flex;
@@ -11729,6 +11730,24 @@ summary {
   max-width: calc(1240px + 2 * var(--grid-gap));
 }
 
+/* Report hero red band: equal red space above and below the white score card,
+   and less of it at the top than before (was s-7 padding + s-5 card margin). */
+.sc-report-v2 .sc-hero {
+  padding-block: var(--s-6);
+}
+.sc-report-v2 .sc-hero-card {
+  margin-top: 0;
+}
+
+/* Competitor comparison card only: centre the title, radar, label and chips.
+   Scoped to the report so the landing-page competitor fieldset is untouched. */
+.sc-report-v2 .sc-competitors {
+  text-align: center;
+}
+.sc-report-v2 .sc-competitors .sc-overall-chips {
+  justify-content: center;
+}
+
 /* Mobile sticky jump-to bar (the sidebar's phone form) */
 .sc-jumpto {
   position: sticky;
@@ -12247,6 +12266,7 @@ summary {
 }
 /* Scarcity: small and quiet, no urgency dressing. */
 .sc-book-scarcity {
+  margin-top: var(--s-2);
   margin-bottom: var(--s-2);
   font-size: 0.85rem;
   color: color-mix(in srgb, var(--white) 55%, transparent);

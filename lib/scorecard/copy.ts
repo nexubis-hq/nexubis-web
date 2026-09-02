@@ -14,7 +14,7 @@ export const POWERED_BY = "Powered by Nexubis AI";
 // server-side.
 export const LANDING = {
   kicker: "For European industrial manufacturers",
-  headline: "The buyer who didn't trust your website shortlisted your competitor.",
+  headline: "The Buyer Who Didn't Trust Your Website Shortlisted Your Competitor.",
   subheadline:
     "See exactly where serious buyers lose confidence in your company. We read your online presence the way a procurement team does, score you on the five things buyers judge you on, and hand you the first fix.",
   bullets: [
@@ -22,7 +22,7 @@ export const LANDING = {
     "Benchmarked side by side against the competitors you get cross-shopped with",
     "One clear first fix, explained plainly, not a list of forty problems",
   ],
-  submitButton: "Run my free audit",
+  submitButton: "Run My Free Audit",
   // Sits directly under the button. The highlight is red, the note stays grey.
   reassurance: {
     highlight: "Free",
@@ -61,7 +61,7 @@ export const FORM_FIELDS = {
 // ── Report navigation + share ────────────────────────────────────────────────
 // The full report carries a sticky nav with a single action: unlock the session.
 export const REPORT_NAV = {
-  book: "Unlock your session",
+  book: "Unlock Your Session",
 } as const;
 
 // ── Report surfaces (Section 7) ──────────────────────────────────────────────
@@ -107,25 +107,25 @@ export const BOOK_CALL = {
   eyebrow: "Your next step",
   heading: "Unlock a live session on your audit, with your homepage already reworked.",
   leadIn:
-    "Pick a time and our design team walks these results with you. Before that call we rework the top of your homepage using what this audit found, so you are not looking at theory. You see what your company looks like when the brand finally matches the engineering.",
+    "Pick a time and our design team walks these results with you. First we rework the top of your homepage from what this audit found, so you see real work, not theory.",
   claims: [
     {
       title: "Your homepage, reworked before we meet.",
-      body: "We redesign the top of your page off the back of this audit: repositioned copy, current best practice, your brand. Real work you can look at, not a proposal.",
+      body: "We redesign the top of your page from this audit: repositioned copy, current best practice, your brand. Real work, not a proposal.",
     },
     {
       title: "Thirty minutes, live, nothing for sale.",
-      body: "We go through your results together, show you the reworked page, and tell you plainly where we would start if this were our company. If it feels like a fit on both sides, we book a second session and build out the full page in between, within five working days.",
+      body: "We walk your results, show you the reworked page, and say plainly where we would start. If it fits both sides, we build the full page within five working days.",
     },
   ],
   riskReversal:
-    "You keep everything either way. The audit, and the reworked design as a PDF you can use or hand to whoever builds your site.",
+    "You keep everything either way: the audit and the reworked design as a PDF, yours to use or hand off.",
   scarcity: "We run five of these sessions a week.",
   stakes: (rival: string | null) =>
     rival
       ? `Skip it and nothing changes: the buyers comparing you to ${rival} keep choosing the company that looks more credible.`
       : "Skip it and nothing changes: the buyers comparing you to your competitors keep choosing the company that looks more credible.",
-  button: "Unlock your free session",
+  button: "Unlock Your Free Session",
   underButton: "Pick a time that suits you. Thirty minutes, no pricing, no obligation, nothing to prepare.",
 } as const;
 

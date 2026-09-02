@@ -82,7 +82,7 @@ export function ReportSidebar({
           </div>
         </div>
         <p className="sc-side-cta-copy">
-          Book your thirty minutes and we&rsquo;ll walk these results together, with the top of your homepage already reworked, so you see real work, not a proposal.
+          Thirty minutes, live. We walk your results together, with your homepage already reworked.
         </p>
         <ul className="sc-side-cta-points">
           <li>Thirty minutes, live with our design team</li>
@@ -90,7 +90,7 @@ export function ReportSidebar({
           <li>Yours to keep, fit or no fit</li>
         </ul>
         <BookCallButton className="btn btn-primary sc-side-cta-btn" personName={contactName} business={company} website={website}>
-          Unlock your free session
+          Unlock Your Free Session
         </BookCallButton>
       </div>
     </aside>
