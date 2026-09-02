@@ -75,21 +75,41 @@ export async function resolveCompetitor(
     return { raw, name: candidate.name, url, resolved: true };
   }
 
-  // Name entry: find the official site. The one-liner scopes the query to the
-  // prospect's industry so "FlowServe Dosing" does not drift to a namesake.
-  const query = `${entry} ${prospect.productOneLiner} official website`;
-  const res = await searchWeb(query);
-  for (const hit of res?.organic ?? []) {
+  // Name entry: find the official site. Two passes, so a named competitor
+  // rarely ends up unresolved (which used to surface as "could not be checked"
+  // in the report). Pass 1 is scoped + strict; pass 2 is a broader query with
+  // a relaxed token check, tried only if pass 1 finds nothing.
+  const tokens = normaliseCompanyName(entry).split(" ").filter((t) => t.length >= 3);
+  const accept = (host: string, title: string, requireToken: boolean): boolean => {
+    if (isNonCompanyHost(host)) return false;
+    if (isSelfMatch({ name: entry, url: `https://${host}` }, prospect)) return false;
+    if (!requireToken || tokens.length === 0) return true;
+    const haystack = `${host} ${title.toLowerCase()}`;
+    return tokens.some((t) => haystack.includes(t));
+  };
+
+  // Pass 1: scoped to the prospect's industry so "FlowServe Dosing" does not
+  // drift to a namesake; strong token match required.
+  const res1 = await searchWeb(`${entry} ${prospect.productOneLiner} official website`);
+  for (const hit of res1?.organic ?? []) {
+    const host = hostFromUrl(hit.url);
+    if (host && accept(host, hit.title, true)) return { raw, name: entry, url: `https://${host}`, resolved: true };
+  }
+
+  // Pass 2 (failsafe): the plain company name. Some manufacturers' official
+  // sites do not rank for the scoped phrase. The token check is relaxed to the
+  // first strong token so a real site is not rejected on wording, while
+  // directories, marketplaces and self-matches are still filtered out.
+  const res2 = await searchWeb(`"${entry}" company official website`);
+  const firstToken = tokens[0];
+  for (const hit of res2?.organic ?? []) {
     const host = hostFromUrl(hit.url);
     if (!host || isNonCompanyHost(host)) continue;
-    const candidate = { name: entry, url: `https://${host}` };
-    if (isSelfMatch(candidate, prospect)) continue;
-    // Weak sanity check: the entry's strongest token should appear in the host
-    // or the result title, so an unrelated top result cannot claim the slot.
-    const tokens = normaliseCompanyName(entry).split(" ").filter((t) => t.length >= 3);
+    if (isSelfMatch({ name: entry, url: `https://${host}` }, prospect)) continue;
     const haystack = `${host} ${hit.title.toLowerCase()}`;
-    if (tokens.length > 0 && !tokens.some((t) => haystack.includes(t))) continue;
-    return { raw, name: entry, url: candidate.url, resolved: true };
+    if (!firstToken || haystack.includes(firstToken)) {
+      return { raw, name: entry, url: `https://${host}`, resolved: true };
+    }
   }
   return { raw, name: entry, resolved: false };
 }

@@ -43,7 +43,7 @@ export function BenchmarkRadar({ prospect, rivals }: { prospect: CompanyScores; 
 
   return (
     <figure className="sc-radar-figure">
-      <svg className="sc-radar" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Credibility Score by category, you versus the competitors you named">
+      <svg className="sc-radar" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Gap Score by category, you versus your closest competitors">
         {rings.map((f, i) => (
           <polygon key={i} className="sc-radar-grid" points={prospect.categories.map((_, j) => point(angleAt(j), R * f).join(",")).join(" ")} />
         ))}

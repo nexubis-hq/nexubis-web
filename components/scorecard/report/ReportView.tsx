@@ -120,6 +120,11 @@ export function ReportView({
   const starts = resolvedStartList(result);
   const company = result.meta.company;
 
+  // Competitor chips + radar show ONLY companies that produced a real score.
+  // A named competitor we could not resolve or gather enough on is dropped
+  // rather than rendered as "could not be checked" (failsafe).
+  const competitorChips = result.scores.filter((s) => s.scored && s.overall !== null);
+
   // Nav sections: the five pillars (dot toned by score) plus the cross-pillar
   // sections, in page order.
   const pillarItems: ReportNavItem[] = RUBRIC.map((cat): ReportNavItem => {
@@ -146,9 +151,6 @@ export function ReportView({
           band strip, the one-line verdict, the issues count, the pillar chips. */}
       <header className="sc-hero">
         <div className="site-container">
-          <p className="sc-hero-disclaimer" data-reveal>
-            {REPORT2.disclaimer}
-          </p>
           <div className="sc-hero-card" data-reveal>
             <div className="sc-hero-grid">
               <div className="sc-score-ring">
@@ -204,22 +206,22 @@ export function ReportView({
                 stance, restyled as the first card. */}
             <section className="sc-card sc-competitors" id="sc-competitors">
               <h2 data-reveal>{REPORT2.competitorsTitle}</h2>
-              <p className="sc-chips-label" data-reveal>
-                {TEASER.chipsLabel}
-              </p>
-              <ul className="sc-overall-chips" data-reveal>
-                {result.scores.map((s) => (
-                  <li key={s.company} className={s.isProspect ? "sc-chip-you" : "sc-chip"}>
-                    <span className="sc-chip-name">{s.company}</span>
-                    <span className="sc-chip-score">{s.scored && s.overall !== null ? s.overall : TEASER.rivalNotScored}</span>
-                  </li>
-                ))}
-              </ul>
               {p ? (
                 <div className="sc-score-radar" data-reveal>
                   <BenchmarkRadar prospect={p} rivals={rivals} />
                 </div>
               ) : null}
+              <p className="sc-chips-label" data-reveal>
+                {TEASER.chipsLabel}
+              </p>
+              <ul className="sc-overall-chips" data-reveal>
+                {competitorChips.map((s) => (
+                  <li key={s.company} className={s.isProspect ? "sc-chip-you" : "sc-chip"}>
+                    <span className="sc-chip-name">{s.company}</span>
+                    <span className="sc-chip-score">{s.overall}</span>
+                  </li>
+                ))}
+              </ul>
             </section>
 
             {/* 6. The five pillar sections. */}
@@ -363,10 +365,10 @@ export function ReportView({
                 ))}
               </ul>
               <p className="sc-book-guarantee">{BOOK_CALL.riskReversal}</p>
-              <p className="sc-book-scarcity">{BOOK_CALL.scarcity}</p>
               <BookCallButton className="btn btn-primary sc-book-btn" personName={result.meta.contactName} business={company}>
                 {BOOK_CALL.button}
               </BookCallButton>
+              <p className="sc-book-scarcity">{BOOK_CALL.scarcity}</p>
             </section>
           </div>
 

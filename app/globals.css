@@ -41,7 +41,7 @@
 }
 
 :root {
-  --sc-build: 27; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
+  --sc-build: 30; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
   --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
@@ -8541,7 +8541,7 @@ button.nav-link {
 
 .sc-radar {
   width: 100%;
-  max-width: 600px;
+  max-width: 760px;
   display: block;
   margin-inline: auto;
 }
@@ -8572,8 +8572,8 @@ button.nav-link {
 
 .sc-radar-rival {
   fill: none;
-  stroke: color-mix(in srgb, var(--mid) 34%, var(--white));
-  stroke-width: 1.5;
+  stroke: color-mix(in srgb, var(--mid) 85%, var(--black));
+  stroke-width: 2;
   stroke-linejoin: round;
 }
 
@@ -8614,7 +8614,7 @@ button.nav-link {
   content: "";
   width: 1rem;
   height: 0;
-  border-top: 2px solid color-mix(in srgb, var(--mid) 34%, var(--white));
+  border-top: 2px solid color-mix(in srgb, var(--mid) 85%, var(--black));
 }
 
 .sc-radar-key-you::before {
@@ -11821,14 +11821,15 @@ summary {
 .sc-top3 > h2,
 .sc-start > h2 { margin-bottom: var(--s-2); }
 
-/* Competitor comparison card: reuse the chips + radar */
-.sc-competitors .sc-chips-label {
-  margin-top: 0;
-}
+/* Competitor comparison card: the radar leads (large), the chips sit below. */
 .sc-competitors .sc-score-radar {
-  margin-top: var(--s-3);
-  max-width: 600px;
+  margin-top: 0;
+  width: 100%;
+  max-width: 760px;
   margin-inline: auto;
+}
+.sc-competitors .sc-chips-label {
+  margin-top: var(--s-4);
 }
 
 /* Pillar cards */
@@ -12060,8 +12061,8 @@ summary {
 .sc-top3-impact {
   margin-top: 0.5rem;
   font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--steel);
+  font-weight: 600;
+  color: var(--primary);
 }
 
 /* Where we would start */
