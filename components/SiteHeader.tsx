@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { NexubisLogo } from "@/components/NexubisLogo";
-import { BOOKING_URL, PACKAGES_URL } from "@/lib/site-config";
+import { BOOKING_URL, PACKAGES_URL, SCORECARD_URL, SHOW_SCORECARD } from "@/lib/site-config";
 import { WORK_SLUGS } from "@/lib/work/slugs";
 
 const caseStudies = WORK_SLUGS.map((slug) => ({
@@ -140,19 +140,23 @@ export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
             ))}
           </div>
 
-          <Link
-            href={BOOKING_URL}
-            className="btn btn-primary nav-cta rocket-button"
-            onClick={closeMenus}
-          >
-            <span className="nav-cta-icon rocket-button-icon">
-              <RocketIcon />
-            </span>
-            <span className="nav-cta-text rocket-button-text">
-              <span className="nav-cta-label-full">Book an application call</span>
-              <span className="nav-cta-label-short">Book a Call</span>
-            </span>
-          </Link>
+          <div className="nav-cta-group">
+            {SHOW_SCORECARD ? (
+              <Link href={SCORECARD_URL} className="btn btn-secondary nav-cta-audit" onClick={closeMenus}>
+                Get Free Audit
+              </Link>
+            ) : null}
+            <Link
+              href={BOOKING_URL}
+              className="btn btn-primary nav-cta rocket-button"
+              onClick={closeMenus}
+            >
+              <span className="nav-cta-icon rocket-button-icon">
+                <RocketIcon />
+              </span>
+              <span className="nav-cta-text rocket-button-text">Book a Call</span>
+            </Link>
+          </div>
 
           <button
             className="mobile-menu-button"
@@ -214,6 +218,18 @@ export function SiteHeader({ activePage }: { activePage?: "packages" } = {}) {
                 </Link>
               ))}
             </div>
+          </div>
+
+          <span className="mobile-nav-divider" aria-hidden="true" />
+          <div className="mobile-nav-ctas">
+            <Link href={BOOKING_URL} className="btn btn-primary mobile-nav-cta" onClick={closeMenus}>
+              Book a Call
+            </Link>
+            {SHOW_SCORECARD ? (
+              <Link href={SCORECARD_URL} className="btn btn-secondary mobile-nav-cta" onClick={closeMenus}>
+                Get Free Audit
+              </Link>
+            ) : null}
           </div>
         </div>
       </nav>

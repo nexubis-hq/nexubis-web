@@ -41,7 +41,7 @@
 }
 
 :root {
-  --sc-build: 23; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
+  --sc-build: 24; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
   --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
@@ -931,11 +931,22 @@ button.nav-link {
   opacity: 0.7;
 }
 
-.nav-cta {
+.nav-cta-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   margin-left: 2rem;
+}
+.nav-cta {
   padding: var(--button-y) var(--button-x);
   font-family: "Inter", Arial, sans-serif;
   letter-spacing: 0;
+}
+.nav-cta-audit {
+  padding: var(--button-y) var(--button-x);
+  font-family: "Inter", Arial, sans-serif;
+  letter-spacing: 0;
+  white-space: nowrap;
 }
 
 .nav-cta-icon {
@@ -959,11 +970,6 @@ button.nav-link {
   left: -15px;
   white-space: nowrap;
   transition: left 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-/* the CTA uses a compact label on small screens so it never overflows the bar */
-.nav-cta-label-short {
-  display: none;
 }
 
 .rocket-button:focus-visible .rocket-button-icon {
@@ -3203,8 +3209,20 @@ button.nav-link {
     transform: translateY(-8px) rotate(-45deg);
   }
 
-  .nav-cta {
-    margin-left: 2rem;
+  .nav-cta-group {
+    display: none;
+  }
+
+  .mobile-nav-ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .mobile-nav-cta {
+    width: 100%;
+    justify-content: center;
   }
 
   .mobile-nav-panel {
@@ -3441,28 +3459,6 @@ button.nav-link {
 
   .nav-logo {
     width: 145px;
-  }
-
-  .nav-cta {
-    margin-left: auto;
-    margin-right: 0.75rem;
-    padding: 0.5rem 1rem;
-  }
-
-  .nav-cta-icon {
-    display: none;
-  }
-
-  .nav-cta-text {
-    left: 0;
-  }
-
-  .nav-cta-label-full {
-    display: none;
-  }
-
-  .nav-cta-label-short {
-    display: inline;
   }
 
   .section-heading h2,

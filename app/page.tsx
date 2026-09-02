@@ -50,11 +50,11 @@ const logos = [
 
 const HERO_SUB =
   "For European industrial manufacturers whose product is better than their brand shows, so buyers finally see why you're worth more than the cheaper alternative.";
-const HERO_SCORECARD_LINK = "Check your brand's credibility";
+const HERO_SCORECARD_LINK = "Get Free Audit";
 const HERO_SUPPORT =
   "Not ready to book? Run the check and see where you're being undersold, in under 2 minutes.";
 
-const BOOK_CTA_LABEL = "Book an application call";
+const BOOK_CTA_LABEL = "Book a Call";
 
 export const metadata: Metadata = {
   alternates: {
@@ -618,7 +618,7 @@ function ScorecardBlock({ showMicroProof = true }: { showMicroProof?: boolean })
             </ul>
             <div className="scorecard-actions">
               <Link href={SCORECARD_URL} className="btn btn-primary scorecard-cta">
-                <span>Check my brand&apos;s credibility</span>
+                <span>Get Free Audit</span>
                 <ArrowIcon />
               </Link>
               <p className="scorecard-expectation">{scorecardExpectation}</p>
