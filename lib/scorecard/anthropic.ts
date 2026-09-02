@@ -465,7 +465,7 @@ export function firstImpressionSignal(v: FirstImpressionRead | null): string {
 import type { CompanyEvidence } from "./evidence";
 import type { RawCheck } from "./scoring";
 import { RUBRIC } from "./rubric";
-import { RUBRIC_SCORES_OUTPUT, rubricScoresSchema, DECK_COPY_OUTPUT, deckCopySchema, type DeckCopyReply } from "./output-schemas";
+import { RUBRIC_SCORES_OUTPUT, rubricScoresSchema, DECK_CATEGORIES_OUTPUT, deckCategoriesSchema, DECK_NARRATIVE_OUTPUT, deckNarrativeSchema, type DeckCopyReply, type DeckCategoriesReply, type DeckNarrativeReply } from "./output-schemas";
 
 const SITE_TEXT_BUDGET = 8000;
 
@@ -650,46 +650,103 @@ export async function writeDeckCopy(input: DeckCopyInput): Promise<WrapperResult
     ? `\nCONCRETE COMPETITOR ADVANTAGES (measured on their sites by the same pipeline; use these in findings and competitorNotes where relevant, never invent others):\n${input.competitorEdges.map((e) => `- ${e}`).join("\n")}\n`
     : "";
 
-  const user = `Write the report copy blocks for The Online Credibility Audit of "${input.company}" (they make: ${input.productOneLiner}).
-
-${input.companyContext ? `${input.companyContext}\n\n` : ""}THE NUMBERS (already computed, never change them):
+  // Shared context header both calls receive verbatim, so the categories and
+  // the narrative are written against the exact same numbers and evidence and
+  // never drift apart.
+  const context = `${input.companyContext ? `${input.companyContext}\n\n` : ""}THE NUMBERS (already computed, never change them):
 - Overall Credibility Score: ${input.overall}/100. Verdict: ${input.verdictBand} gap.
 - Benchmark stance: ${input.stance}. ${stanceRule}
 - First place to fix: ${input.firstFixLabel}.
 
 PER-CATEGORY SCORES AND EVIDENCE:
 ${input.scoreSummary}
-${edgesBlock}
-WRITE THESE BLOCKS. Across ALL of them: tight and skimmable, every sentence earning its place, no filler or restating the obvious, but never drop a concrete fact (a number, a named product family, a specific gap). Shorter is better as long as the substance survives.
+${edgesBlock}`;
 
-WRITE THESE BLOCKS:
-1. verdictLine: ONE line for the report header, maximum 14 words, plain language, naming the biggest leak specifically. Same spirit as "A real foundation, yet the basics and getting found are leaking customers." Never restate the score.
-2. verdictParagraph: one TIGHT paragraph, maximum 65 words. State the verdict plainly, weave the benchmark stance per the rule above, end on the first place to fix. No filler, no restating the obvious. ${bandTone}
-3. categories: for EVERY category key:
+  // Shared closing rules, applied identically to both calls.
+  const hardRules = `HARD RULES: When you need a name for this assessment, call it the audit, the check or the report. Findings are facts, never sneering, about the prospect or the competitors. No hype words, no jargon, no em dashes, no selling anywhere in these blocks. Never mention Nexubis or any agency. Never invent anything not present in the evidence. Industry terms, certification names, product family names and buyer descriptions may ONLY come from the company context or the evidence above, exactly as written there.
+
+${COPY_DIET}`;
+
+  // Call A: the five per-category blocks (the bulk of the tokens).
+  const categoriesUser = `Write the per-category copy blocks for The Online Credibility Audit of "${input.company}" (they make: ${input.productOneLiner}).
+
+${context}Tight and skimmable: every sentence earns its place, no filler or restating the obvious, but never drop a concrete fact (a number, a named product family, a specific gap). Shorter is better as long as the substance survives.
+
+categories: for EVERY category key:
    - findings: exactly 2 or 3 (each maximum 22 words) stating specifically what is working and what is costing them, referencing the real evidence above (name competitors where the evidence does). If a category's checks were mostly not assessable, one finding must say plainly what could not be assessed and why that matters.
    - competitorNote: one note (maximum 18 words) on where the named competitors stand on this category.
    - working: one entry per check that scored 3 or 4 in this category ([3] or [4] in the evidence above). Each entry: "title" = a short plain label for the strength (maximum 6 words, never the raw check name), "body" = ONE sentence (maximum 20 words) grounded in that check's evidence.
    - fix: one entry per check that scored 0, 1 or 2. Each entry: "title" = a short plain label for the gap (maximum 6 words), "body" = ONE sentence (maximum 20 words) that names the problem AND hints at the fix ("Add X so buyers can Y"), grounded in that check's evidence. Skip not-assessable checks in both lists. Empty arrays are correct when nothing qualifies.
-4. topIssues: EXACTLY 3 entries, the three problems across all categories most likely to be costing them customers, worst first. Each: "title" (maximum 8 words, plain, e.g. "No proof of expertise online"), "body" = ONE sentence (maximum 22 words) on what it costs and why, "impact" = one short estimate line, maximum 12 words, starting with "Likely", stated as a RANGE or an order of magnitude a reasonable person could defend from the findings (e.g. "Likely 20-40% of undecided buyers lost", "Likely a meaningful share of enquiries never sent"). No justification clause after it; never invent precision; never exceed what the evidence supports.
-5. startList: 3 to 5 lines, the prioritised fixes in the order we would do them, each written as an OUTCOME, maximum 16 words, no trailing clauses (e.g. "Clear homepage message so buyers know why to choose you"). Start from the first place to fix.
-6. stayingSame: ONE sentence (maximum 28 words) naming what stays broken if they change nothing, concrete to their findings${input.bestRival ? ` and to ${input.bestRival.company} as the comparison buyers keep running` : ""}.
-7. firstFix: keep BOTH parts tight and skimmable, no preamble, no restating the heading. "why" (maximum 40 words): in one or two sentences, why this category comes first, tied to where buyers look and, where the context supports it, to THEIR buyer. "inPractice" (maximum 45 words): the concrete first moves, specific to their evidence; name their actual product families, industries or certifications where the context states them. Describe the work, do not sell, do not mention any company that would do it.
 
-HARD RULES: When you need a name for this assessment, call it the audit, the check or the report. The reader should feel helped, then concerned, then clear on what to do, in that order. Findings are facts, never sneering, about the prospect or the competitors. No hype words, no jargon, no em dashes, no selling anywhere in these blocks. Never mention Nexubis or any agency. Never invent anything not present in the evidence. Industry terms, certification names, product family names and buyer descriptions may ONLY come from the company context or the evidence above, exactly as written there.
+${hardRules}
 
-${COPY_DIET}
+Return ONLY: { "categories": [ { "key": "...", "findings": ["..."], "competitorNote": "...", "working": [ { "title": "...", "body": "..." } ], "fix": [ { "title": "...", "body": "..." } ] } ] }`;
 
-Return ONLY: { "verdictLine": "...", "verdictParagraph": "...", "categories": [ { "key": "...", "findings": ["..."], "competitorNote": "...", "working": [ { "title": "...", "body": "..." } ], "fix": [ { "title": "...", "body": "..." } ] } ], "firstFix": { "why": "...", "inPractice": "..." }, "topIssues": [ { "title": "...", "body": "...", "impact": "..." } ], "startList": ["..."], "stayingSame": "..." }`;
+  // Call B: the narrative pieces that frame the report (helped, then concerned,
+  // then clear on what to do).
+  const narrativeUser = `Write the framing copy blocks for The Online Credibility Audit of "${input.company}" (they make: ${input.productOneLiner}). The reader should feel helped, then concerned, then clear on what to do, in that order.
 
-  return runJson<DeckCopyReply>({
-    label: "deck-copy",
+${context}Across ALL of these: tight and skimmable, every sentence earning its place, no filler, but never drop a concrete fact. Shorter is better as long as the substance survives.
+
+WRITE THESE BLOCKS:
+1. verdictLine: ONE line for the report header, maximum 14 words, plain language, naming the biggest leak specifically. Same spirit as "A real foundation, yet the basics and getting found are leaking customers." Never restate the score.
+2. verdictParagraph: one TIGHT paragraph, maximum 65 words. State the verdict plainly, weave the benchmark stance per the rule above, end on the first place to fix. No filler, no restating the obvious. ${bandTone}
+3. topIssues: EXACTLY 3 entries, the three problems across all categories most likely to be costing them customers, worst first. Each: "title" (maximum 8 words, plain, e.g. "No proof of expertise online"), "body" = ONE sentence (maximum 22 words) on what it costs and why, "impact" = one short estimate line, maximum 12 words, starting with "Likely", stated as a RANGE or an order of magnitude a reasonable person could defend from the findings (e.g. "Likely 20-40% of undecided buyers lost", "Likely a meaningful share of enquiries never sent"). No justification clause after it; never invent precision; never exceed what the evidence supports.
+4. startList: 3 to 5 lines, the prioritised fixes in the order we would do them, each written as an OUTCOME, maximum 16 words, no trailing clauses (e.g. "Clear homepage message so buyers know why to choose you"). Start from the first place to fix.
+5. stayingSame: ONE sentence (maximum 28 words) naming what stays broken if they change nothing, concrete to their findings${input.bestRival ? ` and to ${input.bestRival.company} as the comparison buyers keep running` : ""}.
+6. firstFix: keep BOTH parts tight and skimmable, no preamble, no restating the heading. "why" (maximum 40 words): in one or two sentences, why the first place to fix (${input.firstFixLabel}) comes first, tied to where buyers look and, where the context supports it, to THEIR buyer. "inPractice" (maximum 45 words): the concrete first moves, specific to their evidence; name their actual product families, industries or certifications where the context states them. Describe the work, do not sell, do not mention any company that would do it.
+
+${hardRules}
+
+Return ONLY: { "verdictLine": "...", "verdictParagraph": "...", "firstFix": { "why": "...", "inPractice": "..." }, "topIssues": [ { "title": "...", "body": "...", "impact": "..." } ], "startList": ["..."], "stayingSame": "..." }`;
+
+  // Both calls run concurrently. Each writes roughly half the tokens of the old
+  // single pass, so the stage now costs about one call's latency, not two.
+  // Kick both off before awaiting either, so they run concurrently.
+  const catsPromise = runJson<DeckCategoriesReply>({
+    label: "deck-categories",
     model: MODEL_SONNET,
-    user,
-    maxTokens: 4000,
-    // The copy pass now writes every layout block (working/fix lists, top
-    // issues, start list) in one call: give it room the short calls never need.
-    timeoutMs: 110_000,
-    outputFormat: DECK_COPY_OUTPUT,
-    schema: deckCopySchema,
+    user: categoriesUser,
+    maxTokens: 3000,
+    timeoutMs: 90_000,
+    outputFormat: DECK_CATEGORIES_OUTPUT,
+    schema: deckCategoriesSchema,
   });
+  const narrPromise = runJson<DeckNarrativeReply>({
+    label: "deck-narrative",
+    model: MODEL_SONNET,
+    user: narrativeUser,
+    maxTokens: 2000,
+    timeoutMs: 90_000,
+    outputFormat: DECK_NARRATIVE_OUTPUT,
+    schema: deckNarrativeSchema,
+  });
+  const catsRes = await catsPromise;
+  const narrRes = await narrPromise;
+
+  // If either half fails, the whole pass fails and the caller uses its
+  // templated fallback, exactly as the single call did. No partial copy ships.
+  if (!catsRes.ok) return catsRes;
+  if (!narrRes.ok) return narrRes;
+
+  const n = narrRes.data;
+  const data: DeckCopyReply = {
+    verdictLine: n.verdictLine,
+    verdictParagraph: n.verdictParagraph,
+    categories: catsRes.data.categories,
+    firstFix: n.firstFix,
+    topIssues: n.topIssues,
+    startList: n.startList,
+    stayingSame: n.stayingSame,
+  };
+  const usage: Usage = {
+    model: MODEL_SONNET,
+    inputTokens: catsRes.usage.inputTokens + narrRes.usage.inputTokens,
+    outputTokens: catsRes.usage.outputTokens + narrRes.usage.outputTokens,
+    webSearchRequests: 0,
+    estimatedCostUsd: Number((catsRes.usage.estimatedCostUsd + narrRes.usage.estimatedCostUsd).toFixed(4)),
+    // Wall-clock: the two calls overlap, so the stage cost is the slower of them.
+    latencyMs: Math.max(catsRes.usage.latencyMs, narrRes.usage.latencyMs),
+  };
+  return { ok: true, data, usage };
 }

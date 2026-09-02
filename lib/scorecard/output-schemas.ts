@@ -181,6 +181,67 @@ export const deckCopySchema = z
 
 export type DeckCopyReply = z.infer<typeof deckCopySchema>;
 
+// The copy pass is written as TWO parallel model calls whose replies merge into
+// one DeckCopyReply. Output-token count drives latency, so halving the tokens
+// per call roughly halves the copy stage (the single longest step). One call
+// writes the five per-category blocks (the bulk), the other the narrative
+// pieces (verdict, top issues, start list, staying-same, first fix). Both get
+// the same numbers and evidence, so they stay consistent. If either fails the
+// whole pass falls back to templated copy, exactly as the single call did.
+export const DECK_CATEGORIES_OUTPUT: Record<string, unknown> = {
+  type: "object",
+  additionalProperties: false,
+  required: ["categories"],
+  properties: {
+    categories: (DECK_COPY_OUTPUT.properties as Record<string, unknown>).categories,
+  },
+};
+
+export const deckCategoriesSchema = z
+  .object({
+    categories: z.array(
+      z
+        .object({
+          key: z.enum(CATEGORY_KEYS as [string, ...string[]]),
+          findings: z.array(z.string()),
+          competitorNote: z.string(),
+          working: z.array(claimItemSchema),
+          fix: z.array(claimItemSchema),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
+
+export type DeckCategoriesReply = z.infer<typeof deckCategoriesSchema>;
+
+export const DECK_NARRATIVE_OUTPUT: Record<string, unknown> = {
+  type: "object",
+  additionalProperties: false,
+  required: ["verdictLine", "verdictParagraph", "firstFix", "topIssues", "startList", "stayingSame"],
+  properties: {
+    verdictLine: { type: "string" },
+    verdictParagraph: { type: "string" },
+    firstFix: (DECK_COPY_OUTPUT.properties as Record<string, unknown>).firstFix,
+    topIssues: (DECK_COPY_OUTPUT.properties as Record<string, unknown>).topIssues,
+    startList: { type: "array", items: { type: "string" } },
+    stayingSame: { type: "string" },
+  },
+};
+
+export const deckNarrativeSchema = z
+  .object({
+    verdictLine: z.string(),
+    verdictParagraph: z.string(),
+    firstFix: z.object({ why: z.string(), inPractice: z.string() }).passthrough(),
+    topIssues: z.array(z.object({ title: z.string(), body: z.string(), impact: z.string() }).passthrough()),
+    startList: z.array(z.string()),
+    stayingSame: z.string(),
+  })
+  .passthrough();
+
+export type DeckNarrativeReply = z.infer<typeof deckNarrativeSchema>;
+
 // ── Auto-detect: product one-liner + likely competitors from the site ────────
 // Powers the website-only entry: the prospect enters a URL, the pipeline reads
 // their site and infers what they make and who they cross-shop against, so the
