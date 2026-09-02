@@ -41,7 +41,7 @@
 }
 
 :root {
-  --sc-build: 22; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
+  --sc-build: 23; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
   --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
@@ -8350,6 +8350,9 @@ button.nav-link {
 .sc-ring {
   width: 100%;
   max-width: 220px;
+  /* Tailwind preflight sets svg { display:block }, so text-align cannot
+     centre it; margin-inline auto lines the ring up with the band strip. */
+  margin-inline: auto;
 }
 
 .sc-ring-track {
@@ -11623,10 +11626,12 @@ summary {
    top and the sticky book-a-call bar at the bottom. */
 
 /* Hero: framing line + gauge/verdict grid */
-.sc-hero-frame {
-  color: color-mix(in srgb, var(--white) 92%, transparent);
-  font-size: var(--p-lg);
-  max-width: 46ch;
+.sc-hero-disclaimer {
+  font-style: italic;
+  color: color-mix(in srgb, var(--white) 80%, transparent);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 60ch;
   margin-bottom: var(--s-4);
 }
 .sc-hero-grid {
@@ -11689,26 +11694,16 @@ summary {
   font-variant-numeric: tabular-nums;
 }
 @media (max-width: 640px) {
-  .sc-hero-frame { text-align: center; max-width: none; }
+  .sc-hero-disclaimer { text-align: center; max-width: none; }
   .sc-hero-line { max-width: none; text-align: center; }
   .sc-hero-issues { text-align: center; }
   .sc-pillar-chips { justify-content: center; }
 }
 
-/* Disclaimer line */
+/* Hero container width cap, matched to the body grid below it. */
 .sc-report-v2 .sc-hero .site-container {
   max-width: calc(1240px + 2 * var(--grid-gap));
 }
-.sc-disclaimer {
-  font-style: italic;
-  color: var(--mid);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  text-align: center;
-  max-width: 62ch;
-  padding-block: var(--s-3) 0;
-}
-.sc-report-v2 .sc-disclaimer + * { margin-top: 0; }
 
 /* Mobile sticky jump-to bar (the sidebar's phone form) */
 .sc-jumpto {
@@ -12418,4 +12413,36 @@ summary {
   border-radius: 0.8rem;
   display: block;
   background: var(--black);
+}
+/* Placeholder shown in the card's video slot until the clip is set. */
+.sc-card-video-coming {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: var(--black);
+}
+.sc-card-video-coming img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  opacity: 0.55;
+  display: block;
+}
+.sc-card-video-coming .sc-laine-video-chip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--black) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--white) 25%, transparent);
+  color: var(--white);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }

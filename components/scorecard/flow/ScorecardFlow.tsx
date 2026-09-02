@@ -13,7 +13,6 @@ import { trackMeta } from "@/lib/meta/track";
 import { META_EVENTS, LEAD_CONTENT_NAME, leadValue } from "@/lib/meta/events";
 import { firstNameFromEmail } from "@/lib/scorecard/lead-name";
 import { ScanAnimation } from "./ScanAnimation";
-import { ScorecardPreviewRadar } from "./ScorecardPreviewRadar";
 import { LAINE_VIDEO_SRC, LAINE_VIDEO_POSTER } from "./laine-video-config";
 import type { ScanStage } from "@/lib/scorecard/orchestrator";
 
@@ -274,13 +273,19 @@ export function ScorecardFlow() {
             </div>
           ) : (
             <>
-              <div className={LAINE_VIDEO_SRC ? "sc-card-visual sc-card-visual-video" : "sc-card-visual"}>
+              <div className="sc-card-visual sc-card-visual-video">
                 {LAINE_VIDEO_SRC ? (
-                  // Laine's intro replaces the radar the moment the clip
-                  // exists (laine-video-config.ts). 16:9 talking head.
+                  // Laine's 16:9 intro. Set LAINE_VIDEO_SRC in
+                  // laine-video-config.ts when the clip is shot.
                   <video controls preload="metadata" playsInline poster={LAINE_VIDEO_POSTER} src={LAINE_VIDEO_SRC} />
                 ) : (
-                  <ScorecardPreviewRadar />
+                  // Until the clip lands, the slot holds the poster + a quiet
+                  // coming-soon chip, so the layout is already the final one.
+                  <div className="sc-card-video-coming">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={LAINE_VIDEO_POSTER} alt="Laine du Toit, Chief Operations Officer at Nexubis" loading="lazy" />
+                    <span className="sc-laine-video-chip">Video coming soon</span>
+                  </div>
                 )}
               </div>
               <form className="sc-landing-form" onSubmit={submit}>

@@ -9,7 +9,6 @@
 // (lib/scorecard/report-derive.ts), so pre-rebuild reports render identically.
 import Link from "next/link";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
-import { PlanCallVignette, PlanPreviewVignette, PlanSlackVignette } from "@/components/vignettes/PlanVignettes";
 import { ScoreRing } from "./ScoreRing";
 import { BenchmarkRadar } from "./BenchmarkRadar";
 import { ReportNav } from "./ReportNav";
@@ -28,7 +27,6 @@ import {
   resolvedStayingSame,
   resolvedVerdictLine,
   pillarSummary,
-  industryDescriptor,
   PILLAR_CHIP_LABELS,
 } from "@/lib/scorecard/report-derive";
 import { OXIPACK_CASE_URL } from "@/lib/site-config";
@@ -42,10 +40,6 @@ function loomEmbedUrl(loomUrl: string): string | null {
   const m = loomUrl.match(/loom\.com\/(?:share|embed)\/([a-zA-Z0-9]+)/);
   return m ? `https://www.loom.com/embed/${m[1]}` : null;
 }
-
-// The three "recommended next step" cards reuse the homepage plan vignettes,
-// which line up one-to-one: book a call, see it first, the team joins.
-const NEXT_STEP_VIGNETTES = [PlanCallVignette, PlanPreviewVignette, PlanSlackVignette];
 
 // The Oxipack case-study showreel, the same clip the homepage proof block uses.
 const OXIPACK_SHOWREEL = getCaseStudyBySlug("oxipack")?.heroVideo;
@@ -155,8 +149,8 @@ export function ReportView({
           <p className="sc-hero-kicker" data-reveal>
             {POWERED_BY}
           </p>
-          <p className="sc-hero-frame" data-reveal>
-            {REPORT2.heroLine(industryDescriptor(result), company)}
+          <p className="sc-hero-disclaimer" data-reveal>
+            {REPORT2.disclaimer}
           </p>
           <div className="sc-hero-card" data-reveal>
             <div className="sc-hero-grid">
@@ -188,11 +182,6 @@ export function ReportView({
           </div>
         </div>
       </header>
-
-      {/* 4. The disclaimer line. */}
-      <p className="sc-disclaimer site-container" data-reveal>
-        {REPORT2.disclaimer}
-      </p>
 
       {/* Mobile: sticky jump-to bar (the sidebar's phone form). */}
       <JumpToNav items={navItems} />
@@ -388,51 +377,9 @@ export function ReportView({
         </div>
       </div>
 
-      {/* 12. Recommended next step 01/02/03, then the closer. */}
-      <section className="sc-next-step section">
-        <div className="site-container">
-          <h2 data-reveal>{REPORT.nextStepTitle}</h2>
-          <ol className="plan-grid sc-next-plan">
-            {REPORT.nextStepSteps.map((s, i) => {
-              const Vignette = NEXT_STEP_VIGNETTES[i];
-              return (
-                <li className="plan-card" key={s.title} data-reveal data-reveal-delay={(i + 1) * 0.1}>
-                  <div className="plan-card-head">
-                    <span className="plan-card-index" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3>{s.title}</h3>
-                  </div>
-                  <p>{s.body}</p>
-                  {Vignette ? (
-                    <div className="plan-vignette">
-                      <Vignette />
-                    </div>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ol>
-          <BookCallButton
-            className="btn btn-primary sc-next-step-cta"
-            personName={result.meta.contactName}
-            business={company}
-            reveal
-          >
-            {REPORT.nextStepButton}
-          </BookCallButton>
-        </div>
-      </section>
 
       <footer className="sc-soft-close section">
         <div className="site-container">
-          <p className="sc-soft-close-line" data-reveal>
-            {REPORT.softClose.split(/(?<=\.)\s+/).map((sentence, i) => (
-              <span className="sc-soft-close-sentence" key={i}>
-                {sentence}
-              </span>
-            ))}
-          </p>
           <p className="sc-contact" data-reveal>
             <a href={`mailto:${REPORT.contactEmail}`}>{REPORT.contactEmail}</a>
             <span aria-hidden="true"> / </span>

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { ScorecardFlow } from "@/components/scorecard/flow/ScorecardFlow";
-import { LaineIntroVideo } from "@/components/scorecard/flow/LaineIntroVideo";
 import { LANDING, LANDING_BELOW, SCORECARD_NAME } from "@/lib/scorecard/copy";
 import { OXIPACK_CASE_URL } from "@/lib/site-config";
 
@@ -26,8 +25,8 @@ export default function ScorecardPage() {
       <SiteHeader />
       <ScorecardFlow />
 
-      {/* Below the fold: what you get, one proof line, Laine's intro slot.
-          Short on purpose; the page has one job. */}
+      {/* Below the fold: what you get + one proof line. Laine's intro now
+          lives in the form card above (video slot), so no separate section. */}
       <section className="sc-wyg section" aria-label={LANDING_BELOW.whatYouGet.title}>
         <div className="site-container">
           <h2 data-reveal>{LANDING_BELOW.whatYouGet.title}</h2>
@@ -48,8 +47,6 @@ export default function ScorecardPage() {
           </p>
         </div>
       </section>
-
-      <LaineIntroVideo title={LANDING_BELOW.video.title} comingNote={LANDING_BELOW.video.comingNote} />
     </main>
   );
 }
