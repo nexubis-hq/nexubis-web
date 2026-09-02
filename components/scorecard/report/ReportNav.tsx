@@ -9,7 +9,7 @@ import { RocketIcon } from "@/components/SiteHeader";
 import { BookCallButton } from "./BookCallButton";
 import { REPORT_NAV } from "@/lib/scorecard/copy";
 
-export function ReportNav({ company }: { company: string }) {
+export function ReportNav({ company, website }: { company: string; website?: string }) {
   return (
     <nav className="sc-report-nav" aria-label="Report">
       <div className="site-container sc-report-nav-inner">
@@ -17,7 +17,7 @@ export function ReportNav({ company }: { company: string }) {
           <NexubisLogo className="sc-report-nav-logo" />
         </Link>
         <div className="sc-report-nav-actions">
-          <BookCallButton className="btn btn-primary sc-report-nav-book" business={company}>
+          <BookCallButton className="btn btn-primary sc-report-nav-book" business={company} website={website}>
             <span className="sc-report-nav-book-icon">
               <RocketIcon />
             </span>

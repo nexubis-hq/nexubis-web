@@ -19,10 +19,12 @@ export function ReportSidebar({
   items,
   company,
   contactName,
+  website,
 }: {
   items: ReportNavItem[];
   company: string;
   contactName?: string;
+  website?: string;
 }) {
   const [active, setActive] = useState<string>(items[0]?.id ?? "");
 
@@ -87,7 +89,7 @@ export function ReportSidebar({
           <li>Your homepage reworked before the call</li>
           <li>Yours to keep, fit or no fit</li>
         </ul>
-        <BookCallButton className="btn btn-primary sc-side-cta-btn" personName={contactName} business={company}>
+        <BookCallButton className="btn btn-primary sc-side-cta-btn" personName={contactName} business={company} website={website}>
           Unlock your free session
         </BookCallButton>
       </div>

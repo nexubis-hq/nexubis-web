@@ -119,6 +119,7 @@ export function ReportView({
   const top3 = resolvedTopIssues(result);
   const starts = resolvedStartList(result);
   const company = result.meta.company;
+  const website = result.meta.websiteUrl;
 
   // Competitor chips + radar show ONLY companies that produced a real score.
   // A named competitor we could not resolve or gather enough on is dropped
@@ -145,7 +146,7 @@ export function ReportView({
   return (
     <Shell className="sc-report sc-report-v2">
       <RevealOnScroll />
-      {chrome ? <ReportNav company={company} /> : null}
+      {chrome ? <ReportNav company={company} website={website} /> : null}
 
       {/* 1 + 2 + 3. Hero: the framing line, the untouched gap gauge with the
           band strip, the one-line verdict, the issues count, the pillar chips. */}
@@ -365,7 +366,7 @@ export function ReportView({
                 ))}
               </ul>
               <p className="sc-book-guarantee">{BOOK_CALL.riskReversal}</p>
-              <BookCallButton className="btn btn-primary sc-book-btn" personName={result.meta.contactName} business={company}>
+              <BookCallButton className="btn btn-primary sc-book-btn" personName={result.meta.contactName} business={company} website={website}>
                 {BOOK_CALL.button}
               </BookCallButton>
               <p className="sc-book-scarcity">{BOOK_CALL.scarcity}</p>
@@ -373,13 +374,13 @@ export function ReportView({
           </div>
 
           {/* 11. Sticky sidebar: On this page + the Laine card (desktop). */}
-          <ReportSidebar items={navItems} company={company} contactName={result.meta.contactName} />
+          <ReportSidebar items={navItems} company={company} contactName={result.meta.contactName} website={website} />
         </div>
       </div>
 
 
       {/* Mobile sticky CTA bar. */}
-      <MobileCtaBar company={company} contactName={result.meta.contactName} />
+      <MobileCtaBar company={company} contactName={result.meta.contactName} website={website} />
     </Shell>
   );
 }

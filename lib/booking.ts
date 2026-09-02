@@ -27,8 +27,10 @@ export const CAL_BOOKING_URL = (process.env.NEXT_PUBLIC_CAL_BOOKING_URL || `http
 // ignored by cal.com, so these must stay in lockstep with the event config.
 //   - Business Name: Laine mapped it onto cal.com's built-in meeting-title field, so
 //     the identifier is "title" (the prospect's company becomes the meeting title).
+//   - Website Link: a custom url field with identifier "Website-Link".
 //   - Report Link: a custom field with identifier "Report-Link".
 export const CAL_FIELD_BUSINESS = "title";
+export const CAL_FIELD_WEBSITE = "Website-Link";
 export const CAL_FIELD_REPORT_LINK = "Report-Link";
 
 export interface BookingPrefill {
@@ -36,6 +38,8 @@ export interface BookingPrefill {
   name?: string;
   // The business/company, into the custom Business-Name field.
   business?: string;
+  // The audited website URL, into the custom Website-Link field.
+  website?: string;
   // The unique report URL, into the custom link field. This is what powers
   // booking correlation back to the specific Scorecard (§1, §4).
   reportUrl?: string;
@@ -54,6 +58,7 @@ export function buildBookingUrl(prefill: BookingPrefill = {}): string {
   };
   set("name", prefill.name);
   set(CAL_FIELD_BUSINESS, prefill.business);
+  set(CAL_FIELD_WEBSITE, prefill.website);
   set(CAL_FIELD_REPORT_LINK, prefill.reportUrl);
   set("notes", prefill.notes);
   return url.toString();

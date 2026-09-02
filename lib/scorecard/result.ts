@@ -9,6 +9,9 @@ import type { PageSpeedScores } from "./types";
 
 export interface ResultMeta {
   company: string;
+  /** The audited website URL (https-normalised). Prefills the booking link's
+   *  Website field. Optional so reports stored before this field still load. */
+  websiteUrl?: string;
   /** Contact fields stay empty until the unlock gate. */
   contactName: string;
   role: string;

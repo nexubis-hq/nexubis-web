@@ -267,6 +267,7 @@ export async function generateScorecardUncached(
   const result: ScorecardResult = {
     meta: {
       company: prospect.company,
+      websiteUrl: input.url,
       contactName: input.name,
       role: input.role,
       date: new Date().toISOString().slice(0, 10),

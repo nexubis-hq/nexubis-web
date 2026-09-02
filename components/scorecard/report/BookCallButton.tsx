@@ -14,23 +14,25 @@ export function BookCallButton({
   className,
   personName,
   business,
+  website,
   reveal,
   children,
 }: {
   className?: string;
   personName?: string;
   business?: string;
+  website?: string;
   reveal?: boolean;
   children: React.ReactNode;
 }) {
-  // SSR-safe href carries name + business immediately; on mount it is upgraded
-  // with the live report URL (window.location); a DOM write via ref, not state,
-  // so there is no hydration mismatch (same pattern as the share link).
-  const baseHref = buildBookingUrl({ name: personName, business });
+  // SSR-safe href carries name + business + website immediately; on mount it is
+  // upgraded with the live report URL (window.location); a DOM write via ref,
+  // not state, so there is no hydration mismatch (same pattern as the share link).
+  const baseHref = buildBookingUrl({ name: personName, business, website });
   const ref = useRef<HTMLAnchorElement>(null);
   useEffect(() => {
-    ref.current?.setAttribute("href", buildBookingUrl({ name: personName, business, reportUrl: window.location.href }));
-  }, [personName, business]);
+    ref.current?.setAttribute("href", buildBookingUrl({ name: personName, business, website, reportUrl: window.location.href }));
+  }, [personName, business, website]);
 
   return (
     <a
