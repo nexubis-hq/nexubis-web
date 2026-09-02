@@ -1,11 +1,13 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { createFunnelrClient, type FunnelrTag, type FunnelrUser } from "@/lib/funnelr/client";
+import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "@/lib/funnelr/nexubis-tags";
 import { getKv } from "@/lib/scorecard/kv";
 import { sendCapiEvent } from "@/lib/meta/capi";
 import { META_EVENTS, LEAD_CONTENT_NAME, scheduleValue } from "@/lib/meta/events";
 import { isInternalEmail } from "@/lib/internal-emails";
 
-const CALL_BOOKED_TAG_NAME = "Pipeline: Nexubis | Call Booked";
+const CALL_BOOKED_TAG_NAME = NEXUBIS_TAGS.pipelineCallBooked;
+const CALL_BOOKED_TAG_ID = NEXUBIS_TAG_IDS.pipelineCallBooked;
 
 export type CalTriggerEvent = "BOOKING_CREATED" | "BOOKING_RESCHEDULED" | "BOOKING_CANCELLED";
 
@@ -27,6 +29,7 @@ export interface CalWebhookResult {
 export interface CalFunnelrClient {
   findContactByEmail(email: string): Promise<FunnelrUser | null>;
   createContact(input: { email: string; firstName?: string; lastName?: string }): Promise<FunnelrUser>;
+  findTagById(tagId: string): Promise<FunnelrTag | null>;
   findTagByName(name: string): Promise<FunnelrTag | null>;
   contactHasTag(userId: number, tagId: string): Promise<boolean>;
   addTagToContact(userId: number, tagId: string): Promise<void>;
@@ -140,8 +143,8 @@ async function findOrCreateContactWithState(
   return { contact: await client.createContact({ email, ...attendeeName(event) }), created: true };
 }
 
-async function resolveTag(client: CalFunnelrClient, name: string): Promise<FunnelrTag> {
-  const tag = await client.findTagByName(name);
+async function resolveTag(client: CalFunnelrClient, tagId: string, name: string): Promise<FunnelrTag> {
+  const tag = (await client.findTagById(tagId)) ?? (await client.findTagByName(name));
   if (!tag) throw new Error(`Required Funnelr tag was not found: ${name}`);
   return tag;
 }
@@ -231,7 +234,7 @@ export async function handleCalWebhook(
   try {
     if (event.triggerEvent === "BOOKING_CREATED" || event.triggerEvent === "BOOKING_RESCHEDULED") {
       const { contact, created } = await findOrCreateContactWithState(client, event, email);
-      const callBookedTag = await resolveTag(client, CALL_BOOKED_TAG_NAME);
+      const callBookedTag = await resolveTag(client, CALL_BOOKED_TAG_ID, CALL_BOOKED_TAG_NAME);
       logger.info("[cal-webhook]", {
         reason: "funnelr_update_attempt",
         triggerEvent: event.triggerEvent,
@@ -294,7 +297,7 @@ export async function handleCalWebhook(
     }
 
     const userId = requireUserId(contact);
-    const callBookedTag = await resolveTag(client, CALL_BOOKED_TAG_NAME);
+    const callBookedTag = await resolveTag(client, CALL_BOOKED_TAG_ID, CALL_BOOKED_TAG_NAME);
     await removeTagIfPresent(client, userId, callBookedTag.tagId);
 
     if (options.dedupe !== false && dedupeKey) await markCalWebhookProcessed(dedupeKey);

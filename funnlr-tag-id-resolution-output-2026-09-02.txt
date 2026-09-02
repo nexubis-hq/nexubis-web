@@ -1,0 +1,23 @@
+Implemented on `funnlr-tag-id-resolution`.
+
+Changed:
+- Added `FunnelrClient.findTagById()`.
+- Updated specified tag application/removal paths to resolve by GUID first, then name fallback:
+  - `lib/scorecard/lead-funnelr.ts`
+  - `lib/funnelr/nurture-scheduler.ts`
+  - `lib/funnelr/reply-tagger.ts`
+  - `lib/cal-webhook/handler.ts`
+- Updated new Audit display names in:
+  - `lib/funnelr/nexubis-tags.ts`
+  - `lib/scorecard/lead-funnelr.ts`
+  - `scripts/funnelr-verify-nexubis-readonly.ts`
+  - `docs/AI_READ_FIRST_FUNNELR_AUTOMATION_MASTER_CONTRACT.md`
+  - `docs/FUNNELR_API.md`
+- Updated tests and added the regression test that tag resolution still works when Funnelr-side names change but GUIDs do not.
+
+Verification:
+- `npx vitest run lib/scorecard/lead-funnelr.test.ts lib/scorecard/scorecard-lead-route.test.ts lib/funnelr/nurture-scheduler.test.ts lib/funnelr/reply-tagger.test.ts lib/cal-webhook/handler.test.ts` passed: 67 tests.
+- `npm run build` passed.
+- `npm run typecheck` passed after `next build` regenerated stale `.next` route types.
+- `git diff --check` passed.
+- Full `npm test` has one unrelated existing failure in `lib/monitoring/dependency-health.test.ts`: expected Serper low-balance message to include `"1,200"`.

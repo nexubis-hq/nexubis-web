@@ -1,7 +1,7 @@
 import { test } from "vitest";
 import assert from "node:assert/strict";
 import { applyRepliedTag, extractEmail } from "./reply-tagger";
-import { NEXUBIS_TAGS } from "./nexubis-tags";
+import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "./nexubis-tags";
 
 const REPLIED = NEXUBIS_TAGS.pipelineReplied;
 
@@ -23,6 +23,9 @@ function mockClient(contacts: Record<string, Contact | null>) {
     },
     async findTagByName(name: string) {
       return { tagId: "id-" + name };
+    },
+    async findTagById(tagId: string) {
+      return { tagId };
     },
     async addTagToContact(userId: number, tagId: string) {
       applied.push({ userId, tagId });
@@ -60,7 +63,7 @@ test("a matching contact gets the Replied tag", async () => {
   const res = await applyRepliedTag("jane@acme.co.za", { client });
   assert.equal(res.applied, true);
   assert.equal(res.reason, "applied");
-  assert.deepEqual(applied, [{ userId: 7, tagId: "id-" + REPLIED }]);
+  assert.deepEqual(applied, [{ userId: 7, tagId: NEXUBIS_TAG_IDS.pipelineReplied }]);
 });
 
 test("already-replied contacts are not re-tagged (idempotent)", async () => {

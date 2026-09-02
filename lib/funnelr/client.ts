@@ -323,6 +323,13 @@ export class FunnelrClient {
     return tags.find((tag) => tag.name === normalized) ?? null;
   }
 
+  async findTagById(tagId: string): Promise<FunnelrTag | null> {
+    const normalized = tagId.trim().toLowerCase();
+    if (!normalized) throw new Error("tag ID is required.");
+    const tags = await this.listTags();
+    return tags.find((tag) => tag.tagId.toLowerCase() === normalized) ?? null;
+  }
+
   async getContactTags(userId: number): Promise<FunnelrTag[]> {
     return this.get<FunnelrTag[]>(`/api/v1/user/users/${userId}/tags`);
   }

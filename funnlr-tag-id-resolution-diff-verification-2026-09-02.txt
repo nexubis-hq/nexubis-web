@@ -1,0 +1,114 @@
+1. No GUID Value Changed Anywhere
+
+Confirmed in the working-tree diff vs `main`.
+
+UUID-only diff comparison:
+
+REMOVED_GUIDS
+6B9DA797-9A52-4F4F-9854-66FFA1935C07
+6CDFB703-9B38-43A3-A2E4-311107F15424
+AA47260F-59B0-4D4A-999F-4D571382658D
+CD99688F-34FF-4942-9CDC-FF9A7E4A6735
+
+ADDED_GUIDS
+6B9DA797-9A52-4F4F-9854-66FFA1935C07
+6CDFB703-9B38-43A3-A2E4-311107F15424
+AA47260F-59B0-4D4A-999F-4D571382658D
+CD99688F-34FF-4942-9CDC-FF9A7E4A6735
+
+REMOVED_NOT_ADDED
+
+ADDED_NOT_REMOVED
+
+Current constants evidence: lib/funnelr/nexubis-tags.ts:26
+
+export const NEXUBIS_TAG_IDS = {
+  brand: "4B527D4D-3540-401D-A0B1-A1BBDF0FADFF",
+  sourceScorecard: "AA47260F-59B0-4D4A-999F-4D571382658D",
+  triggerStartScorecardSales: "6B9DA797-9A52-4F4F-9854-66FFA1935C07",
+  triggerStartNurture: "E654E2FA-B55E-4904-9336-9D45AA6837AB",
+  pipelineCallBooked: "93347D55-1901-4A2D-90A2-0FCBB6B8A492",
+  pipelineReplied: "3B0905B4-D0C6-4A2D-861D-64D9579D7DE6",
+  historyScorecardSalesStarted: "CD99688F-34FF-4942-9CDC-FF9A7E4A6735",
+
+2. Custom Field Key Unchanged
+
+Confirmed. Diff evidence shows the same key on both removed and added doc lines:
+
+-| `Nexubis | Scorecard Report URL` | `6CDFB703-9B38-43A3-A2E4-311107F15424` | `NexubisScorecardReportURL` | Text | Website writes the permanent Scorecard report URL. |
++| `Nexubis | Audit Report URL` | `6CDFB703-9B38-43A3-A2E4-311107F15424` | `NexubisScorecardReportURL` | Text | Website writes the permanent Scorecard report URL. |
+
+Current code evidence: lib/scorecard/lead-funnelr.ts:5
+
+export const SCORECARD_REPORT_URL_FIELD_KEY = "NexubisScorecardReportURL";
+
+3. No Route, File Name, Function Name Or Env Var Containing `scorecard` Was Renamed
+
+Confirmed from `git diff main --name-status`: every changed file is `M`, no `R` rename entries.
+
+M	docs/AI_READ_FIRST_FUNNELR_AUTOMATION_MASTER_CONTRACT.md
+M	docs/FUNNELR_API.md
+M	lib/cal-webhook/handler.test.ts
+M	lib/cal-webhook/handler.ts
+M	lib/funnelr/client.ts
+M	lib/funnelr/nexubis-tags.ts
+M	lib/funnelr/nurture-scheduler.test.ts
+M	lib/funnelr/nurture-scheduler.ts
+M	lib/funnelr/reply-tagger.test.ts
+M	lib/funnelr/reply-tagger.ts
+M	lib/scorecard/lead-funnelr.test.ts
+M	lib/scorecard/lead-funnelr.ts
+M	lib/scorecard/scorecard-lead-route.test.ts
+M	scripts/funnelr-verify-nexubis-readonly.ts
+
+Diff evidence for preserved scorecard route/function naming:
+
+Scorecard routing note: `/api/leads/scorecard` and `submitScorecardLeadToFunnelr()` must not call list or sequence endpoints.
+
+Function/constant names containing scorecard remain names, only assigned values changed:
+
+export const SCORECARD_REPORT_URL_FIELD_KEY = "NexubisScorecardReportURL";
+-export const SCORECARD_REPORT_URL_FIELD_NAME = "Nexubis | Scorecard Report URL";
++export const SCORECARD_REPORT_URL_FIELD_NAME = "Nexubis | Audit Report URL";
+
+4. Every Changed Tag Lookup Is ID-First With Name Fallback
+
+lib/scorecard/lead-funnelr.ts:226
+
+async function resolveTag(client: ScorecardLeadFunnelrClient, tagId: string, name: string): Promise<FunnelrTag> {
+  const tag = (await client.findTagById(tagId)) ?? (await client.findTagByName(name));
+
+Invocation evidence:
+
+await applyTag(client, userId, NEXUBIS_TAG_IDS.brand, BRAND_NEXUBIS_TAG_NAME),
+await applyTag(client, userId, NEXUBIS_TAG_IDS.sourceScorecard, SOURCE_SCORECARD_TAG_NAME),
+await applyTag(client, userId, NEXUBIS_TAG_IDS.triggerStartScorecardSales, START_SCORECARD_SALES_TAG_NAME),
+
+lib/funnelr/nurture-scheduler.ts:85
+
+async function resolveTag(client: NurtureFunnelrClient, tagId: string, name: string): Promise<{ tagId: string }> {
+  const tag = (await client.findTagById(tagId)) ?? (await client.findTagByName(name));
+
+Invocation evidence:
+
+const tag = await resolveTag(client, NEXUBIS_TAG_IDS.triggerStartNurture, NEXUBIS_TAGS.triggerStartNurture);
+
+lib/funnelr/reply-tagger.ts:41
+
+async function resolveTag(client: ReplyFunnelrClient, tagId: string, name: string): Promise<{ tagId: string }> {
+  const tag = (await client.findTagById(tagId)) ?? (await client.findTagByName(name));
+
+Invocation evidence:
+
+const tag = await resolveTag(opts.client, NEXUBIS_TAG_IDS.pipelineReplied, NEXUBIS_TAGS.pipelineReplied);
+
+lib/cal-webhook/handler.ts:146
+
+async function resolveTag(client: CalFunnelrClient, tagId: string, name: string): Promise<FunnelrTag> {
+  const tag = (await client.findTagById(tagId)) ?? (await client.findTagByName(name));
+
+Apply/remove invocation evidence:
+
+const callBookedTag = await resolveTag(client, CALL_BOOKED_TAG_ID, CALL_BOOKED_TAG_NAME);
+
+This appears in both the booking-created/rescheduled path and the booking-cancelled remove path.

@@ -14,12 +14,13 @@ import {
   type ScorecardLeadFunnelrClient,
   type ScorecardLeadInput,
 } from "./lead-funnelr";
+import { NEXUBIS_TAG_IDS } from "@/lib/funnelr/nexubis-tags";
 import type { FunnelrSystemFormField, FunnelrTag, FunnelrUser } from "@/lib/funnelr/client";
 
 const routingTags: FunnelrTag[] = [
-  { tagId: "tag-brand", name: BRAND_NEXUBIS_TAG_NAME },
-  { tagId: "tag-source", name: SOURCE_SCORECARD_TAG_NAME },
-  { tagId: "tag-trigger", name: START_SCORECARD_SALES_TAG_NAME },
+  { tagId: NEXUBIS_TAG_IDS.brand, name: BRAND_NEXUBIS_TAG_NAME },
+  { tagId: NEXUBIS_TAG_IDS.sourceScorecard, name: SOURCE_SCORECARD_TAG_NAME },
+  { tagId: NEXUBIS_TAG_IDS.triggerStartScorecardSales, name: START_SCORECARD_SALES_TAG_NAME },
 ];
 
 const fields: FunnelrSystemFormField[] = [
@@ -49,6 +50,8 @@ function client(
     fail?: boolean;
     existingTagIds?: string[];
     fieldList?: FunnelrSystemFormField[];
+    tagList?: FunnelrTag[];
+    missingTagId?: string;
     missingTag?: string;
     failTagAdd?: string;
     staleMirrorReadback?: boolean;
@@ -69,6 +72,7 @@ function client(
   const contactTags = new Set(opts.existingTagIds ?? []);
   const updates: Array<{ formFieldId: string; value: unknown }> = [];
   let storedContact: FunnelrUser | null = existing ? { ...existing } : null;
+  const tags = opts.tagList ?? routingTags;
 
   return {
     calls,
@@ -104,10 +108,15 @@ function client(
       };
       return storedContact;
     },
+    async findTagById(tagId) {
+      calls.push(`tag-id:${tagId}`);
+      if (tagId === opts.missingTagId) return null;
+      return tags.find((tag) => tag.tagId.toLowerCase() === tagId.toLowerCase()) ?? null;
+    },
     async findTagByName(name) {
       calls.push(`tag:${name}`);
       if (name === opts.missingTag) return null;
-      return routingTags.find((tag) => tag.name === name) ?? null;
+      return tags.find((tag) => tag.name === name) ?? null;
     },
     async contactHasTag(_userId, tagId) {
       calls.push(`has-tag:${tagId}`);
@@ -180,9 +189,9 @@ test("new contact is created, report URL is saved, and final routing tags are as
   assert.ok(c.calls.includes("create:mark@veltkamp-dosing.nl:Mark:https://www.nexubis.io/scorecard/r/abc12345:true:"));
   assert.deepEqual(res.standardFieldsUpdated, [SCORECARD_REPORT_URL_MESSENGER_MIRROR_FIELD_NAME]);
   assertNoDirectRouting(c);
-  assert.ok(c.calls.includes("add-tag:tag-brand"));
-  assert.ok(c.calls.includes("add-tag:tag-source"));
-  assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.brand}`));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.sourceScorecard}`));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.triggerStartScorecardSales}`));
   assert.ok(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID && u.value === "https://www.nexubis.io/scorecard/r/abc12345"));
 });
 
@@ -193,7 +202,7 @@ test("first name and email only creates a contact and applies final routing tags
   assert.equal(res.contactCreated, true);
   assert.ok(c.calls.includes("find:mark@veltkamp-dosing.nl"));
   assert.ok(c.calls.includes("create:mark@veltkamp-dosing.nl:Mark::undefined:"));
-  assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.triggerStartScorecardSales}`));
   assertNoDirectRouting(c);
   assert.equal(c.updates.some((u) => u.formFieldId === SCORECARD_REPORT_URL_FIELD_ID), false);
 });
@@ -221,7 +230,7 @@ test("existing contact is reused and not duplicated", async () => {
   assert.equal(res.contactCreated, false);
   assert.equal(c.calls.some((call) => call.startsWith("create:")), false);
   assert.ok(c.calls.includes("update:7:mark@veltkamp-dosing.nl:true:https://www.nexubis.io/scorecard/r/abc12345::"));
-  assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.triggerStartScorecardSales}`));
   assertNoDirectRouting(c);
 });
 
@@ -332,7 +341,7 @@ test("non-boolean consent is rejected", () => {
 test("duplicate submission updates contact without duplicating tags", async () => {
   const c = client(
     { userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false },
-    { existingTagIds: ["tag-brand", "tag-source", "tag-trigger"] },
+    { existingTagIds: [NEXUBIS_TAG_IDS.brand, NEXUBIS_TAG_IDS.sourceScorecard, NEXUBIS_TAG_IDS.triggerStartScorecardSales] },
   );
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, true);
@@ -348,6 +357,21 @@ test("successful routing tag assignment is verified", async () => {
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.deepEqual(res.tagsApplied, [BRAND_NEXUBIS_TAG_NAME, SOURCE_SCORECARD_TAG_NAME, START_SCORECARD_SALES_TAG_NAME]);
   assertNoDirectRouting(c);
+});
+
+test("routing tag resolves by id when the Funnelr-side name has changed", async () => {
+  const c = client(null, {
+    tagList: [
+      { tagId: NEXUBIS_TAG_IDS.brand, name: "Brand: Renamed In Funnelr" },
+      { tagId: NEXUBIS_TAG_IDS.sourceScorecard, name: "Source: Nexubis | Renamed In Funnelr" },
+      { tagId: NEXUBIS_TAG_IDS.triggerStartScorecardSales, name: "Trigger: Nexubis | Renamed In Funnelr" },
+    ],
+  });
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
+  assert.equal(res.ok, true);
+  assert.ok(c.calls.includes(`tag-id:${NEXUBIS_TAG_IDS.sourceScorecard}`));
+  assert.equal(c.calls.includes(`tag:${SOURCE_SCORECARD_TAG_NAME}`), false);
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.sourceScorecard}`));
 });
 
 test("Funnelr API failure is sanitized and non-throwing", async () => {
@@ -374,9 +398,9 @@ test("unsubscribed existing contact is still given the required sales trigger", 
   const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isAgent: false, isUnsubscribed: true });
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, true);
-  assert.ok(c.calls.includes("add-tag:tag-brand"));
-  assert.ok(c.calls.includes("add-tag:tag-source"));
-  assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.brand}`));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.sourceScorecard}`));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.triggerStartScorecardSales}`));
   assertNoDirectRouting(c);
 });
 
@@ -387,13 +411,13 @@ test("missing Scorecard URL field returns a useful safe error and does not silen
 });
 
 test("failed required tag operation returns a useful safe error", async () => {
-  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { missingTag: SOURCE_SCORECARD_TAG_NAME }) });
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { missingTagId: NEXUBIS_TAG_IDS.sourceScorecard, missingTag: SOURCE_SCORECARD_TAG_NAME }) });
   assert.equal(res.ok, false);
   assert.match(res.error ?? "", /Required Funnelr tag was not found/);
 });
 
 test("failed required tag write returns a useful safe error", async () => {
-  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { failTagAdd: "tag-source" }) });
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: client(null, { failTagAdd: NEXUBIS_TAG_IDS.sourceScorecard }) });
   assert.equal(res.ok, false);
   assert.match(res.error ?? "", /Tag write failed/);
 });
@@ -403,7 +427,7 @@ test("failed Last name mirror read-back returns a useful safe error after tags a
   const res = await submitScorecardLeadToFunnelr(lead(), { client: c });
   assert.equal(res.ok, false);
   assert.match(res.error ?? "", /Last name mirror was not saved correctly/);
-  assert.ok(c.calls.includes("add-tag:tag-brand"));
-  assert.ok(c.calls.includes("add-tag:tag-source"));
-  assert.ok(c.calls.includes("add-tag:tag-trigger"));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.brand}`));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.sourceScorecard}`));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.triggerStartScorecardSales}`));
 });

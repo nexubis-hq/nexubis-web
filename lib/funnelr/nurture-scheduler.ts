@@ -9,7 +9,7 @@
 // sequence timestamps. Idempotent, sequential (Funnelr throttles bursts), and it
 // NEVER touches lists/sequences/History tags. See docs/funnel-audit-checklist.md
 // §5 and Shannah's handover doc.
-import { NEXUBIS_TAGS } from "./nexubis-tags";
+import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "./nexubis-tags";
 
 // Nexubis' final sales email is Day 13; eligibility from Day 14 (doc default).
 export const DEFAULT_NURTURE_AFTER_DAYS = 14;
@@ -33,6 +33,7 @@ export interface NurtureConfig {
 export interface NurtureFunnelrClient {
   findContactByEmail(email: string): Promise<{ userId?: number; isUnsubscribed?: boolean } | null>;
   getContactTags(userId: number): Promise<Array<{ tagId: string; name?: string | null }>>;
+  findTagById(tagId: string): Promise<{ tagId: string } | null>;
   findTagByName(name: string): Promise<{ tagId: string } | null>;
   addTagToContact(userId: number, tagId: string): Promise<void>;
 }
@@ -79,6 +80,12 @@ function emptySkips(): Record<SkipReason, number> {
     "already-nurture": 0,
     "trigger-pending": 0,
   };
+}
+
+async function resolveTag(client: NurtureFunnelrClient, tagId: string, name: string): Promise<{ tagId: string }> {
+  const tag = (await client.findTagById(tagId)) ?? (await client.findTagByName(name));
+  if (!tag) throw new Error(`Nurture Trigger tag not found in Funnelr: ${name}`);
+  return tag;
 }
 
 export interface NurtureRunDeps {
@@ -163,8 +170,7 @@ export async function runNurtureHandoff(deps: NurtureRunDeps): Promise<NurtureRu
       }
 
       if (!triggerTagId) {
-        const tag = await client.findTagByName(NEXUBIS_TAGS.triggerStartNurture);
-        if (!tag) throw new Error(`Nurture Trigger tag not found in Funnelr: ${NEXUBIS_TAGS.triggerStartNurture}`);
+        const tag = await resolveTag(client, NEXUBIS_TAG_IDS.triggerStartNurture, NEXUBIS_TAGS.triggerStartNurture);
         triggerTagId = tag.tagId;
       }
       await client.addTagToContact(contact.userId, triggerTagId);

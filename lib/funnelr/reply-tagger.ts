@@ -8,7 +8,7 @@
 // poller, an inbound-parse service, a Cloudflare/Apps-Script forwarder, or a manual
 // call) is pluggable: each just POSTs the sender address to /api/inbound/reply,
 // which calls applyRepliedTag(). Idempotent, and never touches lists/sequences.
-import { NEXUBIS_TAGS } from "./nexubis-tags";
+import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "./nexubis-tags";
 import { isInternalEmail } from "@/lib/internal-emails";
 
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
@@ -24,6 +24,7 @@ export function extractEmail(input: unknown): string | null {
 export interface ReplyFunnelrClient {
   findContactByEmail(email: string): Promise<{ userId?: number } | null>;
   getContactTags(userId: number): Promise<Array<{ tagId: string; name?: string | null }>>;
+  findTagById(tagId: string): Promise<{ tagId: string } | null>;
   findTagByName(name: string): Promise<{ tagId: string } | null>;
   addTagToContact(userId: number, tagId: string): Promise<void>;
 }
@@ -35,6 +36,12 @@ export interface ReplyResult {
   applied: boolean;
   reason?: ReplyReason;
   error?: string;
+}
+
+async function resolveTag(client: ReplyFunnelrClient, tagId: string, name: string): Promise<{ tagId: string }> {
+  const tag = (await client.findTagById(tagId)) ?? (await client.findTagByName(name));
+  if (!tag) throw new Error(`Replied tag not found in Funnelr: ${name}`);
+  return tag;
 }
 
 export async function applyRepliedTag(
@@ -61,8 +68,7 @@ export async function applyRepliedTag(
 
     if (opts.dryRun) return { ok: true, applied: false, reason: "dry-run" };
 
-    const tag = await opts.client.findTagByName(NEXUBIS_TAGS.pipelineReplied);
-    if (!tag) throw new Error(`Replied tag not found in Funnelr: ${NEXUBIS_TAGS.pipelineReplied}`);
+    const tag = await resolveTag(opts.client, NEXUBIS_TAG_IDS.pipelineReplied, NEXUBIS_TAGS.pipelineReplied);
     await opts.client.addTagToContact(contact.userId, tag.tagId);
     return { ok: true, applied: true, reason: "applied" };
   } catch (err) {

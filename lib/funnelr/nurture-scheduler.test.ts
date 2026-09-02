@@ -6,7 +6,7 @@ import {
   DEFAULT_NURTURE_AFTER_DAYS,
   type NurtureLead,
 } from "./nurture-scheduler";
-import { NEXUBIS_TAGS } from "./nexubis-tags";
+import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "./nexubis-tags";
 
 const NOW = new Date("2026-07-23T12:00:00Z");
 const SALES = NEXUBIS_TAGS.historyScorecardSalesStarted;
@@ -44,6 +44,9 @@ async function run(opts: {
     async findTagByName(name: string) {
       return { tagId: "id-" + name };
     },
+    async findTagById(tagId: string) {
+      return { tagId };
+    },
     async addTagToContact(userId: number, tagId: string) {
       applied.push({ userId, tagId });
     },
@@ -76,7 +79,7 @@ test("happy path: eligible sales lead gets the nurture Trigger and is memoed", a
     contacts: { "mark@example.com": { userId: 7, tags: [SALES] } },
   });
   assert.equal(result.handedOff, 1);
-  assert.deepEqual(applied, [{ userId: 7, tagId: "id-" + NURTURE_TRIGGER }]);
+  assert.deepEqual(applied, [{ userId: 7, tagId: NEXUBIS_TAG_IDS.triggerStartNurture }]);
   assert.equal(handoffSet.has("mark@example.com"), true);
 });
 

@@ -1,14 +1,15 @@
 import { createFunnelrClient, type FunnelrSystemFormField, type FunnelrTag, type FunnelrUser, type FunnelrUserProfile } from "@/lib/funnelr/client";
+import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "@/lib/funnelr/nexubis-tags";
 
 export const SCORECARD_REPORT_URL_FIELD_ID = "6CDFB703-9B38-43A3-A2E4-311107F15424";
 export const SCORECARD_REPORT_URL_FIELD_KEY = "NexubisScorecardReportURL";
-export const SCORECARD_REPORT_URL_FIELD_NAME = "Nexubis | Scorecard Report URL";
+export const SCORECARD_REPORT_URL_FIELD_NAME = "Nexubis | Audit Report URL";
 export const SCORECARD_REPORT_URL_MESSENGER_MIRROR_FIELD_NAME = "Last name";
 export const SCORECARD_REPORT_URL_MESSENGER_MIRROR_API_FIELD = "lastName";
 
-export const BRAND_NEXUBIS_TAG_NAME = "Brand: Nexubis";
-export const SOURCE_SCORECARD_TAG_NAME = "Source: Nexubis | Scorecard";
-export const START_SCORECARD_SALES_TAG_NAME = "Trigger: Nexubis | Start Scorecard Sales";
+export const BRAND_NEXUBIS_TAG_NAME = NEXUBIS_TAGS.brand;
+export const SOURCE_SCORECARD_TAG_NAME = NEXUBIS_TAGS.sourceScorecard;
+export const START_SCORECARD_SALES_TAG_NAME = NEXUBIS_TAGS.triggerStartScorecardSales;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_TEXT = 500;
@@ -64,6 +65,7 @@ export interface ScorecardLeadFunnelrClient {
     rankId?: string | null;
     hasAcceptedMarketing?: boolean;
   }): Promise<FunnelrUser>;
+  findTagById(tagId: string): Promise<FunnelrTag | null>;
   findTagByName(name: string): Promise<FunnelrTag | null>;
   contactHasTag(userId: number, tagId: string): Promise<boolean>;
   addTagToContact(userId: number, tagId: string): Promise<void>;
@@ -221,9 +223,14 @@ export function buildCustomFieldUpdates(input: NormalizedScorecardLead, fields: 
   return { updates, updatedNames };
 }
 
-async function applyTag(client: ScorecardLeadFunnelrClient, userId: number, name: string): Promise<string> {
-  const tag = await client.findTagByName(name);
+async function resolveTag(client: ScorecardLeadFunnelrClient, tagId: string, name: string): Promise<FunnelrTag> {
+  const tag = (await client.findTagById(tagId)) ?? (await client.findTagByName(name));
   if (!tag?.tagId) throw new Error(`Required Funnelr tag was not found: ${name}`);
+  return tag;
+}
+
+async function applyTag(client: ScorecardLeadFunnelrClient, userId: number, tagId: string, name: string): Promise<string> {
+  const tag = await resolveTag(client, tagId, name);
   if (!(await client.contactHasTag(userId, tag.tagId))) {
     await client.addTagToContact(userId, tag.tagId);
   }
@@ -307,9 +314,9 @@ export async function submitScorecardLeadToFunnelr(
     const { updates, updatedNames } = buildCustomFieldUpdates(normalized, fields);
     await client.updateContactCustomFields(userId, updates);
     const tagsApplied = [
-      await applyTag(client, userId, BRAND_NEXUBIS_TAG_NAME),
-      await applyTag(client, userId, SOURCE_SCORECARD_TAG_NAME),
-      await applyTag(client, userId, START_SCORECARD_SALES_TAG_NAME),
+      await applyTag(client, userId, NEXUBIS_TAG_IDS.brand, BRAND_NEXUBIS_TAG_NAME),
+      await applyTag(client, userId, NEXUBIS_TAG_IDS.sourceScorecard, SOURCE_SCORECARD_TAG_NAME),
+      await applyTag(client, userId, NEXUBIS_TAG_IDS.triggerStartScorecardSales, START_SCORECARD_SALES_TAG_NAME),
     ];
     if (reportUrlMirror) {
       await verifyReportUrlWrites(client, userId, normalized.email, reportUrlMirror);

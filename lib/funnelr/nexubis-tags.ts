@@ -12,14 +12,14 @@
 
 export const NEXUBIS_TAGS = {
   brand: "Brand: Nexubis",
-  sourceScorecard: "Source: Nexubis | Scorecard",
+  sourceScorecard: "Source: Nexubis | Audit",
   sourceContactForm: "Source: Nexubis | Contact Form",
-  triggerStartScorecardSales: "Trigger: Nexubis | Start Scorecard Sales",
+  triggerStartScorecardSales: "Trigger: Nexubis | Start Audit Sales",
   triggerStartNurture: "Trigger: Nexubis | Start Credibility Brief Nurture",
   pipelineCallBooked: "Pipeline: Nexubis | Call Booked",
   pipelineReplied: "Pipeline: Nexubis | Replied",
   pipelineContacted: "Pipeline: Nexubis | Contacted",
-  historyScorecardSalesStarted: "History: Nexubis | Scorecard Sales Started",
+  historyScorecardSalesStarted: "History: Nexubis | Audit Sales Started",
   historyNurtureStarted: "History: Nexubis | Credibility Brief Nurture Started",
 } as const;
 
@@ -46,6 +46,6 @@ export const NEXUBIS_LIST_IDS = {
 } as const;
 
 export const NEXUBIS_FIELDS = {
-  reportUrl: "Nexubis | Scorecard Report URL",
+  reportUrl: "Nexubis | Audit Report URL",
   salesStartedAt: "Nexubis | Scorecard Sales Started At",
 } as const;
