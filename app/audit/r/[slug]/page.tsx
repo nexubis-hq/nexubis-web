@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const company = record?.result.meta.company;
   return {
     title: company ? `${SCORECARD_NAME} for ${company}` : SCORECARD_NAME,
-    description: "Your Credibility Score across the five places buyers look, benchmarked against the competitors you named.",
+    description: "Your Gap Score across the five places buyers look, benchmarked against the competitors buyers weigh you against.",
     // Shared reports are reachable by unguessable link only, never indexed.
     robots: { index: false, follow: false },
   };

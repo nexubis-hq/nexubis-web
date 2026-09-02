@@ -37,7 +37,15 @@ export function BookCallButton({
       ref={ref}
       href={baseHref}
       className={className}
-      onClick={() => trackMeta(META_EVENTS.auditBookClick, { content_name: LEAD_CONTENT_NAME, ...(business ? { business } : {}) })}
+      onClick={() => {
+        // Offer CTA click. SessionUnlockClick is the canonical event; the
+        // legacy AuditBookClick is dual-fired for one campaign cycle so no
+        // historical Meta data breaks. Drop the AuditBookClick line after the
+        // cycle (see lib/meta/events.ts). Each fires its own event_id.
+        const params = { content_name: LEAD_CONTENT_NAME, ...(business ? { business } : {}) };
+        trackMeta(META_EVENTS.sessionUnlockClick, params);
+        trackMeta(META_EVENTS.auditBookClick, params);
+      }}
       {...(reveal ? { "data-reveal": "" } : {})}
     >
       {children}

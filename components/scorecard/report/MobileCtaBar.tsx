@@ -8,7 +8,7 @@ export function MobileCtaBar({ company, contactName }: { company: string; contac
     <div className="sc-mobile-cta" role="complementary" aria-label="Your next step">
       <p>Unlock a live session and we&rsquo;ll walk your audit together.</p>
       <BookCallButton className="btn btn-primary sc-mobile-cta-btn" personName={contactName} business={company}>
-        Unlock my session
+        Unlock your session
       </BookCallButton>
     </div>
   );

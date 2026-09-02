@@ -52,7 +52,7 @@ test("the CTA lives only in the fixed closing copy, never in findings", { skip: 
   ].join(" ");
   assert.ok(!/book (a|an|your) (call|application)/i.test(findings));
   // The offer is unlocking a live session, never a "book a call" / sales call.
-  assert.equal(BOOK_CALL.button, "Unlock my free session");
+  assert.equal(BOOK_CALL.button, "Unlock your free session");
   for (const s of [BOOK_CALL.heading, BOOK_CALL.button, BOOK_CALL.underButton, REPORT_NAV.book]) {
     assert.ok(!/book a call|application call|sales call|loom/i.test(s), `forbidden offer phrase in: ${s}`);
   }

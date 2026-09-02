@@ -52,7 +52,7 @@ export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, ad
     `Product: ${lead.productOneLiner}`,
     `Competitors: ${lead.competitors.map((c) => c.name).join(", ")}`,
     ``,
-    `Credibility Score: ${lead.credibilityScore}/100 (${lead.verdict} gap)`,
+    `Gap Score: ${lead.credibilityScore}/100 (${lead.verdict} gap)`,
     `First fix: ${lead.firstFixCategory ?? "n/a"}`,
     `Routing: ${lead.routing.roleSeniority} / ${lead.routing.verticalGuess} / ${lead.routing.geoGuess}`,
     `Follow-up: ${lead.routing.followUpTiming}`,

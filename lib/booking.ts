@@ -1,14 +1,26 @@
-// Single source of truth for the booking target (cal.com/nexubis/30min).
-// Every surface that links to "book a call" imports from here, so swapping the
-// owner or event is a one-line change and there are no hardcoded cal.com URLs
-// anywhere else (grep for "cal.com/"). See docs/funnel-audit-checklist.md §1–2.
-
-export const CAL_USERNAME = "nexubis";
-export const CAL_EVENT_SLUG = "30min";
+// Single source of truth for the booking target (the 30-minute session).
+// Every surface that links to the session (the report offer block and the
+// Laine sidebar card, both via BookCallButton) imports from here, so swapping
+// the owner or Cal.com event is one change and there are no hardcoded cal.com
+// URLs anywhere else (grep for "cal.com/"). See docs/funnel-audit-checklist.md.
+//
+// Env-configurable so the Cal.com event can be swapped WITHOUT a code change:
+//   NEXT_PUBLIC_CAL_BOOKING_URL   full public URL override (wins if set), or
+//   NEXT_PUBLIC_CAL_USERNAME + NEXT_PUBLIC_CAL_EVENT_SLUG   parts.
+// NEXT_PUBLIC_ so both the client BookCallButton and any server code get it.
+//
+// MINIMUM NOTICE (2 working days): this is NOT enforceable from the link or the
+// UI and is deliberately not faked here. It lives on the Cal.com event type
+// (Event Type -> Limits -> "Minimum Notice"). Set it there. Note Cal.com's
+// minimum notice is a flat duration, not working-day aware, so pair a ~2 day
+// (2880 min) minimum notice with Mon-Fri availability to approximate two
+// working days; a strict working-day skip is not a native single setting.
+export const CAL_USERNAME = process.env.NEXT_PUBLIC_CAL_USERNAME || "nexubis";
+export const CAL_EVENT_SLUG = process.env.NEXT_PUBLIC_CAL_EVENT_SLUG || "30min";
 
 // The cal.com embed namespace form ("<user>/<slug>") and the plain public URL.
 export const CAL_LINK = `${CAL_USERNAME}/${CAL_EVENT_SLUG}`;
-export const CAL_BOOKING_URL = `https://cal.com/${CAL_LINK}`;
+export const CAL_BOOKING_URL = (process.env.NEXT_PUBLIC_CAL_BOOKING_URL || `https://cal.com/${CAL_LINK}`).replace(/\/+$/, "");
 
 // cal.com booking-field identifiers, confirmed live from the event's public API
 // (2026-07-23). Prefill keys that do not match a real field identifier are silently

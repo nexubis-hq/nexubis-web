@@ -8301,10 +8301,38 @@ button.nav-link {
   color: color-mix(in srgb, var(--white) 68%, transparent);
 }
 .sc-side-cta-copy {
-  font-size: 0.92rem;
-  line-height: 1.5;
+  font-size: 0.82rem;
+  line-height: 1.45;
   color: color-mix(in srgb, var(--white) 82%, transparent);
-  margin-bottom: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+/* Condensed offer points: small, stacked, red check markers. Kept tight so the
+   sticky card never grows taller than the audit content beside it. */
+.sc-side-cta-points {
+  list-style: none;
+  margin: 0 0 0.9rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.sc-side-cta-points li {
+  position: relative;
+  padding-left: 1.25rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--white) 88%, transparent);
+}
+.sc-side-cta-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.28em;
+  width: 0.55rem;
+  height: 0.32rem;
+  border-left: 2px solid var(--primary);
+  border-bottom: 2px solid var(--primary);
+  transform: rotate(-45deg);
 }
 .sc-side-cta-btn {
   width: 100%;

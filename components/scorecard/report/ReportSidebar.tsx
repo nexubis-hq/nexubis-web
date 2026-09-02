@@ -79,9 +79,16 @@ export function ReportSidebar({
             <span className="sc-side-cta-role">Chief Operations Officer</span>
           </div>
         </div>
-        <p className="sc-side-cta-copy">Unlock a live session and we&rsquo;ll walk your audit together, no obligation.</p>
+        <p className="sc-side-cta-copy">
+          Book your thirty minutes and my team and I will walk these results with you. We rework the top of your homepage before we speak, so you are looking at real work, not a proposal.
+        </p>
+        <ul className="sc-side-cta-points">
+          <li>Thirty minutes, live with our design team</li>
+          <li>Your homepage reworked before the call</li>
+          <li>Yours to keep, fit or no fit</li>
+        </ul>
         <BookCallButton className="btn btn-primary sc-side-cta-btn" personName={contactName} business={company}>
-          Unlock my free session
+          Unlock your free session
         </BookCallButton>
       </div>
     </aside>

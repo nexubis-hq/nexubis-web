@@ -14,7 +14,13 @@ export const META_EVENTS = {
   auditComplete: "AuditComplete", // custom, DIAGNOSIS ONLY: the scan finished and the report was handed over. Splits abandonment-during-wait from completion. NOT a custom conversion; never optimise on it.
   lead: "Lead", // standard: details submitted. Fires WITH AuditStart at the same form submit (the gateless flow captures the email up front); kept distinct so Events Manager still shows the funnel split.
   reportViewed: "ReportViewed", // custom: a generated report rendered fully (per page load, per slug).
-  auditBookClick: "AuditBookClick", // custom: clicked a book CTA. NOT a booking.
+  // Offer CTA click ("Unlock your free session"). NOT a booking.
+  // sessionUnlockClick is the canonical name; auditBookClick is the LEGACY
+  // name, dual-fired alongside it for one campaign cycle so historical Meta
+  // data / any custom conversion on the old name does not break. Remove
+  // auditBookClick (and its dual-fire in BookCallButton) after the cycle.
+  sessionUnlockClick: "SessionUnlockClick", // custom: canonical offer CTA click.
+  auditBookClick: "AuditBookClick", // custom, LEGACY: dual-fired for one cycle, then remove.
   schedule: "Schedule", // standard: CONFIRMED booking only (cal.com webhook, event_id cal_<uid>).
   contact: "Contact", // standard: contact-form message. Kept distinct from Lead.
 } as const;

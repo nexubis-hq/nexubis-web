@@ -40,7 +40,7 @@ export const LANDING_BELOW = {
     title: "What you get",
     items: [
       { title: "Your Gap Score", body: "One number, from 0 to 100, for how credible you look to a buyer, and which band it puts you in." },
-      { title: "You, next to named competitors", body: "The same 25 checks run on the rivals buyers weigh you against, side by side." },
+      { title: "You, next to your closest competitors", body: "The same 25 checks run on the closest competitors showing up online, side by side." },
       { title: "The first thing to fix", body: "One clear starting point, with what fixing it looks like in practice." },
     ],
   },
@@ -61,7 +61,7 @@ export const FORM_FIELDS = {
 // ── Report navigation + share ────────────────────────────────────────────────
 // The full report carries a sticky nav with a single action: unlock the session.
 export const REPORT_NAV = {
-  book: "Unlock my session",
+  book: "Unlock your session",
 } as const;
 
 // ── Report surfaces (Section 7) ──────────────────────────────────────────────
@@ -70,7 +70,7 @@ export const REPORT = {
   loomLine: (name: string) => `Watch this first. ${name} walks you through your results.`,
   firstImpressionTitle: "First impression",
   firstImpressionLine: "This is what a buyer sees before reading a single word.",
-  scoreTitle: "Your Credibility Score",
+  scoreTitle: "Your Gap Score",
   whatWeLookedAt: "What we looked at",
   whereCompetitorsStand: "Where the competitors stand",
   couldNotAssess: "Could not be assessed",
@@ -125,7 +125,7 @@ export const BOOK_CALL = {
     rival
       ? `Skip it and nothing changes: the buyers comparing you to ${rival} keep choosing the company that looks more credible.`
       : "Skip it and nothing changes: the buyers comparing you to your competitors keep choosing the company that looks more credible.",
-  button: "Unlock my free session",
+  button: "Unlock your free session",
   underButton: "Pick a time that suits you. Thirty minutes, no pricing, no obligation, nothing to prepare.",
 } as const;
 

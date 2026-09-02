@@ -155,7 +155,7 @@ export function ReportView({
           <div className="sc-hero-card" data-reveal>
             <div className="sc-hero-grid">
               <div className="sc-score-ring">
-                <ScoreRing value={overall} display={overall === null ? "?" : String(overall)} subLabel="of 100" ariaLabel={`Credibility Score ${overall ?? "unknown"} of 100`} />
+                <ScoreRing value={overall} display={overall === null ? "?" : String(overall)} subLabel="of 100" ariaLabel={`Gap Score ${overall ?? "unknown"} of 100`} />
                 <p className="sc-verdict-band">{VERDICT_LABELS[result.verdict.band]}</p>
                 <BandScale overall={overall} band={result.verdict.band} />
               </div>
