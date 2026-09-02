@@ -80,7 +80,7 @@ export function ReportSidebar({
           </div>
         </div>
         <p className="sc-side-cta-copy">
-          Book your thirty minutes and my team and I will walk these results with you. We rework the top of your homepage before we speak, so you are looking at real work, not a proposal.
+          Book your thirty minutes and we&rsquo;ll walk these results together, with the top of your homepage already reworked, so you see real work, not a proposal.
         </p>
         <ul className="sc-side-cta-points">
           <li>Thirty minutes, live with our design team</li>

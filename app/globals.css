@@ -41,7 +41,7 @@
 }
 
 :root {
-  --sc-build: 26; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
+  --sc-build: 27; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
   --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
@@ -11822,6 +11822,9 @@ summary {
 .sc-start > h2 { margin-bottom: var(--s-2); }
 
 /* Competitor comparison card: reuse the chips + radar */
+.sc-competitors .sc-chips-label {
+  margin-top: 0;
+}
 .sc-competitors .sc-score-radar {
   margin-top: var(--s-3);
   max-width: 600px;
@@ -12161,12 +12164,6 @@ summary {
   display: grid;
   gap: 0.9rem;
 }
-@media (min-width: 720px) {
-  .sc-book-claims {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.1rem;
-  }
-}
 .sc-book-claims li {
   display: flex;
   gap: 0.9rem;
@@ -12454,9 +12451,6 @@ summary {
   border-top: 1px solid var(--light);
   display: grid;
   gap: 1rem;
-}
-@media (min-width: 800px) {
-  .sc-start-firstfix { grid-template-columns: 1fr 1fr; gap: 1.4rem; }
 }
 .sc-start-firstfix h3 {
   font-size: 0.95rem;

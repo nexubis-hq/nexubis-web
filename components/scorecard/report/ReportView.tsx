@@ -17,7 +17,7 @@ import { CollapsibleList } from "./CollapsibleList";
 import { JumpToNav } from "./JumpToNav";
 import { MobileCtaBar } from "./MobileCtaBar";
 import { ReportSidebar, type ReportNavItem, type SectionTone } from "./ReportSidebar";
-import { REPORT, REPORT2, BOOK_CALL, POWERED_BY, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
+import { REPORT, REPORT2, BOOK_CALL, BAND_SCALE, TEASER } from "@/lib/scorecard/copy";
 import {
   resolvedWorking,
   resolvedFix,
@@ -146,9 +146,6 @@ export function ReportView({
           band strip, the one-line verdict, the issues count, the pillar chips. */}
       <header className="sc-hero">
         <div className="site-container">
-          <p className="sc-hero-kicker" data-reveal>
-            {POWERED_BY}
-          </p>
           <p className="sc-hero-disclaimer" data-reveal>
             {REPORT2.disclaimer}
           </p>
@@ -367,11 +364,9 @@ export function ReportView({
               </ul>
               <p className="sc-book-guarantee">{BOOK_CALL.riskReversal}</p>
               <p className="sc-book-scarcity">{BOOK_CALL.scarcity}</p>
-              <p className="sc-book-stakes">{BOOK_CALL.stakes(result.verdict.bestRival?.company ?? null)}</p>
               <BookCallButton className="btn btn-primary sc-book-btn" personName={result.meta.contactName} business={company}>
                 {BOOK_CALL.button}
               </BookCallButton>
-              <p className="sc-book-fineprint">{BOOK_CALL.underButton}</p>
             </section>
           </div>
 
@@ -380,16 +375,6 @@ export function ReportView({
         </div>
       </div>
 
-
-      <footer className="sc-soft-close section">
-        <div className="site-container">
-          <p className="sc-contact" data-reveal>
-            <a href={`mailto:${REPORT.contactEmail}`}>{REPORT.contactEmail}</a>
-            <span aria-hidden="true"> / </span>
-            <a href={`https://${REPORT.contactSite}`}>{REPORT.contactSite}</a>
-          </p>
-        </div>
-      </footer>
 
       {/* Mobile sticky CTA bar. */}
       <MobileCtaBar company={company} contactName={result.meta.contactName} />
