@@ -39,7 +39,7 @@ export const LANDING_BELOW = {
   whatYouGet: {
     title: "What you get",
     items: [
-      { title: "Your Gap score out of 100", body: "One number for how credible you look to a buyer, and which band it puts you in." },
+      { title: "Your Gap Score", body: "One number, from 0 to 100, for how credible you look to a buyer, and which band it puts you in." },
       { title: "You, next to named competitors", body: "The same 25 checks run on the rivals buyers weigh you against, side by side." },
       { title: "The first thing to fix", body: "One clear starting point, with what fixing it looks like in practice." },
     ],
@@ -54,6 +54,7 @@ export const LANDING_BELOW = {
 
 export const FORM_FIELDS = {
   website: { label: "Enter your company website", helper: "That's all we need. We read your site and work out the rest." },
+  firstName: { label: "First name", helper: "" },
   workEmail: { label: "Work email", helper: "We'll email a copy of your audit to this address." },
 } as const;
 
@@ -170,7 +171,7 @@ export const SCAN_STEPS: { stage: keyof typeof SCAN_STAGES; label: string }[] = 
   { stage: "scoring", label: "Scoring you side by side" },
   { stage: "scoring", label: "Weighing all 25 checks" },
   { stage: "writing", label: "Writing your findings in plain words" },
-  { stage: "writing", label: "Compiling your Credibility Score" },
+  { stage: "writing", label: "Compiling your Gap Score" },
 ];
 
 // The sub-line under the active step. The detected beat lands the moment the
@@ -220,7 +221,7 @@ export const EMAIL_1 = {
       ``,
       `Your audit is ready: ${reportUrl}`,
       ``,
-      `Inside you'll find your Credibility Score, how your brand compares against the competitors you named, and the first place to fix.`,
+      `Inside you'll find your Gap Score, how your brand compares against the competitors buyers weigh you against, and the first place to fix.`,
       ``,
       `Your report stays at this link, so you can come back to it or share it with your team.`,
       ``,

@@ -15,6 +15,7 @@ import { prospectScores, type ScorecardResult } from "./result";
 import type { ProspectData } from "./types";
 
 export interface LeadCaptureInput {
+  firstName: string;
   email: string;
   honeypot?: string;
   turnstileToken?: string;
@@ -49,6 +50,9 @@ export function validateCaptureInput(input: LeadCaptureInput): CaptureValidation
   }
   if (typeof input.elapsedMs === "number" && input.elapsedMs >= 0 && input.elapsedMs < MIN_ELAPSED_MS) {
     return bad(400, "Something went wrong with the form. Reload and try again.", "too-fast");
+  }
+  if (!input.firstName || input.firstName.trim().length === 0) {
+    return bad(400, "Add your first name.", "first-name");
   }
   if (!input.email || !EMAIL_RE.test(input.email.trim())) {
     return bad(400, "That email address does not look right.", "email");
@@ -107,12 +111,17 @@ export async function verifyTurnstile(token: string | undefined, ip: string | nu
   }
 }
 
-// Fill the contact fields the generation left empty. The form no longer asks
-// for a name or role, so the name is a best-effort read of the email's local
-// part (empty when the mailbox is generic) and the role stays unknown; the
-// Loom decision falls back to the verdict band alone.
-export function applyContact(prospect: ProspectData, result: ScorecardResult, email: string): { prospect: ProspectData; result: ScorecardResult } {
-  const name = firstNameFromEmail(email.trim()) ?? "";
+// Fill the contact fields the generation left empty. The first name comes
+// from the form (required, guarded at capture); the email-derived read is only
+// a defensive fallback. Role stays unknown; the Loom decision falls back to
+// the verdict band alone.
+export function applyContact(
+  prospect: ProspectData,
+  result: ScorecardResult,
+  email: string,
+  firstName = "",
+): { prospect: ProspectData; result: ScorecardResult } {
+  const name = firstName.trim() || firstNameFromEmail(email.trim()) || "";
   return {
     prospect: { ...prospect, name },
     result: {
@@ -161,8 +170,8 @@ export interface PromoteOutcome {
 
 // Promote a finished generation straight to its permanent shared report.
 // Never emails here; the caller chains the lead plumbing after.
-export async function promoteResult(prospectData: ProspectData, rawResult: ScorecardResult, email: string): Promise<PromoteOutcome> {
-  const { prospect, result } = applyContact(prospectData, rawResult, email);
+export async function promoteResult(prospectData: ProspectData, rawResult: ScorecardResult, email: string, firstName = ""): Promise<PromoteOutcome> {
+  const { prospect, result } = applyContact(prospectData, rawResult, email, firstName);
   const slug = await uniqueSlug();
   const now = new Date();
   const record: SharedScorecard = {
@@ -186,12 +195,12 @@ export async function promoteResult(prospectData: ProspectData, rawResult: Score
 // The run route awaits this before sending "done": ~1-2s at the end of a scan
 // that already ran for a minute, in exchange for never losing a lead to a
 // frozen serverless instance.
-export function buildLeadRecord(record: SharedScorecard, email: string, slug: string): LeadRecord {
+export function buildLeadRecord(record: SharedScorecard, email: string, slug: string, firstName = ""): LeadRecord {
   const result = record.result;
   const overall = prospectScores(result)?.overall ?? 0;
   const now = new Date().toISOString();
   return {
-    name: firstNameFromEmail(email.trim()) ?? "",
+    name: firstName.trim() || firstNameFromEmail(email.trim()) || "",
     email: email.trim(),
     role: "",
     company: result.meta.company,
@@ -211,8 +220,8 @@ export function buildLeadRecord(record: SharedScorecard, email: string, slug: st
   };
 }
 
-export async function runLeadPlumbing(record: SharedScorecard, email: string, slug: string, origin: string): Promise<LeadRecord> {
-  const lead = buildLeadRecord(record, email, slug);
+export async function runLeadPlumbing(record: SharedScorecard, email: string, slug: string, origin: string, firstName = ""): Promise<LeadRecord> {
+  const lead = buildLeadRecord(record, email, slug, firstName);
   const absoluteReportUrl = `${origin}/audit/r/${slug}`;
   const adminUrl = `${origin}/audit/admin/${slug}`;
 

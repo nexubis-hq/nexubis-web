@@ -41,7 +41,7 @@
 }
 
 :root {
-  --sc-build: 24; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
+  --sc-build: 25; /* real (non-stripped) recompile nudge for Turbopack CSS HMR */
   --primary: #ff4141;
   --sc-valid: #1a936f; /* "this input looks right" green, scorecard form only */
   --black: #1d1c1a;
@@ -12401,7 +12401,13 @@ summary {
 }
 
 /* Laine's intro in the form-card visual slot (replaces the radar when the
-   clip exists). 16:9, rounded, sits where the radar sat. */
+   clip exists). 16:9, rounded, sits where the radar sat. The base
+   .sc-card-visual uses a negative bottom margin to pull up the radar's
+   decorative whitespace; the video/poster is a solid box with none, so it
+   zeroes that margin to clear the first form field. */
+.sc-card-visual-video {
+  margin-bottom: 0;
+}
 .sc-card-visual-video video {
   width: 100%;
   aspect-ratio: 16 / 9;

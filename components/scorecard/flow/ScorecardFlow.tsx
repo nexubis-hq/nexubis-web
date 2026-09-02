@@ -11,7 +11,6 @@ import { PILLAR_CHIP_LABELS } from "@/lib/scorecard/report-derive";
 import { RUBRIC } from "@/lib/scorecard/rubric";
 import { trackMeta } from "@/lib/meta/track";
 import { META_EVENTS, LEAD_CONTENT_NAME, leadValue } from "@/lib/meta/events";
-import { firstNameFromEmail } from "@/lib/scorecard/lead-name";
 import { ScanAnimation } from "./ScanAnimation";
 import { LAINE_VIDEO_SRC, LAINE_VIDEO_POSTER } from "./laine-video-config";
 import type { ScanStage } from "@/lib/scorecard/orchestrator";
@@ -66,6 +65,7 @@ function companyFromUrl(raw: string): string {
 export function ScorecardFlow() {
   const [flow, setFlow] = useState<FlowState>({ step: "form" });
   const [url, setUrl] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [honeypot, setHoneypot] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
@@ -83,6 +83,7 @@ export function ScorecardFlow() {
   const turnstileRef = useRef<HTMLDivElement>(null);
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const urlValid = looksLikeWebAddress(url);
+  const firstNameValid = firstName.trim().length > 0;
   const emailValid = EMAIL_RE.test(email.trim());
 
   useEffect(() => {
@@ -125,6 +126,11 @@ export function ScorecardFlow() {
       setFlow({ step: "form" });
       return;
     }
+    if (!firstName.trim()) {
+      setFieldError("Add your first name.");
+      setFlow({ step: "form" });
+      return;
+    }
     if (!EMAIL_RE.test(email.trim())) {
       setFieldError("That email address does not look right.");
       setFlow({ step: "form" });
@@ -151,6 +157,7 @@ export function ScorecardFlow() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           url: cleanDomainInput(rawUrl),
+          firstName: firstName.trim(),
           email: email.trim(),
           honeypot,
           turnstileToken,
@@ -202,7 +209,11 @@ export function ScorecardFlow() {
                 headers: { "Content-Type": "application/json" },
                 keepalive: true,
                 body: JSON.stringify({
-                  firstName: firstNameFromEmail(email.trim()) ?? company,
+                  // The real first name from the form. first_name is sent as an
+                  // explicit alias so the payload literally carries the field
+                  // every downstream sequence email merges on.
+                  firstName: firstName.trim(),
+                  first_name: firstName.trim(),
                   email: email.trim(),
                   marketingConsent: true,
                   reportUrl: leadReportUrl,
@@ -311,6 +322,27 @@ export function ScorecardFlow() {
                     ) : null}
                   </span>
                   {urlValid ? <span className="sc-field-valid-note">Looks good. We can read this one.</span> : null}
+                </label>
+                <label className={`sc-field${firstNameValid ? " sc-field-valid" : ""}`}>
+                  <span className="sc-field-label">{FORM_FIELDS.firstName.label}</span>
+                  <span className="sc-input-wrap">
+                    <input
+                      type="text"
+                      name="firstName"
+                      autoComplete="given-name"
+                      placeholder="Your first name"
+                      required
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                    {firstNameValid ? (
+                      <span className="sc-input-check" aria-hidden="true">
+                        <svg viewBox="0 0 12 12" width="12" height="12">
+                          <path d="M2 6.2 5 9l5-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                    ) : null}
+                  </span>
                 </label>
                 <label className={`sc-field${emailValid ? " sc-field-valid" : ""}`}>
                   <span className="sc-field-label">{FORM_FIELDS.workEmail.label}</span>

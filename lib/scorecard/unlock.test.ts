@@ -34,6 +34,7 @@ import { generateScorecardUncached } from "./generate";
 import { prospectFromRunInput, runIdFor } from "./run";
 
 const good: LeadCaptureInput = {
+  firstName: "Mark",
   email: "mark@veltkamp-dosing.nl",
   honeypot: "",
   elapsedMs: 30_000,
@@ -70,6 +71,14 @@ test("disposable domains are blocked with helpful copy", () => {
 test("a malformed email fails with a field-specific message", () => {
   assert.equal(validateCaptureInput({ ...good, email: "not-an-email" }).reason, "email");
   assert.equal(validateCaptureInput({ ...good, email: "" }).reason, "email");
+});
+
+test("an empty first name is rejected (a nameless lead is broken)", () => {
+  const blank = validateCaptureInput({ ...good, firstName: "" });
+  assert.equal(blank.ok, false);
+  assert.equal(blank.reason, "first-name");
+  assert.equal(validateCaptureInput({ ...good, firstName: "   " }).reason, "first-name");
+  assert.ok(blank.error.toLowerCase().includes("first name"));
 });
 
 test("firstNameFromEmail reads personal mailboxes and skips generic ones", () => {
@@ -113,7 +122,7 @@ test("capture dedupe returns the same slug for the same email and site", async (
   assert.equal(await readExistingCapture("other@veltkamp-dosing.nl", runId), null);
 });
 
-test("applyContact derives the name from the email and keeps the loom flag band-driven", async () => {
+test("applyContact uses the form first name, falling back to the email, keeps loom band-driven", async () => {
   process.env.SCORECARD_MOCK = "1";
   try {
     const prospect = prospectFromRunInput({
@@ -122,14 +131,17 @@ test("applyContact derives the name from the email and keeps the loom flag band-
       competitors: ["dosatech.de", "flowserve-dosing.com"],
     });
     const result = await generateScorecardUncached(prospect);
-    const applied = applyContact(prospect, result, good.email);
-    assert.equal(applied.prospect.name, "Mark");
-    assert.equal(applied.result.meta.contactName, "Mark");
+    // The explicit form first name is used verbatim, even over a generic mailbox.
+    const applied = applyContact(prospect, result, "info@veltkamp-dosing.nl", "Anja");
+    assert.equal(applied.prospect.name, "Anja");
+    assert.equal(applied.result.meta.contactName, "Anja");
     assert.equal(applied.result.routing.loomCandidate, applied.result.verdict.band !== "narrow");
 
+    // With no form name given, it falls back to the email local part, then "".
+    const fallback = applyContact(prospect, result, good.email);
+    assert.equal(fallback.prospect.name, "Mark");
     const generic = applyContact(prospect, result, "info@veltkamp-dosing.nl");
     assert.equal(generic.prospect.name, "");
-    assert.equal(generic.result.meta.contactName, "");
   } finally {
     delete process.env.SCORECARD_MOCK;
   }

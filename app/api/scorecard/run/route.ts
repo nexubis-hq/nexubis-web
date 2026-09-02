@@ -45,7 +45,7 @@ export const maxDuration = 300;
 
 // Input screening: hard length caps and control-character stripping, so junk
 // and prompt-injection padding never reach the pipeline.
-const CAPS = { url: 200, email: 256 };
+const CAPS = { url: 200, firstName: 80, email: 256 };
 function cleanText(v: unknown, cap: number): string | null {
   if (typeof v !== "string") return null;
   const cleaned = v.replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim();
@@ -68,6 +68,7 @@ function parseRunInput(body: unknown): ParsedRun | null {
   const input: RunInput = { url, productOneLiner: "", competitors: [] };
   if (!runInputIsValid(input)) return null;
   const capture: LeadCaptureInput = {
+    firstName: cleanText(b.firstName, CAPS.firstName) ?? "",
     email: cleanText(b.email, CAPS.email) ?? "",
     honeypot: typeof b.honeypot === "string" ? b.honeypot : "",
     turnstileToken: typeof b.turnstileToken === "string" ? b.turnstileToken : undefined,
@@ -203,6 +204,7 @@ export async function POST(req: NextRequest) {
         const prospect = prospectFromRunInput(input);
         const runId = runIdFor(prospect);
         const email = capture.email.trim();
+        const firstName = capture.firstName.trim();
 
         // Idempotency: the same email re-running the same site gets its
         // existing report back instantly and fires nothing twice.
@@ -281,10 +283,10 @@ export async function POST(req: NextRequest) {
               // No gate: straight to the permanent slug; the lead plumbing
               // runs before "done" so a frozen instance can never swallow it.
               // Funnelr capture stays browser-fired.
-              const promoted = await promoteResult(enriched, result, email);
+              const promoted = await promoteResult(enriched, result, email, firstName);
               await markCaptured(email, runId, promoted.slug);
               try {
-                await runLeadPlumbing(promoted.record, email, promoted.slug, originOf(req));
+                await runLeadPlumbing(promoted.record, email, promoted.slug, originOf(req), firstName);
               } catch (plumbErr) {
                 console.error("[scorecard-run] lead plumbing failed:", plumbErr instanceof Error ? plumbErr.message : plumbErr);
               }

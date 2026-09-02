@@ -102,7 +102,7 @@ export function ScanAnimation({
       <p className={`sc-scan-subline${detectedOneLiner ? " sc-scan-subline-detected" : ""}`} key={subline}>
         {subline}
       </p>
-      <p className="sc-scan-note">This usually takes under 2 minutes. Your result appears right here.</p>
+      <p className="sc-scan-note">This usually takes about 2 minutes. Your result appears right here.</p>
     </div>
   );
 }

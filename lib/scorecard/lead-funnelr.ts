@@ -92,13 +92,23 @@ function cleanText(value: unknown, max = MAX_TEXT): string {
 export function normalizeScorecardLeadInput(input: unknown): NormalizedScorecardLead | { error: string } {
   if (!input || typeof input !== "object") return { error: "Invalid payload." };
   const body = input as Record<string, unknown>;
-  const firstName = cleanText(body.firstName, 80);
+  // Accept both firstName (canonical) and first_name (the field name the
+  // browser posts as an explicit alias), so a payload using either key works.
+  const firstName = cleanText(body.firstName ?? body.first_name, 80);
   const lastName = cleanText(body.lastName, 80);
   const email = cleanText(body.email, 256).toLowerCase();
   const company = cleanText(body.company, 160);
   const reportUrl = cleanText(body.reportUrl, MAX_URL);
 
-  if (!firstName) return { error: "First name is required." };
+  if (!firstName) {
+    // Every downstream sequence email merges the first name, so a payload
+    // without one is a broken lead. Log loudly before rejecting.
+    console.error("[scorecard-lead] payload missing first_name/firstName; rejecting", {
+      keys: Object.keys(body),
+      email: cleanText(body.email, 256).toLowerCase() || "(none)",
+    });
+    return { error: "First name is required." };
+  }
   if (!EMAIL_RE.test(email)) return { error: "A valid email is required." };
   if (body.marketingConsent !== undefined && typeof body.marketingConsent !== "boolean") {
     return { error: "Marketing consent must be true or false." };
