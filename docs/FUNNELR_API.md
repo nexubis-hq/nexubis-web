@@ -17,11 +17,11 @@ Swagger UI: `https://ab513.gappstack.com/api/swagger/index.html`
 
 The server-only client is in `lib/funnelr/client.ts`.
 
-Scorecard routing note: `/api/leads/scorecard` and `submitScorecardLeadToFunnelr()` must not call list or sequence endpoints. They are limited to contact create/update, `GET /api/v1/system/formFields`, custom profile update, custom profile read-back, and tag assignment. Funnelr automation triggered by `Trigger: Nexubis | Start Scorecard Sales` owns campaign-list and sequence movement.
+Scorecard routing note: `/api/leads/scorecard` and `submitScorecardLeadToFunnelr()` must not call list or sequence endpoints. They are limited to contact create/update, `GET /api/v1/system/formFields`, custom profile update, custom profile read-back, and tag assignment. Funnelr automation triggered by `Trigger: Nexubis | Start Audit Sales` owns campaign-list and sequence movement.
 
 Contact form routing note: `/api/contact` and `submitContactLeadToFunnelr()` are stricter tag-only helpers. They may find a contact by email, create a contact, safely update standard contact identity fields while preserving `lastName`, and apply only `Brand: Nexubis` (`4B527D4D-3540-401D-A0B1-A1BBDF0FADFF`) plus `Source: Nexubis | Contact Form` (`B398BEA3-1E76-410D-AA8B-50F83F283684`). They must not write `Last name`, Scorecard custom fields, lists, sequences, Trigger tags, Pipeline tags, or History tags. `Nexubis | Brand Tag - Add to All Contacts` owns All Contacts list membership.
 
-Messenger compatibility note: Funnelr Messenger cannot currently merge the custom Scorecard report URL field. The permanent Nexubis Scorecard report URL is still written to the custom `Nexubis | Scorecard Report URL` profile field. The same trimmed HTTPS URL is also mirrored into the built-in `Last name` contact field. Swagger verification on 2026-07-24 confirmed that this value is represented in `POST /api/v1/user/users`, `PUT /api/v1/user/users`, and `GET /api/v1/user/users` as the standard `lastName` property. The failed `Alternative Address` / `street` and `Telephone` / `telephone` mirrors are no longer used; existing `street` or `telephone` values are cleared only when they contain a previous Nexubis Scorecard report URL written by this integration.
+Messenger compatibility note: Funnelr Messenger cannot currently merge the custom Scorecard report URL field. The permanent Nexubis Scorecard report URL is still written to the custom `Nexubis | Audit Report URL` profile field. The same trimmed HTTPS URL is also mirrored into the built-in `Last name` contact field. Swagger verification on 2026-07-24 confirmed that this value is represented in `POST /api/v1/user/users`, `PUT /api/v1/user/users`, and `GET /api/v1/user/users` as the standard `lastName` property. The failed `Alternative Address` / `street` and `Telephone` / `telephone` mirrors are no longer used; existing `street` or `telephone` values are cleared only when they contain a previous Nexubis Scorecard report URL written by this integration.
 
 Implemented read-only functions:
 
@@ -50,7 +50,7 @@ The command performs only GET requests and prints sanitized endpoint availabilit
 | Find contact by email | `GET /api/v1/user/users` | Query: `Email`, plus required `Page`, `Size`. |
 | Create contact/user | `POST /api/v1/user/users` | Body: `CreateUserRequest`; required `email`, `isAgent`, `isStaff`, `isUnsubscribed`. |
 | Update contact/user | `PUT /api/v1/user/users` | Body: `UpdateUserRequest`; required `currencyCode`, `email`, `isAgent`, `userId`. |
-| Mirror Scorecard report URL to Messenger Last name | `POST` / `PUT /api/v1/user/users` | Use the standard contact `lastName` property. The value must exactly match `Nexubis | Scorecard Report URL`. |
+| Mirror Scorecard report URL to Messenger Last name | `POST` / `PUT /api/v1/user/users` | Use the standard contact `lastName` property. The value must exactly match `Nexubis | Audit Report URL`. |
 | Read custom contact fields | `GET /api/v1/user/users/{id}/custom` | Path `id` is integer user id. |
 | Update custom contact fields | `PUT /api/v1/user/users/{id}/profile` | Body: `UpdateUserProfileRequest` with `userProfiles[]` of `{ formFieldId, value }`. |
 | List contact field options | `GET /api/v1/user/option/contactFields` | No required params. |
@@ -74,7 +74,7 @@ The command performs only GET requests and prints sanitized endpoint availabilit
 | Update sequence recipient lists | `PUT /api/v1/messenger/sequences/{id}/lists` | Body: `UpdateSequenceListsRequest` with `sequenceId`, `listIds[]`, `mustDelete`. Note: in live migration, deleting a recipient list via this endpoint returned 200 but did not remove the mapping; `PUT /api/v1/messenger/sequences/standard` with `recipientListIds: []` worked. |
 | Create/update list | `POST` / `PUT /api/v1/user/lists` | Create by `name`; update with `listId`, `name`, `isArchived`. |
 | Create/update tag | `POST` / `PUT /api/v1/user/tags` | Create by `name`; update with `tagId`, `name`, `isArchived`. |
-| List system form fields | `GET /api/v1/system/formFields` | Required for custom `ContactProfile` fields such as `Nexubis | Scorecard Report URL`. |
+| List system form fields | `GET /api/v1/system/formFields` | Required for custom `ContactProfile` fields such as `Nexubis | Audit Report URL`. |
 | Create/update system form field | `POST` / `PUT /api/v1/system/formFields` | Create/update custom fields. |
 | List automations | `GET /api/v1/query/automations` | Optional query: `automationTypeKey`. |
 | Create/update automation | `POST` / `PUT /api/v1/query/automations` | Create/update automation metadata, including `name` and `isEnabled`. |

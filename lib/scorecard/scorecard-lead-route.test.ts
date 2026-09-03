@@ -1,6 +1,7 @@
 import { beforeEach, test, vi } from "vitest";
 import assert from "node:assert/strict";
 import { NextRequest } from "next/server";
+import { BRAND_NEXUBIS_TAG_NAME, SOURCE_SCORECARD_TAG_NAME, START_SCORECARD_SALES_TAG_NAME } from "@/lib/scorecard/lead-funnelr";
 
 const { readSharedMock, submitScorecardLeadToFunnelrMock } = vi.hoisted(() => ({
   readSharedMock: vi.fn(),
@@ -44,7 +45,7 @@ beforeEach(() => {
   submitScorecardLeadToFunnelrMock.mockResolvedValue({
     ok: true,
     contactCreated: true,
-    tagsApplied: ["Brand: Nexubis", "Source: Nexubis | Scorecard", "Trigger: Nexubis | Start Scorecard Sales"],
+    tagsApplied: [BRAND_NEXUBIS_TAG_NAME, SOURCE_SCORECARD_TAG_NAME, START_SCORECARD_SALES_TAG_NAME],
     customFieldsUpdated: ["reportUrl"],
   });
   delete process.env.NEXT_PUBLIC_SITE_URL;
@@ -65,7 +66,7 @@ test("scorecard lead endpoint accepts first name and email only", async () => {
   assert.equal(body.ok, true);
   assert.equal("listMembershipConfirmed" in body, false);
   assert.equal("listMembership" in body, false);
-  assert.deepEqual(body.tagsApplied, ["Brand: Nexubis", "Source: Nexubis | Scorecard", "Trigger: Nexubis | Start Scorecard Sales"]);
+  assert.deepEqual(body.tagsApplied, [BRAND_NEXUBIS_TAG_NAME, SOURCE_SCORECARD_TAG_NAME, START_SCORECARD_SALES_TAG_NAME]);
   assert.equal(readSharedMock.mock.calls.length, 0);
   assert.deepEqual(submitScorecardLeadToFunnelrMock.mock.calls[0][0], {
     firstName: "Mark",
@@ -123,7 +124,7 @@ test("scorecard lead endpoint returns safe success when Funnelr fails", async ()
 });
 
 test("scorecard lead endpoint does not claim full success when required tag application fails", async () => {
-  submitScorecardLeadToFunnelrMock.mockResolvedValue({ ok: false, error: "Required Funnelr tag was not found: Source: Nexubis | Scorecard" });
+  submitScorecardLeadToFunnelrMock.mockResolvedValue({ ok: false, error: `Required Funnelr tag was not found: ${SOURCE_SCORECARD_TAG_NAME}` });
   const res = await POST(request(payload()));
   const body = await res.json();
   assert.equal(res.status, 200);

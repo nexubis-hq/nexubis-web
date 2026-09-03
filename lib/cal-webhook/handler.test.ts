@@ -1,11 +1,12 @@
 import { beforeEach, test, vi } from "vitest";
 import assert from "node:assert/strict";
 import { calEventSlug, handleCalWebhook, signCalWebhookBody, verifyCalSignature, type CalFunnelrClient } from "./handler";
+import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "@/lib/funnelr/nexubis-tags";
 import type { FunnelrTag, FunnelrUser } from "@/lib/funnelr/client";
 
 const secret = "cal-secret";
 const slug = "30min";
-const bookedTag: FunnelrTag = { tagId: "tag-booked", name: "Pipeline: Nexubis | Call Booked" };
+const bookedTag: FunnelrTag = { tagId: NEXUBIS_TAG_IDS.pipelineCallBooked, name: NEXUBIS_TAGS.pipelineCallBooked };
 const user: FunnelrUser = { userId: 42, email: "lead@example.com", firstName: "Lead", lastName: "Example" };
 const env = { CAL_WEBHOOK_SECRET: secret, CAL_APPLICATION_EVENT_SLUG: slug };
 const logger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
@@ -45,9 +46,14 @@ function makeClient(existingUser: FunnelrUser | null = user, initialTags: string
       calls.push(`create:${input.email}:${input.firstName ?? ""}:${input.lastName ?? ""}`);
       return { userId: 99, email: input.email, firstName: input.firstName, lastName: input.lastName };
     },
+    async findTagById(tagId) {
+      calls.push(`tag-id:${tagId}`);
+      if (tagId === NEXUBIS_TAG_IDS.pipelineCallBooked) return bookedTag;
+      return null;
+    },
     async findTagByName(name) {
       calls.push(`tag:${name}`);
-      if (name === "Pipeline: Nexubis | Call Booked") return bookedTag;
+      if (name === NEXUBIS_TAGS.pipelineCallBooked) return bookedTag;
       return null;
     },
     async contactHasTag(_userId, tagId) {
@@ -109,7 +115,7 @@ test("BOOKING_CREATED with a matching Funnelr contact applies Call Booked", asyn
   assert.equal(res.status, 200);
   assert.ok(client.calls.includes("find:lead@example.com"));
   assert.equal(client.tags.has(bookedTag.tagId), true);
-  assert.ok(client.calls.includes("add:tag-booked"));
+  assert.ok(client.calls.includes(`add:${NEXUBIS_TAG_IDS.pipelineCallBooked}`));
   assert.equal(client.calls.some((call) => call.includes("Pipeline: Call Booked")), false);
   assert.equal(client.calls.some((call) => call.includes("Pipeline: LekkeWeb | Call Booked")), false);
   assert.equal(logger.info.mock.calls.some((call) => call[1]?.reason === "funnelr_update_attempt"), true);
@@ -132,7 +138,7 @@ test("BOOKING_CREATED eventType slug fixture reaches Funnelr", async () => {
   assert.equal(calEventSlug(body), slug);
   assert.equal(res.status, 200);
   assert.ok(client.calls.includes("find:lead@example.com"));
-  assert.ok(client.calls.includes("add:tag-booked"));
+  assert.ok(client.calls.includes(`add:${NEXUBIS_TAG_IDS.pipelineCallBooked}`));
 });
 
 test("BOOKING_CREATED with attendeeEmail fallback applies Call Booked", async () => {
@@ -141,7 +147,7 @@ test("BOOKING_CREATED with attendeeEmail fallback applies Call Booked", async ()
   const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false });
   assert.equal(res.status, 200);
   assert.ok(client.calls.includes("find:lead@example.com"));
-  assert.ok(client.calls.includes("add:tag-booked"));
+  assert.ok(client.calls.includes(`add:${NEXUBIS_TAG_IDS.pipelineCallBooked}`));
 });
 
 test("repeated BOOKING_CREATED delivery is idempotent", async () => {
@@ -149,7 +155,7 @@ test("repeated BOOKING_CREATED delivery is idempotent", async () => {
   const { raw, signature } = signed(booking());
   const res = await handleCalWebhook(raw, signature, { env, client, dedupe: false });
   assert.equal(res.status, 200);
-  assert.equal(client.calls.includes("add:tag-booked"), false);
+  assert.equal(client.calls.includes(`add:${NEXUBIS_TAG_IDS.pipelineCallBooked}`), false);
 });
 
 test("BOOKING_RESCHEDULED keeps Call Booked applied", async () => {

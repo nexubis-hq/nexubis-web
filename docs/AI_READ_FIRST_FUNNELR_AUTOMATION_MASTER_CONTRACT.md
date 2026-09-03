@@ -1,6 +1,6 @@
 # AI READ FIRST: Funnelr Automation Master Contract
 
-Last updated: 2026-07-30
+Last updated: 2026-09-02
 
 This document is the single permanent source of truth for Nexubis and LekkeWeb Funnelr automation behaviour in this repository. Future AI agents and human maintainers must read this file before changing Funnelr lists, sequences, tags, automations, contact-routing code, or related scripts.
 
@@ -19,11 +19,13 @@ The Scorecard and Contact Form website/server integrations are tag-only. Any rei
 The Nexubis website/server only:
 
 - creates or updates the Funnelr contact
-- saves `Nexubis | Scorecard Report URL`
+- saves `Nexubis | Audit Report URL`
 - temporarily mirrors the same report URL into Funnelr's built-in `Last name` field
 - applies `Brand: Nexubis`
-- applies `Source: Nexubis | Scorecard`
-- applies `Trigger: Nexubis | Start Scorecard Sales`
+- applies `Source: Nexubis | Audit`
+- applies `Trigger: Nexubis | Start Audit Sales`
+
+Website-side tag resolution is ID-first using stable Funnelr GUIDs, with display-name lookup only as a fallback when ID lookup returns no tag. Website-side Scorecard report custom-field resolution is ID-first by `6CDFB703-9B38-43A3-A2E4-311107F15424`, then key-based by `NexubisScorecardReportURL`, then display-name fallback.
 
 For Contact form submissions only, the Nexubis website/server:
 
@@ -68,15 +70,15 @@ Funnelr automations own:
 | Tag | ID | Purpose |
 | --- | --- | --- |
 | `Brand: Nexubis` | `4B527D4D-3540-401D-A0B1-A1BBDF0FADFF` | Marks the contact as owned by Nexubis. |
-| `Source: Nexubis | Scorecard` | `AA47260F-59B0-4D4A-999F-4D571382658D` | Marks Scorecard as the lead source. |
+| `Source: Nexubis | Audit` | `AA47260F-59B0-4D4A-999F-4D571382658D` | Marks Scorecard as the lead source. |
 | `Source: Nexubis | Manual` | `A23C221E-A548-4268-9223-B1DFC688823A` | Reserved for manually entered Nexubis leads. |
 | `Source: Nexubis | Contact Form` | `B398BEA3-1E76-410D-AA8B-50F83F283684` | Identifies an enquiry submitted through the Nexubis Contact form; does not trigger a campaign. |
-| `Trigger: Nexubis | Start Scorecard Sales` | `6B9DA797-9A52-4F4F-9854-66FFA1935C07` | Requests Scorecard sales routing. |
+| `Trigger: Nexubis | Start Audit Sales` | `6B9DA797-9A52-4F4F-9854-66FFA1935C07` | Requests Scorecard sales routing. |
 | `Trigger: Nexubis | Start Credibility Brief Nurture` | `E654E2FA-B55E-4904-9336-9D45AA6837AB` | Requests nurture routing. Scheduler pending. |
 | `Pipeline: Nexubis | Call Booked` | `93347D55-1901-4A2D-90A2-0FCBB6B8A492` | Durable booked state from Cal.com. |
 | `Pipeline: Nexubis | Replied` | `3B0905B4-D0C6-4A2D-861D-64D9579D7DE6` | Durable replied state, initially applied manually. |
 | `Pipeline: Nexubis | Contacted` | `134F3411-5993-45FF-BA40-45D877513B2B` | Durable direct-enquiry state from Contact form submissions; exits automated sales and nurture while preserving normal Nexubis contact state. |
-| `History: Nexubis | Scorecard Sales Started` | `CD99688F-34FF-4942-9CDC-FF9A7E4A6735` | Prevents duplicate sales enrolment. |
+| `History: Nexubis | Audit Sales Started` | `CD99688F-34FF-4942-9CDC-FF9A7E4A6735` | Prevents duplicate sales enrolment. |
 | `History: Nexubis | Credibility Brief Nurture Started` | `A4A6A094-AA39-4288-B2A7-54087866DC4B` | Prevents duplicate nurture enrolment. |
 
 Do not create `Pipeline: Nexubis | Call Cancelled`, needsHuman tags, Full Report tags, No Full Report tags, or new LekkeWeb tags for this integration.
@@ -109,12 +111,12 @@ Sequence activation remains a separate launch decision because activating sequen
 
 | Field | ID | Key | Control | Use |
 | --- | --- | --- | --- | --- |
-| `Nexubis | Scorecard Report URL` | `6CDFB703-9B38-43A3-A2E4-311107F15424` | `NexubisScorecardReportURL` | Text | Website writes the permanent Scorecard report URL. |
+| `Nexubis | Audit Report URL` | `6CDFB703-9B38-43A3-A2E4-311107F15424` | `NexubisScorecardReportURL` | Text | Website writes the permanent Scorecard report URL. |
 | `Nexubis | Scorecard Sales Started At` | `289A7E5A-46A8-4E82-8C5E-4781056FBE21` | `NexubisScorecardSalesStartedAt` | Date | Existing field reserved for later sales-to-nurture scheduling. |
 
 Custom contact-profile fields are discovered through `GET /api/v1/system/formFields`, not `GET /api/v1/user/option/contactFields`.
 
-The permanent Scorecard report URL source of truth is `Nexubis | Scorecard Report URL`. For Messenger compatibility, the website/server also writes the exact same trimmed HTTPS URL to Funnelr's built-in `Last name` field, represented in the contact create/update API as the standard `lastName` property. The old `Alternative Address` / `street` and `Telephone` / `telephone` mirrors are retired. The website must not write the report URL to `street` or `telephone`; when updating an existing Scorecard contact, it may clear `street` or `telephone` only if the value contains a previous Nexubis Scorecard report URL written by this integration.
+The permanent Scorecard report URL source of truth is `Nexubis | Audit Report URL`. For Messenger compatibility, the website/server also writes the exact same trimmed HTTPS URL to Funnelr's built-in `Last name` field, represented in the contact create/update API as the standard `lastName` property. The old `Alternative Address` / `street` and `Telephone` / `telephone` mirrors are retired. The website must not write the report URL to `street` or `telephone`; when updating an existing Scorecard contact, it may clear `street` or `telephone` only if the value contains a previous Nexubis Scorecard report URL written by this integration.
 
 ## Automations
 
@@ -157,11 +159,11 @@ Enabled: yes
 
 Trigger:
 
-- contact has tag `Trigger: Nexubis | Start Scorecard Sales`
+- contact has tag `Trigger: Nexubis | Start Audit Sales`
 
 Conditions:
 
-- contact does not have `History: Nexubis | Scorecard Sales Started`
+- contact does not have `History: Nexubis | Audit Sales Started`
 - contact does not have `Pipeline: Nexubis | Call Booked`
 - contact does not have `Pipeline: Nexubis | Replied`
 - contact does not have `Pipeline: Nexubis | Contacted`
@@ -173,8 +175,8 @@ Actions:
 3. Remove from list `Nexubis | The Credibility Brief - Nurture`
 4. Remove from sequence `Nexubis | The Credibility Brief`
 5. Add to sequence `Nexubis | Scorecard Sales`
-6. Apply tag `History: Nexubis | Scorecard Sales Started`
-7. Remove tag `Trigger: Nexubis | Start Scorecard Sales`
+6. Apply tag `History: Nexubis | Audit Sales Started`
+7. Remove tag `Trigger: Nexubis | Start Audit Sales`
 
 ### Nexubis | Start Credibility Brief Nurture
 
@@ -220,7 +222,7 @@ Manual Holding is removed when nurture entry succeeds. `Nexubis | All Contacts` 
 ### Scorecard-First Lead
 
 1. Visitor completes and unlocks the Scorecard.
-2. Website creates or updates the contact, writes the report URL to `Nexubis | Scorecard Report URL`, mirrors the same URL to `Last name`, and applies Brand, Scorecard Source, and sales Trigger tags.
+2. Website creates or updates the contact, writes the report URL to `Nexubis | Audit Report URL`, mirrors the same URL to `Last name`, and applies Brand, Scorecard Source, and sales Trigger tags.
 3. Funnelr enters the contact into Scorecard sales and applies Scorecard sales History.
 4. A future timed handoff may later apply the nurture Trigger only for Scorecard-first contacts who have never received nurture.
 
@@ -258,7 +260,7 @@ Actions:
 4. Remove from list `Nexubis | The Credibility Brief - Nurture`
 5. Remove from list `Nexubis | Manual Leads - Holding`
 6. Add to list `Nexubis | Call Booked`
-7. Remove tag `Trigger: Nexubis | Start Scorecard Sales`
+7. Remove tag `Trigger: Nexubis | Start Audit Sales`
 8. Remove tag `Trigger: Nexubis | Start Credibility Brief Nurture`
 
 This automation must not remove `Pipeline: Nexubis | Call Booked` or History tags.
@@ -279,7 +281,7 @@ Actions:
 3. Remove from list `Nexubis | Scorecard Leads - Sales`
 4. Remove from list `Nexubis | The Credibility Brief - Nurture`
 5. Remove from list `Nexubis | Manual Leads - Holding`
-6. Remove tag `Trigger: Nexubis | Start Scorecard Sales`
+6. Remove tag `Trigger: Nexubis | Start Audit Sales`
 7. Remove tag `Trigger: Nexubis | Start Credibility Brief Nurture`
 
 This automation must not remove `Pipeline: Nexubis | Replied` or History tags. Inbox monitoring is not implemented.
@@ -301,10 +303,10 @@ Actions:
 4. Remove from list `Nexubis | Scorecard Leads - Sales`
 5. Remove from list `Nexubis | The Credibility Brief - Nurture`
 6. Remove from list `Nexubis | Manual Leads - Holding`
-7. Remove tag `Trigger: Nexubis | Start Scorecard Sales`
+7. Remove tag `Trigger: Nexubis | Start Audit Sales`
 8. Remove tag `Trigger: Nexubis | Start Credibility Brief Nurture`
 
-This automation must not remove `Nexubis | All Contacts`, add `Nexubis | Call Booked`, remove `Pipeline: Nexubis | Contacted`, remove `Pipeline: Nexubis | Call Booked`, remove `Pipeline: Nexubis | Replied`, remove History tags, remove Source tags, change unsubscribe status, change First Name or Last Name, change `Nexubis | Scorecard Report URL`, send email, add any sequence, or change sequence status.
+This automation must not remove `Nexubis | All Contacts`, add `Nexubis | Call Booked`, remove `Pipeline: Nexubis | Contacted`, remove `Pipeline: Nexubis | Call Booked`, remove `Pipeline: Nexubis | Replied`, remove History tags, remove Source tags, change unsubscribe status, change First Name or Last Name, change `Nexubis | Audit Report URL`, send email, add any sequence, or change sequence status.
 
 ## Scorecard Capture Point
 
@@ -324,7 +326,7 @@ Current flow:
 
 Do not send leads to Funnelr when the Scorecard page loads, the scan begins, the preview is generated, the contact form opens, or an existing report is viewed.
 
-The Scorecard capture flow must only create/update the contact, write `Nexubis | Scorecard Report URL`, mirror that same URL to `Last name`, and apply the three required tags. It must never directly add or remove the Scorecard sales list, nurture list, holding list, Scorecard sales sequence, or nurture sequence.
+The Scorecard capture flow must only create/update the contact, write `Nexubis | Audit Report URL`, mirror that same URL to `Last name`, and apply the three required tags. It must never directly add or remove the Scorecard sales list, nurture list, holding list, Scorecard sales sequence, or nurture sequence.
 
 ## Cal.com Booking Flow
 
@@ -542,11 +544,11 @@ Do not delete or rename these without separate approval:
 
 ## Testing Checklist
 
-- New Scorecard contact creates one contact, saves report URL to `Nexubis | Scorecard Report URL`, mirrors the same URL to `Last name`, applies brand/source/sales trigger, then Funnelr applies sales history, sales list, sales sequence, and removes trigger.
+- New Scorecard contact creates one contact, saves report URL to `Nexubis | Audit Report URL`, mirrors the same URL to `Last name`, applies brand/source/sales trigger, then Funnelr applies sales history, sales list, sales sequence, and removes trigger.
 - Brand-tagged Nexubis contact is automatically added to `Nexubis | All Contacts` with no campaign Source, Trigger, Pipeline, History, list, or sequence changes.
 - Contact-form website code creates or updates one Funnelr contact by email, applies only `Brand: Nexubis` and `Source: Nexubis | Contact Form`, and relies on Funnelr automations for `Nexubis | All Contacts`, Contacted state, and campaign cleanup.
 - Contact-form website code never applies Scorecard sales Trigger, nurture Trigger, Pipeline, History, Manual Source, Manual Holding membership, any list operation, any sequence operation, or any Scorecard custom-field update.
-- `Nexubis | Contacted - Exit Campaigns` applies `Pipeline: Nexubis | Contacted`, removes Scorecard sales and Credibility Brief sequences/lists, removes Manual Holding, removes temporary sales/nurture Trigger tags, preserves `Nexubis | All Contacts`, preserves Source and History tags, preserves `Last name`, and preserves `Nexubis | Scorecard Report URL`.
+- `Nexubis | Contacted - Exit Campaigns` applies `Pipeline: Nexubis | Contacted`, removes Scorecard sales and Credibility Brief sequences/lists, removes Manual Holding, removes temporary sales/nurture Trigger tags, preserves `Nexubis | All Contacts`, preserves Source and History tags, preserves `Last name`, and preserves `Nexubis | Audit Report URL`.
 - Contacts with `Pipeline: Nexubis | Contacted` do not enter `Nexubis | Start Scorecard Sales` or `Nexubis | Start Credibility Brief Nurture`.
 - Contact-form lead preserves existing `Last name` byte-for-byte, including Scorecard report URL mirrors and ordinary surname values.
 - Manual contact added to `Nexubis | Manual Leads - Holding` receives Brand, Manual Source, and nurture Trigger tags, then enters nurture through the existing nurture automation.
@@ -591,6 +593,12 @@ Rollback steps:
 
 ## Change Log
 
+2026-09-02:
+
+- Renamed Nexubis display names in code and documentation while preserving stable IDs: `Source: Nexubis | Audit`, `Trigger: Nexubis | Start Audit Sales`, and `History: Nexubis | Audit Sales Started`.
+- Updated the Scorecard report custom-field display name to `Nexubis | Audit Report URL` while preserving field ID `6CDFB703-9B38-43A3-A2E4-311107F15424` and key `NexubisScorecardReportURL`.
+- Documented that website-side tag resolution is ID-first with display-name fallback, and the report URL field resolution is ID-first, then key-based, then display-name fallback.
+
 2026-07-30:
 
 - Created and verified `Pipeline: Nexubis | Contacted` with stable ID `134F3411-5993-45FF-BA40-45D877513B2B`.
@@ -627,7 +635,7 @@ Rollback steps:
 - Verified existing `LekkeWeb | Call Booked - Exit Campaigns` and `LekkeWeb | Replied - Exit Campaigns` remove Manual Holding and do not remove All Contacts.
 - Documented stable-ID contact read-back for LekkeWeb tests because contact-level tag/list endpoints can return `name: null`.
 - Replaced the failed `Telephone` / `telephone` Messenger workaround with the built-in `Last name` field, represented by the contact `lastName` API property.
-- Confirmed the custom `Nexubis | Scorecard Report URL` field remains the permanent source of truth and both the custom field and `Last name` must be updated on new and existing unlocks with a valid HTTPS report URL.
+- Confirmed the custom `Nexubis | Audit Report URL` field remains the permanent source of truth and both the custom field and `Last name` must be updated on new and existing unlocks with a valid HTTPS report URL.
 - Created `Nexubis | All Contacts` as the visibility-only master list for Nexubis contacts.
 - Created and enabled `Nexubis | Brand Tag - Add to All Contacts`.
 - Created and enabled `Nexubis | Manual Holding - Apply Contact Tags`.
