@@ -110,8 +110,8 @@ const solutions = [
 
 const planSteps = [
   {
-    title: "Book an Application Call",
-    text: "We only take on about two new partners a month, so the first step is a short application call, not a generic sales pitch. Tell us about your product and where the brand is lagging, and we'll show you what we'd do.",
+    title: "Book a Call",
+    text: "We only take on about two new partners a month, so the first step is a short call to check fit, not a generic sales pitch. Tell us about your product and where the brand is lagging, and we'll show you what we'd do.",
   },
   {
     title: "See It Before You Commit",
@@ -127,14 +127,14 @@ const planOneLiner =
   "Your product is better than your brand shows, so buyers pick the cheaper option. Nexubis becomes your in-house creative team: brand, website, 3D, video, and print on one flat retainer. Your brand finally matches your engineering, and buyers see why you're worth more.";
 
 const scorecardBullets = [
-  "Your Credibility Score across the five places buyers look",
-  "A side-by-side benchmark against two or three competitors you choose",
+  "Your Gap Score across the five places buyers look",
+  "A side-by-side benchmark against the competitors buyers cross-shop you with",
   "The first place to fix, explained clearly",
 ];
 const scorecardSub =
-  "Run the Online Credibility Audit, powered by Nexubis AI. Enter your website and see, in under 2 minutes, how well your brand represents your product, how you benchmark against competitors you name, and the first place to fix.";
+  "Run the Online Credibility Audit, powered by Nexubis AI. Enter your website and see, in about 2 minutes, how well your brand represents your product, how you benchmark against the competitors buyers cross-shop you with, and the first place to fix.";
 const scorecardExpectation =
-  "Your result appears in under 2 minutes. Unlock the full report by email, no waiting.";
+  "Your result appears in about 2 minutes. Unlock the full report by email, no waiting.";
 const scorecardMicroProof =
   "Free, no obligations. We take on two new partners a month; the audit is where most start.";
 
@@ -179,7 +179,7 @@ const faqs = [
   ],
   [
     "How does pricing work?",
-    "One flat monthly retainer, one invoice. No quotes per project, no surprise costs. You apply with a short form first, then we agree the right level on the call.",
+    "One flat monthly retainer, one invoice. No quotes per project, no surprise costs. Run the free audit to see where you stand, then we agree the right level on the call.",
   ],
   [
     "What if we don't have enough work every month?",
@@ -194,12 +194,12 @@ const faqs = [
     "No. Cancel anytime. We keep partners by being good, not by locking the door.",
   ],
   [
-    "Why an application call instead of a generic sales call?",
+    "Why a call first, instead of a generic sales pitch?",
     "We take on about two new partners a month, so we check fit first, and the call is where we look at your brand and show you real work, not a pitch. It saves your time as much as ours.",
   ],
   [
     "How do we know the quality before paying?",
-    "You see it first. If the application is a fit, we create a real piece of work for your brand, live, before you commit to anything.",
+    "You see it first. If it's a fit, we create a real piece of work for your brand, live, before you commit to anything.",
   ],
 ];
 
@@ -638,7 +638,7 @@ function ScorecardBlock({ showMicroProof = true }: { showMicroProof?: boolean })
                 <span className="scr-score">62</span>
               </div>
               <div className="scr-verdict">
-                <span className="scr-verdict-label">Credibility score</span>
+                <span className="scr-verdict-label">Gap Score</span>
                 <span className="scr-verdict-line" />
                 <span className="scr-verdict-tag">Undersold in 3 of 5 places</span>
               </div>

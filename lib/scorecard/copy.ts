@@ -13,14 +13,13 @@ export const POWERED_BY = "Powered by Nexubis AI";
 // field is the only thing the visitor fills in; everything else is detected
 // server-side.
 export const LANDING = {
-  kicker: "For European industrial manufacturers",
-  headline: "The Buyer Who Didn't Trust Your Website Shortlisted Your Competitor.",
-  subheadline:
-    "See exactly where serious buyers lose confidence in your company. We read your online presence the way a procurement team does, score you on the five things buyers judge you on, and hand you the first fix.",
+  kicker: "For Dutch industrial manufacturers",
+  headline: "See Exactly Where Serious Buyers Lose Confidence in Your Company.",
+  subheadline: "The buyer who didn't trust your website shortlisted your competitor.",
   bullets: [
     "Scored on five fronts: brand, website, visuals, print and message",
     "Benchmarked side by side against the competitors you get cross-shopped with",
-    "One clear first fix, explained plainly, not a list of forty problems",
+    "One clear first fix, explained plainly, with what fixing it looks like in practice.",
   ],
   submitButton: "Run My Free Audit",
   // Sits directly under the button. The highlight is red, the note stays grey.

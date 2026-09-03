@@ -55,7 +55,7 @@ export function PartnerCard({ currency, cycle }: { currency: Currency; cycle: Bi
       <FeatureRows features={partner.features} lead={partner.unlockLine} />
 
       <Link href={BOOKING_URL} className="btn btn-primary package-cta">
-        Book an application call
+        Book a Call
       </Link>
     </article>
   );

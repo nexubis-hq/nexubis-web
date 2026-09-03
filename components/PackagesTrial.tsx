@@ -3,12 +3,12 @@ import { SCORECARD_URL } from "@/lib/site-config";
 
 const benefitColumns = [
   [
-    "Your Credibility Score across the five places buyers look",
+    "Your Gap Score across the five places buyers look",
     "A benchmark against the competitors buyers weigh you against",
   ],
   [
     "The first things to fix, clearly explained",
-    "Free, in under 2 minutes, and no call required",
+    "Free, in about 2 minutes, and no call required",
   ],
 ];
 

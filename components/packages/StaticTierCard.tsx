@@ -45,7 +45,7 @@ export function StaticTierCard({
       <FeatureRows features={tier.features} lead={tier.unlockLine} />
 
       <Link href={BOOKING_URL} className={ctaClass}>
-        Book an application call
+        Book a Call
       </Link>
     </article>
   );

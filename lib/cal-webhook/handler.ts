@@ -255,7 +255,7 @@ export async function handleCalWebhook(
           email,
           clientIp: null,
           userAgent: null,
-          eventSourceUrl: "https://nexubis.io/scorecard",
+          eventSourceUrl: "https://nexubis.io/audit",
           customData: {
             content_name: LEAD_CONTENT_NAME,
             ...(schedValue ? { value: schedValue.value, currency: schedValue.currency } : {}),

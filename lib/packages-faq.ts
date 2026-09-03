@@ -68,7 +68,7 @@ export function getPackagesFaq(currency: Currency): FaqEntry[] {
     },
     {
       q: "Not sure which level is right for us?",
-      a: "Book an application call and we will tell you honestly, including if the answer is not yet. We would rather point you to the level that actually fits, or say it is not the right time, than put you on the wrong one.",
+      a: "Book a call and we will tell you honestly, including if the answer is not yet. We would rather point you to the level that actually fits, or say it is not the right time, than put you on the wrong one.",
     },
   ];
 }

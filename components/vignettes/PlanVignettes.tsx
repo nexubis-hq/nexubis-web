@@ -9,7 +9,7 @@
  * plays once and a gentle ambient loop layers on top, both keyed off the parent
  * `.plan-card.is-inview` (added by RevealOnScroll).
  *
- * Step 1 - Book an application call: a Google-Meet-style call grid where the
+ * Step 1 - Book a call: a Google-Meet-style call grid where the
  *          "speaking" glow flips between your team and the client, reactions pop.
  * Step 2 - See it before you commit: a browser before/after, a grey out-of-order
  *          wireframe resolving into the branded, in-order layout with red accents.
