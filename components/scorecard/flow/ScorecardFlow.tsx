@@ -13,7 +13,7 @@ import { trackMeta } from "@/lib/meta/track";
 import { META_EVENTS, LEAD_CONTENT_NAME, leadValue } from "@/lib/meta/events";
 import { ScanAnimation } from "./ScanAnimation";
 import { ScorecardPreviewRadar } from "./ScorecardPreviewRadar";
-import { LAINE_VIDEO_SRC, LAINE_VIDEO_POSTER } from "./laine-video-config";
+import { LAINE_VIDEO_SRC, LAINE_VIDEO_SRC_WEBM, LAINE_VIDEO_POSTER } from "./laine-video-config";
 import type { ScanStage } from "@/lib/scorecard/orchestrator";
 
 declare global {
@@ -287,9 +287,12 @@ export function ScorecardFlow() {
             <>
               <div className={LAINE_VIDEO_SRC ? "sc-card-visual sc-card-visual-video" : "sc-card-visual"}>
                 {LAINE_VIDEO_SRC ? (
-                  // Laine's 16:9 intro. Set LAINE_VIDEO_SRC in
-                  // laine-video-config.ts when the clip is shot.
-                  <video controls preload="metadata" playsInline poster={LAINE_VIDEO_POSTER} src={LAINE_VIDEO_SRC} />
+                  // Laine's 16:9 intro. preload="metadata" + faststart MP4 =
+                  // it streams as it plays; WebM first for browsers that take it.
+                  <video controls preload="metadata" playsInline poster={LAINE_VIDEO_POSTER}>
+                    <source src={LAINE_VIDEO_SRC_WEBM} type="video/webm" />
+                    <source src={LAINE_VIDEO_SRC} type="video/mp4" />
+                  </video>
                 ) : (
                   // Until the clip lands, the slot holds the five-pillar radar
                   // preview (the visual we had before the video slot). The video
