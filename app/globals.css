@@ -12499,6 +12499,65 @@ summary {
   display: block;
   background: var(--black);
 }
+/* Custom play button over the poster (native controls can't be styled). Pulses
+   on load to invite the click, lifts on hover; removed once the clip plays. */
+.sc-laine-video-wrap {
+  position: relative;
+  line-height: 0;
+}
+.sc-laine-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 68px;
+  height: 68px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: var(--white);
+  background: var(--primary);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 40%, transparent);
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.sc-laine-video-play:hover,
+.sc-laine-video-play:focus-visible {
+  transform: translate(-50%, -50%) scale(1.09);
+  background: color-mix(in srgb, var(--primary) 88%, #000);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--primary) 55%, transparent);
+  outline: none;
+}
+.sc-laine-video-play-icon {
+  margin-left: 3px; /* optically centre the play triangle in the circle */
+}
+/* Sonar ring, sized to the button, expanding outward via box-shadow so it never
+   fights the button's own hover transform. */
+.sc-laine-video-play-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 55%, transparent);
+  animation: sc-play-pulse 1.9s ease-out infinite;
+}
+@keyframes sc-play-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 55%, transparent); }
+  70% { box-shadow: 0 0 0 18px color-mix(in srgb, var(--primary) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+/* Settle the pulse while hovering so the hover state reads cleanly. */
+.sc-laine-video-play:hover .sc-laine-video-play-ring,
+.sc-laine-video-play:focus-visible .sc-laine-video-play-ring {
+  animation-play-state: paused;
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-laine-video-play-ring { animation: none; box-shadow: none; }
+  .sc-laine-video-play { transition: none; }
+}
 /* Placeholder shown in the card's video slot until the clip is set. */
 .sc-card-video-coming {
   position: relative;
