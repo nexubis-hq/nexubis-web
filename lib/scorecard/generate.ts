@@ -192,6 +192,27 @@ export async function generateScorecardUncached(
   const benchmark = computeBenchmark(prospect, rivals);
   const firstFix = firstFixCategory(prospect);
 
+  // Confidence gate for NAMING the top rival in high-stakes narrative copy (the
+  // staying-same line and anything the model writes). The name is merged only
+  // when that competitor resolved via a product-context match (Pass 1 / a given
+  // URL), not the relaxed name-only fallback (Pass 2). Below the bar, no name is
+  // passed to the copy prompt and the templated fallback stays generic, so a
+  // wrong auto-detected name can never sit in the sentence above the button.
+  // bestRival itself is untouched: the scored benchmark card still shows it.
+  const bestRivalEvidence = benchmark.bestRival
+    ? evidence.companies.find((c) => !c.isProspect && c.company === benchmark.bestRival!.company)
+    : undefined;
+  const nameTopRival = Boolean(benchmark.bestRival && bestRivalEvidence?.contextMatch);
+  const namedRival = nameTopRival ? benchmark.bestRival!.company : null;
+  // The same bar governs every competitor the model may name: only
+  // context-matched rivals are handed to the copy prompt.
+  const confidentRivalNames = new Set(
+    evidence.companies.filter((c) => !c.isProspect && c.contextMatch).map((c) => c.company),
+  );
+  console.log(
+    `[scorecard-stakes] ${prospect.company}: bestRival=${benchmark.bestRival?.company ?? "none"} contextMatch=${bestRivalEvidence?.contextMatch ?? "n/a"} path=${nameTopRival ? "named" : "fallback"}`,
+  );
+
   // 4. Copy pass, then clamp, then the safety scan; fall back to templates on
   //    any failure. The prospect's own domains are allowlisted so a real
   //    "example.com"-like domain never trips the placeholder rule.
@@ -204,12 +225,15 @@ export async function generateScorecardUncached(
     verdictBand: band,
     stance: benchmark.stance,
     overall: prospect.overall,
-    bestRival: benchmark.bestRival,
-    aheadRivals: benchmark.aheadRivals.map((r) => ({
-      company: r.company,
-      overall: r.overall,
-      leadCategory: r.leadCategory ? categoryLabel(r.leadCategory) : null,
-    })),
+    // Gate the names the model may use: only context-matched rivals below.
+    bestRival: nameTopRival ? benchmark.bestRival : null,
+    aheadRivals: benchmark.aheadRivals
+      .filter((r) => confidentRivalNames.has(r.company))
+      .map((r) => ({
+        company: r.company,
+        overall: r.overall,
+        leadCategory: r.leadCategory ? categoryLabel(r.leadCategory) : null,
+      })),
     firstFixCategory: firstFix ?? "website",
     firstFixLabel: firstFix ? categoryLabel(firstFix) : "Website",
     scoreSummary: scoreSummaryBlock(prospect, rivals),
@@ -225,7 +249,13 @@ export async function generateScorecardUncached(
     company: prospect.company,
     overall: prospect.overall,
     band,
-    benchmark,
+    // Same confidence gate as the AI copy: the templated fallback must not name
+    // a low-confidence rival either.
+    benchmark: {
+      ...benchmark,
+      bestRival: nameTopRival ? benchmark.bestRival : null,
+      aheadRivals: benchmark.aheadRivals.filter((r) => confidentRivalNames.has(r.company)),
+    },
     firstFix,
     prospect,
     rivals,
@@ -282,6 +312,7 @@ export async function generateScorecardUncached(
       stance: benchmark.stance,
       paragraph: deckCopy.verdictParagraph,
       bestRival: benchmark.bestRival,
+      namedRival,
       aheadRivals: benchmark.aheadRivals,
     },
     firstFix: firstFix

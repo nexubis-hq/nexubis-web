@@ -23,7 +23,7 @@ export function fallbackVerdictParagraph(args: {
         : `Your brand is costing you sales. The findings in this report show where, and the first fix is clear.`;
   const stanceLine =
     args.benchmark.stance === "ahead"
-      ? ` You lead the competitors you named.`
+      ? ` You lead the competitors in this benchmark.`
       : args.benchmark.stance === "level"
         ? ` You are level with ${args.benchmark.bestRival?.company ?? "your strongest rival"}; small gains tip the tie-breaker your way.`
         : args.benchmark.stance === "behind"

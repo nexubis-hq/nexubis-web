@@ -636,7 +636,9 @@ export async function writeDeckCopy(input: DeckCopyInput): Promise<WrapperResult
       : input.stance === "level"
         ? `They are level with the best competitor (${input.bestRival?.company ?? "the best rival"}). Say the credibility tie-breaker is even right now, and small gains tip it their way.`
         : input.stance === "behind"
-          ? `They trail ${input.aheadRivals.map((r) => `${r.company} (${r.overall}/100${r.leadCategory ? `, pulls ahead on ${r.leadCategory}` : ""})`).join(" and ")}. Name the strongest rival as the live reason to act and point to the category where they pull ahead. The verdict stays where the score put it; never inflate or soften the band because of the comparison.`
+          ? input.aheadRivals.length
+            ? `They trail ${input.aheadRivals.map((r) => `${r.company} (${r.overall}/100${r.leadCategory ? `, pulls ahead on ${r.leadCategory}` : ""})`).join(" and ")}. Name the strongest rival as the live reason to act and point to the category where they pull ahead. The verdict stays where the score put it; never inflate or soften the band because of the comparison.`
+            : `They trail the stronger names buyers compare them against in this report. Point to the comparison as the live reason to act WITHOUT naming any specific company. The verdict stays where the score put it.`
           : `No competitor could be benchmarked. Say the comparison could not be made, plainly, and keep the verdict on their own score.`;
 
   const bandTone =
@@ -654,7 +656,7 @@ export async function writeDeckCopy(input: DeckCopyInput): Promise<WrapperResult
   // the narrative are written against the exact same numbers and evidence and
   // never drift apart.
   const context = `${input.companyContext ? `${input.companyContext}\n\n` : ""}THE NUMBERS (already computed, never change them):
-- Overall Credibility Score: ${input.overall}/100. Verdict: ${input.verdictBand} gap.
+- Overall Gap Score: ${input.overall}/100. Verdict: ${input.verdictBand} gap.
 - Benchmark stance: ${input.stance}. ${stanceRule}
 - First place to fix: ${input.firstFixLabel}.
 

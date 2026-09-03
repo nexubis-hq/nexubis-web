@@ -62,6 +62,8 @@ interface CompanyTarget {
   isProspect: boolean;
   rawEntry?: string;
   resolved: boolean;
+  /** High-confidence competitor match (see CompetitorRef.contextMatch). */
+  contextMatch?: boolean;
 }
 
 // Gather everything about one company. Never throws: a company whose site is
@@ -82,6 +84,7 @@ async function gatherCompanyEvidence(
     isProspect: target.isProspect,
     rawEntry: target.rawEntry,
     resolved: target.resolved,
+    contextMatch: target.contextMatch,
     fetched: false,
     siteText: null,
     siteTitle: null,
@@ -211,6 +214,7 @@ function companyTargets(prospect: ProspectData, competitors: CompetitorRef[]): C
       isProspect: false,
       rawEntry: c.raw,
       resolved: c.resolved === true && Boolean(c.url),
+      contextMatch: c.contextMatch === true,
     });
   }
   return targets.slice(0, RUN_BUDGET.maxCompanies);

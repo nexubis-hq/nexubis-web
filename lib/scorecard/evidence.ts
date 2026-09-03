@@ -17,6 +17,11 @@ export interface CompanyEvidence {
   rawEntry?: string;
   /** False when the competitor could not be resolved to a site at all. */
   resolved: boolean;
+  /** High-confidence competitor match: the site was a given URL or matched the
+   *  name within the prospect's product context (resolver Pass 1), not the
+   *  relaxed name-only fallback (Pass 2). Gates whether this competitor's name
+   *  is safe to merge into high-stakes narrative copy. Prospect: undefined. */
+  contextMatch?: boolean;
   /** False when the site was resolved but could not be fetched (down, blocked,
    *  not HTML). The run still completes; the report says so plainly. */
   fetched: boolean;

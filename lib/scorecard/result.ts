@@ -26,6 +26,12 @@ export interface ResultVerdict {
   stance: BenchmarkStance;
   paragraph: string;
   bestRival: { company: string; overall: number } | null;
+  /** The top rival's name ONLY when it cleared the confidence bar (a
+   *  high-confidence, context-matched detection). Null below the bar. This is
+   *  what narrative merges (the staying-same line, AI copy) use, so a wrong
+   *  auto-detected name never lands in a high-stakes sentence. bestRival is
+   *  kept unconditionally for the scored benchmark card. */
+  namedRival: string | null;
   aheadRivals: RivalGap[];
 }
 

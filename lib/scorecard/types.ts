@@ -14,6 +14,12 @@ export interface CompetitorRef {
   url?: string;
   /** True when we located a real site to run the pipeline on. */
   resolved?: boolean;
+  /** Confidence that this really is a competitor in the prospect's space, not a
+   *  namesake. True when the site was a given URL or matched the name WITHIN the
+   *  prospect's product context (resolver Pass 1); false when it only matched on
+   *  name alone (relaxed Pass 2). Gates whether the name is safe to merge into
+   *  high-stakes narrative copy. See resolveCompetitor. */
+  contextMatch?: boolean;
 }
 
 /** Industry fingerprint extracted from the prospect's own site text during

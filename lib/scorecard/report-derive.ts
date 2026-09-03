@@ -180,7 +180,11 @@ export function startList(result: ScorecardResult): string[] {
 
 /** The one-line cost of doing nothing, from the verdict band and benchmark. */
 export function deriveStayingSame(band: VerdictBand, rivalName: string | null): string {
-  const against = rivalName ? `${rivalName} keeps winning the comparisons buyers run` : "the competitors keep winning the comparisons buyers run";
+  // rivalName is null below the confidence bar; the generic version names no
+  // company and so can never be wrong.
+  const against = rivalName
+    ? `${rivalName} keeps winning the comparisons buyers run`
+    : "the companies in this report keep winning the comparisons buyers run";
   switch (band) {
     case "wide":
       return `What staying the same costs you: every week, buyers who need exactly what you make judge you on this and ${against}.`;
@@ -192,7 +196,9 @@ export function deriveStayingSame(band: VerdictBand, rivalName: string | null): 
 }
 
 export function stayingSameLine(result: ScorecardResult): string {
-  return deriveStayingSame(result.verdict.band, result.verdict.bestRival?.company ?? null);
+  // namedRival is the confidence-gated name (null below the bar, or on reports
+  // stored before the gate existed). Never the raw bestRival.
+  return deriveStayingSame(result.verdict.band, result.verdict.namedRival ?? null);
 }
 
 // ── Resolved sections: prefer what the generator wrote, fall back to the

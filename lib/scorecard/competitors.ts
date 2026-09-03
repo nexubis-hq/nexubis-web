@@ -72,7 +72,8 @@ export async function resolveCompetitor(
     const url = normaliseToHttps(entry);
     const candidate = { name: deriveCompanyFromUrl(url), url };
     if (isSelfMatch(candidate, prospect)) return { raw, name: candidate.name, resolved: false };
-    return { raw, name: candidate.name, url, resolved: true };
+    // A concrete site was handed to us: high confidence by definition.
+    return { raw, name: candidate.name, url, resolved: true, contextMatch: true };
   }
 
   // Name entry: find the official site. Two passes, so a named competitor
@@ -93,7 +94,8 @@ export async function resolveCompetitor(
   const res1 = await searchWeb(`${entry} ${prospect.productOneLiner} official website`);
   for (const hit of res1?.organic ?? []) {
     const host = hostFromUrl(hit.url);
-    if (host && accept(host, hit.title, true)) return { raw, name: entry, url: `https://${host}`, resolved: true };
+    // Pass 1 matched the name within the prospect's product context: high confidence.
+    if (host && accept(host, hit.title, true)) return { raw, name: entry, url: `https://${host}`, resolved: true, contextMatch: true };
   }
 
   // Pass 2 (failsafe): the plain company name. Some manufacturers' official
@@ -108,10 +110,11 @@ export async function resolveCompetitor(
     if (isSelfMatch({ name: entry, url: `https://${host}` }, prospect)) continue;
     const haystack = `${host} ${hit.title.toLowerCase()}`;
     if (!firstToken || haystack.includes(firstToken)) {
-      return { raw, name: entry, url: `https://${host}`, resolved: true };
+      // Pass 2 matched on name alone, no product context: low confidence.
+      return { raw, name: entry, url: `https://${host}`, resolved: true, contextMatch: false };
     }
   }
-  return { raw, name: entry, resolved: false };
+  return { raw, name: entry, resolved: false, contextMatch: false };
 }
 
 // Resolve every entry in parallel, preserving form order. Self-matching or
