@@ -20,7 +20,7 @@ export interface LimitsConfig {
   globalHourlyCap: number; // SCORECARD_GLOBAL_HOURLY_CAP
   nowMs: number; // injected so tests are deterministic
   // IPs that bypass every limit (the team testing internally). Optional;
-  // empty when unset. SCORECARD_UNLIMITED_IPS.
+  // empty when unset. Union of SCORECARD_UNLIMITED_IPS and SCORECARD_TEST_UNLIMITED_IPS.
   unlimitedIps?: ReadonlySet<string>;
 }
 
@@ -96,16 +96,16 @@ export async function shouldNotifyBreaker(kv: LimitsKv, cfg: LimitsConfig): Prom
 }
 
 // Env-driven config, so thresholds tune without a deploy. Unlike the snapshot,
-// there is no hardcoded owner IP: SCORECARD_UNLIMITED_IPS is the single
-// mechanism.
+// there is no hardcoded owner IP. The separate QA allowlist is additive, so
+// testing never requires replacing the existing allowlist.
 export function limitsConfigFromEnv(nowMs: number): LimitsConfig {
   const num = (v: string | undefined, fallback: number) => {
     const n = Number(v);
     return Number.isFinite(n) && n > 0 ? n : fallback;
   };
   const unlimitedIps = new Set(
-    (process.env.SCORECARD_UNLIMITED_IPS ?? "")
-      .split(",")
+    [process.env.SCORECARD_UNLIMITED_IPS, process.env.SCORECARD_TEST_UNLIMITED_IPS]
+      .flatMap((value) => (value ?? "").split(","))
       .map((s) => s.trim())
       .filter(Boolean),
   );

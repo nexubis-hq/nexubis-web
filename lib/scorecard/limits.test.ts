@@ -1,4 +1,4 @@
-import { test } from "vitest";
+import { afterEach, test, vi } from "vitest";
 import assert from "node:assert/strict";
 import {
   checkGeneration,
@@ -6,10 +6,15 @@ import {
   markIpGenerated,
   shouldNotifyBreaker,
   targetHash,
+  limitsConfigFromEnv,
+  globalKey,
+  targetKey,
   type LimitsKv,
   type LimitsConfig,
 } from "./limits";
 import type { ProspectData } from "./types";
+
+afterEach(() => vi.unstubAllEnvs());
 
 // In-memory KV that honours incr and overwrite-on-set (TTL is irrelevant for the
 // logic under test, since we drive time via cfg.nowMs).
@@ -117,4 +122,82 @@ test("breaker notification fires at most once per hour", async () => {
   assert.equal(await shouldNotifyBreaker(kv, cfg), false);
   // next hour: allowed again
   assert.equal(await shouldNotifyBreaker(kv, { ...cfg, nowMs: cfg.nowMs + 3_600_000 }), true);
+});
+
+test("environment allowlists are additive and share comma/whitespace parsing", () => {
+  vi.stubEnv("SCORECARD_UNLIMITED_IPS", " 192.0.2.1, ,2001:db8::1,");
+  vi.stubEnv("SCORECARD_TEST_UNLIMITED_IPS", " 198.51.100.1,192.0.2.1, ,");
+  const parsed = limitsConfigFromEnv(cfg.nowMs);
+  assert.deepEqual(
+    parsed.unlimitedIps,
+    new Set(["192.0.2.1", "2001:db8::1", "198.51.100.1"])
+  );
+});
+
+test.each(["SCORECARD_UNLIMITED_IPS", "SCORECARD_TEST_UNLIMITED_IPS"])(
+  "%s alone bypasses all rate checks without reading KV",
+  async (key) => {
+    vi.stubEnv("SCORECARD_UNLIMITED_IPS", undefined);
+    vi.stubEnv("SCORECARD_TEST_UNLIMITED_IPS", undefined);
+    vi.stubEnv(key, " 192.0.2.1 ");
+    const kv = memKv();
+    kv.get = async () =>
+      assert.fail("Allowlisted callers must bypass every rate check");
+    assert.deepEqual(
+      await checkGeneration(
+        "192.0.2.1",
+        "target",
+        kv,
+        limitsConfigFromEnv(cfg.nowMs)
+      ),
+      { allow: true }
+    );
+  }
+);
+
+test("unlisted visitors retain the default global, IP and target limits with both lists configured", async () => {
+  vi.stubEnv("SCORECARD_UNLIMITED_IPS", "192.0.2.1");
+  vi.stubEnv("SCORECARD_TEST_UNLIMITED_IPS", "198.51.100.1");
+  vi.stubEnv("SCORECARD_IP_WINDOW_DAYS", undefined);
+  vi.stubEnv("SCORECARD_TARGET_DAILY_CAP", undefined);
+  vi.stubEnv("SCORECARD_GLOBAL_HOURLY_CAP", undefined);
+  const parsed = limitsConfigFromEnv(cfg.nowMs);
+  assert.equal(parsed.windowDays, 7);
+  assert.equal(parsed.targetDailyCap, 2);
+  assert.equal(parsed.globalHourlyCap, 200);
+  const ip = "203.0.113.1";
+  const target = targetHash(prospect);
+  assert.deepEqual(await checkGeneration(ip, target, memKv(), parsed), {
+    allow: true,
+  });
+
+  const ipKv = memKv();
+  await markIpGenerated(ip, "previous-report", ipKv, parsed);
+  assert.deepEqual(await checkGeneration(ip, target, ipKv, parsed), {
+    allow: false,
+    reason: "ip",
+    lastRef: "previous-report",
+  });
+
+  const targetKv = memKv();
+  await targetKv.set(
+    targetKey(target, Math.floor(parsed.nowMs / 86_400_000)),
+    "2",
+    86_400
+  );
+  assert.deepEqual(await checkGeneration(ip, target, targetKv, parsed), {
+    allow: false,
+    reason: "target",
+  });
+
+  const globalKv = memKv();
+  await globalKv.set(
+    globalKey(Math.floor(parsed.nowMs / 3_600_000)),
+    "200",
+    3_600
+  );
+  assert.deepEqual(await checkGeneration(ip, target, globalKv, parsed), {
+    allow: false,
+    reason: "global",
+  });
 });
