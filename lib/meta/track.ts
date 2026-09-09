@@ -7,6 +7,7 @@
 // fbevents.js loading. Never call window.fbq directly elsewhere.
 import { isStandardMetaEvent } from "./events";
 import { ensureMetaIdentity } from "./ids";
+import { hasMarketingConsent } from "@/lib/consent/state";
 import { clientTrackingHost, isTrackingHost } from "./config";
 
 declare global {
@@ -46,6 +47,7 @@ export function trackMeta(
   params: Record<string, unknown> = {},
   opts: TrackMetaOptions = {},
 ): void {
+  if (!hasMarketingConsent()) return;
   if (typeof window === "undefined") return;
 
   // Host gate: inert on localhost and preview so test traffic never reaches the

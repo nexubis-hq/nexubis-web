@@ -1,0 +1,55 @@
+NEXUBIS CONSENT TEST COVERAGE REPORT
+Date: 2026-09-09
+
+Added browser-level consent coverage in scripts/consent-e2e.mjs, runnable with:
+
+  npm run test:consent
+
+The suite covers all seven requested scenarios:
+
+1. First visit with no nx_consent cookie:
+   - Banner is visible.
+   - Clarity script is absent.
+   - Meta Pixel script/component is absent.
+
+2. Accept All:
+   - nx_consent is set with analytics=true, marketing=true, decided=true.
+   - Banner is hidden.
+   - Clarity and Meta Pixel mount.
+
+3. Reject Non-Essential:
+   - nx_consent is set with analytics=false, marketing=false, decided=true.
+   - Banner is hidden.
+   - Neither optional tracker mounts.
+
+4. Saved decision across reload:
+   - A fresh page load with either saved choice does not show the banner again.
+
+5. Saved preferences:
+   - The footer Cookie Settings control opens Manage Preferences.
+   - Analytics and Marketing toggles reflect the currently saved cookie state.
+
+6. Analytics-only preference:
+   - Saving Analytics on and Marketing off updates nx_consent accordingly.
+   - Clarity mounts.
+   - Meta Pixel does not mount.
+
+7. Cleared cookie:
+   - Removing nx_consent restores the first-visit banner.
+
+Coverage already present in the previous 37 focused tests:
+
+- Consent cookie parsing and expiry validation.
+- Consent cookie serialization attributes.
+- Meta first-party cookie writers being blocked without marketing consent.
+- Meta browser tracking and CAPI relay guards.
+- Direct Meta relay requests being blocked without marketing consent.
+- Cal.com Schedule tracking fallback being disabled.
+
+The previous 37 tests did not cover rendered banner behavior, button interactions, script mounting, reload persistence, saved toggle state, or the footer Cookie Settings interaction. Those are covered by the new Playwright suite.
+
+Validation:
+
+- Consent E2E: passed 7 scenarios.
+- Typecheck: passed.
+- Full Vitest: 326 passed, 1 unrelated existing failure in dependency-health.test.ts involving expected balance formatting.

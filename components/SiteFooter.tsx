@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CookieSettingsLink } from "@/components/consent/CookieBanner";
 import { NexubisLogo } from "@/components/NexubisLogo";
 import { FooterAnimations } from "@/components/FooterAnimations";
 import { FOOTER_LINKS, SOCIAL_LINKS, SHOW_SCORECARD } from "@/lib/site-config";
@@ -75,6 +76,7 @@ export function SiteFooter() {
                   ))}
                 </ul>
                 <ul>
+                  <li><CookieSettingsLink /></li>
                   {socialLinks.map((link) => (
                     <li key={link.href}>
                       <a href={link.href} target="_blank" rel="noreferrer">

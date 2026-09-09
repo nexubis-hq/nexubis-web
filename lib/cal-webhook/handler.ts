@@ -2,9 +2,6 @@ import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { createFunnelrClient, type FunnelrTag, type FunnelrUser } from "@/lib/funnelr/client";
 import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "@/lib/funnelr/nexubis-tags";
 import { getKv } from "@/lib/scorecard/kv";
-import { sendCapiEvent } from "@/lib/meta/capi";
-import { META_EVENTS, LEAD_CONTENT_NAME, scheduleValue } from "@/lib/meta/events";
-import { isInternalEmail } from "@/lib/internal-emails";
 
 const CALL_BOOKED_TAG_NAME = NEXUBIS_TAGS.pipelineCallBooked;
 const CALL_BOOKED_TAG_ID = NEXUBIS_TAG_IDS.pipelineCallBooked;
@@ -247,24 +244,9 @@ export async function handleCalWebhook(
         funnelrRequestAttempted: true,
       });
       await ensureTag(client, requireUserId(contact), callBookedTag.tagId);
-      // Meta Schedule — a CONFIRMED booking (created only, not reschedule). event_id
-      // cal_<uid> dedupes against any embed-side Schedule. No-ops without a CAPI
-      // token, skips internal/test emails, and never fails the webhook.
-      if (event.triggerEvent === "BOOKING_CREATED" && event.payload?.uid && !isInternalEmail(email)) {
-        const schedValue = scheduleValue();
-        await sendCapiEvent({
-          eventName: META_EVENTS.schedule,
-          eventId: `cal_${event.payload.uid}`,
-          email,
-          clientIp: null,
-          userAgent: null,
-          eventSourceUrl: "https://nexubis.io/audit",
-          customData: {
-            content_name: LEAD_CONTENT_NAME,
-            ...(schedValue ? { value: schedValue.value, currency: schedValue.currency } : {}),
-          },
-        }).catch((err) => console.error("[cal-webhook] Schedule CAPI failed:", err instanceof Error ? err.message : err));
-      }
+      // Schedule measurement is intentionally disabled: the existing inline embed
+      // cannot reliably refresh booking consent metadata after a preference change
+      // without reloading the calendar. Keep booking/CRM processing independent.
       if (options.dedupe !== false && dedupeKey) await markCalWebhookProcessed(dedupeKey);
       logger.info("[cal-webhook]", {
         reason: "funnelr_update_succeeded",

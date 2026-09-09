@@ -1,0 +1,353 @@
+NEXUBIS COOKIE CONSENT CODEBASE AUDIT
+Date: 2026-09-09
+
+The current app loads Clarity and Meta site-wide without a visitor consent check, including /audit. Meta also writes three first-party tracking cookies and sends server-side conversion events. GA exists in the legacy Webflow export, but no active GA/GTM integration was found in the Next.js app.
+
+This is a static code inventory, including application source, configuration, scripts, public assets, legacy exports, relevant installed dependencies, and generated HTML. Vendor-controlled cookies are identified separately: their actual presence and expiry cannot be established conclusively from this repository alone. No application code was changed during the audit.
+
+All file references below are relative to the project root. Line numbers refer to the code reviewed on the audit date.
+
+Consent terminology follows the EU distinction between necessary storage and non-essential tracking. The cookie rule comes from ePrivacy legislation alongside GDPR; POPIA separately permits several processing grounds under section 11, so "all non-essential cookies require consent under POPIA" is not an exact statement of that Act.
+Sources:
+- CNIL cookie guidance: https://www.cnil.fr/fr/cookies-et-autres-traceurs/que-dit-la-loi
+- POPIA, section 11: https://www.justice.gov.za/legislation/acts/2013-004.pdf
+
+1. STRICTLY NECESSARY
+
+1.1 scorecard_admin_session
+- Type: First-party cookie.
+- Duration: 12 hours.
+- Attributes: HttpOnly, SameSite=Lax, Secure in production; Path=/audit/admin.
+- Purpose: Admin authentication.
+- Name declared: lib/scorecard/auth.ts:7.
+- Set after successful login: app/audit/admin/actions.ts:29.
+- Scope: Admin pages and server actions.
+
+1.2 Cloudflare Turnstile
+- Type: Third-party script.
+- Source: https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit
+- Loader: components/scorecard/flow/ScorecardFlow.tsx:111.
+- Scope: /audit, when a Turnstile site key is configured.
+- Purpose: Bot protection.
+- Server verification: lib/scorecard/unlock.ts:100.
+- Storage: No named cookie explicitly written by application code. cf_clearance is possible only if vendor-side pre-clearance is enabled; that configuration and expiry are not declared here.
+- Cloudflare documents pre-clearance as an optional source of cf_clearance. Its presence should not be inferred merely from the Turnstile script.
+- Source: https://developers.cloudflare.com/turnstile/additional-configuration/hostname-management/pre-clearance/
+
+1.3 __studio_auth_token_<projectId>
+- Type: First-party localStorage.
+- Duration: No expiry declared in the storage writer.
+- Purpose: Sanity Studio authentication, conditional on authentication mode.
+- Dependency writer: node_modules/sanity/lib/WorkspaceLoader-CtnP9tNF.js:1978.
+- Scope: /studio.
+
+1.4 __studio_auth_cookie_state_<projectId>
+- Type: First-party localStorage.
+- Duration: No expiry declared.
+- Purpose: Sanity authentication state shared across tabs.
+- Location: node_modules/sanity/lib/WorkspaceLoader-CtnP9tNF.js:1982.
+- Scope: /studio.
+
+1.5 __tmp_supports_local_storage
+- Type: First-party localStorage.
+- Duration: Immediately removed.
+- Purpose: Sanity browser-storage capability test.
+- Location: node_modules/sanity/lib/datastores-X2znh4zT.js:7207.
+- Scope: /studio.
+
+Sanity's entry point is app/studio/[[...tool]]/page.tsx:9, with configuration in sanity.config.ts:8. These storage paths concern /studio, not ordinary marketing-page visits. Any additional Sanity-hosted authentication cookies are vendor-managed and not named by application code.
+
+No additional application-defined CSRF, load-balancing, or public-visitor session cookies were found.
+
+2. FUNCTIONAL
+
+These items serve booking, media, or preferences. A third-party request alone does not establish cookie use; optional analytics inside an embed are not automatically necessary merely because the embed provides a function.
+
+2.1 Cal.com booking calendar
+- Script: https://app.cal.com/embed/embed.js
+- Initialized against: https://cal.com
+- Loader: components/ContactTabs.tsx:65.
+- Scope: /contact only.
+- Timing: The booking tab is selected by default, so loading does not wait for a booking-tab click.
+- Storage: Third-party embed. Cookie/storage names and durations are not declared locally.
+- Consent: No local consent condition. Essential booking state and any optional vendor tracking cannot be separated from this code alone.
+
+2.2 YouTube showreels
+- Source: https://www.youtube.com/embed/<id>
+- URL builder: lib/blog/post-url.ts:7.
+- Loader: components/blog/BlogShowreel.tsx:18.
+- Type: Third-party iframe; optional media, with vendor-controlled storage.
+- Storage names/expiry: Not declared locally.
+- Consent: No consent or click-to-load condition. This is not a youtube-nocookie.com integration.
+- Scope: Eligible blog posts. The local production build contains YouTube iframes on:
+  - /post/altify-empowering-nexubis
+  - /post/circuit-securing-nexubis
+  - /post/dick-proves-the-agency-stereotype
+  - /post/long-term-greed
+  - /post/oxipack-empowering-nexubis
+- Future scope depends on the CMS showreelEnabled and showreelUrl fields.
+
+2.3 Loom walkthroughs
+- Source: https://www.loom.com/embed/<id>
+- Loader: components/scorecard/report/ReportView.tsx:197.
+- Scope: /audit/r/[slug] only when a Loom URL has been attached.
+- Type: Third-party iframe; optional media.
+- Consent: No local consent condition.
+- Storage names/durations: Vendor-managed, not declared locally.
+
+2.4 Cloudflare R2 video delivery
+- Domain: pub-d0adc0fc26c84d8e8c8db97d1ab2d30f.r2.dev
+- Main showreel configuration: lib/site-config.ts:31.
+- Case-study media: lib/work/data.ts:35.
+- Scope: Homepage/about and relevant case studies.
+- Type: External media requests through native video elements.
+- Storage: No tracking script or browser-storage write found for this delivery path.
+
+2.5 Sanity image CDN
+- Source: https://cdn.sanity.io/images/...
+- URL construction: lib/blog/sanity-image-url.ts:34.
+- Example render location: components/blog/BlogRichText.tsx:81.
+- Scope: Blog thumbnails, article images and related content.
+- Type: Third-party image requests.
+- Storage: No explicit cookie/storage write associated with these image components.
+
+2.6 Functional storage in Sanity Studio
+
+All entries below are first-party browser storage on the Studio's origin, used on /studio. Most are conditional on using the corresponding editor feature.
+
+- presence_session_id
+  Type: sessionStorage; tab session.
+  Purpose: Editor collaboration presence.
+  Setter: node_modules/sanity/lib/datastores-X2znh4zT.js:7424.
+
+- sanity:last_used_provider
+  Type: localStorage; no expiry declared.
+  Purpose: Last login-provider preference.
+  Setter: node_modules/sanity/lib/WorkspaceLoader-CtnP9tNF.js:2333.
+
+- sanity-locale:<projectId>:<sourceId>
+  Type: localStorage; no expiry declared.
+  Purpose: Editor language preference.
+  Setter: node_modules/sanity/lib/WorkspaceLoader-CtnP9tNF.js:1808.
+
+- sanityStudio:ui:colorScheme
+  Type: localStorage; no expiry declared.
+  Purpose: Editor theme.
+  Setter: node_modules/sanity/lib/useBundleDocuments-oAq5rEkm.js:31148.
+
+- studio.release-form.recovery
+  Type: localStorage; cleared by recovery workflow, no TTL.
+  Purpose: Release-form recovery.
+  Setter: node_modules/sanity/lib/navigation.telemetry-Poh1ANIW.js:79.
+
+- sanityStudio:comments:inspector:onboarding:dismissed:v1
+  Type: localStorage; no expiry declared.
+  Purpose: Dismissed comments onboarding.
+  Setter: node_modules/sanity/lib/CommentsStudioLayout-D1kFwOni.js:8.
+
+- studio.document-group-inventory.hint.session-count
+  Type: localStorage; no expiry declared.
+  Purpose: Onboarding display count.
+  Setter: node_modules/sanity/lib/structureTool-BRYk4qG7.js:5597.
+
+- studio.document-group-inventory.hint.has-displayed
+  Type: sessionStorage; tab session.
+  Purpose: Whether onboarding appeared this session.
+  Setter: node_modules/sanity/lib/structureTool-BRYk4qG7.js:5611.
+
+- sanity-studio.network.check.snooze
+  Type: sessionStorage; tab session.
+  Purpose: Network-warning dismissal.
+  Location: node_modules/sanity/lib/index.js:6365.
+
+Sanity also contains a generic key/value storage adapter, so editor-feature keys can be generated dynamically. Presentation-tool storage exists in the dependency, but that plugin is not configured in this project; it is not counted as an active integration.
+
+2.7 Development-only storage
+
+components/AgentationProvider.tsx:5 mounts Agentation from the root layout only in development. Its installed dependency writes:
+
+- feedback-annotations-<pathname>
+  Type: First-party localStorage.
+  Duration: Seven-day filtering when read, not a browser expiry.
+  Purpose: Development annotations.
+  Location: node_modules/agentation/dist/index.js:6512.
+
+- agentation-design-<pathname>
+- agentation-rearrange-<pathname>
+- agentation-wireframe-<pathname>
+  Type: First-party localStorage; no expiry declared.
+  Purpose: Saved design/editor state.
+  Location: node_modules/agentation/dist/index.js:6568.
+
+- agentation-session-<pathname>
+  Type: First-party localStorage; no expiry declared.
+  Purpose: Annotation session ID.
+  Location: node_modules/agentation/dist/index.js:6643.
+
+- agentation-session-toolbar-hidden
+  Type: First-party sessionStorage; tab session.
+  Purpose: Toolbar visibility.
+  Location: node_modules/agentation/dist/index.js:6669.
+
+- feedback-toolbar-settings
+- feedback-toolbar-theme
+- feedback-toolbar-position
+  Type: First-party localStorage; no expiry declared.
+  Purpose: Toolbar preferences.
+  Location: node_modules/agentation/dist/index.js:8576.
+
+2.8 Legacy functional items - not loaded by the current app
+
+The 17 archived HTML files under webflow-export/ include:
+- showVideos: First-party localStorage, no expiry; remembers video permission. Example setter: webflow-export/index.html:1358.
+- Google reCAPTCHA: www.google.com/recaptcha/api.js.
+- CloudFront-hosted jQuery, jsDelivr-hosted Finsweet accordion/attributes, Nexubis scripts, GSAP and ScrollTrigger.
+- Slater scripts: slater.app/12573.js or assets.slater.app/slater/12573.js.
+- Plyr JS/CSS from cdn.plyr.io; VisualDX on the post template; Popper/Tippy from unpkg.com on the packages export.
+- A legacy Cal.com embed on webflow-export/contact.html.
+
+These exports are outside public/, and no current application import or deployment rewrite was found that serves them as Next.js pages.
+
+3. ANALYTICS
+
+3.1 Microsoft Clarity - non-necessary
+
+- Loader: app/layout.tsx:24.
+- Source: https://www.clarity.ms/tag/yfjrpq5ojd
+- Scope: Every route using the root layout, including /audit, report pages, admin pages and /studio.
+- Timing: Next.js Script afterInteractive.
+- Current gate: None in application code; no Clarity consent API call found. Unlike Meta, the loader has no production-host restriction.
+
+Microsoft documents these vendor-managed cookies:
+
+- _clck
+  Party: First-party.
+  Purpose: Persistent Clarity visitor ID/preferences.
+  Duration declared locally: None.
+- _clsk
+  Party: First-party.
+  Purpose: Groups page views into a recording session.
+  Duration declared locally: None.
+- CLID
+  Party: Third-party.
+  Purpose: First encounter across Clarity-enabled sites.
+  Duration declared locally: None.
+- ANONCHK
+  Party: Third-party.
+  Purpose: Microsoft identifier-transfer flag.
+  Duration declared locally: None.
+- MR
+  Party: Third-party.
+  Purpose: Identifier refresh flag.
+  Duration declared locally: None.
+- MUID
+  Party: Third-party.
+  Purpose: Browser identifier used for analytics and advertising.
+  Duration declared locally: None.
+- SM
+  Party: Third-party.
+  Purpose: Synchronizes Microsoft identifiers.
+  Duration declared locally: None.
+
+These are documented possible cookies, not confirmed browser observations. Actual setting depends on browser and vendor consent configuration. Microsoft now requires consent signals for full Clarity functionality in the EEA, UK and Switzerland; the unconditional loader does not prove that cookies are set in those regions.
+Sources:
+- https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-cookies
+- https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-consent-api-v2
+
+3.2 Sanity Studio telemetry - editor-only analytics
+
+- Loaded through the /studio entry point and bundled Sanity dependency.
+- Telemetry sends to Sanity API /intake/batch; dependency code first resolves vendor telemetry consent through /intake/telemetry-status.
+- Location: node_modules/sanity/lib/index.js:12604.
+- Error/performance reporting has a Sentry configuration and Sanity tracing tunnel at https://api.sanity.io/vX/intake/tracing.
+- Location: node_modules/sanity/lib/index.js:1031.
+- No site-specific telemetry setting is declared in sanity.config.ts. This is separate from ordinary public-page analytics; vendor-account settings determine parts of its behavior.
+
+3.3 Google Analytics - legacy only
+
+- Archived GA4 ID: G-LSV3N2VS02.
+- Loader: https://www.googletagmanager.com/gtag/js?id=G-LSV3N2VS02
+- Example: webflow-export/401.html:42; repeated across all 17 exported HTML files.
+- No cookie names or expiry overrides are declared in the snippet.
+- No active GA loader, gtag call or GTM container was found in the current application. Using the googletagmanager.com hostname for gtag.js does not itself establish a GTM container.
+
+4. MARKETING
+
+4.1 Meta/Facebook Pixel - non-necessary
+
+- Global mount: app/layout.tsx:23.
+- Script: https://connect.facebook.net/en_US/fbevents.js
+- Script inserted by: components/MetaPixel.tsx:43.
+- Pixel ID: Default 885652097948360, overridable through NEXT_PUBLIC_META_PIXEL_ID.
+- Scope: All root-layout pages, including /audit; sends PageView initially and on pathname changes.
+- Existing restriction: Production hosts nexubis.io and www.nexubis.io, unless the force flag is enabled. This is not visitor consent.
+- A facebook.com/tr?...&ev=PageView&noscript=1 image is present at components/MetaPixel.tsx:99. Because rendering depends on client-enabled state, it is not a reliable no-JavaScript fallback.
+
+4.2 Cookies explicitly written by Nexubis
+
+- _fbc
+  Party/domain: First-party, .nexubis.io.
+  Duration: 90 days.
+  Purpose: Facebook click attribution.
+  Trigger: Created when absent and fbclid exists in the URL.
+  Setter: lib/meta/ids.ts:88.
+
+- _fbp
+  Party/domain: First-party, .nexubis.io.
+  Duration: 90 days.
+  Purpose: Browser identifier for Pixel/CAPI matching.
+  Trigger: Created when absent.
+  Setter: lib/meta/ids.ts:96.
+
+- _nx_xid
+  Party/domain: First-party, .nexubis.io.
+  Duration: 400 days.
+  Purpose: Persistent pseudonymous external ID for Meta matching.
+  Trigger: Created when absent.
+  Setter: lib/meta/ids.ts:103.
+
+The shared writer sets Path=/, SameSite=Lax, and Secure on HTTPS. These cookies are JavaScript-readable. They can be created even when Facebook's external script is blocked, because the application writes them itself.
+
+Any additional Facebook-domain cookies are vendor-managed; their names and durations are not established by the repository.
+
+4.3 Meta Conversions API - non-necessary server-side tracking
+
+- lib/meta/track.ts:66
+  Ensures tracking cookies exist, calls the browser Pixel and posts matching data to /api/meta-event. No consent check.
+- app/api/meta-event/route.ts:95
+  Enriches events with IP address/user agent and forwards them. Host and internal-email filtering exist; no visitor-consent validation.
+- lib/meta/capi.ts:110
+  Sends to https://graph.facebook.com/v19.0/<pixelId>/events. Operates when META_CAPI_TOKEN is configured.
+- lib/cal-webhook/handler.ts:255
+  Sends Schedule after an eligible BOOKING_CREATED webhook. Independent of the browser script; no browser-consent lookup found.
+
+CAPI transmits event details, source URL and available identifiers. Email/first name are hashed server-side; _fbc, _fbp and external ID are sent un-hashed. IP/user agent accompany browser-relayed events.
+
+Event locations:
+- Global PageView: components/MetaPixel.tsx.
+- /audit: AuditStart, Lead, AuditComplete in components/scorecard/flow/ScorecardFlow.tsx:147.
+- Report views, excluding the demo: components/scorecard/report/ReportViewTracker.tsx:19.
+- Report booking clicks: SessionUnlockClick and AuditBookClick in components/scorecard/report/BookCallButton.tsx:47.
+- Successful contact submission: Contact in components/ContactTabs.tsx:197.
+- Confirmed bookings: Webhook Schedule, as above.
+
+4.4 Funnelr/Funnlr CRM and email automation
+
+- No browser embed, tracking script, pixel or Funnelr storage writer found.
+- Integration is server-side, using https://ab513.gappstack.com by default.
+- API client: lib/funnelr/client.ts:1.
+- Contact submission: app/api/contact/route.ts:122.
+- Audit lead submission: app/api/leads/scorecard/route.ts:44.
+- Booking synchronization: lib/cal-webhook/handler.ts.
+- Nurture handoff: lib/funnelr/nurture-scheduler.ts.
+- The audit flow sends marketingConsent: true in components/scorecard/flow/ScorecardFlow.tsx:220. This is a CRM payload field, not a browser cookie-consent gate.
+- Provider-side email open/click tracking configuration is not represented in this repository.
+
+OTHER CHECKED PATHS
+
+- Fonts are self-hosted in app/globals.css:5; no active Google Fonts request found.
+- No active Intercom, Crisp, Tawk, Hotjar, Vimeo, Wistia or Calendly integration found. Booking uses Cal.com.
+- Pricing currency/cycle state uses URL parameters and React state; no application-written preference cookies or web storage found.
+- Resend, audit-generation services and Redis are server-side integrations, not browser tags or browser storage.
+- next.config.ts, vercel.json and build scripts contain no additional visitor tracking injection. The build command is next build.
+- The active global consent-sensitive loading points are app/layout.tsx for Clarity and Meta, plus lib/meta/track.ts, the CAPI relay and booking webhook for the independent Meta tracking paths. Embed-specific loading points are identified in the functional inventory above.

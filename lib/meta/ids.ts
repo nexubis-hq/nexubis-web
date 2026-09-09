@@ -13,6 +13,7 @@
 // external_id is our own stable pseudonymous UUID (raw, never hashed here; §7).
 
 import { clientTrackingHost, cookieDomain } from "./config";
+import { hasMarketingConsent } from "@/lib/consent/state";
 
 const FB_MAX_AGE = 90 * 24 * 60 * 60; // 90 days — Meta's attribution window for fbc/fbp.
 const XID_MAX_AGE = 400 * 24 * 60 * 60; // external_id: keep as long as browsers allow.
@@ -35,6 +36,7 @@ function readCookie(name: string): string | null {
 }
 
 function writeCookie(name: string, value: string, maxAgeSec: number): void {
+  if (!hasMarketingConsent()) return;
   if (typeof document === "undefined") return;
   const domain = cookieDomain(clientTrackingHost());
   const secure = typeof window !== "undefined" && window.location.protocol === "https:";
@@ -72,6 +74,7 @@ function queryParam(name: string): string | null {
 // Read existing identity and mint anything missing, persisting to cookies.
 // Idempotent and cheap; safe to call on every load and every event.
 export function ensureMetaIdentity(): MetaIdentity {
+  if (!hasMarketingConsent()) return { fbc: null, fbp: null, externalId: null };
   if (typeof document === "undefined") return { fbc: null, fbp: null, externalId: null };
 
   // _fbc: keep an existing cookie; otherwise derive it from a fresh fbclid so an

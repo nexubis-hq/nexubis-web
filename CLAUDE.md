@@ -1,5 +1,12 @@
 # Ship Studio Project
 
+## Visual language
+
+- Reuse `app/globals.css` tokens: `--primary` red, `--black` near-black, `--body` grey, `--light` borders, `--white`, and `--surface` backgrounds.
+- Helvetica Now Display is used for headings and primary buttons; Inter for body/UI. Both are self-hosted. Heading sizes use `--h1` through `--h4`.
+- Responsive section spacing uses `--s-2` through `--s-8`; container width uses `--container`.
+- Buttons use `--button-y`, `--button-x`, and `--button-radius` (0.25rem). Cards commonly use 0.5rem corners and one-pixel borders; pills use fully rounded corners. Shadows and gradients appear in decorative scenes and overlays, not every surface.
+
 This is a Next.js 14+ project with Tailwind CSS. You're helping a **non-developer** build a website. Keep explanations simple and jargon-free.
 
 ---

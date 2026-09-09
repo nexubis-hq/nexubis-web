@@ -4,6 +4,7 @@
 // clean 200 whether or not a token is configured — it must never error
 // client-side. The browser leg has already fired; this is the server pair.
 import { NextRequest, NextResponse } from "next/server";
+import { CONSENT_COOKIE, parseConsent } from "@/lib/consent/state";
 import { sendCapiEvent } from "@/lib/meta/capi";
 import { isInternalEmail } from "@/lib/internal-emails";
 import { isTrackingHost, normaliseHost } from "@/lib/meta/config";
@@ -51,6 +52,10 @@ function originHost(req: NextRequest, sourceUrl: string | null): string {
 let warnedInert = false;
 
 export async function POST(req: NextRequest) {
+  const consent = parseConsent(req.cookies.get(CONSENT_COOKIE)?.value);
+  if (!consent.decided || !consent.marketing) {
+    return NextResponse.json({ ok: true, skipped: true });
+  }
   const body = (await req.json().catch(() => null)) as
     | {
         eventName?: string;

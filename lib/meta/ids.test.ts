@@ -4,7 +4,10 @@ import { ensureMetaIdentity, getMetaIdentity } from "./ids";
 // Minimal cookie jar so document.cookie behaves like a browser's in the node env:
 // assigning "name=value; attrs" upserts name=value; reading joins them back.
 function installBrowser(search: string, seed: Record<string, string> = {}) {
-  const store = new Map<string, string>(Object.entries(seed));
+  const store = new Map<string, string>(Object.entries({
+    nx_consent: encodeURIComponent(JSON.stringify({ analytics: false, marketing: true, decided: true, ts: Date.now() })),
+    ...seed,
+  }));
   const document = {
     get cookie() {
       return Array.from(store, ([k, v]) => `${k}=${v}`).join("; ");
@@ -32,6 +35,13 @@ afterEach(() => {
 });
 
 describe("ensureMetaIdentity", () => {
+  it("does not mint identifiers without marketing consent, even with an ad click", () => {
+    const store = installBrowser("?fbclid=test123", { nx_consent: "" });
+    expect(ensureMetaIdentity()).toEqual({ fbc: null, fbp: null, externalId: null });
+    expect(store.has("_fbp")).toBe(false);
+    expect(store.has("_fbc")).toBe(false);
+    expect(store.has("_nx_xid")).toBe(false);
+  });
   it("derives _fbc from an fbclid in the URL, in Meta's format", () => {
     installBrowser("?fbclid=test123");
     const id = ensureMetaIdentity();

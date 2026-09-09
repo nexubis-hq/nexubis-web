@@ -3,6 +3,18 @@ import assert from "node:assert/strict";
 import { calEventSlug, handleCalWebhook, signCalWebhookBody, verifyCalSignature, type CalFunnelrClient } from "./handler";
 import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "@/lib/funnelr/nexubis-tags";
 import type { FunnelrTag, FunnelrUser } from "@/lib/funnelr/client";
+import { sendCapiEvent } from "@/lib/meta/capi";
+
+vi.mock("@/lib/meta/capi", () => ({ sendCapiEvent: vi.fn() }));
+
+test("booking processing succeeds without sending Schedule tracking", async () => {
+  const client = makeClient();
+  const { raw, signature } = signed(booking());
+  const result = await handleCalWebhook(raw, signature, { env, client, dedupe: false, logger });
+  assert.equal(result.status, 200);
+  assert.equal(client.tags.has(bookedTag.tagId), true);
+  assert.equal(vi.mocked(sendCapiEvent).mock.calls.length, 0);
+});
 
 const secret = "cal-secret";
 const slug = "30min";

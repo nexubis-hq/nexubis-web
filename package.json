@@ -12,6 +12,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:consent": "node scripts/consent-e2e.mjs",
     "funnelr:inspect": "tsx scripts/funnelr-inspect.ts",
     "funnelr:verify:nexubis": "tsx scripts/funnelr-verify-nexubis-readonly.ts",
     "funnelr:verify:lekkeweb": "tsx scripts/funnelr-verify-lekkeweb-readonly.ts",

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 import { AgentationProvider } from "@/components/AgentationProvider";
-import { MetaPixel } from "@/components/MetaPixel";
+import { ConsentProvider } from "@/lib/consent/ConsentProvider";
+import { CookieBanner } from "@/components/consent/CookieBanner";
+import { ConsentTracking } from "@/components/consent/ConsentTracking";
 
 export const metadata: Metadata = {
   title: "Nexubis | Your in-house creative team",
@@ -18,18 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
-        <AgentationProvider />
-        <MetaPixel />
-        <Script id="microsoft-clarity" strategy="afterInteractive">
-          {`
-            (function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "yfjrpq5ojd");
-          `}
-        </Script>
+        <ConsentProvider>
+          {children}
+          <AgentationProvider />
+          <ConsentTracking />
+          <CookieBanner />
+        </ConsentProvider>
       </body>
     </html>
   );
