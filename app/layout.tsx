@@ -21,15 +21,19 @@ export default function RootLayout({
         {children}
         <AgentationProvider />
         <MetaPixel />
-        <Script id="microsoft-clarity" strategy="afterInteractive">
-          {`
+        {process.env.NODE_ENV === "production" && (
+          <Script id="microsoft-clarity" strategy="afterInteractive">
+            {`
             (function(c,l,a,r,i,t,y){
+                // Production builds also run locally and on preview hosts.
+                if (!["nexubis.io", "www.nexubis.io"].includes(c.location.hostname)) return;
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "yfjrpq5ojd");
-          `}
-        </Script>
+            `}
+          </Script>
+        )}
       </body>
     </html>
   );
