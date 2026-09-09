@@ -79,6 +79,7 @@ export function ScorecardFlow() {
   const submitEventsFired = useRef(false);
   // AuditComplete (diagnosis only) marks the scan finishing.
   const auditCompleteFired = useRef(false);
+  const formEngagedFired = useRef(false);
   // The "human took time" clock, stamped on mount (long before a person can
   // type a URL and an email).
   const startedAt = useRef(0);
@@ -309,7 +310,13 @@ export function ScorecardFlow() {
                       placeholder="yourcompany.com"
                       required
                       value={url}
-                      onChange={(e) => setUrl(e.target.value)}
+                      onChange={(e) => {
+                        if (!formEngagedFired.current) {
+                          formEngagedFired.current = true;
+                          trackMeta(META_EVENTS.auditFormEngage, { content_category: "scorecard" });
+                        }
+                        setUrl(e.target.value);
+                      }}
                     />
                     {urlValid ? (
                       <span className="sc-input-check" aria-hidden="true">
