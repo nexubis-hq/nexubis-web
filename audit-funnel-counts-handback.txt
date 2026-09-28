@@ -1,0 +1,35 @@
+Consent-free audit funnel counts + ad-source capture hand-back
+
+Branch: funnel-counts-and-utm-capture
+Commit: ae8f19c
+
+Changed (committed) files:
+- SITE.md
+- app/api/funnel/route.ts
+- app/api/scorecard/run/route.ts
+- app/audit/admin/scans/page.tsx
+- components/scorecard/flow/ScorecardFlow.tsx
+- lib/funnel/beacon.ts
+- lib/funnel/counter.test.ts
+- lib/funnel/counter.ts
+- lib/funnel/steps.test.ts
+- lib/funnel/steps.ts
+- lib/scorecard/diagnostics.ts
+
+Checks:
+- npm run typecheck: passed.
+- npm test: 339 passed, 1 failed (340 total). The 13 new funnel tests all pass.
+  The existing failure is lib/monitoring/dependency-health.test.ts, which expects
+  a Serper balance string containing "1,200"; this is unrelated to the funnel
+  change and reproduces when run on its own.
+- npx eslint on every changed implementation and test file: passed.
+- git diff --check: passed. Only the specified files were staged and committed.
+
+Notes:
+- The supplied patch file was not present locally, so this was implemented from
+  the provided specification.
+- The pre-existing untracked branch-status-summary.txt was left untouched and
+  was not staged. This hand-back file is also intentionally untracked.
+- Nothing was pushed, merged, put into a pull request, or deployed.
+
+Ready for Shannah to review and deploy. Nothing has been pushed or deployed.

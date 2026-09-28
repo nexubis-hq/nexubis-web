@@ -1,0 +1,37 @@
+Branch status summary
+=====================
+
+The worktree is now clean: there are currently 0 untracked files on shannah.
+The 14 files visible earlier disappeared before their contents could be
+inspected, so content-based descriptions or lead-data flags could not be
+verified. No files were changed or deleted during this check.
+
+Previously observed untracked filenames:
+
+- .qa/LekkeWeb_Funnelr_Email_Sequences_v1 (1).txt
+- .qa/LekkeWeb_Funnelr_Setup_for_Shannah (2).txt
+- .qa/LekkeWeb_Funnelr_Setup_for_Shannah (3).txt
+- .qa/lekkeweb-analysis.json
+- .qa/lekkeweb-architecture-new-evidence.json
+- .qa/lekkeweb-investigation.json
+- inbound-reply-route-readonly-notes.txt
+- lekkeweb-funnelr-readonly-investigation-2026-09-10.md
+- lekkeweb-funnelr-readonly-investigation-2026-09-10.txt
+- lekkeweb-funnelr-verified-architecture-2026-09-10.txt
+- nexubis-audit-readonly-investigation-2026-09-07.txt
+- nexubis-external-email-in-app-audit-log-check-2026-09-07-1850-1855-sast.txt
+- nexubis-meta-in-app-audit-log-check-2026-09-07.txt
+- nurture-handoff-investigation-answers.txt
+
+By filename, the Funnelr, audit and inbound-reply files could plausibly
+contain lead or contact information. This is a cautionary inference only,
+not a verified finding.
+
+Branch comparison
+-----------------
+
+shannah has no code or file-state differences from origin/main. The branch
+comparison returned no changed files.
+
+shannah is 54 commits ahead of origin/shannah, but its final tree matches
+live main (origin/main).
