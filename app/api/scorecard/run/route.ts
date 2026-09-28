@@ -39,6 +39,8 @@ import {
 } from "@/lib/scorecard/limits";
 import { getKv } from "@/lib/scorecard/kv";
 import { recordScanOutcome, scanTargetHost, type ScanOutcome } from "@/lib/scorecard/diagnostics";
+import { bumpFunnel } from "@/lib/funnel/counter";
+import { cleanAdSource, isFunnelSource, type AdSource, type FunnelSource } from "@/lib/funnel/steps";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -59,6 +61,8 @@ function cleanText(v: unknown, cap: number): string | null {
 interface ParsedRun {
   input: RunInput;
   capture: LeadCaptureInput;
+  adSource: AdSource | null;
+  funnelSource: FunnelSource;
 }
 function parseRunInput(body: unknown): ParsedRun | null {
   if (!body || typeof body !== "object") return null;
@@ -74,7 +78,9 @@ function parseRunInput(body: unknown): ParsedRun | null {
     turnstileToken: typeof b.turnstileToken === "string" ? b.turnstileToken : undefined,
     elapsedMs: typeof b.elapsedMs === "number" ? b.elapsedMs : undefined,
   };
-  return { input, capture };
+  const adSource = cleanAdSource(b.adSource);
+  const funnelSource = isFunnelSource(b.funnelSource) ? b.funnelSource : adSource ? "ad" : "other";
+  return { input, capture, adSource, funnelSource };
 }
 
 function clientIp(req: NextRequest): string {
@@ -144,7 +150,7 @@ export async function POST(req: NextRequest) {
   const logOutcome = async (outcome: ScanOutcome) => {
     if (outcomeLogged) return;
     outcomeLogged = true;
-    await recordScanOutcome({ outcome, ms: Date.now() - startedAt, host: targetHostForLog, fit: detectedFit, at: new Date().toISOString() });
+    await recordScanOutcome({ outcome, ms: Date.now() - startedAt, host: targetHostForLog, fit: detectedFit, ad: parsed?.adSource ?? null, at: new Date().toISOString() });
   };
 
   const stream = new ReadableStream<Uint8Array>({
@@ -200,6 +206,7 @@ export async function POST(req: NextRequest) {
           await fail(mx.error ?? "That email address does not look right.", "invalid");
           return;
         }
+        await bumpFunnel("submitted", parsed.funnelSource);
 
         const prospect = prospectFromRunInput(input);
         const runId = runIdFor(prospect);
