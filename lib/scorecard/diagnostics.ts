@@ -1,4 +1,5 @@
 import { getKv } from "./kv";
+import type { AdSource } from "@/lib/funnel/steps";
 
 // Diagnosis-only scan telemetry. The Meta side only has AuditStart (scan began)
 // and Lead (gate converted); everything between is invisible, so we cannot tell
@@ -18,6 +19,8 @@ export interface ScanRunLog {
    *  unclear). Recorded for insight only; it no longer gates anything. Null when
    *  detection did not run (e.g. an invalid URL). */
   fit?: string | null;
+  /** Clean UTM values from the audit link, if one was present. */
+  ad?: AdSource | null;
   /** ISO timestamp of the terminal state. */
   at: string;
 }

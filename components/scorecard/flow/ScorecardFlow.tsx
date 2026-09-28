@@ -11,6 +11,8 @@ import { PILLAR_CHIP_LABELS } from "@/lib/scorecard/report-derive";
 import { RUBRIC } from "@/lib/scorecard/rubric";
 import { trackMeta } from "@/lib/meta/track";
 import { META_EVENTS, LEAD_CONTENT_NAME, leadValue } from "@/lib/meta/events";
+import { sendFunnelStep } from "@/lib/funnel/beacon";
+import { adSourceFromSearch, funnelSourceFromSearch } from "@/lib/funnel/steps";
 import { ScanAnimation } from "./ScanAnimation";
 import { ScorecardPreviewRadar } from "./ScorecardPreviewRadar";
 import { LaineIntroVideo } from "./LaineIntroVideo";
@@ -80,6 +82,8 @@ export function ScorecardFlow() {
   // AuditComplete (diagnosis only) marks the scan finishing.
   const auditCompleteFired = useRef(false);
   const formEngagedFired = useRef(false);
+  const arrivedCounted = useRef(false);
+  const touchedCounted = useRef(false);
   // The "human took time" clock, stamped on mount (long before a person can
   // type a URL and an email).
   const startedAt = useRef(0);
@@ -91,6 +95,10 @@ export function ScorecardFlow() {
 
   useEffect(() => {
     startedAt.current = Date.now();
+    if (!arrivedCounted.current) {
+      arrivedCounted.current = true;
+      sendFunnelStep("arrived");
+    }
   }, []);
 
   useEffect(() => {
@@ -165,6 +173,8 @@ export function ScorecardFlow() {
           honeypot,
           turnstileToken,
           elapsedMs: Date.now() - startedAt.current,
+          adSource: adSourceFromSearch(window.location.search),
+          funnelSource: funnelSourceFromSearch(window.location.search),
         }),
       });
       if (!res.ok || !res.body) {
@@ -314,6 +324,10 @@ export function ScorecardFlow() {
                         if (!formEngagedFired.current) {
                           formEngagedFired.current = true;
                           trackMeta(META_EVENTS.auditFormEngage, { content_category: "scorecard" });
+                        }
+                        if (!touchedCounted.current) {
+                          touchedCounted.current = true;
+                          sendFunnelStep("touched");
                         }
                         setUrl(e.target.value);
                       }}
