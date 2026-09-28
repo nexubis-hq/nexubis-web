@@ -37,6 +37,6 @@ describe("audit funnel steps", () => {
   it("keeps submitted server-only and formats ad labels", () => {
     expect(CLIENT_FUNNEL_STEPS).not.toContain("submitted");
     expect(isClientFunnelStep("submitted")).toBe(false);
-    expect(adLabel({ utm_content: "AD1_A_NL_NEW", utm_source: "ig" })).toBe("AD1_A_NL_NEW  ig");
+    expect(adLabel({ utm_content: "AD1_A_NL_NEW", utm_source: "ig" })).toBe("AD1_A_NL_NEW | ig");
   });
 });

@@ -321,14 +321,14 @@ export function ScorecardFlow() {
                       required
                       value={url}
                       onChange={(e) => {
-                          if (!formEngagedFired.current) {
+                        if (!formEngagedFired.current) {
                           formEngagedFired.current = true;
-                            trackMeta(META_EVENTS.auditFormEngage, { content_category: "scorecard" });
-                          }
-                          if (!touchedCounted.current) {
-                            touchedCounted.current = true;
-                            sendFunnelStep("touched");
-                          }
+                          trackMeta(META_EVENTS.auditFormEngage, { content_category: "scorecard" });
+                        }
+                        if (!touchedCounted.current) {
+                          touchedCounted.current = true;
+                          sendFunnelStep("touched");
+                        }
                         setUrl(e.target.value);
                       }}
                     />

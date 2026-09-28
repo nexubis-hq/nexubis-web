@@ -46,6 +46,6 @@ export function funnelSourceFromSearch(search: string): FunnelSource {
 
 export function adLabel(ad: AdSource | null | undefined): string | null {
   if (!ad) return null;
-  const label = [ad.utm_content, ad.utm_source].filter(Boolean).join("  ");
+  const label = [ad.utm_content, ad.utm_source].filter(Boolean).join(" | ");
   return label || null;
 }
