@@ -243,7 +243,7 @@ export class FunnelrClient {
       company: input.company?.trim() || null,
       telephone: input.telephone?.trim() || null,
       isAgent: false,
-      isStaff: false,
+      userTypeKey: "Contact",
       isUnsubscribed: false,
       hasAcceptedMarketing: input.hasAcceptedMarketing ?? true,
       originKey: "Optin",

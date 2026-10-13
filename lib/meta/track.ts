@@ -47,6 +47,19 @@ export function trackMeta(
   params: Record<string, unknown> = {},
   opts: TrackMetaOptions = {},
 ): void {
+  try {
+    trackConsentedMeta(eventName, params, opts);
+  } catch {
+    // Cookie access/identity failures must not interrupt audit or CRM work.
+    // This boundary covers tracking only; Funnelr errors keep their own handling.
+  }
+}
+
+function trackConsentedMeta(
+  eventName: string,
+  params: Record<string, unknown>,
+  opts: TrackMetaOptions,
+): void {
   if (!hasMarketingConsent()) return;
   if (typeof window === "undefined") return;
 
