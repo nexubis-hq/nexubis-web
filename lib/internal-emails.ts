@@ -25,5 +25,6 @@ export function internalEmailSet(): Set<string> {
 
 export function isInternalEmail(email: string | null | undefined): boolean {
   if (!email) return false;
-  return internalEmailSet().has(email.trim().toLowerCase());
+  const normalized = email.trim().toLowerCase();
+  return normalized.endsWith("@nexubis.io") || internalEmailSet().has(normalized);
 }
