@@ -170,9 +170,9 @@ export interface PromoteOutcome {
 
 // Promote a finished generation straight to its permanent shared report.
 // Never emails here; the caller chains the lead plumbing after.
-export async function promoteResult(prospectData: ProspectData, rawResult: ScorecardResult, email: string, firstName = ""): Promise<PromoteOutcome> {
+export async function promoteResult(prospectData: ProspectData, rawResult: ScorecardResult, email: string, firstName = "", reservedSlug?: string): Promise<PromoteOutcome> {
   const { prospect, result } = applyContact(prospectData, rawResult, email, firstName);
-  const slug = await uniqueSlug();
+  const slug = reservedSlug ?? await uniqueSlug();
   const now = new Date();
   const record: SharedScorecard = {
     prospectData: prospect,

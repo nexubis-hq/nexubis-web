@@ -9,6 +9,7 @@ export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "885652097
 // The funnel events. Intent (AuditStart, AuditBookClick) and confirmation (Lead,
 // Schedule) are DIFFERENT events — a click is never a booking (§3, §9).
 export const META_EVENTS = {
+  qualifiedAudit: "QualifiedAudit", // custom, REPORTING ONLY: a corroborated industrial manufacturer read. Never replace AuditStart optimisation.
   pageView: "PageView",
   auditStart: "AuditStart", // custom: the URL+email form submitted successfully. Once per visit. THE campaign optimisation event; fires pixel + CAPI with one event_id and the raw email on the server leg.
   auditFormEngage: "AuditFormEngage", // custom, DIAGNOSTIC ONLY: first genuine interaction (value change) with the company-website field, the form's first field. Fires BEFORE AuditStart/Lead. Once per visit. Never optimise on this.

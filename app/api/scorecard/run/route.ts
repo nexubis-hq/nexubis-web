@@ -41,6 +41,9 @@ import { getKv } from "@/lib/scorecard/kv";
 import { recordScanOutcome, scanTargetHost, type ScanOutcome } from "@/lib/scorecard/diagnostics";
 import { bumpFunnel } from "@/lib/funnel/counter";
 import { cleanAdSource, isFunnelSource, type AdSource, type FunnelSource } from "@/lib/funnel/steps";
+import { CONSENT_COOKIE, parseConsent } from "@/lib/consent/state";
+import { isQualifiedAudit } from "@/lib/scorecard/qualified-audit";
+import { uniqueSlug } from "@/lib/scorecard/share";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -270,6 +273,14 @@ export async function POST(req: NextRequest) {
               send({ type: "stage", stage: "reading" });
               const detection = await detectProspectContext(prospect);
               detectedFit = detection.industryFit;
+              // Reserve the report's audit ID as soon as the existing read is
+              // available. Only this fresh-run stream signals qualification;
+              // cached captures and report views never replay the event.
+              const auditId = await uniqueSlug();
+              const consent = parseConsent(req.cookies.get(CONSENT_COOKIE)?.value);
+              if (consent.decided && consent.marketing && isQualifiedAudit(detection)) {
+                send({ type: "qualified", auditId });
+              }
               const enriched = applyDetection(prospect, detection);
               if (detection.productOneLiner) send({ type: "detected", oneLiner: detection.productOneLiner });
 
@@ -290,7 +301,7 @@ export async function POST(req: NextRequest) {
               // No gate: straight to the permanent slug; the lead plumbing
               // runs before "done" so a frozen instance can never swallow it.
               // Funnelr capture stays browser-fired.
-              const promoted = await promoteResult(enriched, result, email, firstName);
+              const promoted = await promoteResult(enriched, result, email, firstName, auditId);
               await markCaptured(email, runId, promoted.slug);
               try {
                 await runLeadPlumbing(promoted.record, email, promoted.slug, originOf(req), firstName);

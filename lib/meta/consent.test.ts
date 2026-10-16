@@ -33,9 +33,11 @@ it("blocks browser events, cookie writes and relay requests before consent and a
   expect(writes).toBe(3);
 });
 
-it.each(["", cookie(false), cookie(true, false), "nx_consent=invalid"])("blocks direct relay requests without valid marketing consent: %s", async (value) => {
+it.each(["", cookie(false), cookie(true, false), "nx_consent=invalid"].flatMap((value) =>
+  ["PageView", "QualifiedAudit"].map((eventName) => ({ value, eventName })),
+))("blocks direct $eventName relay requests without valid marketing consent: $value", async ({ value, eventName }) => {
   const response = await POST(new NextRequest("https://nexubis.io/api/meta-event", {
-    method: "POST", headers: { cookie: value }, body: JSON.stringify({ eventName: "PageView", eventId: "test", eventSourceUrl: "https://nexubis.io/" }),
+    method: "POST", headers: { cookie: value }, body: JSON.stringify({ eventName, eventId: "test", eventSourceUrl: "https://nexubis.io/" }),
   }));
   expect(await response.json()).toEqual({ ok: true, skipped: true });
   expect(sendCapiEvent).not.toHaveBeenCalled();

@@ -1,6 +1,11 @@
 import { Children, isValidElement, type ReactElement, type ReactNode } from "react";
 import { afterEach, expect, it, vi } from "vitest";
 import { ScorecardFlow } from "./ScorecardFlow";
+import { POST as relay } from "@/app/api/meta-event/route";
+import { NextRequest } from "next/server";
+import { sendCapiEvent } from "@/lib/meta/capi";
+
+vi.mock("@/lib/meta/capi", () => ({ sendCapiEvent: vi.fn(async () => ({ ok: true, skipped: false })) }));
 
 const hooks = vi.hoisted(() => ({ values: [] as unknown[], index: 0 }));
 vi.mock("react", async () => ({
@@ -78,3 +83,53 @@ it.each([
     });
   },
 );
+
+it.each(["accepted", "declined", "withdrawn"])("QualifiedAudit shares its ID across pixel and relay, once only, with consent %s", async (consent) => {
+  hooks.index = 0;
+  hooks.values = [undefined, "example.com", "Test", "qa@example.com"];
+  vi.stubEnv("NEXT_PUBLIC_META_TRACKING_FORCE", "0");
+  let scanStarted = false;
+  const auditId = `qualified-${consent}`;
+  const jar = () => `nx_consent=${encodeURIComponent(JSON.stringify({
+    analytics: false, marketing: consent === "accepted" || (consent === "withdrawn" && !scanStarted), decided: true, ts: Date.now(),
+  }))}`;
+  vi.stubGlobal("document", { get cookie() { return jar(); }, set cookie(_value: string) {} });
+  const fbq = vi.fn();
+  const assign = vi.fn();
+  vi.stubGlobal("window", {
+    fbq,
+    location: { host: "www.nexubis.io", origin: "https://www.nexubis.io", href: "https://www.nexubis.io/audit", protocol: "https:", search: "", assign },
+  });
+  const fetchMock = vi.fn<typeof fetch>(async (url, init) => {
+    if (url === "/api/scorecard/run") {
+      scanStarted = true;
+      // Duplicate stream delivery must still produce only one Meta event.
+      return new Response([
+        { type: "qualified", auditId }, { type: "qualified", auditId },
+        { type: "done", reportUrl: "/audit/r/abcdefgh", slug: "abcdefgh" },
+      ].map((event) => `data: ${JSON.stringify(event)}\n\n`).join(""));
+    }
+    if (url === "/api/meta-event") {
+      return relay(new NextRequest("https://www.nexubis.io/api/meta-event", {
+        method: "POST", headers: { cookie: jar() }, body: String(init?.body),
+      }));
+    }
+    return Response.json({ ok: true });
+  });
+  vi.stubGlobal("fetch", fetchMock);
+  findForm(ScorecardFlow())!.props.onSubmit({ preventDefault: vi.fn() });
+  await vi.waitFor(() => expect(assign).toHaveBeenCalledWith("/audit/r/abcdefgh"));
+  const pixelCalls = fbq.mock.calls.filter((call) => call[1] === "QualifiedAudit");
+  const relayCalls = fetchMock.mock.calls.filter(([url, init]) => url === "/api/meta-event" && JSON.parse(String(init?.body)).eventName === "QualifiedAudit");
+  const capiCalls = vi.mocked(sendCapiEvent).mock.calls.filter(([event]) => event.eventName === "QualifiedAudit");
+  if (consent === "accepted") {
+    expect(pixelCalls).toEqual([["trackCustom", "QualifiedAudit", { content_category: "scorecard", content_name: "example.com" }, { eventID: auditId }]]);
+    expect(relayCalls).toHaveLength(1);
+    expect(capiCalls).toHaveLength(1);
+    expect(capiCalls[0][0]).toMatchObject({ eventId: auditId, eventSourceUrl: "https://www.nexubis.io/audit", email: "qa@example.com" });
+  } else {
+    expect(pixelCalls).toHaveLength(0);
+    expect(relayCalls).toHaveLength(0);
+    expect(capiCalls).toHaveLength(0);
+  }
+});

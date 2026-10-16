@@ -197,6 +197,7 @@ export function ScorecardFlow() {
           const payload = JSON.parse(line.slice(5).trim()) as
             | { type: "stage"; stage: ScanStage }
             | { type: "detected"; oneLiner: string }
+            | { type: "qualified"; auditId: string }
             | { type: "done"; reportUrl: string; slug: string }
             | { type: "error"; error: string; reportUrl?: string };
           if (payload.type === "stage") {
@@ -206,6 +207,10 @@ export function ScorecardFlow() {
               company,
               detectedOneLiner: f.step === "scanning" ? f.detectedOneLiner : undefined,
             }));
+          } else if (payload.type === "qualified") {
+            // The shared helper checks current consent and uses this audit ID
+            // for both pixel and CAPI deduplication. No report-page replay.
+            trackMeta(META_EVENTS.qualifiedAudit, { content_category: "scorecard", content_name: company }, { email: email.trim(), eventId: payload.auditId });
           } else if (payload.type === "detected") {
             setFlow((f) => (f.step === "scanning" ? { ...f, detectedOneLiner: payload.oneLiner } : f));
           } else if (payload.type === "done") {
