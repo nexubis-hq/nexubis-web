@@ -42,7 +42,24 @@ async function sendEmail(args: { to: string | string[]; subject: string; text: s
 
 // Internal notification: new audit lead, the working details, links to the
 // report and the admin view. Subject pattern per the build pack.
-export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, adminUrl: string): Promise<boolean> {
+export function siteReadFailureLines(flags: string[]): string[] {
+  return flags.flatMap((flag) => {
+    const match = flag.match(/^Auto-detect (?:could not read the site|of product and competitors failed) \(([\s\S]*)\)$/);
+    return match ? [`Site read: failed (${match[1]})`] : [];
+  });
+}
+
+function auditAlertRecipients(): string[] {
+  const seen = new Set<string>();
+  return [...leadNotifyRecipients(), "shannah@nexubis.io"].filter((address) => {
+    const key = address.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, adminUrl: string, detectionFlags: string[] = []): Promise<boolean> {
   const subject = `Audit lead: ${lead.company}, ${lead.credibilityScore}/100, ${lead.verdict} gap`;
   const lines = [
     `New audit lead.`,
@@ -51,6 +68,7 @@ export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, ad
     `Contact: ${lead.name}, ${lead.role}, ${lead.email}`,
     `Product: ${lead.productOneLiner}`,
     `Competitors: ${lead.competitors.map((c) => c.name).join(", ")}`,
+    ...siteReadFailureLines(detectionFlags),
     ``,
     `Gap Score: ${lead.credibilityScore}/100 (${lead.verdict} gap)`,
     `First fix: ${lead.firstFixCategory ?? "n/a"}`,
@@ -62,13 +80,7 @@ export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, ad
     `Report: ${absoluteReportUrl}`,
     `Admin: ${adminUrl}`,
   ].filter((l) => l !== null);
-  const seen = new Set<string>();
-  const to = [...leadNotifyRecipients(), "shannah@nexubis.io"].filter((address) => {
-    const key = address.toLowerCase();
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+  const to = auditAlertRecipients();
   return sendEmail({ to, subject, text: lines.join("\n"), replyTo: lead.email });
 }
 
@@ -77,8 +89,8 @@ export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, ad
 // hears about it immediately and follows up by hand, so a pipeline failure
 // never silently discards a prospect (the LekkeWeb "needs a human eye"
 // lesson, adapted to the gateless flow).
-export async function notifyFailedScan(email: string, url: string, reason: string): Promise<boolean> {
-  const to = leadNotifyRecipients();
+export async function notifyFailedScan(email: string, url: string, reason: string, detectionFlags: string[] = []): Promise<boolean> {
+  const to = auditAlertRecipients();
   if (to.length === 0) return false;
   return sendEmail({
     to,
@@ -89,6 +101,7 @@ export async function notifyFailedScan(email: string, url: string, reason: strin
       `Email: ${email}`,
       `Website: ${url}`,
       `Reason: ${reason}`,
+      ...siteReadFailureLines(detectionFlags),
       `Time: ${new Date().toISOString()}`,
     ].join("\n"),
     replyTo: email,

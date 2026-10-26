@@ -54,6 +54,7 @@ const MAX_CHARS = 12000;
 const MAX_INNER_PAGES = 5;
 const INNER_PAGE_CHARS = 2500;
 const USER_AGENT = "Mozilla/5.0 (compatible; NexubisScorecard/1.0; +https://www.nexubis.io)";
+const BROWSER_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 
 // Categories worth walking when their link is on the landing page. Order is
 // the priority order if we can only afford a few inner fetches. These are the
@@ -377,25 +378,110 @@ export function pickInnerPages(links: Array<{ text: string; href: string }>): Ar
   return picked;
 }
 
-async function fetchHtml(target: string, timeoutMs: number): Promise<string | null> {
+type HtmlRead = { ok: true; html: string; finalUrl: string } | { ok: false; reason: string };
+type SiteCookie = { origin: string; path: string; secure: boolean; name: string; value: string };
+
+// Per-crawl session only. Node fetch does not retain Set-Cookie on redirects;
+// some sites require that round trip before serving even their country picker.
+// Cookies stay on the exact origin and declared path, never another redirect host.
+async function readHtml(target: string, timeoutMs: number, cookies: SiteCookie[], browser = false): Promise<HtmlRead> {
   const validated = validateUrl(target);
-  if (!validated.ok) return null;
+  if (!validated.ok) return { ok: false, reason: validated.reason };
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(validated.url.toString(), {
-      signal: controller.signal,
-      redirect: "follow",
-      headers: { "User-Agent": USER_AGENT, Accept: "text/html,application/xhtml+xml" },
-    });
-    if (!res.ok) return null;
-    if (!(res.headers.get("content-type") || "").includes("html")) return null;
-    return await res.text();
-  } catch {
-    return null;
+    let url = validated.url;
+    for (let hop = 0; hop <= 5; hop++) {
+      const cookie = cookies.filter((c) => c.origin === url.origin &&
+        (url.pathname === c.path || url.pathname.startsWith(c.path.endsWith("/") ? c.path : `${c.path}/`)) &&
+        (!c.secure || url.protocol === "https:"))
+        .map((c) => `${c.name}=${c.value}`).join("; ");
+      const res = await fetch(url.toString(), {
+        signal: controller.signal, redirect: "manual",
+        headers: { "User-Agent": browser ? BROWSER_USER_AGENT : USER_AGENT,
+          Accept: "text/html,application/xhtml+xml", ...(cookie ? { Cookie: cookie } : {}) },
+      });
+      for (const raw of res.headers.getSetCookie()) {
+        const [pair, ...attributes] = raw.split(";");
+        const split = pair.indexOf("=");
+        if (split < 1) continue;
+        const path = attributes.find((a) => /^\s*path=/i.test(a))?.trim().slice(5) ||
+          url.pathname.slice(0, url.pathname.lastIndexOf("/") + 1);
+        const item = { origin: url.origin, path, secure: attributes.some((a) => a.trim().toLowerCase() === "secure"),
+          name: pair.slice(0, split), value: pair.slice(split + 1) };
+        const existing = cookies.findIndex((c) => c.origin === item.origin && c.path === path && c.name === item.name);
+        if (existing < 0) cookies.push(item); else cookies[existing] = item;
+      }
+      const location = res.headers.get("location");
+      if ([301, 302, 303, 307, 308].includes(res.status) && location) {
+        await res.body?.cancel();
+        const next = validateUrl(new URL(location, url).toString());
+        if (!next.ok) return { ok: false, reason: `Site redirect refused: ${next.reason}` };
+        url = next.url;
+        continue;
+      }
+      if (!res.ok) {
+        await res.body?.cancel();
+        return { ok: false, reason: `Site responded with status ${res.status}.` };
+      }
+      if (!(res.headers.get("content-type") || "").includes("html")) {
+        await res.body?.cancel();
+        return { ok: false, reason: "That address did not return a web page." };
+      }
+      const html = await res.text();
+      if (/<title[^>]*>\s*(?:Just a moment|Access denied)/i.test(html)) {
+        return { ok: false, reason: "Site returned an access challenge instead of content." };
+      }
+      return { ok: true, html, finalUrl: res.url || url.toString() };
+    }
+    return { ok: false, reason: "Site exceeded 5 redirects." };
+  } catch (err) {
+    return { ok: false, reason: err instanceof Error && err.name === "AbortError"
+      ? "The site took too long to respond." : "Could not reach that site." };
   } finally {
     clearTimeout(timer);
   }
+}
+
+async function fetchHtml(target: string, timeoutMs: number, cookies: SiteCookie[], browser: boolean): Promise<string | null> {
+  const read = await readHtml(target, timeoutMs, cookies, browser);
+  return read.ok ? read.html : null;
+}
+
+// Only thin pages with explicit locale/country choices qualify. A normal page
+// with a language switcher keeps its landing page. URL-valued radio/select
+// choices cover pickers such as Euroboor without submitting forms or running JS.
+export function pickSplashEntry(html: string, baseUrl: URL): string | null {
+  const $ = load(html);
+  const read$ = load(html);
+  read$("nav, header, footer").remove();
+  if (extractReadableText(read$, MAX_CHARS).length >= 600) return null;
+  const candidates: Array<{ href: string; rank: number }> = [];
+  let hasLocaleChoice = false;
+  $("a[href], link[rel='alternate'][hreflang], input[type='radio'][value], select option[value]").each((_, el) => {
+    const node = $(el);
+    const raw = node.attr("href") || node.attr("value") || "";
+    if (!raw || raw.startsWith("#")) return;
+    let url: URL;
+    try { url = new URL(raw, baseUrl); } catch { return; }
+    url.hash = "";
+    if (!validateUrl(url.href).ok || url.host.replace(/^www\./, "") !== baseUrl.host.replace(/^www\./, "") ||
+      url.href === baseUrl.href || /\.(?:pdf|zip|jpg|png|svg)$/i.test(url.pathname)) return;
+    // An option value must actually be a URL, never a country code like "ZA".
+    if (!node.attr("href") && !/^(?:\/|https?:\/\/)/i.test(raw)) return;
+    const id = node.attr("id");
+    const label = id ? $("label").filter((_, l) => $(l).attr("for") === id).text() : "";
+    const text = (node.attr("hreflang") || label || node.text()).trim().toLowerCase();
+    const pathLocale = url.pathname.match(/\/(?:[a-z]{2,3}-)?(en|nl|de|fr|es|it|pt)(?:\/|$)/i)?.[1]?.toLowerCase();
+    const queryLocale = url.searchParams.get("lang") || url.searchParams.get("locale") || url.searchParams.get("language");
+    const lang = LANGUAGE_NAMES[text] || (LANGUAGE_CODES.has(text.split("-")[0]) ? text.split("-")[0] : "") || pathLocale || queryLocale;
+    if (lang) hasLocaleChoice = true;
+    if (/\b(?:privacy|cookies?|terms|login)\b/i.test(`${text} ${url.pathname}`)) return;
+    candidates.push({ href: url.href, rank: lang === "en" ? 0 : lang === "nl" ? 1 : 2 });
+  });
+  const pickerText = $("body").text().replace(/\s+/g, " ");
+  if (!hasLocaleChoice && !/(?:choose|select).{0,25}(?:country|language|region)/i.test(pickerText)) return null;
+  return candidates.sort((a, b) => a.rank - b.rank)[0]?.href ?? null;
 }
 
 // Headless render for JavaScript-heavy sites. Many modern sites ship a
@@ -455,31 +541,25 @@ export async function fetchSite(rawUrl: string): Promise<FetchSiteResult> {
     };
   }
 
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
-
-  let landingHtml: string;
-  let finalUrl: string;
-  try {
-    const res = await fetch(validated.url.toString(), {
-      signal: controller.signal,
-      redirect: "follow",
-      headers: { "User-Agent": USER_AGENT, Accept: "text/html,application/xhtml+xml" },
-    });
-    if (!res.ok) return { ok: false, reason: `Site responded with status ${res.status}.` };
-    if (!(res.headers.get("content-type") || "").includes("html")) {
-      return { ok: false, reason: "That address did not return a web page." };
-    }
-    landingHtml = await res.text();
-    finalUrl = res.url || validated.url.toString();
-  } catch (err) {
-    const reason =
-      err instanceof Error && err.name === "AbortError"
-        ? "The site took too long to respond."
-        : "Could not reach that site.";
-    return { ok: false, reason };
-  } finally {
-    clearTimeout(timer);
+  const cookies: SiteCookie[] = [];
+  let browser = false;
+  let landing = await readHtml(validated.url.toString(), TIMEOUT_MS, cookies);
+  // One retry only, with a normal browser identity. No guessed company domain.
+  if (!landing.ok && landing.reason !== "The site took too long to respond.") {
+    const firstReason = landing.reason;
+    browser = true;
+    landing = await readHtml(validated.url.toString(), TIMEOUT_MS, cookies, true);
+    if (!landing.ok) return { ok: false, reason: `${landing.reason} Browser retry also failed (first attempt: ${firstReason})` };
+  }
+  if (!landing.ok) return landing;
+  let landingHtml = landing.html;
+  let finalUrl = landing.finalUrl;
+  const entry = pickSplashEntry(landingHtml, new URL(finalUrl));
+  if (entry) {
+    const content = await readHtml(entry, TIMEOUT_MS, cookies, browser);
+    if (!content.ok) return { ok: false, reason: `Country/language entry failed: ${content.reason}` };
+    landingHtml = content.html;
+    finalUrl = content.finalUrl;
   }
 
   // SPA fallback: if the plain HTML is a thin client-rendered shell, re-fetch it
@@ -565,7 +645,7 @@ export async function fetchSite(rawUrl: string): Promise<FetchSiteResult> {
       innerTargets.map(async (target) => {
         // On a SPA the inner pages are client-rendered too, so render them; a
         // server-rendered site uses the cheap plain fetch.
-        const html = siteIsSpa ? await fetchRenderedHtml(target.href) : await fetchHtml(target.href, INNER_TIMEOUT_MS);
+        const html = siteIsSpa ? await fetchRenderedHtml(target.href) : await fetchHtml(target.href, INNER_TIMEOUT_MS, cookies, browser);
         if (!html) return null;
         const inner$ = load(html);
         const innerRead = pageSignals(inner$);

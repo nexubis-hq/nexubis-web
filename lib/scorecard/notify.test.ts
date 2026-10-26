@@ -48,7 +48,7 @@ it.each([
   });
 });
 
-it("leaves failed-scan, capacity and customer email recipients unchanged", async () => {
+it("adds Shannah to failed scans while leaving capacity and customer recipients unchanged", async () => {
   const { notifyFailedScan, notifyBreakerTripped, sendFallbackEmail1 } = await import("./notify");
   await notifyFailedScan(lead.email, lead.url, "Mock failure");
   await notifyBreakerTripped(10);
@@ -56,8 +56,34 @@ it("leaves failed-scan, capacity and customer email recipients unchanged", async
   const calls = vi.mocked(sendResendEmail).mock.calls;
   expect(calls).toHaveLength(3);
   expect(calls.map(([args]) => args.to)).toEqual([
-    ["laine@nexubis.io", "hello@nexubis.io"],
+    ["laine@nexubis.io", "hello@nexubis.io", "shannah@nexubis.io"],
     ["laine@nexubis.io", "hello@nexubis.io"],
     [lead.email],
   ]);
+});
+
+it.each([
+  ["Auto-detect could not read the site (Site responded with status 403.)", "Site responded with status 403."],
+  ["Auto-detect of product and competitors failed (Model unavailable (timeout))", "Model unavailable (timeout)"],
+])("includes the same detection failure in both internal alerts: %s", async (flag, reason) => {
+  const { notifyTeam, notifyFailedScan } = await import("./notify");
+  await notifyTeam(lead, report, admin, [flag]);
+  await notifyFailedScan(lead.email, lead.url, "report-not-ready: only 2 of 5 pillars scored", [flag]);
+  const calls = vi.mocked(sendResendEmail).mock.calls;
+  expect(calls).toHaveLength(2);
+  for (const [args] of calls) expect(args.text).toContain(`Site read: failed (${reason})`);
+  expect(calls[1][0].text).toContain("Reason: report-not-ready: only 2 of 5 pillars scored");
+});
+
+it("deduplicates failed-scan recipients case-insensitively", async () => {
+  vi.stubEnv("SCORECARD_LEAD_EMAILS", "SHANNAH@nexubis.io,hello@nexubis.io,HELLO@nexubis.io");
+  const { notifyFailedScan } = await import("./notify");
+  await notifyFailedScan(lead.email, lead.url, "Mock failure");
+  expect(vi.mocked(sendResendEmail).mock.calls[0][0].to).toEqual(["SHANNAH@nexubis.io", "hello@nexubis.io"]);
+});
+
+it("does not label missing competitors as a site-read failure", async () => {
+  const { notifyTeam } = await import("./notify");
+  await notifyTeam(lead, report, admin, ["Auto-detect found no competitors to benchmark against"]);
+  expect(vi.mocked(sendResendEmail).mock.calls[0][0].text).not.toContain("Site read: failed");
 });

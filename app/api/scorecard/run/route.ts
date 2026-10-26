@@ -262,6 +262,7 @@ export async function POST(req: NextRequest) {
           console.error("[scorecard-run] limits unavailable, failing open:", err instanceof Error ? err.message : err);
         }
 
+        let detectionFlags: string[] = [];
         // The generation itself races a hard deadline; a valid email is in
         // hand from here on, so every failure below becomes a captured lead,
         // never a lost one.
@@ -272,6 +273,7 @@ export async function POST(req: NextRequest) {
               // make and who they cross-shop against. Cached per site.
               send({ type: "stage", stage: "reading" });
               const detection = await detectProspectContext(prospect);
+              detectionFlags = detection.flags;
               detectedFit = detection.industryFit;
               // Reserve the report's audit ID as soon as the existing read is
               // available. Only this fresh-run stream signals qualification;
@@ -289,6 +291,8 @@ export async function POST(req: NextRequest) {
               const { result } = await generateScorecard(enriched, {
                 onStage: (stage: ScanStage) => send({ type: "stage", stage }),
               });
+              // Keep detection failures with the report and its internal alert.
+              result.flags = [...new Set([...(result.flags ?? []), ...detectionFlags])];
 
               // Readiness gate: a report scored on fewer than 3 of the 5
               // pillars is too degraded to ship as "your audit". (A fully
@@ -329,7 +333,7 @@ export async function POST(req: NextRequest) {
           // the team for a manual run, and the visitor hears exactly that.
           const detail = err instanceof DeadlineError ? "generation exceeded the deadline" : err instanceof Error ? err.message : String(err);
           console.error("[scorecard-run] failed after capture:", detail);
-          await notifyFailedScan(email, prospect.url, detail).catch(() => {});
+          await notifyFailedScan(email, prospect.url, detail, detectionFlags).catch(() => {});
           await fail(FAILED_SCAN_MESSAGE, err instanceof DeadlineError ? "timeout" : "failed");
         }
       } catch (err) {
