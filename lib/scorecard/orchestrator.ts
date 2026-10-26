@@ -53,7 +53,9 @@ export async function joinDeferredPageSpeed(
 }
 
 export function generateCacheKey(input: ProspectData): string {
-  return scorecardCacheKey(prospectDeterminismInput(input));
+  // Retire evidence/results from before cookie redirects and picker reads.
+  // Keep run/capture identity and the independent PageSpeed cache unchanged.
+  return `${scorecardCacheKey(prospectDeterminismInput(input))}:site-read:v2`;
 }
 
 interface CompanyTarget {
@@ -290,5 +292,6 @@ export async function gatherEvidence(input: ProspectData, options: GatherOptions
       () => gatherEvidenceUncached(input, options),
       { fresh: options.fresh },
     ),
+    options,
   );
 }

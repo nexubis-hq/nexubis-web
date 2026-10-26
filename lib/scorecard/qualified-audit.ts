@@ -1,17 +1,30 @@
 import type { DetectionResult } from "./detect";
 
-/** Reporting only: require a manufacturer read corroborated by named products
- * and an industrial/business buyer. No confidence score exists in this read;
- * unclear, hedged, thin or failed reads must not qualify. Keep this rule here
- * so it can be adjusted without changing audit scoring or lead routing. */
-export function isQualifiedAudit(read: DetectionResult | null | undefined): boolean {
-  if (read?.industryFit !== "manufacturer" || !read.productOneLiner.trim()) return false;
+export interface QualifiedAuditDecision {
+  qualified: boolean;
+  reason: string;
+}
+
+/** Reporting only. Buyer wording is not required: weak manufacturer sites
+ * often omit it. Keep qualification separate from scoring and lead routing. */
+export function qualifiedAuditDecision(read: DetectionResult | null | undefined): QualifiedAuditDecision {
+  const reject = (reason: string): QualifiedAuditDecision => ({ qualified: false, reason });
+  if (!read) return reject("site read not available");
+  if (read.flags.some((flag) => /could not read|detect.*failed/i.test(flag))) return reject("site read or detection failed");
+  if (read.industryFit !== "manufacturer") return reject(`not read as a manufacturer (${read.industryFit})`);
+  if (!read.productOneLiner.trim()) return reject("no product description");
   const fingerprint = read.fingerprint;
-  if (!fingerprint?.productFamilies.some((product) => product.trim())) return false;
-  if (!fingerprint.industries.some((industry) => industry.trim())) return false;
-  const description = `${read.productOneLiner} ${fingerprint.buyerPersona}`;
-  if (/\b(unknown|unclear|uncertain|low confidence|possibly|probably|likely|might|may be|appears to)\b/i.test(description)) return false;
-  if (/\b(software|consultancy|consulting|garage|repair services)\b/i.test(read.productOneLiner)) return false;
-  if (read.flags.some((flag) => /could not read|detect.*failed/i.test(flag))) return false;
-  return /\b(b2b|business|industrial|engineers?|procurement|manufacturers?|manufacturing|factories|factory|plants?|production)\b/i.test(fingerprint.buyerPersona);
+  if (!fingerprint?.productFamilies.some((product) => product.trim())) return reject("no named product families");
+  if (!fingerprint.industries.some((industry) => industry.trim())) return reject("no named industries");
+  if (/\b(unknown|unclear|uncertain|low confidence|possibly|probably|likely|might|may be|appears to)\b/i.test(read.productOneLiner)) return reject("product description is uncertain");
+  if (/\b(software|consultancy|consulting|garage|repair services)\b/i.test(read.productOneLiner)) return reject("product description is software or services");
+  return { qualified: true, reason: "manufacturer with named products" };
+}
+
+export function isQualifiedAudit(read: DetectionResult | null | undefined): boolean {
+  return qualifiedAuditDecision(read).qualified;
+}
+
+export function formatQualifiedAuditDecision(decision?: QualifiedAuditDecision): string {
+  return decision ? `${decision.qualified ? "yes" : "no"} (${decision.reason})` : "not recorded";
 }

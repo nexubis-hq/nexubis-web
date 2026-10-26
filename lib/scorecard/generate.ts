@@ -347,8 +347,8 @@ export async function generateScorecardUncached(
 }
 
 // Production entry: envelope + KV cache. Identical inputs inside the TTL
-// replay the finished result; `fresh` regenerates (admin action) while still
-// reusing raw call memoizations where valid.
+// replay the finished result; `fresh` regenerates evidence, scoring and copy
+// without replaying raw call memoizations (admin action).
 export async function generateScorecard(input: ProspectData, options: GatherOptions = {}): Promise<GenerateOutcome> {
   const envelopeKey = generateCacheKey(input);
   let cached = true;
@@ -362,6 +362,7 @@ export async function generateScorecard(input: ProspectData, options: GatherOpti
       },
       { fresh: options.fresh },
     ),
+    options,
   );
   return { result, cached };
 }

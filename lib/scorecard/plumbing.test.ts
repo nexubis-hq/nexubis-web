@@ -36,7 +36,7 @@ import { buildLeadRecord, runLeadPlumbing, readExistingCapture, markCaptured, pr
 import { listLeads, readLead, type LeadRecord } from "./leads";
 import { generateScorecardUncached } from "./generate";
 import { prospectFromRunInput, runIdFor } from "./run";
-import type { SharedScorecard } from "./share";
+import { readShared, type SharedScorecard } from "./share";
 
 const captureEmail = "Mark@Veltkamp-Dosing.nl";
 
@@ -144,7 +144,9 @@ test("capture idempotency: the dedupe marker returns the same slug and prevents 
   const runId = runIdFor(prospect);
 
   assert.equal(await readExistingCapture(captureEmail, runId), null);
-  const first = await promoteResult(prospect, result, captureEmail);
+  const decision = { qualified: true, reason: "manufacturer with named products" };
+  const first = await promoteResult(prospect, result, captureEmail, "", "auditdec1", decision);
+  assert.deepEqual((await readShared(first.slug))?.qualifiedDecision, decision);
   await markCaptured(captureEmail, runId, first.slug);
   assert.equal(await readExistingCapture(captureEmail, runId), first.slug);
   // Same email in a different case still dedupes.

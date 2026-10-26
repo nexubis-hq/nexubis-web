@@ -10,6 +10,8 @@ import { SESSION_COOKIE, expectedSessionToken, isValidSession, passwordMatches, 
 import { updateLead, type LoomStatus } from "@/lib/scorecard/leads";
 import { patchShared, readShared } from "@/lib/scorecard/share";
 import { generateScorecard } from "@/lib/scorecard/generate";
+import { detectProspectContext, applyDetection } from "@/lib/scorecard/detect";
+import { qualifiedAuditDecision } from "@/lib/scorecard/qualified-audit";
 
 const SESSION_TTL_S = 12 * 60 * 60;
 
@@ -82,23 +84,29 @@ export async function attachLoom(formData: FormData): Promise<void> {
   revalidatePath(`/audit/r/${slug}`);
 }
 
-// Re-run the pipeline for a report. The determinism envelope still memoizes
-// raw calls inside their TTL, so a regenerate refreshes scoring and copy
-// without re-paying unchanged evidence gathering.
+// Re-read and regenerate in place. No capture, notification or event plumbing
+// runs here; the existing report link and contact details stay intact.
 export async function regenerateReport(formData: FormData): Promise<void> {
   await requireSession();
   const slug = String(formData.get("slug") ?? "");
   if (!slug) return;
   const shared = await readShared(slug);
   if (!shared) return;
-  const { result } = await generateScorecard(shared.prospectData, { fresh: true });
+  const detection = await detectProspectContext(shared.prospectData, { fresh: true });
+  const prospectData = {
+    ...applyDetection(shared.prospectData, detection),
+    fingerprint: detection.fingerprint ?? undefined,
+  };
+  const qualifiedDecision = qualifiedAuditDecision(detection);
+  const { result } = await generateScorecard(prospectData, { fresh: true });
   // Keep the unlocked contact fields; the regenerated result starts blank.
   const merged = {
     ...result,
+    flags: [...new Set([...result.flags, ...detection.flags])],
     meta: { ...result.meta, contactName: shared.result.meta.contactName, role: shared.result.meta.role },
     routing: { ...result.routing, roleSeniority: shared.result.routing.roleSeniority },
   };
-  await patchShared(slug, { result: merged });
+  await patchShared(slug, { prospectData, result: merged, qualifiedDecision });
   revalidatePath(`/audit/admin/${slug}`);
   revalidatePath(`/audit/r/${slug}`);
 }

@@ -4,6 +4,7 @@ import { SESSION_COOKIE, isValidSession } from "@/lib/scorecard/auth";
 import { readRecentScanLog, readScanCounts, type ScanOutcome } from "@/lib/scorecard/diagnostics";
 import { readFunnel } from "@/lib/funnel/counter";
 import { adLabel } from "@/lib/funnel/steps";
+import { formatQualifiedAuditDecision } from "@/lib/scorecard/qualified-audit";
 
 export const dynamic = "force-dynamic";
 
@@ -104,6 +105,7 @@ export default async function ScansPage() {
                   <th>When</th>
                   <th>Website</th>
                   <th>Detected fit</th>
+                  <th>Qualified</th>
                   <th>From ad</th>
                   <th>Outcome</th>
                   <th>Took</th>
@@ -125,6 +127,7 @@ export default async function ScansPage() {
                         )}
                       </td>
                       <td className={flagged ? "sc-admin-warn" : "sc-admin-dim"}>{e.fit ?? "n/a"}</td>
+                      <td>{formatQualifiedAuditDecision(e.qualifiedDecision)}</td>
                       <td className="sc-admin-dim">{adLabel(e.ad) ?? "none recorded"}</td>
                       <td>
                         <span className={outcomeClass(e.outcome)}>{OUTCOME_LABEL[e.outcome] ?? e.outcome}</span>

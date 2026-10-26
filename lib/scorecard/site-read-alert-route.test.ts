@@ -45,6 +45,7 @@ it("preserves detection failures alongside evidence flags on a completed report"
     expect.objectContaining({ url: "https://example.com" }),
     expect.objectContaining({ flags: ["Other evidence warning", flag] }),
     "qa@example.com", "Test", "audit123",
+    { qualified: false, reason: "site read or detection failed" },
   );
   expect(notifyFailedScan).not.toHaveBeenCalled();
 });

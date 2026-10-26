@@ -13,6 +13,7 @@ import { pushLead, type LeadRecord } from "./leads";
 import { notifyTeam, sendFallbackEmail1 } from "./notify";
 import { prospectScores, type ScorecardResult } from "./result";
 import type { ProspectData } from "./types";
+import type { QualifiedAuditDecision } from "./qualified-audit";
 
 export interface LeadCaptureInput {
   firstName: string;
@@ -170,11 +171,12 @@ export interface PromoteOutcome {
 
 // Promote a finished generation straight to its permanent shared report.
 // Never emails here; the caller chains the lead plumbing after.
-export async function promoteResult(prospectData: ProspectData, rawResult: ScorecardResult, email: string, firstName = "", reservedSlug?: string): Promise<PromoteOutcome> {
+export async function promoteResult(prospectData: ProspectData, rawResult: ScorecardResult, email: string, firstName = "", reservedSlug?: string, qualifiedDecision?: QualifiedAuditDecision): Promise<PromoteOutcome> {
   const { prospect, result } = applyContact(prospectData, rawResult, email, firstName);
   const slug = reservedSlug ?? await uniqueSlug();
   const now = new Date();
   const record: SharedScorecard = {
+    ...(qualifiedDecision ? { qualifiedDecision } : {}),
     prospectData: prospect,
     result,
     loomUrl: null,

@@ -1,5 +1,6 @@
 import { getKv } from "./kv";
 import type { AdSource } from "@/lib/funnel/steps";
+import type { QualifiedAuditDecision } from "./qualified-audit";
 
 // Diagnosis-only scan telemetry. The Meta side only has AuditStart (scan began)
 // and Lead (gate converted); everything between is invisible, so we cannot tell
@@ -10,6 +11,7 @@ import type { AdSource } from "@/lib/funnel/steps";
 export type ScanOutcome = "success" | "invalid" | "out-of-scope" | "limited" | "failed" | "timeout";
 
 export interface ScanRunLog {
+  qualifiedDecision?: QualifiedAuditDecision;
   outcome: ScanOutcome;
   /** Wall-clock milliseconds from scan start to this terminal state. */
   ms: number;

@@ -6,6 +6,7 @@ import { readShared } from "@/lib/scorecard/share";
 import { readLead } from "@/lib/scorecard/leads";
 import { prospectScores } from "@/lib/scorecard/result";
 import { categoryLabel } from "@/lib/scorecard/rubric";
+import { formatQualifiedAuditDecision } from "@/lib/scorecard/qualified-audit";
 import { CopyLinkButton } from "@/components/scorecard/admin/CopyLinkButton";
 import { attachLoom, regenerateReport, saveLeadNote, setLoomStatus } from "../actions";
 
@@ -59,6 +60,7 @@ export default async function AdminReportPage({
           <div className="sc-admin-card">
             <h2>Routing</h2>
             <ul className="sc-admin-facts">
+              <li>Qualified: {formatQualifiedAuditDecision(shared.qualifiedDecision)}</li>
               <li>
                 <span>Overall</span> {p?.overall ?? "n/a"}/100 ({result.verdict.band} gap, stance {result.verdict.stance})
               </li>
