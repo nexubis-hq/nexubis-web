@@ -42,7 +42,7 @@ import { recordScanOutcome, scanTargetHost, type ScanOutcome } from "@/lib/score
 import { bumpFunnel } from "@/lib/funnel/counter";
 import { cleanAdSource, isFunnelSource, type AdSource, type FunnelSource } from "@/lib/funnel/steps";
 import { CONSENT_COOKIE, parseConsent } from "@/lib/consent/state";
-import { isQualifiedAudit } from "@/lib/scorecard/qualified-audit";
+import { isQualifiedAudit, qualifiedAuditDecision, type QualifiedAuditDecision } from "@/lib/scorecard/qualified-audit";
 import { uniqueSlug } from "@/lib/scorecard/share";
 
 export const dynamic = "force-dynamic";
@@ -149,11 +149,12 @@ export async function POST(req: NextRequest) {
   const startedAt = Date.now();
   const targetHostForLog = scanTargetHost(parsed?.input.url);
   let detectedFit: string | null = null;
+  let qualifiedDecision: QualifiedAuditDecision | undefined;
   let outcomeLogged = false;
   const logOutcome = async (outcome: ScanOutcome) => {
     if (outcomeLogged) return;
     outcomeLogged = true;
-    await recordScanOutcome({ outcome, ms: Date.now() - startedAt, host: targetHostForLog, fit: detectedFit, ad: parsed?.adSource ?? null, at: new Date().toISOString() });
+    await recordScanOutcome({ outcome, ms: Date.now() - startedAt, host: targetHostForLog, fit: detectedFit, qualifiedDecision, ad: parsed?.adSource ?? null, at: new Date().toISOString() });
   };
 
   const stream = new ReadableStream<Uint8Array>({
@@ -273,6 +274,7 @@ export async function POST(req: NextRequest) {
               // make and who they cross-shop against. Cached per site.
               send({ type: "stage", stage: "reading" });
               const detection = await detectProspectContext(prospect);
+              qualifiedDecision = qualifiedAuditDecision(detection);
               detectionFlags = detection.flags;
               detectedFit = detection.industryFit;
               // Reserve the report's audit ID as soon as the existing read is
@@ -305,7 +307,7 @@ export async function POST(req: NextRequest) {
               // No gate: straight to the permanent slug; the lead plumbing
               // runs before "done" so a frozen instance can never swallow it.
               // Funnelr capture stays browser-fired.
-              const promoted = await promoteResult(enriched, result, email, firstName, auditId);
+              const promoted = await promoteResult(enriched, result, email, firstName, auditId, qualifiedDecision);
               await markCaptured(email, runId, promoted.slug);
               try {
                 await runLeadPlumbing(promoted.record, email, promoted.slug, originOf(req), firstName);

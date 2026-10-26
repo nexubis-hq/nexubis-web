@@ -5,6 +5,7 @@ import { detectProspectContext } from "./detect";
 import { generateScorecard } from "./generate";
 import { promoteResult, readExistingCapture } from "./unlock";
 import type { DetectionResult } from "./detect";
+import { recordScanOutcome } from "./diagnostics";
 
 vi.mock("./detect", () => ({ detectProspectContext: vi.fn(), applyDetection: (prospect: unknown) => prospect }));
 vi.mock("./generate", () => ({ generateScorecard: vi.fn() }));
@@ -27,7 +28,7 @@ vi.mock("@/lib/funnel/counter", () => ({ bumpFunnel: vi.fn() }));
 
 const read: DetectionResult = {
   industryFit: "manufacturer", companyName: "Example", productOneLiner: "Makes industrial machinery", competitors: [], flags: [],
-  fingerprint: { industries: ["food"], productFamilies: ["PX line"], certifications: [], salesModel: "direct", buyerPersona: "Factory engineers" },
+  fingerprint: { industries: ["food"], productFamilies: ["PX line"], certifications: [], salesModel: "direct", buyerPersona: "metal fabricators and contractors" },
 };
 beforeEach(() => {
   vi.useFakeTimers();
@@ -58,7 +59,8 @@ it("signals once at classification, before generation, using the permanent audit
   const emitted = await events(request(true));
   expect(emitted.filter((event) => event.type === "qualified")).toEqual([{ type: "qualified", auditId: "audit123" }]);
   expect(emitted.findIndex((event) => event.type === "qualified")).toBeLessThan(emitted.findIndex((event) => event.type === "done"));
-  expect(promoteResult).toHaveBeenCalledWith(expect.anything(), expect.anything(), "qa@example.com", "Test", "audit123");
+  expect(promoteResult).toHaveBeenCalledWith(expect.anything(), expect.anything(), "qa@example.com", "Test", "audit123", { qualified: true, reason: "manufacturer with named products" });
+  expect(recordScanOutcome).toHaveBeenCalledWith(expect.objectContaining({ qualifiedDecision: { qualified: true, reason: "manufacturer with named products" } }));
 });
 
 it.each([undefined, false])("does not signal without marketing consent (%s)", async (consent) => {

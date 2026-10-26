@@ -165,10 +165,11 @@ export async function detectProspectContextUncached(prospect: ProspectData): Pro
 
 // Production entry: URL-keyed envelope + cache so the same site detects
 // identically on every run.
-export async function detectProspectContext(prospect: ProspectData): Promise<DetectionResult> {
+export async function detectProspectContext(prospect: ProspectData, options: { fresh?: boolean } = {}): Promise<DetectionResult> {
   const key = detectEnvelopeKey(prospect.url);
   return withCallEnvelope(key, () =>
-    cachedJson(key, SCORECARD_RECORD_TTL_S, () => detectProspectContextUncached(prospect)),
+    cachedJson(key, SCORECARD_RECORD_TTL_S, () => detectProspectContextUncached(prospect), { fresh: options.fresh }),
+    options,
   );
 }
 

@@ -10,6 +10,7 @@ import { SCORECARD_RECORD_TTL_S, SCORECARD_RECORD_TTL_DAYS } from "./determinism
 import type { ScorecardResult } from "./result";
 import type { ProspectData } from "./types";
 import type { RoleSeniority } from "./routing";
+import type { QualifiedAuditDecision } from "./qualified-audit";
 
 export const SHARE_TTL_S = SCORECARD_RECORD_TTL_S;
 export const SHARE_TTL_DAYS = SCORECARD_RECORD_TTL_DAYS;
@@ -18,6 +19,8 @@ const VIEW_PREFIX = "scorecard:views:";
 const ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789";
 
 export interface SharedScorecard {
+  /** Classification decision, independent of consent or whether an event fired. */
+  qualifiedDecision?: QualifiedAuditDecision;
   prospectData: ProspectData;
   result: ScorecardResult;
   /** Selective, attached from admin. When set, the report's walkthrough video
