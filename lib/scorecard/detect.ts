@@ -41,11 +41,10 @@ export interface DetectionResult {
   flags: string[];
 }
 
-// v4: the Dutch-competitor preference joined the detect prompt (v3 added
-// companyName). Bumping the key retires older cached detections instead of
-// replaying them for 180 days.
+// v5: cookie redirects and splash-page reads replace the old blank reads.
+// Retire older cached detections rather than replaying failures for 180 days.
 function detectEnvelopeKey(url: string): string {
-  return `scorecard-detect:v4:${normaliseUrl(url)}`;
+  return `scorecard-detect:v5:${normaliseUrl(url)}`;
 }
 
 // Competitor rescue: niche industries can leave the site-only detection with

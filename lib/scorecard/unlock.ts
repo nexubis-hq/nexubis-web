@@ -234,7 +234,7 @@ export async function runLeadPlumbing(record: SharedScorecard, email: string, sl
   }
 
   // 2. Team notification.
-  await notifyTeam(lead, absoluteReportUrl, adminUrl);
+  await notifyTeam(lead, absoluteReportUrl, adminUrl, record.result.flags);
 
   // 3. Email 1 fallback, flag-gated. Funnelr owns Email 1 once live.
   await sendFallbackEmail1(lead, absoluteReportUrl);

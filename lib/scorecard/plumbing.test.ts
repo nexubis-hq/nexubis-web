@@ -86,6 +86,7 @@ test("lead plumbing persists a complete lead, notifies the team, and skips Email
   );
 
   const record = await makeSharedRecord();
+  record.result.flags.push("Auto-detect could not read the site (Site responded with status 403.)");
   const lead = await runLeadPlumbing(record, captureEmail, "slug9999", "https://www.nexubis.io");
 
   // Lead record complete and queryable. Funnelr capture is handled by the
@@ -103,6 +104,8 @@ test("lead plumbing persists a complete lead, notifies the team, and skips Email
   const teamEmail = sent[0].body as { subject: string; text: string; to: string[] };
   assert.ok(teamEmail.subject.startsWith(`Audit lead: Veltkamp Dosing, ${lead.credibilityScore}/100`));
   assert.ok(!teamEmail.text.includes("webhook FAILED"));
+  assert.ok(teamEmail.text.includes("Site read: failed (Site responded with status 403.)"));
+  assert.equal(lead.url, record.prospectData.url);
 });
 
 test("Email 1 goes to the lead only while SCORECARD_SEND_EMAIL1=true, with the exact locked copy", async () => {
