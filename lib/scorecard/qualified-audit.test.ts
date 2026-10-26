@@ -16,6 +16,7 @@ it.each([
   ["unstated buyer", { ...manufacturerRead, fingerprint: { ...manufacturerRead.fingerprint!, buyerPersona: "" } }],
   ["uncertain buyer wording only", { ...manufacturerRead, fingerprint: { ...manufacturerRead.fingerprint!, buyerPersona: "Possibly contractors" } }],
   ["consumer buyer wording", { ...manufacturerRead, fingerprint: { ...manufacturerRead.fingerprint!, buyerPersona: "Homeowners" } }],
+  ["manufacturer without named industries", { ...manufacturerRead, fingerprint: { ...manufacturerRead.fingerprint!, industries: [] } }],
 ])("qualifies a clear %s", (_label, read) => {
   expect(isQualifiedAudit(read)).toBe(true);
 });
@@ -33,7 +34,6 @@ it.each([
   ["low confidence", { ...manufacturerRead, productOneLiner: "Industrial equipment (low confidence)" }],
   ["no fingerprint", { ...manufacturerRead, fingerprint: null }],
   ["no named products", { ...manufacturerRead, fingerprint: { ...manufacturerRead.fingerprint!, productFamilies: [] } }],
-  ["no industry", { ...manufacturerRead, fingerprint: { ...manufacturerRead.fingerprint!, industries: [] } }],
   ["conflicting software description", { ...manufacturerRead, productOneLiner: "Software for factory production" }],
   ["consulting description", { ...manufacturerRead, productOneLiner: "Consulting for factory production" }],
   ["consultancy description", { ...manufacturerRead, productOneLiner: "Industrial consultancy" }],

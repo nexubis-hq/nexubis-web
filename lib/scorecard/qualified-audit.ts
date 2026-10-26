@@ -15,7 +15,6 @@ export function qualifiedAuditDecision(read: DetectionResult | null | undefined)
   if (!read.productOneLiner.trim()) return reject("no product description");
   const fingerprint = read.fingerprint;
   if (!fingerprint?.productFamilies.some((product) => product.trim())) return reject("no named product families");
-  if (!fingerprint.industries.some((industry) => industry.trim())) return reject("no named industries");
   if (/\b(unknown|unclear|uncertain|low confidence|possibly|probably|likely|might|may be|appears to)\b/i.test(read.productOneLiner)) return reject("product description is uncertain");
   if (/\b(software|consultancy|consulting|garage|repair services)\b/i.test(read.productOneLiner)) return reject("product description is software or services");
   return { qualified: true, reason: "manufacturer with named products" };
