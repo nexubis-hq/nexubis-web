@@ -9,6 +9,10 @@ import {
   rerunManualAudit as rerun,
 } from "@/lib/scorecard/manual/run";
 import { ManualAuditError } from "@/lib/scorecard/manual/paste";
+import {
+  runNormalManualAudit,
+  NormalSiteReadError,
+} from "@/lib/scorecard/manual/normal";
 
 async function requireSession(): Promise<void> {
   const jar = await cookies();
@@ -16,6 +20,32 @@ async function requireSession(): Promise<void> {
     throw new Error("Not signed in.");
 }
 const field = (data: FormData, name: string) => String(data.get(name) ?? "");
+
+function errorDestination(err: unknown): string {
+  const code = err instanceof ManualAuditError ? err.code : "failed";
+  const reason =
+    err instanceof NormalSiteReadError
+      ? `&reason=${encodeURIComponent(err.reason.slice(0, 200))}`
+      : "";
+  return `/audit/admin/manual?error=${code}${reason}`;
+}
+
+export async function createNormalManualAudit(data: FormData): Promise<void> {
+  await requireSession();
+  let destination: string;
+  try {
+    const outcome = await runNormalManualAudit({
+      url: field(data, "url"),
+      contactName: field(data, "contactName"),
+      contactEmail: field(data, "contactEmail"),
+    });
+    destination = `/audit/admin/manual?created=${encodeURIComponent(outcome.slug)}`;
+  } catch (err) {
+    destination = errorDestination(err);
+  }
+  revalidatePath("/audit/admin/manual");
+  redirect(destination);
+}
 
 export async function createManualAudit(data: FormData): Promise<void> {
   await requireSession();
@@ -31,7 +61,7 @@ export async function createManualAudit(data: FormData): Promise<void> {
     });
     destination = `/audit/admin/manual?created=${encodeURIComponent(outcome.slug)}`;
   } catch (err) {
-    destination = `/audit/admin/manual?error=${err instanceof ManualAuditError ? err.code : "failed"}`;
+    destination = errorDestination(err);
   }
   revalidatePath("/audit/admin/manual");
   redirect(destination);
@@ -50,7 +80,7 @@ export async function rerunManualAudit(data: FormData): Promise<void> {
     revalidatePath(`/audit/r/${outcome.slug}`);
     destination = `/audit/admin/manual?created=${encodeURIComponent(outcome.slug)}`;
   } catch (err) {
-    destination = `/audit/admin/manual?error=${err instanceof ManualAuditError ? err.code : "failed"}`;
+    destination = errorDestination(err);
   }
   revalidatePath("/audit/admin/manual");
   redirect(destination);
