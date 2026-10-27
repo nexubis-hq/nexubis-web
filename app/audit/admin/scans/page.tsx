@@ -1,10 +1,16 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SESSION_COOKIE, isValidSession } from "@/lib/scorecard/auth";
-import { readRecentScanLog, readScanCounts, type ScanOutcome } from "@/lib/scorecard/diagnostics";
+import {
+  readRecentScanLog,
+  readScanCounts,
+  type ScanOutcome,
+} from "@/lib/scorecard/diagnostics";
 import { readFunnel } from "@/lib/funnel/counter";
 import { adLabel } from "@/lib/funnel/steps";
 import { formatQualifiedAuditDecision } from "@/lib/scorecard/qualified-audit";
+
+import { formatSast } from "@/components/scorecard/admin/date";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +32,8 @@ const OUTCOME_LABEL: Record<ScanOutcome, string> = {
 
 function outcomeClass(o: ScanOutcome): string {
   if (o === "success") return "sc-admin-band sc-admin-band-narrow";
-  if (o === "failed" || o === "timeout" || o === "out-of-scope") return "sc-admin-band sc-admin-band-wide";
+  if (o === "failed" || o === "timeout" || o === "out-of-scope")
+    return "sc-admin-band sc-admin-band-wide";
   return "sc-admin-band sc-admin-band-visible";
 }
 
@@ -34,10 +41,16 @@ export default async function ScansPage() {
   const jar = await cookies();
   if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/audit/admin");
 
-  const [log, counts, funnel] = await Promise.all([readRecentScanLog(300), readScanCounts(), readFunnel(14).catch(() => [])]);
+  const [log, counts, funnel] = await Promise.all([
+    readRecentScanLog(300),
+    readScanCounts(),
+    readFunnel(14).catch(() => []),
+  ]);
 
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
-  const flaggedFits = log.filter((e) => e.fit === "outside" || e.fit === "unclear");
+  const flaggedFits = log.filter(
+    (e) => e.fit === "outside" || e.fit === "unclear"
+  );
 
   return (
     <section className="section">
@@ -45,8 +58,9 @@ export default async function ScansPage() {
         <header className="sc-admin-head">
           <h1>Scans</h1>
           <p className="sc-admin-dim">
-            Every run, newest first. Links are never rejected; the fit column only flags what a classifier guessed, for
-            insight. Only the most recent 300 runs are shown (counters are all-time).
+            Every run, newest first. Links are never rejected; the fit column
+            only flags what a classifier guessed, for insight. Only the most
+            recent 300 runs are shown (counters are all-time).
           </p>
         </header>
 
@@ -57,39 +71,93 @@ export default async function ScansPage() {
           <span className="sc-admin-dim">broke {counts.failed}</span>
           <span className="sc-admin-dim">rate-limited {counts.limited}</span>
           <span className="sc-admin-dim">bad URL {counts.invalid}</span>
-          <span className="sc-admin-dim">rejected (legacy) {counts["out-of-scope"]}</span>
+          <span className="sc-admin-dim">
+            rejected (legacy) {counts["out-of-scope"]}
+          </span>
         </div>
 
         {flaggedFits.length > 0 ? (
           <p className="sc-admin-dim" style={{ marginBottom: "1rem" }}>
-            {flaggedFits.length} recent {flaggedFits.length === 1 ? "link" : "links"} read as off-topic or unclear but were
-            still scanned (no lost clicks). They are highlighted below.
+            {flaggedFits.length} recent{" "}
+            {flaggedFits.length === 1 ? "link" : "links"} read as off-topic or
+            unclear but were still scanned (no lost clicks). They are
+            highlighted below.
           </p>
         ) : null}
 
-        <section style={{ marginBottom: "2rem" }}>
+        <section className="sc-admin-card">
           <h2>Audit funnel, ad visitors (last 14 days)</h2>
           <p className="sc-admin-dim">
-            Counted for every visitor regardless of cookie choice, as anonymous daily totals in SA time. Compare Arrived with Meta link clicks for the same day; non-ad traffic is in brackets.
+            Counted for every visitor regardless of cookie choice, as anonymous
+            daily totals in SA time. Compare Arrived with Meta link clicks for
+            the same day; non-ad traffic is in brackets.
           </p>
           {funnel.length === 0 ? (
             <p className="sc-admin-empty">No funnel counts yet.</p>
           ) : (
-            <div className="sc-admin-tablewrap">
+            <div
+              className="sc-admin-tablewrap"
+              role="region"
+              aria-label="Scan data"
+              tabIndex={0}
+            >
               <table className="sc-admin-table">
-                <thead><tr><th>Day</th><th>Arrived</th><th>Touched form</th><th>Submitted</th><th>Touched / arrived</th><th>Submitted / touched</th></tr></thead>
-                <tbody>{funnel.map((row) => {
-                  const ad = row.counts;
-                  const ratio = (numerator: number, denominator: number) => denominator ? `${Math.round((numerator / denominator) * 100)}%` : "—";
-                  return <tr key={row.day}>
-                    <td className="sc-admin-dim">{row.day}</td>
-                    <td>{ad.arrived.ad} <span className="sc-admin-dim">({ad.arrived.other})</span></td>
-                    <td>{ad.touched.ad} <span className="sc-admin-dim">({ad.touched.other})</span></td>
-                    <td>{ad.submitted.ad} <span className="sc-admin-dim">({ad.submitted.other})</span></td>
-                    <td>{ratio(ad.touched.ad, ad.arrived.ad)} <span className="sc-admin-dim">({ratio(ad.touched.other, ad.arrived.other)})</span></td>
-                    <td>{ratio(ad.submitted.ad, ad.touched.ad)} <span className="sc-admin-dim">({ratio(ad.submitted.other, ad.touched.other)})</span></td>
-                  </tr>;
-                })}</tbody>
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>Arrived</th>
+                    <th>Touched form</th>
+                    <th>Submitted</th>
+                    <th>Touched / arrived</th>
+                    <th>Submitted / touched</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {funnel.map((row) => {
+                    const ad = row.counts;
+                    const ratio = (numerator: number, denominator: number) =>
+                      denominator
+                        ? `${Math.round((numerator / denominator) * 100)}%`
+                        : "—";
+                    return (
+                      <tr key={formatSast(`${row.day}T12:00:00+02:00`, false)}>
+                        <td className="sc-admin-dim">
+                          {formatSast(`${row.day}T12:00:00+02:00`, false)}
+                        </td>
+                        <td>
+                          {ad.arrived.ad}{" "}
+                          <span className="sc-admin-dim">
+                            ({ad.arrived.other})
+                          </span>
+                        </td>
+                        <td>
+                          {ad.touched.ad}{" "}
+                          <span className="sc-admin-dim">
+                            ({ad.touched.other})
+                          </span>
+                        </td>
+                        <td>
+                          {ad.submitted.ad}{" "}
+                          <span className="sc-admin-dim">
+                            ({ad.submitted.other})
+                          </span>
+                        </td>
+                        <td>
+                          {ratio(ad.touched.ad, ad.arrived.ad)}{" "}
+                          <span className="sc-admin-dim">
+                            ({ratio(ad.touched.other, ad.arrived.other)})
+                          </span>
+                        </td>
+                        <td>
+                          {ratio(ad.submitted.ad, ad.touched.ad)}{" "}
+                          <span className="sc-admin-dim">
+                            ({ratio(ad.submitted.other, ad.touched.other)})
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
               </table>
             </div>
           )}
@@ -98,7 +166,12 @@ export default async function ScansPage() {
         {log.length === 0 ? (
           <p className="sc-admin-empty">No scans logged yet.</p>
         ) : (
-          <div className="sc-admin-tablewrap">
+          <div
+            className="sc-admin-card sc-admin-tablewrap"
+            role="region"
+            aria-label="Scan history"
+            tabIndex={0}
+          >
             <table className="sc-admin-table">
               <thead>
                 <tr>
@@ -115,24 +188,43 @@ export default async function ScansPage() {
                 {log.map((e, i) => {
                   const flagged = e.fit === "outside" || e.fit === "unclear";
                   return (
-                    <tr key={`${e.at}-${i}`} className={flagged ? "sc-row-hot" : undefined}>
-                      <td className="sc-admin-dim">{e.at.replace("T", " ").slice(0, 16)}</td>
+                    <tr
+                      key={`${e.at}-${i}`}
+                      className={flagged ? "sc-row-hot" : undefined}
+                    >
+                      <td className="sc-admin-dim">{formatSast(e.at)}</td>
                       <td>
                         {e.host ? (
-                          <a href={`https://${e.host}`} target="_blank" rel="noreferrer noopener">
+                          <a
+                            href={`https://${e.host}`}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                          >
                             {e.host}
                           </a>
                         ) : (
                           <span className="sc-admin-dim">unknown</span>
                         )}
                       </td>
-                      <td className={flagged ? "sc-admin-warn" : "sc-admin-dim"}>{e.fit ?? "n/a"}</td>
-                      <td>{formatQualifiedAuditDecision(e.qualifiedDecision)}</td>
-                      <td className="sc-admin-dim">{adLabel(e.ad) ?? "none recorded"}</td>
-                      <td>
-                        <span className={outcomeClass(e.outcome)}>{OUTCOME_LABEL[e.outcome] ?? e.outcome}</span>
+                      <td
+                        className={flagged ? "sc-admin-warn" : "sc-admin-dim"}
+                      >
+                        {e.fit ?? "n/a"}
                       </td>
-                      <td className="sc-admin-dim">{e.ms > 0 ? `${(e.ms / 1000).toFixed(1)}s` : "n/a"}</td>
+                      <td>
+                        {formatQualifiedAuditDecision(e.qualifiedDecision)}
+                      </td>
+                      <td className="sc-admin-dim">
+                        {adLabel(e.ad) ?? "none recorded"}
+                      </td>
+                      <td>
+                        <span className={outcomeClass(e.outcome)}>
+                          {OUTCOME_LABEL[e.outcome] ?? e.outcome}
+                        </span>
+                      </td>
+                      <td className="sc-admin-dim">
+                        {e.ms > 0 ? `${(e.ms / 1000).toFixed(1)}s` : "n/a"}
+                      </td>
                     </tr>
                   );
                 })}

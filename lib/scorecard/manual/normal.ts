@@ -1,4 +1,4 @@
-﻿import { detectProspectContext, applyDetection } from "../detect";
+import { detectProspectContext, applyDetection } from "../detect";
 import { validateUrl } from "../fetch-site";
 import { prospectFromRunInput } from "../run";
 import { gatherEvidenceUncached } from "../orchestrator";
@@ -15,6 +15,7 @@ import {
 } from "../share";
 import { ManualAuditError } from "./paste";
 import type { ManualAuditRecord } from "./run";
+import type { ProspectData } from "../types";
 
 export interface NormalManualAuditInput {
   url: string;
@@ -30,10 +31,10 @@ export class NormalSiteReadError extends ManualAuditError {
   }
 }
 
-async function prepare(input: NormalManualAuditInput) {
+async function prepare(input: NormalManualAuditInput, previous?: ProspectData) {
   const valid = validateUrl(input.url);
   if (!valid.ok) throw new ManualAuditError("url");
-  const initial = prospectFromRunInput({ url: valid.url.href });
+  const initial = previous ?? prospectFromRunInput({ url: valid.url.href });
   const detection = await detectProspectContext(initial, { fresh: true });
   const failedRead = detection.flags.find((flag) =>
     /^Auto-detect could not read the site \(/i.test(flag)
@@ -79,15 +80,15 @@ async function prepare(input: NormalManualAuditInput) {
   return { prospect, result, qualifiedDecision };
 }
 
-async function execute(
+export async function prepareNormalAuditWithDeadline(
   input: NormalManualAuditInput,
-  stored?: ManualAuditRecord
+  previous?: ProspectData
 ) {
   let timer: ReturnType<typeof setTimeout> | undefined;
   const startedAt = Date.now();
   try {
     const prepared = await Promise.race([
-      prepare(input),
+      prepare(input, previous),
       new Promise<never>((_, reject) => {
         timer = setTimeout(
           () => reject(new ManualAuditError("timeout")),
@@ -95,56 +96,65 @@ async function execute(
         );
       }),
     ]);
-    // Persistence is outside the raced work: late scoring cannot save a report.
     if (Date.now() - startedAt >= 270_000)
       throw new ManualAuditError("timeout");
-    const { prospect, result, qualifiedDecision } = prepared;
-    const slug = stored?.slug ?? (await uniqueSlug());
-    const now = new Date().toISOString();
-    if (stored) {
-      const updated = await patchShared(slug, {
-        prospectData: prospect,
-        result,
-        qualifiedDecision,
-        roleSeniority: result.routing.roleSeniority,
-      });
-      if (!updated) throw new ManualAuditError("failed");
-    } else {
-      const shared: SharedScorecard = {
-        prospectData: prospect,
-        result,
-        qualifiedDecision,
-        loomUrl: null,
-        createdAt: now,
-        lastEditedAt: now,
-        expiresAt: new Date(Date.now() + 180 * 86_400_000).toISOString(),
-        roleSeniority: result.routing.roleSeniority,
-      };
-      await writeShared(slug, shared);
-    }
-    const record: ManualAuditRecord = {
-      slug,
-      source: "crawl",
-      url: prospect.url,
-      companyName: prospect.company,
-      pastedText: "",
-      competitors: prospect.competitors,
-      contactName: input.contactName?.trim() ?? "",
-      contactEmail: input.contactEmail?.trim() ?? "",
-      qualifiedDecision,
-      createdAt: stored?.createdAt ?? now,
-      updatedAt: now,
-      runCount: (stored?.runCount ?? 0) + 1,
-    };
-    await getKv().set(`scorecard-manual:${slug}`, record, { ex: SHARE_TTL_S });
-    if (!stored) {
-      await getKv().lpush("scorecard-manual-audits", slug);
-      await getKv().ltrim("scorecard-manual-audits", 0, 199);
-    }
-    return { slug, reportUrl: `/audit/r/${slug}` };
+    return prepared;
   } finally {
     if (timer) clearTimeout(timer);
   }
+}
+
+async function execute(
+  input: NormalManualAuditInput,
+  stored?: ManualAuditRecord
+) {
+  // All writes remain outside the raced preparation, including on re-runs.
+  const prepared = await prepareNormalAuditWithDeadline(input);
+  const { prospect, result, qualifiedDecision } = prepared;
+  const slug = stored?.slug ?? (await uniqueSlug());
+  const now = new Date().toISOString();
+  if (stored) {
+    const updated = await patchShared(slug, {
+      prospectData: prospect,
+      result,
+      qualifiedDecision,
+      roleSeniority: result.routing.roleSeniority,
+    });
+    if (!updated) throw new ManualAuditError("failed");
+  } else {
+    const shared: SharedScorecard = {
+      prospectData: prospect,
+      result,
+      qualifiedDecision,
+      loomUrl: null,
+      createdAt: now,
+      lastEditedAt: now,
+      expiresAt: new Date(Date.now() + 180 * 86_400_000).toISOString(),
+      roleSeniority: result.routing.roleSeniority,
+    };
+    await writeShared(slug, shared);
+  }
+  const record: ManualAuditRecord = {
+    slug,
+    source: "crawl",
+    url: prospect.url,
+    companyName: prospect.company,
+    pastedText: "",
+    competitors: prospect.competitors,
+    contactName: input.contactName?.trim() ?? "",
+    contactEmail: input.contactEmail?.trim() ?? "",
+    qualifiedDecision,
+    createdAt: stored?.createdAt ?? now,
+    updatedAt: now,
+    lastRunAt: now,
+    runCount: (stored?.runCount ?? 0) + 1,
+  };
+  await getKv().set(`scorecard-manual:${slug}`, record, { ex: SHARE_TTL_S });
+  if (!stored) {
+    await getKv().lpush("scorecard-manual-audits", slug);
+    await getKv().ltrim("scorecard-manual-audits", 0, 199);
+  }
+  return { slug, reportUrl: `/audit/r/${slug}` };
 }
 
 export async function runNormalManualAudit(input: NormalManualAuditInput) {

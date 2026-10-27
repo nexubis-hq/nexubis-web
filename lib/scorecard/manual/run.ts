@@ -55,6 +55,7 @@ export interface ManualAuditRecord {
   qualifiedDecision: QualifiedAuditDecision;
   createdAt: string;
   updatedAt: string;
+  lastRunAt?: string;
   runCount: number;
 }
 const INDEX_KEY = "scorecard-manual-audits";
@@ -250,6 +251,7 @@ async function execute(
       qualifiedDecision,
       createdAt: stored?.createdAt ?? now,
       updatedAt: now,
+      lastRunAt: now,
       runCount: (stored?.runCount ?? 0) + 1,
     };
     await getKv().set(manualKey(slug), record, { ex: SHARE_TTL_S });
