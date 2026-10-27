@@ -20,6 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="sc-admin-nav">
           <Link href="/audit/admin/leads">Leads</Link>
           <Link href="/audit/admin/scans">Scans</Link>
+          <Link href="/audit/admin/manual">Manual audit</Link>
           <form action={adminLogout}>
             <button type="submit" className="sc-admin-linkbtn">
               Sign out
