@@ -44,6 +44,7 @@ export interface ManualAuditInput {
   contactEmail?: string;
 }
 export interface ManualAuditRecord {
+  source?: "paste" | "crawl";
   slug: string;
   url: string;
   companyName: string;
@@ -271,6 +272,10 @@ export async function rerunManualAudit(
 ) {
   const stored = await readManualAudit(slug);
   if (!stored) throw new ManualAuditError("failed");
+  if (stored.source === "crawl") {
+    const { rerunNormalManualAudit } = await import("./normal");
+    return rerunNormalManualAudit(stored);
+  }
   return execute(
     {
       url: stored.url,

@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { SESSION_COOKIE, isValidSession } from "@/lib/scorecard/auth";
 import { listManualAudits } from "@/lib/scorecard/manual/run";
 import { formatQualifiedAuditDecision } from "@/lib/scorecard/qualified-audit";
-import { createManualAudit, rerunManualAudit } from "./actions";
+import {
+  createManualAudit,
+  createNormalManualAudit,
+  rerunManualAudit,
+} from "./actions";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -24,7 +28,7 @@ const ERRORS: Record<string, string> = {
 export default async function ManualAuditPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; created?: string }>;
+  searchParams: Promise<{ error?: string; created?: string; reason?: string }>;
 }) {
   const jar = await cookies();
   if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/audit/admin");
@@ -35,14 +39,11 @@ export default async function ManualAuditPage({
       <div className="site-container">
         <header className="sc-admin-head">
           <h1>Manual audit</h1>
-          <p>
-            For sites that block the crawler. Open the site in a normal browser,
-            select all, and copy the page text.
-          </p>
         </header>
         {params.error ? (
           <p className="sc-form-error" role="alert">
             {ERRORS[params.error] ?? ERRORS.failed}
+            {params.reason ? <> {params.reason.slice(0, 200)}</> : null}
           </p>
         ) : null}
         {params.created ? (
@@ -54,6 +55,35 @@ export default async function ManualAuditPage({
           </p>
         ) : null}
         <div className="sc-admin-card">
+          <h2>Run normal audit</h2>
+          <p>
+            Crawls the site like the public audit. No emails, no lead, no CRM.
+          </p>
+          <form className="sc-admin-form" action={createNormalManualAudit}>
+            <label className="sc-field">
+              <span className="sc-field-label">Website link (required)</span>
+              <input name="url" required placeholder="https://example.com" />
+            </label>
+            <p>Contact details are for reference only, nothing is sent.</p>
+            <label className="sc-field">
+              <span className="sc-field-label">Contact name (optional)</span>
+              <input name="contactName" />
+            </label>
+            <label className="sc-field">
+              <span className="sc-field-label">Contact email (optional)</span>
+              <input name="contactEmail" type="email" />
+            </label>
+            <button className="btn btn-primary" type="submit">
+              Run normal audit
+            </button>
+          </form>
+        </div>
+        <div className="sc-admin-card">
+          <h2>If the site blocks us: paste the text instead</h2>
+          <p>
+            Open the site in a normal browser, select all, and copy the page
+            text.
+          </p>
           <form className="sc-admin-form" action={createManualAudit}>
             <label className="sc-field">
               <span className="sc-field-label">Website link (required)</span>
@@ -98,8 +128,9 @@ export default async function ManualAuditPage({
         </div>
         <h2>Past manual audits</h2>
         <p className="sc-admin-dim">
-          Use Re-run here to reuse the stored text. The existing report admin
-          page&apos;s Regenerate report button runs the automatic crawler.
+          Re-run repeats the source: a fresh crawl or the stored pasted text.
+          The existing report admin page&apos;s Regenerate report button runs
+          the automatic crawler.
         </p>
         <div className="sc-admin-tablewrap">
           <table className="sc-admin-table">
@@ -107,6 +138,7 @@ export default async function ManualAuditPage({
               <tr>
                 <th>Company</th>
                 <th>URL</th>
+                <th>Source</th>
                 <th>Qualified</th>
                 <th>Created</th>
                 <th>Report</th>
@@ -119,6 +151,7 @@ export default async function ManualAuditPage({
                 <tr key={audit.slug}>
                   <td>{audit.companyName}</td>
                   <td>{audit.url}</td>
+                  <td>{audit.source ?? "paste"}</td>
                   <td>
                     {formatQualifiedAuditDecision(audit.qualifiedDecision)}
                   </td>
