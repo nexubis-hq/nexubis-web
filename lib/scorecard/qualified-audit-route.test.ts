@@ -59,6 +59,7 @@ it("signals once at classification, before generation, using the permanent audit
   const emitted = await events(request(true));
   expect(emitted.filter((event) => event.type === "qualified")).toEqual([{ type: "qualified", auditId: "audit123" }]);
   expect(emitted.findIndex((event) => event.type === "qualified")).toBeLessThan(emitted.findIndex((event) => event.type === "done"));
+  expect(vi.mocked(recordScanOutcome).mock.calls[0][0].replay).toBeUndefined();
   expect(promoteResult).toHaveBeenCalledWith(expect.anything(), expect.anything(), "qa@example.com", "Test", "audit123", { qualified: true, reason: "manufacturer with named products" });
   expect(recordScanOutcome).toHaveBeenCalledWith(expect.objectContaining({ qualifiedDecision: { qualified: true, reason: "manufacturer with named products" } }));
 });
@@ -78,6 +79,8 @@ it("returning to an existing audit only returns the report; it never replays qua
   for (let visit = 0; visit < 2; visit++) {
     expect(await events(request(true))).toEqual([{ type: "done", reportUrl: "/audit/r/audit123", slug: "audit123" }]);
   }
+  expect(recordScanOutcome).toHaveBeenCalledTimes(2);
+  expect(recordScanOutcome).toHaveBeenLastCalledWith(expect.objectContaining({ outcome: "success", slug: "audit123", replay: true }));
   expect(detectProspectContext).not.toHaveBeenCalled();
   expect(promoteResult).not.toHaveBeenCalled();
 });

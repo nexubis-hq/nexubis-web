@@ -13,6 +13,7 @@ export type ScanOutcome = "success" | "invalid" | "out-of-scope" | "limited" | "
 export interface ScanRunLog {
   email?: string;
   slug?: string;
+  replay?: boolean;
   reason?: string;
   siteRead?: string;
   source?: "ad" | "other";

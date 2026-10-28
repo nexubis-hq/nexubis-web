@@ -154,6 +154,7 @@ export async function POST(req: NextRequest) {
   let qualifiedDecision: QualifiedAuditDecision | undefined;
   let outcomeLogged = false;
   let logSlug: string | undefined;
+  let logReplay: true | undefined;
   let logReason: string | undefined;
   let logSiteRead: string | undefined;
   const logEmail = parsed?.capture.email.trim().toLowerCase();
@@ -162,7 +163,7 @@ export async function POST(req: NextRequest) {
     if (outcomeLogged) return;
     outcomeLogged = true;
     try {
-      await recordScanOutcome({ email: parsedEmail, slug: logSlug, reason: logReason?.slice(0, 300), siteRead: logSiteRead, source: parsed?.funnelSource, outcome, ms: Date.now() - startedAt, host: targetHostForLog, fit: detectedFit, qualifiedDecision, ad: parsed?.adSource ?? null, at: new Date().toISOString() });
+      await recordScanOutcome({ email: parsedEmail, slug: logSlug, replay: logReplay, reason: logReason?.slice(0, 300), siteRead: logSiteRead, source: parsed?.funnelSource, outcome, ms: Date.now() - startedAt, host: targetHostForLog, fit: detectedFit, qualifiedDecision, ad: parsed?.adSource ?? null, at: new Date().toISOString() });
     } catch (error) { console.error("[scorecard-run] outcome log failed:", error); }
   };
 
@@ -232,6 +233,7 @@ export async function POST(req: NextRequest) {
         const existing = await readExistingCapture(email, runId);
         if (existing) {
           logSlug = existing;
+          logReplay = true;
           send({ type: "done", reportUrl: `/audit/r/${existing}`, slug: existing });
           controller.close();
           await logOutcome("success");

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SameContact } from "@/components/scorecard/admin/SameContact";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SESSION_COOKIE, isValidSession } from "@/lib/scorecard/auth";
@@ -119,6 +120,7 @@ export default async function LeadsPage({
                         <Link href={r.leadPath}>{r.company}</Link>
                       </strong>
                       <span className="sc-admin-subtext">{r.host}</span>
+                      <SameContact contacts={r.sameContacts} />
                       {r.isTest && (
                         <span className="sc-admin-chip">test</span>
                       )}{" "}
@@ -149,11 +151,13 @@ export default async function LeadsPage({
                     <td>
                       <Qualified decision={r.qualifiedDecision} />
                     </td>
-                    <td>
+                    <td className="sc-admin-scorecell">
                       <strong className="sc-admin-bigscore">
                         {r.score ?? "n/a"}
                       </strong>
-                      <span className="sc-admin-subtext">{r.band}</span>
+                      <span className="sc-admin-subtext">
+                        {r.band ? `${r.band} gap` : ""}
+                      </span>
                     </td>
                     <td>{r.adLabel || "none recorded"}</td>
                     <td>

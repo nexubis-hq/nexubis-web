@@ -89,7 +89,11 @@ beforeEach(() => {
   state.kvError = false;
   state.limited = false;
 });
-afterEach(() => vi.useRealTimers());
+afterEach(() => {
+  for (const [entry] of vi.mocked(recordScanOutcome).mock.calls)
+    expect(entry.replay).toBeUndefined();
+  vi.useRealTimers();
+});
 async function run(email = " QA@Example.com ") {
   const res = await POST(
     new NextRequest("https://www.nexubis.io/api/scorecard/run", {

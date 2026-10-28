@@ -10,9 +10,10 @@ import {
   OUTCOME_LABELS,
   runWhy,
   runSource,
+  runLabel,
+  isReplay,
 } from "@/lib/scorecard/admin/activity-view";
 import { loadLeadsView } from "@/lib/scorecard/admin/data";
-import { isTestContact } from "@/lib/scorecard/admin/test-contacts";
 import { formatSast } from "@/components/scorecard/admin/date";
 export const dynamic = "force-dynamic";
 export default async function ActivityPage({
@@ -32,16 +33,16 @@ export default async function ActivityPage({
     readFunnel(days),
     loadLeadsView({ period: "all", showTests: true }),
   ]);
-  const view = buildActivityView(funnel, log, days, source, showTests);
-  const periodStart = new Date(leads.now - (days - 1) * 86400000 + 7200000)
-    .toISOString()
-    .slice(0, 10);
-  const periodLog = log.filter(
-    (r) =>
-      new Date(Date.parse(r.at) + 7200000).toISOString().slice(0, 10) >=
-        periodStart &&
-      (showTests || !isTestContact(r.email))
+  const view = buildActivityView(
+    funnel,
+    log,
+    days,
+    source,
+    showTests,
+    leads.now,
+    leads.allRows
   );
+  const periodLog = view.allPeriodRuns;
   const runs = periodLog.filter((r) =>
     q.runs === "problems"
       ? r.outcome !== "success"
@@ -242,8 +243,12 @@ export default async function ActivityPage({
           ))}
         </div>
         <p className="sc-admin-dim">
+          {view.repeatViews} repeat views not counted
+        </p>
+        <p className="sc-admin-dim">
           Tiles and funnel: {source === "ad" ? "from ads" : "other traffic"},
-          last {days} days. Run filters below cover all traffic.
+          last {days} days. Run filters below cover all traffic. Visited,
+          Started and Submitted are anonymous totals and include tests.
         </p>
         <div className="sc-admin-card sc-admin-tablewrap">
           <table className="sc-admin-table sc-admin-runs-table">
@@ -264,44 +269,25 @@ export default async function ActivityPage({
             </thead>
             <tbody>
               {runs.map((r, i) => {
-                const failure = leads.failed.find(
-                  (f) =>
-                    f.email.toLowerCase() === r.email?.toLowerCase() &&
-                    f.outcome === r.outcome && Math.abs(Date.parse(f.at) - Date.parse(r.at)) < 60000
-                );
-                const lead = leads.allRows.find((l) =>
-                  r.slug
-                    ? l.id === r.slug
-                    : r.email && l.email.toLowerCase() === r.email.toLowerCase()
-                );
-                const leadPath = failure
-                  ? `/audit/admin/failed/${failure.id}`
-                  : lead?.leadPath;
+                const lead = r.lead;
+                const leadPath = lead?.leadPath;
                 return (
-                  <tr
-                    key={i}
-                    className={isTestContact(r.email) ? "sc-admin-testrow" : ""}
-                  >
+                  <tr key={i} className={r.isTest ? "sc-admin-testrow" : ""}>
                     <td>{formatSast(r.at)}</td>
                     <td>{r.host || "unknown"}</td>
                     <td>
                       <span
-                        className={`sc-admin-chip sc-admin-status-${r.outcome === "success" ? "ready" : r.outcome === "failed" || r.outcome === "timeout" ? "failed" : "hand"}`}
+                        className={`sc-admin-chip sc-admin-status-${isReplay(r) ? "hand" : r.outcome === "success" ? "ready" : r.outcome === "failed" || r.outcome === "timeout" ? "failed" : "hand"}`}
                       >
-                        {OUTCOME_LABELS[r.outcome]}
+                        {runLabel(r)}
                       </span>
                     </td>
                     <td>{runWhy(r)}</td>
                     <td>
                       {leadPath ? (
                         <Link href={leadPath}>
-                          {failure?.firstName ||
-                            lead?.firstName ||
-                            lead?.company ||
-                            "Lead"}
+                          {lead?.firstName || lead?.company || "Lead"}
                         </Link>
-                      ) : r.slug ? (
-                        <Link href={`/audit/admin/${r.slug}`}>Lead</Link>
                       ) : (
                         "no lead"
                       )}
@@ -318,13 +304,13 @@ export default async function ActivityPage({
           )}
         </div>
         <p className="sc-admin-dim">
-          Runs are kept for 30 days. All-time:{" "}
+          Runs are kept for 30 days. All-time (includes tests and repeat views):{" "}
           {Object.entries(OUTCOME_LABELS)
             .map(
               ([key, label]) =>
                 `${label}: ${counts[key as keyof typeof counts] || 0}`
             )
-            .join(" ? ")}
+            .join(", ")}
         </p>
       </div>
     </section>

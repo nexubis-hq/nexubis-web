@@ -1,3 +1,4 @@
+import type { ScanRunLog } from "../diagnostics";
 import type { LeadRecord } from "../leads";
 import type { FailedLead } from "./failed-leads";
 import type { ManualAuditRecord } from "../manual/run";
@@ -22,6 +23,7 @@ export interface LeadRow {
   adLabel: string | null;
   source: FunnelSource;
   isTest: boolean;
+  sameContacts: { company: string; leadPath: string }[];
   auditNumber: number;
   reportPath: string | null;
   leadPath: string;
@@ -42,6 +44,11 @@ export function normalHost(url: string): string {
     return "";
   }
 }
+// Run timestamps are terminal times, so allow time for generation after capture.
+export function inLeadWindow(runAt: string, leadAt: string): boolean {
+  const delta = Date.parse(runAt) - Date.parse(leadAt);
+  return delta >= -2 * 60000 && delta <= 10 * 60000;
+}
 const emailKey = (email: string) => email.trim().toLowerCase();
 export function buildLeadsView(
   leads: LeadRecord[],
@@ -49,7 +56,8 @@ export function buildLeadsView(
   manual: ManualAuditRecord[],
   reports: Record<string, SharedScorecard | null>,
   filters: LeadsFilters = {},
-  now = Date.now()
+  now = Date.now(),
+  scanLog: ScanRunLog[] = []
 ) {
   const rows: LeadRow[] = [];
   const reportRow = (
@@ -81,6 +89,7 @@ export function buildLeadsView(
       adLabel: adLabel(ad),
       source: source ?? (adLabel(ad) ? "ad" : "other"),
       isTest: isTestContact(email),
+      sameContacts: [],
       auditNumber: 1,
       reportPath: shared ? `/audit/r/${slug}` : null,
       leadPath: `/audit/admin/${slug}`,
@@ -143,10 +152,62 @@ export function buildLeadsView(
       adLabel: adLabel(f.ad),
       source: f.source,
       isTest: isTestContact(f.email),
+      sameContacts: [],
       auditNumber: 1,
       reportPath: slug ? `/audit/r/${slug}` : null,
       leadPath: `/audit/admin/failed/${f.id}`,
     });
+  }
+  const contactGroups = new Map<string, LeadRow[]>();
+  for (const row of rows) {
+    const key = emailKey(row.email);
+    if (row.isTest || !key) continue;
+    const group = contactGroups.get(key) || [];
+    group.push(row);
+    contactGroups.set(key, group);
+  }
+  for (const row of rows) {
+    if (!row.adLabel && row.kind !== "manual") {
+      const run = scanLog
+        .filter(
+          (run) =>
+            (row.kind === "failed"
+              ? run.outcome === "failed" || run.outcome === "timeout"
+              : run.outcome === "success") &&
+            normalHost(run.host || "") === row.host &&
+            Boolean(row.host) &&
+            inLeadWindow(run.at, row.firstSeen) &&
+            adLabel(run.ad)
+        )
+        .sort(
+          (a, b) =>
+            Math.abs(Date.parse(a.at) - Date.parse(row.firstSeen)) -
+            Math.abs(Date.parse(b.at) - Date.parse(row.firstSeen))
+        )[0];
+      if (run) {
+        row.adLabel = adLabel(run.ad);
+        row.source = "ad";
+      }
+    }
+    if (!row.isTest && emailKey(row.email)) {
+      const contacts = (contactGroups.get(emailKey(row.email)) || [])
+        .filter(
+          (other) =>
+            !other.isTest &&
+            emailKey(other.email) === emailKey(row.email) &&
+            other.host &&
+            other.host !== row.host
+        )
+        .sort((a, b) => a.firstSeen.localeCompare(b.firstSeen));
+      row.sameContacts = [
+        ...new Map(
+          contacts.map((other) => [
+            other.host,
+            { company: other.company, leadPath: other.leadPath },
+          ])
+        ).values(),
+      ];
+    }
   }
   const groups = new Map<string, number>();
   for (const r of [...rows].sort(
