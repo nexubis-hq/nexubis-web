@@ -61,6 +61,7 @@ vi.mock("../kv", () => ({
     set: vi.fn(async (key: string, value: unknown) => {
       values.set(key, structuredClone(value));
     }),
+    expire: vi.fn(),
     lpush: vi.fn(async (key: string, value: unknown) => {
       lists.set(key, [value, ...(lists.get(key) ?? [])]);
     }),
@@ -158,7 +159,7 @@ function noSideEffects() {
   expect(lists.has("scorecard-leads")).toBe(false);
   for (const key of values.keys())
     expect(
-      key.startsWith("scorecard-manual:") || key.startsWith("scorecard:")
+      key.startsWith("scorecard-manual:") || key.startsWith("scorecard:") || key.startsWith("scorecard-failed-lead:")
     ).toBe(true);
 }
 
@@ -198,6 +199,7 @@ it("runs fresh detection, normal evidence including competitor handling and gene
   });
   expect(await listManualAudits()).toEqual([record]);
   expect(lists.get("scorecard-manual-audits")).toEqual([slug]);
+  expect(lists.get(`scorecard-run-history:${slug}`)).toEqual([expect.objectContaining({by:"manual",kind:"first run"})]);
   const shared = values.get(`scorecard:${slug}`) as SharedScorecard;
   expect(shared.prospectData.name).toBe("");
   expect(shared.result.meta.contactName).toBe("");
@@ -339,6 +341,7 @@ it("URL-encodes and caps the blocked reason on create and re-run redirects", asy
   form.set("url", input.url);
   form.set("slug", slug);
   await createNormalManualAudit(form);
+  form.set("confirm", new URL(input.url).hostname.replace(/^www\./, "").split(".")[0]);
   await rerunAction(form);
   expect(redirect).toHaveBeenNthCalledWith(
     1,
@@ -352,4 +355,13 @@ it("URL-encodes and caps the blocked reason on create and re-run redirects", asy
     [...values.keys()].filter((key) => key.startsWith("scorecard:"))
   ).toEqual([`scorecard:${slug}`]);
   noSideEffects();
+});
+
+it("links a failed lead to a manual report without lead plumbing",async()=>{
+ values.set("scorecard-failed-lead:failed123",{id:"failed123",at:new Date().toISOString(),linkedSlug:null,email:input.contactEmail});
+ const form=new FormData();form.set("url",input.url);form.set("contactName",input.contactName!);form.set("contactEmail",input.contactEmail!);form.set("failedLead","failed123");
+ await createNormalManualAudit(form);
+ const slug=(lists.get("scorecard-manual-audits") as string[])[0];
+ expect(values.get("scorecard-failed-lead:failed123")).toMatchObject({linkedSlug:slug});
+ noSideEffects();
 });

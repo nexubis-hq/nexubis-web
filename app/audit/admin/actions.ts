@@ -14,7 +14,10 @@ import {
   adminConfigured,
 } from "@/lib/scorecard/auth";
 import { updateLead, type LoomStatus } from "@/lib/scorecard/leads";
-import { patchShared } from "@/lib/scorecard/share";
+import { saveAdminNote } from "@/lib/scorecard/admin/notes";
+import { updateFailedLead } from "@/lib/scorecard/admin/failed-leads";
+import { confirmationMatches } from "@/lib/scorecard/admin/confirmation";
+import { readShared, patchShared } from "@/lib/scorecard/share";
 import { rerunStoredAudit } from "@/lib/scorecard/manual/rerun";
 import { auditErrorQuery } from "@/lib/scorecard/manual/feedback";
 
@@ -53,8 +56,14 @@ export async function saveLeadNote(formData: FormData): Promise<void> {
   await requireSession();
   const slug = String(formData.get("slug") ?? "");
   const note = String(formData.get("note") ?? "").slice(0, 2000);
+  const failedId = String(formData.get("failedId") ?? "");
+  if (failedId) {
+    await updateFailedLead(failedId, { note });
+    revalidatePath(`/audit/admin/failed/${failedId}`);
+    return;
+  }
   if (!slug) return;
-  await updateLead(slug, { note });
+  if (!(await updateLead(slug, { note }))) await saveAdminNote(slug, note);
   revalidatePath("/audit/admin/leads");
   revalidatePath(`/audit/admin/${slug}`);
 }
@@ -96,13 +105,22 @@ export async function attachLoom(formData: FormData): Promise<void> {
 // never a caller-controlled URL.
 export async function rerunAudit(
   slug: string,
-  destination: "manual" | "report" = "report"
+  destination: "manual" | "report" = "report",
+  formData?: FormData
 ): Promise<void> {
   await requireSession();
   const base =
     destination === "manual"
       ? "/audit/admin/manual"
       : `/audit/admin/${encodeURIComponent(slug)}`;
+  const shared = await readShared(slug);
+  if (
+    !shared ||
+    !confirmationMatches(shared.prospectData.url, formData?.get("confirm"))
+  ) {
+    redirect(`${base}?error=confirm`);
+    return;
+  }
   let location: string;
   try {
     await rerunStoredAudit(slug);
@@ -111,6 +129,7 @@ export async function rerunAudit(
     location = `${base}?${auditErrorQuery(err)}`;
   }
   revalidatePath("/audit/admin/manual");
+  revalidatePath("/audit/admin/leads");
   revalidatePath(`/audit/admin/${slug}`);
   revalidatePath(`/audit/r/${slug}`);
   redirect(location);
@@ -118,5 +137,5 @@ export async function rerunAudit(
 
 // Compatibility for already-rendered forms: no second implementation.
 export async function regenerateReport(formData: FormData): Promise<void> {
-  return rerunAudit(String(formData.get("slug") ?? ""));
+  return rerunAudit(String(formData.get("slug") ?? ""), "report", formData);
 }

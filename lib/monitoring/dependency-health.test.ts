@@ -37,7 +37,7 @@ test("Serper: healthy balance is ok, below threshold is low, and each carries th
 
   const low = await checkSerper({ fetchImpl: stubFetch(200, { balance: 1200 }) });
   assert.equal(low.status, "low");
-  assert.ok(low.message.includes("1,200"));
+  assert.ok(low.message.includes((1200).toLocaleString()));
 });
 
 test("ScreenshotOne: thresholds on `available`; low when short, error on missing key", async () => {

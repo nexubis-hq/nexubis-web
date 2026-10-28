@@ -16,6 +16,10 @@ export default async function ManualAuditPage({
   searchParams,
 }: {
   searchParams: Promise<{
+    url?: string;
+    contactName?: string;
+    contactEmail?: string;
+    failedLead?: string;
     error?: string;
     created?: string;
     updated?: string;
@@ -40,8 +44,9 @@ export default async function ManualAuditPage({
           <div>
             <h1>Manual audit</h1>
             <p>
-              Run an audit by hand. Nothing is emailed and nothing goes into
-              Leads or the CRM.
+              Run an audit by hand. Nothing is emailed and nothing goes to the
+              CRM. If you add a contact email, the audit also shows in Leads as
+              Made by hand.
             </p>
           </div>
         </header>
@@ -54,20 +59,34 @@ export default async function ManualAuditPage({
           <form className="sc-admin-form" action={createNormalManualAudit}>
             <label className="sc-field">
               <span className="sc-field-label">Website link</span>
-              <input name="url" required placeholder="https://example.com" />
+              <input
+                type="hidden"
+                name="failedLead"
+                value={params.failedLead ?? ""}
+              />
+              <input
+                name="url"
+                defaultValue={params.url}
+                required
+                placeholder="https://example.com"
+              />
             </label>
             <div className="sc-admin-fieldrow">
               <label className="sc-field">
                 <span className="sc-field-label">
                   Contact name <span className="sc-admin-dim">(optional)</span>
                 </span>
-                <input name="contactName" />
+                <input name="contactName" defaultValue={params.contactName} />
               </label>
               <label className="sc-field">
                 <span className="sc-field-label">
                   Contact email <span className="sc-admin-dim">(optional)</span>
                 </span>
-                <input name="contactEmail" type="email" />
+                <input
+                  name="contactEmail"
+                  type="email"
+                  defaultValue={params.contactEmail}
+                />
               </label>
             </div>
             <p className="sc-admin-dim">
@@ -85,7 +104,17 @@ export default async function ManualAuditPage({
           <form className="sc-admin-form" action={createManualAudit}>
             <label className="sc-field">
               <span className="sc-field-label">Website link</span>
-              <input name="url" required placeholder="https://example.com" />
+              <input
+                type="hidden"
+                name="failedLead"
+                value={params.failedLead ?? ""}
+              />
+              <input
+                name="url"
+                defaultValue={params.url}
+                required
+                placeholder="https://example.com"
+              />
             </label>
             <label className="sc-field">
               <span className="sc-field-label">Company name (optional)</span>
@@ -113,11 +142,15 @@ export default async function ManualAuditPage({
             <div className="sc-admin-fieldrow">
               <label className="sc-field">
                 <span className="sc-field-label">Contact name (optional)</span>
-                <input name="contactName" />
+                <input name="contactName" defaultValue={params.contactName} />
               </label>
               <label className="sc-field">
                 <span className="sc-field-label">Contact email (optional)</span>
-                <input name="contactEmail" type="email" />
+                <input
+                  name="contactEmail"
+                  type="email"
+                  defaultValue={params.contactEmail}
+                />
               </label>
             </div>
             <p className="sc-admin-dim">
@@ -194,6 +227,10 @@ export default async function ManualAuditPage({
                         </Link>
                         <RerunAuditForm
                           slug={audit.slug}
+                          url={audit.url}
+                          company={audit.companyName}
+                          name={audit.contactName}
+                          paste={audit.source !== "crawl"}
                           destination="manual"
                         />
                       </div>

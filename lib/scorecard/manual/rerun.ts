@@ -1,4 +1,5 @@
-﻿import { getKv } from "../kv";
+import { appendRunHistory } from "../admin/run-history";
+import { getKv } from "../kv";
 import {
   readShared,
   patchShared,
@@ -74,5 +75,6 @@ export async function rerunStoredAudit(slug: string) {
     { lastRunAt: new Date().toISOString(), runCount: previous.runCount + 1 },
     { ex: SHARE_TTL_S }
   );
+  await appendRunHistory(slug, updated, "admin", "re-run", shared);
   return { slug, reportUrl: `/audit/r/${slug}` };
 }

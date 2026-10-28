@@ -89,6 +89,7 @@ vi.mock("../kv", () => ({
     set: vi.fn(async (key: string, value: unknown) => {
       values.set(key, structuredClone(value));
     }),
+    expire: vi.fn(),
     lpush: vi.fn(async (key: string, value: unknown) => {
       lists.set(key, [value, ...(lists.get(key) ?? [])]);
     }),
@@ -236,6 +237,7 @@ it("scores pasted evidence with global fetch throwing, only collects on-site evi
     qualifiedDecision: { qualified: true },
   });
   expect(lists.get("scorecard-manual-audits")).toEqual([slug]);
+  expect(lists.get(`scorecard-run-history:${slug}`)).toEqual([expect.objectContaining({by:"manual",kind:"first run"})]);
   expect(await listManualAudits()).toEqual([record]);
   const shared = values.get(`scorecard:${slug}`) as SharedScorecard;
   expect(shared.loomUrl).toBeNull();

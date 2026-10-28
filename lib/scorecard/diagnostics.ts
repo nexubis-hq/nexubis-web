@@ -11,6 +11,11 @@ import type { QualifiedAuditDecision } from "./qualified-audit";
 export type ScanOutcome = "success" | "invalid" | "out-of-scope" | "limited" | "failed" | "timeout";
 
 export interface ScanRunLog {
+  email?: string;
+  slug?: string;
+  reason?: string;
+  siteRead?: string;
+  source?: "ad" | "other";
   qualifiedDecision?: QualifiedAuditDecision;
   outcome: ScanOutcome;
   /** Wall-clock milliseconds from scan start to this terminal state. */
@@ -66,7 +71,7 @@ export async function readRecentScanLog(limit = 100): Promise<ScanRunLog[]> {
 }
 
 export async function readScanCounts(): Promise<Record<ScanOutcome, number>> {
-  const outcomes: ScanOutcome[] = ["success", "invalid", "out-of-scope", "limited", "failed"];
+  const outcomes: ScanOutcome[] = ["success", "invalid", "out-of-scope", "limited", "failed", "timeout"];
   const counts = {} as Record<ScanOutcome, number>;
   await Promise.all(
     outcomes.map(async (o) => {

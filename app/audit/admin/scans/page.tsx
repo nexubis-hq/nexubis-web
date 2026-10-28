@@ -1,237 +1,331 @@
+import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SESSION_COOKIE, isValidSession } from "@/lib/scorecard/auth";
-import {
-  readRecentScanLog,
-  readScanCounts,
-  type ScanOutcome,
-} from "@/lib/scorecard/diagnostics";
+import { readRecentScanLog, readScanCounts } from "@/lib/scorecard/diagnostics";
 import { readFunnel } from "@/lib/funnel/counter";
 import { adLabel } from "@/lib/funnel/steps";
-import { formatQualifiedAuditDecision } from "@/lib/scorecard/qualified-audit";
-
+import {
+  buildActivityView,
+  OUTCOME_LABELS,
+  runWhy,
+  runSource,
+} from "@/lib/scorecard/admin/activity-view";
+import { loadLeadsView } from "@/lib/scorecard/admin/data";
+import { isTestContact } from "@/lib/scorecard/admin/test-contacts";
 import { formatSast } from "@/components/scorecard/admin/date";
-
 export const dynamic = "force-dynamic";
-
-// Scan diagnostics: every run's outcome, target host, detected fit and duration.
-// This is what splits the funnel that used to be invisible between AuditStart
-// and Lead: an abandoned wait, a broken scan, and (historically) a rejected
-// link all looked identical. The audience gate is gone, so nothing is turned
-// away; the "fit" column is insight only, flagging links a classifier thought
-// were off-topic that we scanned anyway.
-
-const OUTCOME_LABEL: Record<ScanOutcome, string> = {
-  success: "reached report",
-  failed: "broke",
-  timeout: "hit the deadline",
-  invalid: "bad input",
-  limited: "rate-limited",
-  "out-of-scope": "rejected (legacy)",
-};
-
-function outcomeClass(o: ScanOutcome): string {
-  if (o === "success") return "sc-admin-band sc-admin-band-narrow";
-  if (o === "failed" || o === "timeout" || o === "out-of-scope")
-    return "sc-admin-band sc-admin-band-wide";
-  return "sc-admin-band sc-admin-band-visible";
-}
-
-export default async function ScansPage() {
+export default async function ActivityPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   const jar = await cookies();
   if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/audit/admin");
-
-  const [log, counts, funnel] = await Promise.all([
-    readRecentScanLog(300),
+  const q = await searchParams;
+  const days = q.period === "7" ? 7 : q.period === "30" ? 30 : 14;
+  const source = q.source === "other" ? "other" : "ad";
+  const showTests = q.showTests === "1";
+  const [log, counts, funnel, leads] = await Promise.all([
+    readRecentScanLog(500),
     readScanCounts(),
-    readFunnel(14).catch(() => []),
+    readFunnel(days),
+    loadLeadsView({ period: "all", showTests: true }),
   ]);
-
-  const total = Object.values(counts).reduce((a, b) => a + b, 0);
-  const flaggedFits = log.filter(
-    (e) => e.fit === "outside" || e.fit === "unclear"
+  const view = buildActivityView(funnel, log, days, source, showTests);
+  const periodStart = new Date(leads.now - (days - 1) * 86400000 + 7200000)
+    .toISOString()
+    .slice(0, 10);
+  const periodLog = log.filter(
+    (r) =>
+      new Date(Date.parse(r.at) + 7200000).toISOString().slice(0, 10) >=
+        periodStart &&
+      (showTests || !isTestContact(r.email))
   );
-
+  const runs = periodLog.filter((r) =>
+    q.runs === "problems"
+      ? r.outcome !== "success"
+      : q.runs === "ad"
+        ? runSource(r) === "ad"
+        : true
+  );
+  const href = (patch: Record<string, string | undefined>) => {
+    const p = new URLSearchParams();
+    for (const [k, v] of Object.entries({ ...q, ...patch })) if (v) p.set(k, v);
+    return `/audit/admin/scans?${p}`;
+  };
+  const ratio = (n: number, d: number) =>
+    d ? `${Math.round((n / d) * 100)}%` : "0%";
+  const topReasons = (outcomes: string[]) => {
+    const map = new Map<string, number>();
+    for (const r of view.runs.filter((r) => outcomes.includes(r.outcome)))
+      map.set(runWhy(r), (map.get(runWhy(r)) || 0) + 1);
+    return [...map]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([reason, n]) => `${n}: ${reason}`)
+      .join("; ");
+  };
   return (
     <section className="section">
       <div className="site-container">
         <header className="sc-admin-head">
-          <h1>Scans</h1>
-          <p className="sc-admin-dim">
-            Every run, newest first. Links are never rejected; the fit column
-            only flags what a classifier guessed, for insight. Only the most
-            recent 300 runs are shown (counters are all-time).
-          </p>
+          <div>
+            <h1>Activity</h1>
+            <p>
+              What happens on nexubis.io/audit. Leads are the people. This page
+              is the traffic: how many came, how far they got, and every audit
+              run with what happened to it.
+            </p>
+          </div>
         </header>
-
-        <div className="sc-admin-filters" style={{ marginBottom: "1.4rem" }}>
-          <span>All-time:</span>
-          <span>{total} runs</span>
-          <span className="sc-admin-dim">reached teaser {counts.success}</span>
-          <span className="sc-admin-dim">broke {counts.failed}</span>
-          <span className="sc-admin-dim">rate-limited {counts.limited}</span>
-          <span className="sc-admin-dim">bad URL {counts.invalid}</span>
-          <span className="sc-admin-dim">
-            rejected (legacy) {counts["out-of-scope"]}
-          </span>
+        <div className="sc-admin-explainers">
+          {[
+            [
+              "Visited",
+              "Opened the audit page; for ads, compare with Meta link clicks.",
+            ],
+            [
+              "Started the form / Submitted",
+              "Clicked into the form / pressed Run with a valid email.",
+            ],
+            [
+              "Report ready",
+              "The scan finished and the person got their report.",
+            ],
+          ].map(([h, t]) => (
+            <div className="sc-admin-card" key={h}>
+              <h2>{h}</h2>
+              <p className="sc-admin-dim">{t}</p>
+            </div>
+          ))}
         </div>
-
-        {flaggedFits.length > 0 ? (
-          <p className="sc-admin-dim" style={{ marginBottom: "1rem" }}>
-            {flaggedFits.length} recent{" "}
-            {flaggedFits.length === 1 ? "link" : "links"} read as off-topic or
-            unclear but were still scanned (no lost clicks). They are
-            highlighted below.
-          </p>
-        ) : null}
-
-        <section className="sc-admin-card">
-          <h2>Audit funnel, ad visitors (last 14 days)</h2>
-          <p className="sc-admin-dim">
-            Counted for every visitor regardless of cookie choice, as anonymous
-            daily totals in SA time. Compare Arrived with Meta link clicks for
-            the same day; non-ad traffic is in brackets.
-          </p>
-          {funnel.length === 0 ? (
-            <p className="sc-admin-empty">No funnel counts yet.</p>
-          ) : (
-            <div
-              className="sc-admin-tablewrap"
-              role="region"
-              aria-label="Scan data"
-              tabIndex={0}
+        <div className="sc-admin-filters">
+          <span>Traffic</span>
+          {[
+            ["ad", "From ads"],
+            ["other", "Other"],
+          ].map(([v, t]) => (
+            <Link
+              key={v}
+              className={source === v ? "is-active" : ""}
+              href={href({ source: v })}
             >
+              {t}
+            </Link>
+          ))}
+          <span>Period</span>
+          {[7, 14, 30].map((v) => (
+            <Link
+              key={v}
+              href={href({ period: String(v) })}
+              className={days === v ? "is-active" : ""}
+            >
+              {v} days
+            </Link>
+          ))}
+        </div>
+        <section className="sc-admin-card">
+          <h2>Audit funnel</h2>
+          <div className="sc-admin-funnel">
+            {[
+              ["Visited", view.totals.visited, "Opened the audit page"],
+              [
+                "Started the form",
+                view.totals.started,
+                `${ratio(view.totals.started, view.totals.visited)} of visitors`,
+              ],
+              [
+                "Submitted",
+                view.totals.submitted,
+                `${ratio(view.totals.submitted, view.totals.started)} of starters`,
+              ],
+              [
+                "Report ready",
+                view.totals.ready,
+                `${view.outcomes.failed + view.outcomes.timeout} failed (see below)`,
+              ],
+            ].map(([label, n, text]) => (
+              <div key={label}>
+                <span>{label}</span>
+                <strong>{n}</strong>
+                <div className="sc-admin-bar">
+                  <span
+                    style={{
+                      width: `${view.totals.visited ? Math.min(100, (Number(n) / view.totals.visited) * 100) : 0}%`,
+                    }}
+                  />
+                </div>
+                <small>{text}</small>
+              </div>
+            ))}
+          </div>
+          <details>
+            <summary>Daily numbers</summary>
+            <div className="sc-admin-tablewrap">
               <table className="sc-admin-table">
                 <thead>
                   <tr>
-                    <th>Day</th>
-                    <th>Arrived</th>
-                    <th>Touched form</th>
-                    <th>Submitted</th>
-                    <th>Touched / arrived</th>
-                    <th>Submitted / touched</th>
+                    {[
+                      "Day (SAST)",
+                      "Visited",
+                      "Started",
+                      "Submitted",
+                      "Report ready",
+                    ].map((h) => (
+                      <th key={h}>{h}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {funnel.map((row) => {
-                    const ad = row.counts;
-                    const ratio = (numerator: number, denominator: number) =>
-                      denominator
-                        ? `${Math.round((numerator / denominator) * 100)}%`
-                        : "—";
-                    return (
-                      <tr key={formatSast(`${row.day}T12:00:00+02:00`, false)}>
-                        <td className="sc-admin-dim">
-                          {formatSast(`${row.day}T12:00:00+02:00`, false)}
-                        </td>
-                        <td>
-                          {ad.arrived.ad}{" "}
-                          <span className="sc-admin-dim">
-                            ({ad.arrived.other})
-                          </span>
-                        </td>
-                        <td>
-                          {ad.touched.ad}{" "}
-                          <span className="sc-admin-dim">
-                            ({ad.touched.other})
-                          </span>
-                        </td>
-                        <td>
-                          {ad.submitted.ad}{" "}
-                          <span className="sc-admin-dim">
-                            ({ad.submitted.other})
-                          </span>
-                        </td>
-                        <td>
-                          {ratio(ad.touched.ad, ad.arrived.ad)}{" "}
-                          <span className="sc-admin-dim">
-                            ({ratio(ad.touched.other, ad.arrived.other)})
-                          </span>
-                        </td>
-                        <td>
-                          {ratio(ad.submitted.ad, ad.touched.ad)}{" "}
-                          <span className="sc-admin-dim">
-                            ({ratio(ad.submitted.other, ad.touched.other)})
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {view.daily.map((r) => (
+                    <tr key={r.day}>
+                      <td>{r.day}</td>
+                      <td>{r.visited}</td>
+                      <td>{r.started}</td>
+                      <td>{r.submitted}</td>
+                      <td>{r.ready}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-          )}
+          </details>
         </section>
-
-        {log.length === 0 ? (
-          <p className="sc-admin-empty">No scans logged yet.</p>
-        ) : (
-          <div
-            className="sc-admin-card sc-admin-tablewrap"
-            role="region"
-            aria-label="Scan history"
-            tabIndex={0}
-          >
-            <table className="sc-admin-table">
-              <thead>
-                <tr>
-                  <th>When</th>
-                  <th>Website</th>
-                  <th>Detected fit</th>
-                  <th>Qualified</th>
-                  <th>From ad</th>
-                  <th>Outcome</th>
-                  <th>Took</th>
-                </tr>
-              </thead>
-              <tbody>
-                {log.map((e, i) => {
-                  const flagged = e.fit === "outside" || e.fit === "unclear";
-                  return (
-                    <tr
-                      key={`${e.at}-${i}`}
-                      className={flagged ? "sc-row-hot" : undefined}
-                    >
-                      <td className="sc-admin-dim">{formatSast(e.at)}</td>
-                      <td>
-                        {e.host ? (
-                          <a
-                            href={`https://${e.host}`}
-                            target="_blank"
-                            rel="noreferrer noopener"
-                          >
-                            {e.host}
-                          </a>
-                        ) : (
-                          <span className="sc-admin-dim">unknown</span>
-                        )}
-                      </td>
-                      <td
-                        className={flagged ? "sc-admin-warn" : "sc-admin-dim"}
-                      >
-                        {e.fit ?? "n/a"}
-                      </td>
-                      <td>
-                        {formatQualifiedAuditDecision(e.qualifiedDecision)}
-                      </td>
-                      <td className="sc-admin-dim">
-                        {adLabel(e.ad) ?? "none recorded"}
-                      </td>
-                      <td>
-                        <span className={outcomeClass(e.outcome)}>
-                          {OUTCOME_LABEL[e.outcome] ?? e.outcome}
-                        </span>
-                      </td>
-                      <td className="sc-admin-dim">
-                        {e.ms > 0 ? `${(e.ms / 1000).toFixed(1)}s` : "n/a"}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        <header className="sc-admin-toolbar">
+          <h2>Audit runs</h2>
+          <div className="sc-admin-filters">
+            {[
+              ["all", "All"],
+              ["problems", "Problems only"],
+              ["ad", "From ads"],
+            ].map(([v, t]) => (
+              <Link
+                className={(q.runs || "all") === v ? "is-active" : ""}
+                href={href({ runs: v })}
+                key={v}
+              >
+                {t}
+              </Link>
+            ))}
+            <Link
+              href={href({ showTests: showTests ? undefined : "1" })}
+              aria-pressed={showTests}
+            >
+              Show tests {showTests ? "on" : "off"}
+            </Link>
           </div>
-        )}
+        </header>
+        <div className="sc-admin-tiles">
+          {[
+            ["Report ready", view.outcomes.success, ""],
+            [
+              "Scan failed",
+              view.outcomes.failed + view.outcomes.timeout,
+              topReasons(["failed", "timeout"]),
+            ],
+            [
+              "Stopped before scanning",
+              view.outcomes.invalid + view.outcomes["out-of-scope"],
+              topReasons(["invalid", "out-of-scope"]),
+            ],
+            ["Rate limit hit", view.outcomes.limited, ""],
+          ].map(([label, n, why], i) => (
+            <div
+              key={label}
+              className={`sc-admin-card sc-admin-tile ${i === 1 && Number(n) > 0 ? "sc-admin-danger" : ""}`}
+            >
+              <span>{label}</span>
+              <strong>{n}</strong>
+              <small>{why}</small>
+            </div>
+          ))}
+        </div>
+        <p className="sc-admin-dim">
+          Tiles and funnel: {source === "ad" ? "from ads" : "other traffic"},
+          last {days} days. Run filters below cover all traffic.
+        </p>
+        <div className="sc-admin-card sc-admin-tablewrap">
+          <table className="sc-admin-table sc-admin-runs-table">
+            <thead>
+              <tr>
+                {[
+                  "When (SAST)",
+                  "Website",
+                  "Result",
+                  "Why",
+                  "Lead",
+                  "From ad",
+                  "Took",
+                ].map((h) => (
+                  <th key={h}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {runs.map((r, i) => {
+                const failure = leads.failed.find(
+                  (f) =>
+                    f.email.toLowerCase() === r.email?.toLowerCase() &&
+                    f.outcome === r.outcome && Math.abs(Date.parse(f.at) - Date.parse(r.at)) < 60000
+                );
+                const lead = leads.allRows.find((l) =>
+                  r.slug
+                    ? l.id === r.slug
+                    : r.email && l.email.toLowerCase() === r.email.toLowerCase()
+                );
+                const leadPath = failure
+                  ? `/audit/admin/failed/${failure.id}`
+                  : lead?.leadPath;
+                return (
+                  <tr
+                    key={i}
+                    className={isTestContact(r.email) ? "sc-admin-testrow" : ""}
+                  >
+                    <td>{formatSast(r.at)}</td>
+                    <td>{r.host || "unknown"}</td>
+                    <td>
+                      <span
+                        className={`sc-admin-chip sc-admin-status-${r.outcome === "success" ? "ready" : r.outcome === "failed" || r.outcome === "timeout" ? "failed" : "hand"}`}
+                      >
+                        {OUTCOME_LABELS[r.outcome]}
+                      </span>
+                    </td>
+                    <td>{runWhy(r)}</td>
+                    <td>
+                      {leadPath ? (
+                        <Link href={leadPath}>
+                          {failure?.firstName ||
+                            lead?.firstName ||
+                            lead?.company ||
+                            "Lead"}
+                        </Link>
+                      ) : r.slug ? (
+                        <Link href={`/audit/admin/${r.slug}`}>Lead</Link>
+                      ) : (
+                        "no lead"
+                      )}
+                    </td>
+                    <td>{adLabel(r.ad) || "none recorded"}</td>
+                    <td>{(r.ms / 1000).toFixed(1)}s</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {!runs.length && (
+            <p className="sc-admin-empty">No runs match these filters.</p>
+          )}
+        </div>
+        <p className="sc-admin-dim">
+          Runs are kept for 30 days. All-time:{" "}
+          {Object.entries(OUTCOME_LABELS)
+            .map(
+              ([key, label]) =>
+                `${label}: ${counts[key as keyof typeof counts] || 0}`
+            )
+            .join(" ? ")}
+        </p>
       </div>
     </section>
   );
