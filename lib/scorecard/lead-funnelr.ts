@@ -257,7 +257,7 @@ async function verifyReportUrlWrites(client: ScorecardLeadFunnelrClient, userId:
 
 export async function submitScorecardLeadToFunnelr(
   input: ScorecardLeadInput,
-  options: { client?: ScorecardLeadFunnelrClient; now?: Date } = {},
+  options: { client?: ScorecardLeadFunnelrClient; now?: Date; skipSalesTrigger?: boolean } = {},
 ): Promise<ScorecardLeadResult> {
   const normalized = normalizeScorecardLeadInput(input);
   if ("error" in normalized) return { ok: false, error: normalized.error };
@@ -316,7 +316,7 @@ export async function submitScorecardLeadToFunnelr(
     const tagsApplied = [
       await applyTag(client, userId, NEXUBIS_TAG_IDS.brand, BRAND_NEXUBIS_TAG_NAME),
       await applyTag(client, userId, NEXUBIS_TAG_IDS.sourceScorecard, SOURCE_SCORECARD_TAG_NAME),
-      await applyTag(client, userId, NEXUBIS_TAG_IDS.triggerStartScorecardSales, START_SCORECARD_SALES_TAG_NAME),
+      ...(options.skipSalesTrigger ? [] : [await applyTag(client, userId, NEXUBIS_TAG_IDS.triggerStartScorecardSales, START_SCORECARD_SALES_TAG_NAME)]),
     ];
     if (reportUrlMirror) {
       await verifyReportUrlWrites(client, userId, normalized.email, reportUrlMirror);

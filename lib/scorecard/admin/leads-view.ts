@@ -1,3 +1,6 @@
+import { runLinkId, type RunLinks } from "./run-links";
+import { funnelrProblem } from "./funnelr-view";
+import type { FunnelrStatus } from "./funnelr-status";
 import type { ScanRunLog } from "../diagnostics";
 import type { LeadRecord } from "../leads";
 import type { FailedLead } from "./failed-leads";
@@ -17,6 +20,7 @@ export interface LeadRow {
   email: string;
   status: "ready" | "failed" | "hand";
   statusReason: string;
+  funnelrStatus?: FunnelrStatus | null;
   qualifiedDecision?: QualifiedAuditDecision;
   score: number | null;
   band: string | null;
@@ -57,7 +61,11 @@ export function buildLeadsView(
   reports: Record<string, SharedScorecard | null>,
   filters: LeadsFilters = {},
   now = Date.now(),
-  scanLog: ScanRunLog[] = []
+  scanLog: ScanRunLog[] = [],
+  admin: {
+    runLinks?: RunLinks;
+    statuses?: Record<string, FunnelrStatus | null>;
+  } = {}
 ) {
   const rows: LeadRow[] = [];
   const reportRow = (
@@ -158,6 +166,23 @@ export function buildLeadsView(
       leadPath: `/audit/admin/failed/${f.id}`,
     });
   }
+  for (const row of rows) {
+    const slug = row.reportPath?.split("/").pop();
+    row.funnelrStatus =
+      admin.statuses?.[slug || ""] ||
+      admin.statuses?.[`email:${emailKey(row.email)}`] ||
+      null;
+    if (!row.adLabel) {
+      const linked = scanLog.find(
+        (run) =>
+          admin.runLinks?.[runLinkId(run)] === row.leadPath && adLabel(run.ad)
+      );
+      if (linked) {
+        row.adLabel = adLabel(linked.ad);
+        row.source = "ad";
+      }
+    }
+  }
   const contactGroups = new Map<string, LeadRow[]>();
   for (const row of rows) {
     const key = emailKey(row.email);
@@ -245,7 +270,9 @@ export function buildLeadsView(
           filters.status === "all" ||
           (filters.status === "action"
             ? r.status === "failed" && !r.reportPath
-            : r.status === filters.status)) &&
+            : filters.status === "funnelr"
+              ? funnelrProblem(r.funnelrStatus)
+              : r.status === filters.status)) &&
         (!filters.qualified ||
           filters.qualified === "any" ||
           (filters.qualified === "yes"

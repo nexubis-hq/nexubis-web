@@ -141,6 +141,13 @@ export default async function LeadsPage({
                     </td>
                     <td>
                       <LeadStatus status={r.status} />
+                      {r.funnelrStatus && r.funnelrStatus.state !== "ok" && (
+                        <small className="sc-admin-subtext sc-admin-funnelr-problem">
+                          {r.funnelrStatus.state === "failed"
+                            ? "Funnelr failed"
+                            : "Not in Funnelr"}
+                        </small>
+                      )}
                       <span
                         className="sc-admin-subtext sc-admin-clamp"
                         title={r.statusReason}

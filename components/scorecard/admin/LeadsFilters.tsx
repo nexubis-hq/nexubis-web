@@ -22,6 +22,7 @@ export function LeadsFilters({ testCount }: { testCount: number }) {
               [
                 ["all", "All"],
                 ["action", "Needs action"],
+                ["funnelr", "Funnelr problem"],
                 ["ready", "Report ready"],
                 ["failed", "Scan failed"],
                 ["hand", "Made by hand"],

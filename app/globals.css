@@ -10083,6 +10083,19 @@ button.nav-link {
   }
 }
 
+/* Funnelr status and manual run links: admin only. */
+.sc-admin .sc-admin-funnelr { display:grid; gap:.35rem; }
+.sc-admin .sc-admin-funnelr-controls { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:.75rem; }
+.sc-admin .sc-admin-funnelr-controls .sc-admin-confirm { flex-basis:100%; }
+.sc-admin .sc-admin-funnelr-ok { color:var(--sc-valid); }
+.sc-admin .sc-admin-funnelr-partial { color:#946000; }
+.sc-admin .sc-admin-funnelr-failed,
+.sc-admin .sc-admin-funnelr-missing,
+.sc-admin .sc-admin-funnelr-problem { color:var(--primary); }
+.sc-admin .sc-admin-funnelr-unknown { color:var(--body); }
+.sc-admin .sc-admin-run-link { font-size:.8rem; margin-top:.5rem; min-width:10rem; }
+.sc-admin .sc-admin-run-link .sc-admin-form { margin-top:.75rem; }
+
 /* Leads and Activity: admin only. */
 .sc-admin .sc-admin-badges { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-bottom:.75rem; }
 .sc-admin .sc-admin-badges .sc-admin-subtext { display:none; }
