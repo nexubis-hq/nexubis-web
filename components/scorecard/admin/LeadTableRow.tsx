@@ -15,7 +15,10 @@ export function LeadTableRow({
       className={test ? "sc-admin-testrow" : undefined}
       onClick={(e) => {
         if (
-          !(e.target as HTMLElement).closest("a,button,input,select,textarea")
+          !window.getSelection()?.toString() &&
+          !(e.target as HTMLElement).closest(
+            "a,button,input,select,textarea,summary,details,label"
+          )
         )
           router.push(href);
       }}

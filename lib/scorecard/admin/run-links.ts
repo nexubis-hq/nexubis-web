@@ -1,8 +1,8 @@
+import { runLinkId } from "./run-identity";
 import { getKv } from "../kv";
 import type { ScanRunLog } from "../diagnostics";
 export type RunLinks = Record<string, string>;
-export const runLinkId = (run: Pick<ScanRunLog, "at" | "host">) =>
-  `${run.at}|${run.host || ""}`;
+export { runLinkId } from "./run-identity";
 export const runLinkKey = (run: Pick<ScanRunLog, "at" | "host">) =>
   `scorecard-run-link:${runLinkId(run)}`;
 export async function readRunLinks(log: ScanRunLog[]): Promise<RunLinks> {

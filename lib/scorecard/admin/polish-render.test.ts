@@ -1,3 +1,5 @@
+import type { LeadProfile } from "./profiles";
+import type { MeetingEvent } from "./meetings";
 import { FunnelrStatus as FunnelrStatusRow } from "@/components/scorecard/admin/FunnelrStatus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, it, vi } from "vitest";
@@ -19,7 +21,10 @@ const state = vi.hoisted(() => ({
     leads: LeadRecord[];
     manual: [];
     failed: [];
+    scanLog?: ScanRunLog[];
+    meetings?: Record<string, MeetingEvent[]>;
   },
+  profile: null as LeadProfile | null,
   status: null as FunnelrStatus | null,
   log: [] as ScanRunLog[],
 }));
@@ -74,6 +79,7 @@ vi.mock("@/lib/scorecard/admin/funnelr-status", async (importOriginal) => ({
   ...(await importOriginal<typeof import("./funnelr-status")>()),
   readFunnelrStatus: async () => state.status,
 }));
+vi.mock("./profiles", () => ({ readLeadProfile: async () => state.profile }));
 vi.mock("@/lib/scorecard/share", () => ({ readShared: async () => null }));
 vi.mock("@/app/audit/admin/actions", () => ({
   saveLeadNote: vi.fn(),
@@ -172,6 +178,7 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   state.view = {
     ...buildLeadsView(leads, [], [], reports, {}, now, state.log),
     now,
+    scanLog: state.log,
     leads,
     reports,
     failed: [],
@@ -187,6 +194,14 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   );
   expect(leadsHtml).toContain('href="/audit/admin/live">Live District</a>');
   expect(leadsHtml).toContain("wide gap");
+  expect(leadsHtml).toContain("New companies, last 30 days");
+  state.view.period = "7";
+  expect(
+    renderToStaticMarkup(
+      await LeadsPage({ searchParams: Promise.resolve({ period: "7" }) })
+    )
+  ).toContain("New companies, last 7 days");
+  state.view.period = "30";
   const detailHtml = renderToStaticMarkup(await LeadDetail({ id: "live" }));
   expect(detailHtml).toContain("Same contact as");
   expect(detailHtml).toContain("Not checked yet");
@@ -200,7 +215,8 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   );
   expect(header).toContain("Not qualified");
   expect(header).not.toContain(">No</span>");
-  expect(header.split(String.fromCharCode(183))).toHaveLength(3);
+  expect(header).toContain("Website:");
+  expect(header).toContain(String.fromCharCode(8599));
   expect(
     readFileSync("components/scorecard/admin/LeadDetail.tsx", "utf8")
   ).toContain("&middot;");
@@ -212,10 +228,14 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
     attempts: 1,
     history: [],
   };
+  state.view.allRows.find((row) => row.id === "live")!.funnelrStatus =
+    state.status;
   const partialHtml = renderToStaticMarkup(await LeadDetail({ id: "live" }));
   expect(partialHtml).toContain("Partly in Funnelr: report link");
   expect(partialHtml).toContain("Retry sending to Funnelr");
   state.status = { ...state.status!, state: "other-report" };
+  state.view.allRows.find((row) => row.id === "live")!.funnelrStatus =
+    state.status;
   const otherHtml = renderToStaticMarkup(await LeadDetail({ id: "live" }));
   expect(otherHtml).toContain("In Funnelr with another report");
   expect(otherHtml).not.toContain("Retry sending to Funnelr");
@@ -241,7 +261,40 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   expect(otherLeadsHtml).not.toContain("Funnelr failed");
   state.view.rows[0].funnelrStatus = null;
   state.status = null;
+  state.view.allRows.find((row) => row.id === "live")!.funnelrStatus = null;
   expect(detailHtml).toContain('href="/audit/admin/collective"');
+  expect(detailHtml).toContain(String.fromCharCode(8592));
+  expect(detailHtml).toContain("Find on LinkedIn");
+  expect(detailHtml).toContain("keywords=Alex%20Live%20District");
+  expect(detailHtml).toContain("No meeting booked yet");
+  state.view.meetings = {
+    [leads[0].email]: [
+      {
+        event: "created",
+        startTime: "2027-04-23T10:00:00Z",
+        bookedAt: "2026-10-28T11:00:00Z",
+        uid: "booking",
+        attendeeName: "Alex",
+      },
+    ],
+  };
+  const meetingHtml = renderToStaticMarkup(await LeadDetail({ id: "live" }));
+  expect(meetingHtml).toContain("Booked via cal.com for 23 Apr 2027");
+  expect(meetingHtml).toContain("Bookings Laine makes outside cal.com");
+  expect(meetingHtml).toContain('target="_blank"');
+  state.profile = {
+    linkedinProfile: "https://www.linkedin.com/in/alex/",
+    companyLinkedin: "https://www.linkedin.com/company/live-district/",
+  };
+  const overrideHtml = renderToStaticMarkup(await LeadDetail({ id: "live" }));
+  expect(overrideHtml).toContain('href="https://www.linkedin.com/in/alex/"');
+  expect(overrideHtml).toContain(
+    'href="https://www.linkedin.com/company/live-district/"'
+  );
+  expect(overrideHtml).not.toContain("Find on LinkedIn");
+  state.profile = null;
+  state.view.meetings = {};
+
   const activityHtml = renderToStaticMarkup(
     await ActivityPage({ searchParams: Promise.resolve({}) })
   );
@@ -252,7 +305,13 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   );
   expect(activityHtml).not.toContain(" ? ");
   expect(activityHtml).toContain("Link to lead");
-  expect(activityHtml).toContain("Lead from the last 30 days");
+  expect(
+    activityHtml.match(/href="\/audit\/admin\/scans\?runs=problems"/g)
+  ).toHaveLength(4);
+  expect(
+    activityHtml.match(/href="\/audit\/admin\/scans\?runs=all"/g)
+  ).toHaveLength(2);
+  expect(activityHtml).not.toContain("Lead from the last 30 days");
   if (process.env.ADMIN_POLISH_FIXTURES === "1") {
     mkdirSync(".shipstudio/admin-polish-fixtures", { recursive: true });
     for (const [name, body] of Object.entries({

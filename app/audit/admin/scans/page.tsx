@@ -1,10 +1,9 @@
 import { RunLeadLink } from "@/components/scorecard/admin/RunLeadLink";
-import { runLinkId } from "@/lib/scorecard/admin/run-links";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SESSION_COOKIE, isValidSession } from "@/lib/scorecard/auth";
-import { readRecentScanLog, readScanCounts } from "@/lib/scorecard/diagnostics";
+import { readScanCounts } from "@/lib/scorecard/diagnostics";
 import { readFunnel } from "@/lib/funnel/counter";
 import { adLabel } from "@/lib/funnel/steps";
 import {
@@ -30,15 +29,14 @@ export default async function ActivityPage({
   const days = q.period === "7" ? 7 : q.period === "30" ? 30 : 14;
   const source = q.source === "other" ? "other" : "ad";
   const showTests = q.showTests === "1";
-  const [log, counts, funnel, leads] = await Promise.all([
-    readRecentScanLog(500),
+  const [counts, funnel, leads] = await Promise.all([
     readScanCounts(),
     readFunnel(days),
     loadLeadsView({ period: "all", showTests: true }),
   ]);
   const view = buildActivityView(
     funnel,
-    log,
+    leads.scanLog,
     days,
     source,
     showTests,
@@ -46,6 +44,13 @@ export default async function ActivityPage({
     leads.allRows,
     leads.runLinks
   );
+  const linkChoices = leads.allRows
+    .filter((lead) => Date.parse(lead.firstSeen) >= leads.now - 30 * 86400000)
+    .map(({ leadPath, company, firstName }) => ({
+      leadPath,
+      company,
+      firstName,
+    }));
   const periodLog = view.allPeriodRuns;
   const runs = periodLog.filter((r) =>
     q.runs === "problems"
@@ -236,14 +241,15 @@ export default async function ActivityPage({
             ],
             ["Rate limit hit", view.outcomes.limited, ""],
           ].map(([label, n, why], i) => (
-            <div
+            <Link
+              href={href({ runs: i === 0 ? "all" : "problems" })}
               key={label}
               className={`sc-admin-card sc-admin-tile ${i === 1 && Number(n) > 0 ? "sc-admin-danger" : ""}`}
             >
               <span>{label}</span>
               <strong>{n}</strong>
               <small>{why}</small>
-            </div>
+            </Link>
           ))}
         </div>
         <p className="sc-admin-dim">{repeatViewsNote(view.repeatViews)}</p>
@@ -293,18 +299,13 @@ export default async function ActivityPage({
                       ) : (
                         "no lead"
                       )}
-                      {(r.outcome === "failed" || r.outcome === "timeout") &&
-                        (!lead || leads.runLinks?.[runLinkId(r)]) && (
-                          <RunLeadLink
-                            run={r}
-                            selected={leads.runLinks?.[runLinkId(r)]}
-                            leads={leads.allRows.filter(
-                              (lead) =>
-                                Date.parse(lead.firstSeen) >=
-                                leads.now - 30 * 86400000
-                            )}
-                          />
-                        )}
+                      {(r.outcome === "failed" || r.outcome === "timeout") && (
+                        <RunLeadLink
+                          run={r}
+                          selected={leadPath || ""}
+                          leads={linkChoices}
+                        />
+                      )}
                     </td>
                     <td>{adLabel(r.ad) || "none recorded"}</td>
                     <td>{(r.ms / 1000).toFixed(1)}s</td>

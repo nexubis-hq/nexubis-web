@@ -10096,6 +10096,17 @@ button.nav-link {
 .sc-admin .sc-admin-run-link { font-size:.8rem; margin-top:.5rem; min-width:10rem; }
 .sc-admin .sc-admin-run-link .sc-admin-form { margin-top:.75rem; }
 
+/* Admin navigation and normal document scrolling. */
+.sc-admin .sc-admin-tablewrap { max-height:none; overscroll-behavior:auto; }
+.sc-admin .sc-admin-filterpanel:not([open]) .sc-admin-filterfields { display:none; pointer-events:none; }
+.sc-admin .sc-admin-filters a.is-active { background:var(--black); border-color:var(--black); color:var(--white); }
+.sc-admin .sc-admin-meeting-active { color:var(--sc-valid); }
+.sc-admin .sc-admin-website { margin-top:.4rem; }
+.sc-admin .sc-admin-inline-link { font-size:.8rem; margin-left:.5rem; }
+.sc-admin .sc-admin-profile-form { margin-top:1rem; }
+.sc-admin .sc-admin-profile-form .sc-admin-form { margin-top:.75rem; }
+.sc-admin .sc-admin-run-link summary { font-size:.75rem; text-decoration:underline; }
+
 /* Leads and Activity: admin only. */
 .sc-admin .sc-admin-badges { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-bottom:.75rem; }
 .sc-admin .sc-admin-badges .sc-admin-subtext { display:none; }

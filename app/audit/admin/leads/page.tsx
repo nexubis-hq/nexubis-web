@@ -62,7 +62,9 @@ export default async function LeadsPage({
               className={`sc-admin-card sc-admin-tile ${i === 2 && summary.needsAction ? "sc-admin-danger" : ""}`}
               key={label}
             >
-              <span>{label}</span>
+              <span>
+                {label}, {period === "all" ? "all time" : `last ${period} days`}
+              </span>
               <strong>{note}</strong>
               <small>{sub || "Next step: run by hand"}</small>
             </Link>
@@ -142,6 +144,11 @@ export default async function LeadsPage({
                     </td>
                     <td>
                       <LeadStatus status={r.status} />
+                      {r.meetingBooked && (
+                        <small className="sc-admin-subtext sc-admin-meeting-active">
+                          Meeting booked
+                        </small>
+                      )}
                       {funnelrProblem(r.funnelrStatus) && (
                         <small className="sc-admin-subtext sc-admin-funnelr-problem">
                           {r.funnelrStatus?.state === "failed"
@@ -151,9 +158,9 @@ export default async function LeadsPage({
                       )}
                       <span
                         className="sc-admin-subtext sc-admin-clamp"
-                        title={r.statusReason}
+                        title={r.statusContext || r.statusReason}
                       >
-                        {r.statusReason}
+                        {r.statusContext || r.statusReason}
                       </span>
                     </td>
                     <td>

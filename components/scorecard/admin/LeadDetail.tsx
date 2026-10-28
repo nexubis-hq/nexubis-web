@@ -1,3 +1,12 @@
+import { LinkedinForm } from "./LinkedinForm";
+import { readLeadProfile } from "@/lib/scorecard/admin/profiles";
+import {
+  storedCompanyLinkedin,
+  linkedinPeopleSearch,
+  websiteUrl,
+} from "@/lib/scorecard/admin/linkedin";
+import { meetingSummary, meetingText } from "@/lib/scorecard/admin/meetings";
+import { auditTimeline } from "@/lib/scorecard/admin/timeline";
 import { FunnelrStatus } from "./FunnelrStatus";
 import {
   readFunnelrStatus,
@@ -7,21 +16,15 @@ import { isTestContact } from "@/lib/scorecard/admin/test-contacts";
 import Link from "next/link";
 import { SameContact } from "./SameContact";
 import { readAdminNote } from "@/lib/scorecard/admin/notes";
-import { readAdminRunHistory } from "@/lib/scorecard/manual/rerun";
 import { prospectScores } from "@/lib/scorecard/result";
 import { readShared } from "@/lib/scorecard/share";
 import { loadLeadsView } from "@/lib/scorecard/admin/data";
 import {
   readRunHistory,
+  derivedRunHistory,
   reportRunCount,
 } from "@/lib/scorecard/admin/run-history";
-import { readRecentScanLog } from "@/lib/scorecard/diagnostics";
-import {
-  OUTCOME_LABELS,
-  runWhy,
-  runLabel,
-  linkRunToLead,
-} from "@/lib/scorecard/admin/activity-view";
+import { linkRunToLead } from "@/lib/scorecard/admin/activity-view";
 import { categoryLabel } from "@/lib/scorecard/rubric";
 import { saveLeadNote, attachLoom } from "@/app/audit/admin/actions";
 import { CopyLinkButton } from "./CopyLinkButton";
@@ -40,7 +43,11 @@ export async function LeadDetail({
   const row = view.allRows.find(
     (r) => r.id === id && (failed ? r.kind === "failed" : r.kind !== "failed")
   );
-  const shared = view.reports[id] ?? (!failed ? await readShared(id) : null);
+  const shared = Object.prototype.hasOwnProperty.call(view.reports, id)
+    ? view.reports[id]
+    : !failed
+      ? await readShared(id)
+      : null;
   // Reports without a lead record remain available to administrators.
   const report = failed
     ? row?.reportPath
@@ -62,56 +69,58 @@ export async function LeadDetail({
     failure?.url || lead?.url || manual?.url || report!.prospectData.url;
   const reportSlug =
     row?.reportPath?.split("/").pop() || (!failed && report ? id : undefined);
+  const storedHistory = reportSlug ? view.histories?.[reportSlug] : undefined;
   const history =
     report && reportSlug
-      ? await readRunHistory(reportSlug, report, manual ? "manual" : "visitor")
+      ? storedHistory
+        ? storedHistory.length
+          ? storedHistory
+          : derivedRunHistory(report, manual ? "manual" : "visitor")
+        : await readRunHistory(
+            reportSlug,
+            report,
+            manual ? "manual" : "visitor"
+          )
       : [];
-  const logs = (await readRecentScanLog(500)).filter(
-    (r) =>
+  const logs = (view.scanLog || []).filter(
+    (run) =>
       row &&
-      linkRunToLead(r, view.allRows, view.runLinks)?.leadPath ===
+      linkRunToLead(run, view.allRows, view.runLinks)?.leadPath ===
         row.leadPath &&
-      Date.parse(r.at) >= view.now - 30 * 86400000
+      Date.parse(run.at) >= view.now - 30 * 86400000
   );
   const adminNote = !failed ? await readAdminNote(id) : null;
-  const runSummary =
-    report && reportSlug ? await readAdminRunHistory(reportSlug, report) : null;
+  const runSummary = reportSlug ? view.adminRuns?.[reportSlug] : null;
+  const profile = row
+    ? await readLeadProfile(row.leadPath).catch(() => null)
+    : null;
+  const foundCompanyLinkedin = storedCompanyLinkedin(report, company, true);
+  const companyLinkedin = foundCompanyLinkedin || profile?.companyLinkedin;
+  const personLinkedin =
+    profile?.linkedinProfile || linkedinPeopleSearch(name, company);
+  const meetingEvents = view.meetings?.[email.trim().toLowerCase()] || [];
+  const meeting = meetingSummary(meetingEvents);
   const absoluteReportUrl = reportSlug
     ? new URL(
         `/audit/r/${reportSlug}`,
         process.env.NEXT_PUBLIC_SITE_URL || "https://www.nexubis.io"
       ).toString()
     : undefined;
-  const funnelrStatus = await readFunnelrStatus(email, absoluteReportUrl).catch(
-    () => null
-  );
+  const funnelrStatus = row
+    ? row.funnelrStatus || null
+    : await readFunnelrStatus(email, absoluteReportUrl).catch(() => null);
   const timeline = [
     ...(funnelrStatus?.history || (funnelrStatus ? [funnelrStatus] : [])).map(
       (entry) => ({ at: entry.at, text: funnelrTimelineText(entry) })
     ),
-    ...history.map((r, i) => ({
-      at: r.at,
+    ...auditTimeline(history, logs, failure),
+    ...meetingEvents.map((entry) => ({
+      at: entry.bookedAt,
       text:
-        r.kind === "re-run (before history was kept)"
-          ? `Re-run (before history was kept): ${r.score ?? "n/a"}/100`
-          : r.by === "manual" && r.kind === "first run"
-            ? "Manual audit made"
-            : r.kind === "first run"
-              ? `First run by ${r.by}${r.score === null ? " (score not recorded)" : ""}`
-              : `Audit re-run from ${r.by}: ${history[i + 1]?.score ?? "n/a"} -> ${r.score ?? "n/a"}`,
+        entry.event === "cancelled"
+          ? `Meeting cancelled (was booked for ${formatSast(entry.startTime)})`
+          : meetingText(entry, view.now),
     })),
-    ...logs.map((r) => ({
-      at: r.at,
-      text: `${runLabel(r)}${runWhy(r) ? `: ${runWhy(r)}` : ""}`,
-    })),
-    ...(failure
-      ? [
-          {
-            at: failure.at,
-            text: `${OUTCOME_LABELS[failure.outcome]}: ${failure.reason}${failure.siteRead ? ` (${failure.siteRead})` : ""}`,
-          },
-        ]
-      : []),
     ...(failure?.note || lead?.note || adminNote?.note
       ? [
           {
@@ -125,7 +134,7 @@ export async function LeadDetail({
   const result = report?.result;
   return (
     <>
-      <Link href="/audit/admin/leads">Back to Leads</Link>
+      <Link href="/audit/admin/leads">&larr; Back to Leads</Link>
       <header className="sc-admin-head sc-admin-card">
         <div>
           <div className="sc-admin-badges">
@@ -136,6 +145,25 @@ export async function LeadDetail({
             />
           </div>
           <h1>{name || company}</h1>
+          <p className="sc-admin-website">
+            Website:{" "}
+            <a
+              href={websiteUrl(url) || undefined}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {row?.host || url} &#8599;
+            </a>
+            {companyLinkedin && (
+              <>
+                {" "}
+                &middot;{" "}
+                <a href={companyLinkedin} target="_blank" rel="noreferrer">
+                  LinkedIn &#8599;
+                </a>
+              </>
+            )}
+          </p>
           <SameContact contacts={row?.sameContacts || []} />
           <p>
             {company} &middot;{" "}
@@ -197,7 +225,56 @@ export async function LeadDetail({
             </div>
             <div>
               <dt>First name</dt>
-              <dd>{name || "not recorded"}</dd>
+              <dd>
+                {name || "not recorded"}{" "}
+                <a
+                  className="sc-admin-inline-link"
+                  href={personLinkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {profile?.linkedinProfile
+                    ? "LinkedIn profile"
+                    : "Find on LinkedIn"}{" "}
+                  &#8599;
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt>Meeting</dt>
+              <dd>
+                <strong
+                  className={
+                    meeting.active ? "sc-admin-meeting-active" : "sc-admin-dim"
+                  }
+                >
+                  {meetingText(meeting.current, view.now)}
+                </strong>
+                <small className="sc-admin-subtext">
+                  Bookings Laine makes outside cal.com don&apos;t show here yet.
+                </small>
+              </dd>
+            </div>
+            <div>
+              <dt>Website</dt>
+              <dd>
+                <a
+                  href={websiteUrl(url) || undefined}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {row?.host || url} &#8599;
+                </a>
+                {companyLinkedin && (
+                  <>
+                    {" "}
+                    &middot;{" "}
+                    <a href={companyLinkedin} target="_blank" rel="noreferrer">
+                      LinkedIn &#8599;
+                    </a>
+                  </>
+                )}
+              </dd>
             </div>
             <div>
               <dt>Email</dt>
@@ -231,6 +308,14 @@ export async function LeadDetail({
               </dd>
             </div>
           </dl>
+          {row && (
+            <LinkedinForm
+              leadPath={row.leadPath}
+              person={profile?.linkedinProfile}
+              company={profile?.companyLinkedin}
+              showCompany={!foundCompanyLinkedin}
+            />
+          )}
         </section>
         <section className="sc-admin-card">
           <h2>Audit</h2>
@@ -260,14 +345,50 @@ export async function LeadDetail({
                 <div>
                   <dt>Competitors</dt>
                   <dd>
-                    {result!.meta.competitors.map((c) => c.name).join(", ") ||
-                      "none recorded"}
+                    {result!.meta.competitors.length
+                      ? result!.meta.competitors.map((competitor, index) => {
+                          const href = websiteUrl(competitor.url);
+                          const linkedin = storedCompanyLinkedin(
+                            report,
+                            competitor.name
+                          );
+                          return (
+                            <span key={`${competitor.name}-${index}`}>
+                              {index > 0 && <>, </>}
+                              {href ? (
+                                <a href={href} target="_blank" rel="noreferrer">
+                                  {competitor.name} &#8599;
+                                </a>
+                              ) : (
+                                competitor.name
+                              )}
+                              {linkedin && (
+                                <>
+                                  {" "}
+                                  &middot;{" "}
+                                  <a
+                                    href={linkedin}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    LinkedIn &#8599;
+                                  </a>
+                                </>
+                              )}
+                            </span>
+                          );
+                        })
+                      : "none recorded"}
                   </dd>
                 </div>
                 <div>
                   <dt>Report runs</dt>
                   <dd>
-                    {reportRunCount(history, runSummary?.runCount || 1, report)}{" "}
+                    {reportRunCount(
+                      history,
+                      runSummary?.runCount || manual?.runCount || 1,
+                      report
+                    )}{" "}
                     (up to 50 recent runs kept)
                   </dd>
                 </div>
@@ -280,7 +401,9 @@ export async function LeadDetail({
                 </div>
                 <div>
                   <dt>Link live until</dt>
-                  <dd>{formatSast(report.expiresAt)} SAST</dd>
+                  <dd>
+                    {formatSast(report.expiresAt, false, view.now, true)} SAST
+                  </dd>
                 </div>
               </dl>
             </>

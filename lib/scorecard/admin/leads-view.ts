@@ -1,3 +1,12 @@
+import { normalHost, inLeadWindow } from "./hosts";
+import { linkRunToLead, isReplay } from "./run-matching";
+import { formatSast } from "./dates";
+import { meetingSummary, type MeetingEvent } from "./meetings";
+import {
+  derivedRunHistory,
+  reportRunCount,
+  type RunHistoryEntry,
+} from "./run-history";
 import { runLinkId, type RunLinks } from "./run-links";
 import { funnelrProblem } from "./funnelr-view";
 import type { FunnelrStatus } from "./funnelr-status";
@@ -20,6 +29,8 @@ export interface LeadRow {
   email: string;
   status: "ready" | "failed" | "hand";
   statusReason: string;
+  statusContext?: string;
+  meetingBooked?: boolean;
   funnelrStatus?: FunnelrStatus | null;
   qualifiedDecision?: QualifiedAuditDecision;
   score: number | null;
@@ -39,20 +50,7 @@ export interface LeadsFilters {
   period?: string;
   showTests?: boolean;
 }
-export function normalHost(url: string): string {
-  try {
-    return new URL(/^https?:\/\//i.test(url) ? url : `https://${url}`).hostname
-      .toLowerCase()
-      .replace(/^www\./, "");
-  } catch {
-    return "";
-  }
-}
-// Run timestamps are terminal times, so allow time for generation after capture.
-export function inLeadWindow(runAt: string, leadAt: string): boolean {
-  const delta = Date.parse(runAt) - Date.parse(leadAt);
-  return delta >= -2 * 60000 && delta <= 10 * 60000;
-}
+export { normalHost, inLeadWindow } from "./hosts";
 const emailKey = (email: string) => email.trim().toLowerCase();
 export function buildLeadsView(
   leads: LeadRecord[],
@@ -65,6 +63,9 @@ export function buildLeadsView(
   admin: {
     runLinks?: RunLinks;
     statuses?: Record<string, FunnelrStatus | null>;
+    meetings?: Record<string, MeetingEvent[]>;
+    histories?: Record<string, RunHistoryEntry[]>;
+    adminRuns?: Record<string, { runCount: number; lastRunAt: string } | null>;
   } = {}
 ) {
   const rows: LeadRow[] = [];
@@ -241,6 +242,79 @@ export function buildLeadsView(
     r.auditNumber = (groups.get(r.host) ?? 0) + 1;
     groups.set(r.host, r.auditNumber);
   }
+  const runsByLead = new Map<string, ScanRunLog[]>();
+  for (const run of scanLog) {
+    const row = linkRunToLead(run, rows, admin.runLinks);
+    if (row) {
+      const group = runsByLead.get(row.leadPath) || [];
+      group.push(run);
+      runsByLead.set(row.leadPath, group);
+    }
+  }
+  for (const row of rows) {
+    row.meetingBooked = meetingSummary(
+      admin.meetings?.[emailKey(row.email)] || []
+    ).active;
+    const slug = row.reportPath?.split("/").pop() || row.id;
+    const report = reports[slug];
+    const history =
+      admin.histories?.[slug] ||
+      (report
+        ? derivedRunHistory(
+            report,
+            row.kind === "manual" ? "manual" : "visitor"
+          )
+        : []);
+    const stored = admin.adminRuns?.[slug];
+    const manualRow = manual.find((entry) => entry.slug === slug);
+    const count = report
+      ? reportRunCount(
+          history,
+          stored?.runCount || manualRow?.runCount || 1,
+          report
+        )
+      : 1;
+    const runs = (runsByLead.get(row.leadPath) || []).sort((a, b) =>
+      b.at.localeCompare(a.at)
+    );
+    const context: string[] = [];
+    if (row.status === "ready" && count > 1) {
+      const last = [
+        history[0]?.at,
+        stored?.lastRunAt,
+        report?.result.generatedAt,
+      ]
+        .filter((at): at is string => Boolean(at))
+        .sort()
+        .pop()!;
+      context.push(`Re-run ${formatSast(last, true, now)} (run ${count})`);
+    }
+    if (row.status === "hand") {
+      const savedFailure = failed.find(
+        (entry) =>
+          entry.linkedSlug === slug ||
+          (row.kind === "failed" && entry.id === row.id)
+      );
+      const failedRun =
+        runs.find(
+          (run) => run.outcome === "failed" || run.outcome === "timeout"
+        ) ||
+        (savedFailure
+          ? {
+              at: savedFailure.at,
+              reason: savedFailure.reason,
+              siteRead: savedFailure.siteRead,
+            }
+          : undefined);
+      if (failedRun)
+        context.push(
+          `Scan failed ${formatSast(failedRun.at, true, now)}: ${failedRun.reason || failedRun.siteRead || "site could not be read"}. Made by hand ${formatSast(report?.createdAt || row.firstSeen, true, now)}.`
+        );
+    }
+    const replay = runs.find(isReplay);
+    if (replay) context.push(`Came back ${formatSast(replay.at, true, now)}`);
+    row.statusContext = context.join(" ");
+  }
   rows.sort((a, b) => b.firstSeen.localeCompare(a.firstSeen));
   const period =
     filters.period === "all" ? "all" : filters.period === "7" ? "7" : "30";
@@ -272,7 +346,9 @@ export function buildLeadsView(
             ? r.status === "failed" && !r.reportPath
             : filters.status === "funnelr"
               ? funnelrProblem(r.funnelrStatus)
-              : r.status === filters.status)) &&
+              : filters.status === "meeting"
+                ? Boolean(r.meetingBooked)
+                : r.status === filters.status)) &&
         (!filters.qualified ||
           filters.qualified === "any" ||
           (filters.qualified === "yes"

@@ -1,3 +1,4 @@
+import { recordMeeting } from "@/lib/scorecard/admin/meetings";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { createFunnelrClient, type FunnelrTag, type FunnelrUser } from "@/lib/funnelr/client";
 import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "@/lib/funnelr/nexubis-tags";
@@ -211,6 +212,15 @@ export async function handleCalWebhook(
 
   const email = attendeeEmail(event);
   if (!email) return jsonResult(400, { ok: false, error: "Missing attendee email." });
+
+  try {
+    const name = attendeeName(event);
+    await recordMeeting(email, {
+      event: event.triggerEvent === "BOOKING_CREATED" ? "created" : event.triggerEvent === "BOOKING_RESCHEDULED" ? "rescheduled" : "cancelled",
+      startTime: cleanString(event.payload?.startTime), bookedAt: new Date().toISOString(),
+      uid: cleanString(event.payload?.uid), attendeeName: [name.firstName, name.lastName].filter(Boolean).join(" "),
+    });
+  } catch { /* Admin booking history must never affect booking processing. */ }
 
   const client = options.client ?? createFunnelrClient();
   const dedupeKey = event.payload?.uid ? calWebhookDedupeKey(event.payload.uid, event.triggerEvent) : null;
