@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SameContact } from "./SameContact";
 import { readAdminNote } from "@/lib/scorecard/admin/notes";
 import { readAdminRunHistory } from "@/lib/scorecard/manual/rerun";
 import { prospectScores } from "@/lib/scorecard/result";
@@ -6,7 +7,12 @@ import { readShared } from "@/lib/scorecard/share";
 import { loadLeadsView } from "@/lib/scorecard/admin/data";
 import { readRunHistory } from "@/lib/scorecard/admin/run-history";
 import { readRecentScanLog } from "@/lib/scorecard/diagnostics";
-import { OUTCOME_LABELS, runWhy } from "@/lib/scorecard/admin/activity-view";
+import {
+  OUTCOME_LABELS,
+  runWhy,
+  runLabel,
+  linkRunToLead,
+} from "@/lib/scorecard/admin/activity-view";
 import { categoryLabel } from "@/lib/scorecard/rubric";
 import { saveLeadNote, attachLoom } from "@/app/audit/admin/actions";
 import { CopyLinkButton } from "./CopyLinkButton";
@@ -48,11 +54,13 @@ export async function LeadDetail({
   const reportSlug =
     row?.reportPath?.split("/").pop() || (!failed && report ? id : undefined);
   const history =
-    report && reportSlug ? await readRunHistory(reportSlug, report, manual ? "manual" : "visitor") : [];
+    report && reportSlug
+      ? await readRunHistory(reportSlug, report, manual ? "manual" : "visitor")
+      : [];
   const logs = (await readRecentScanLog(500)).filter(
     (r) =>
-      email &&
-      r.email?.toLowerCase() === email.toLowerCase() &&
+      row &&
+      linkRunToLead(r, view.allRows)?.leadPath === row.leadPath &&
       Date.parse(r.at) >= view.now - 30 * 86400000
   );
   const adminNote = !failed ? await readAdminNote(id) : null;
@@ -70,7 +78,7 @@ export async function LeadDetail({
     })),
     ...logs.map((r) => ({
       at: r.at,
-      text: `${OUTCOME_LABELS[r.outcome]}: ${runWhy(r)}`,
+      text: `${runLabel(r)}${runWhy(r) ? `: ${runWhy(r)}` : ""}`,
     })),
     ...(failure
       ? [
@@ -103,6 +111,7 @@ export async function LeadDetail({
             />
           </div>
           <h1>{name || company}</h1>
+          <SameContact contacts={row?.sameContacts || []} />
           <p>
             {company}{" "}
             <a
