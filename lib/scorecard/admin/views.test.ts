@@ -428,3 +428,31 @@ it("adds reciprocal same-contact links without merging companies or including te
     { company: "Live District", leadPath: "/audit/admin/a" },
   ]);
 });
+
+it("filters Funnelr problems using stored status without combining companies", () => {
+  const statuses = {
+    a: {
+      state: "failed" as const,
+      by: "browser" as const,
+      at,
+      attempts: 1,
+      history: [],
+    },
+  };
+  const view = buildLeadsView(
+    [lead],
+    [],
+    [],
+    { a: shared },
+    { status: "funnelr" },
+    now,
+    [],
+    { statuses }
+  );
+  expect(view.rows).toHaveLength(1);
+  expect(view.rows[0].funnelrStatus?.state).toBe("failed");
+  expect(
+    buildLeadsView([lead], [], [], { a: shared }, { status: "funnelr" }, now)
+      .rows
+  ).toHaveLength(0);
+});

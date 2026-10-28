@@ -14,13 +14,27 @@ export function LeadStatus({
     </span>
   );
 }
-export function Qualified({ decision }: { decision?: QualifiedAuditDecision }) {
+export function Qualified({
+  decision,
+  header = false,
+}: {
+  decision?: QualifiedAuditDecision;
+  header?: boolean;
+}) {
   return (
     <>
       <span
         className={`sc-admin-chip ${decision?.qualified ? "sc-admin-chip-yes" : ""}`}
       >
-        {decision ? (decision.qualified ? "Yes" : "No") : "Not read"}
+        {header
+          ? decision?.qualified
+            ? "Qualified"
+            : "Not qualified"
+          : decision
+            ? decision.qualified
+              ? "Yes"
+              : "No"
+            : "Not read"}
       </span>
       {decision && (
         <small className="sc-admin-subtext">{decision.reason}</small>

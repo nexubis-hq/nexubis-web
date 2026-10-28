@@ -1,6 +1,9 @@
+import { FunnelrStatus as FunnelrStatusRow } from "@/components/scorecard/admin/FunnelrStatus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, it, vi } from "vitest";
 import { mkdirSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
+import type { FunnelrStatus } from "./funnelr-status";
 import { buildLeadsView } from "./leads-view";
 import type { LeadRecord } from "../leads";
 import type { ScanRunLog } from "../diagnostics";
@@ -17,6 +20,7 @@ const state = vi.hoisted(() => ({
     manual: [];
     failed: [];
   },
+  status: null as FunnelrStatus | null,
   log: [] as ScanRunLog[],
 }));
 vi.mock("next/headers", () => ({
@@ -58,8 +62,17 @@ vi.mock("@/lib/scorecard/admin/notes", () => ({
 vi.mock("@/lib/scorecard/manual/rerun", () => ({
   readAdminRunHistory: async () => null,
 }));
-vi.mock("@/lib/scorecard/admin/run-history", () => ({
-  readRunHistory: async () => [],
+vi.mock("@/lib/scorecard/admin/run-history", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./run-history")>();
+  return {
+    ...actual,
+    readRunHistory: async (_slug: string, shared: SharedScorecard) =>
+      actual.derivedRunHistory(shared),
+  };
+});
+vi.mock("@/lib/scorecard/admin/funnelr-status", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./funnelr-status")>()),
+  readFunnelrStatus: async () => state.status,
 }));
 vi.mock("@/lib/scorecard/share", () => ({ readShared: async () => null }));
 vi.mock("@/app/audit/admin/actions", () => ({
@@ -105,6 +118,9 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
       {
         result: {
           ...structuredClone(result),
+          generatedAt: new Date(
+            Date.parse(lead.createdAt) + 3600000
+          ).toISOString(),
           meta: { ...result.meta, company: lead.company },
           verdict: { ...result.verdict, band: "wide" },
         },
@@ -173,16 +189,70 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   expect(leadsHtml).toContain("wide gap");
   const detailHtml = renderToStaticMarkup(await LeadDetail({ id: "live" }));
   expect(detailHtml).toContain("Same contact as");
+  expect(detailHtml).toContain("Not checked yet");
+  expect(detailHtml).toContain("Check Funnelr");
+  expect(detailHtml).toContain("First run by visitor (score not recorded)");
+  expect(detailHtml).toContain("Re-run (before history was kept)");
+  expect(detailHtml).toContain("SAST (admin)");
+  const header = detailHtml.slice(
+    detailHtml.indexOf("<header"),
+    detailHtml.indexOf("</header>")
+  );
+  expect(header).toContain("Not qualified");
+  expect(header).not.toContain(">No</span>");
+  expect(header.split(String.fromCharCode(183))).toHaveLength(3);
+  expect(
+    readFileSync("components/scorecard/admin/LeadDetail.tsx", "utf8")
+  ).toContain("&middot;");
+  state.status = {
+    at: new Date(now).toISOString(),
+    state: "partial",
+    by: "admin-check",
+    missing: ["report link"],
+    attempts: 1,
+    history: [],
+  };
+  const partialHtml = renderToStaticMarkup(await LeadDetail({ id: "live" }));
+  expect(partialHtml).toContain("Partly in Funnelr: report link");
+  expect(partialHtml).toContain("Retry sending to Funnelr");
+  state.status = { ...state.status!, state: "other-report" };
+  const otherHtml = renderToStaticMarkup(await LeadDetail({ id: "live" }));
+  expect(otherHtml).toContain("In Funnelr with another report");
+  expect(otherHtml).not.toContain("Retry sending to Funnelr");
+  const manualOtherHtml = renderToStaticMarkup(
+    FunnelrStatusRow({
+      status: state.status,
+      leadPath: "/audit/admin/live",
+      name: "Alex",
+      website: "example.com",
+      test: false,
+      manual: true,
+      hasReport: true,
+      email: "alex@example.com",
+    })
+  );
+  expect(manualOtherHtml).not.toContain("Send to Funnelr");
+  expect(manualOtherHtml).not.toContain("Retry sending to Funnelr");
+  state.view.rows[0].funnelrStatus = state.status;
+  const otherLeadsHtml = renderToStaticMarkup(
+    await LeadsPage({ searchParams: Promise.resolve({}) })
+  );
+  expect(otherLeadsHtml).not.toContain("Not in Funnelr");
+  expect(otherLeadsHtml).not.toContain("Funnelr failed");
+  state.view.rows[0].funnelrStatus = null;
+  state.status = null;
   expect(detailHtml).toContain('href="/audit/admin/collective"');
   const activityHtml = renderToStaticMarkup(
     await ActivityPage({ searchParams: Promise.resolve({}) })
   );
   expect(activityHtml).toContain("Same report shown again");
-  expect(activityHtml).toContain("1 repeat views not counted");
+  expect(activityHtml).toContain("1 repeat view not counted");
   expect(activityHtml).toContain(
     "Report ready: 12, Scan failed: 3, Took too long: 1"
   );
   expect(activityHtml).not.toContain(" ? ");
+  expect(activityHtml).toContain("Link to lead");
+  expect(activityHtml).toContain("Lead from the last 30 days");
   if (process.env.ADMIN_POLISH_FIXTURES === "1") {
     mkdirSync(".shipstudio/admin-polish-fixtures", { recursive: true });
     for (const [name, body] of Object.entries({
@@ -192,7 +262,7 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
     }))
       writeFileSync(
         `.shipstudio/admin-polish-fixtures/${name}.html`,
-        `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/styles.css"></head><body><main class="sc-admin">${body}</main></body></html>`
+        `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/styles.css"></head><body><main class="sc-admin">${body}</main></body></html>`
       );
   }
 });

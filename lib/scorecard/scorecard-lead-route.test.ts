@@ -3,9 +3,10 @@ import assert from "node:assert/strict";
 import { NextRequest } from "next/server";
 import { BRAND_NEXUBIS_TAG_NAME, SOURCE_SCORECARD_TAG_NAME, START_SCORECARD_SALES_TAG_NAME } from "@/lib/scorecard/lead-funnelr";
 
-const { readSharedMock, submitScorecardLeadToFunnelrMock } = vi.hoisted(() => ({
+const { readSharedMock, submitScorecardLeadToFunnelrMock, statusMock } = vi.hoisted(() => ({
   readSharedMock: vi.fn(),
   submitScorecardLeadToFunnelrMock: vi.fn(),
+  statusMock: vi.fn(),
 }));
 
 vi.mock("@/lib/scorecard/share", () => ({
@@ -19,6 +20,8 @@ vi.mock("@/lib/scorecard/lead-funnelr", async () => {
     submitScorecardLeadToFunnelr: submitScorecardLeadToFunnelrMock,
   };
 });
+
+vi.mock("@/lib/scorecard/admin/funnelr-status", () => ({ recordBrowserFunnelrResult: statusMock }));
 
 import { POST } from "@/app/api/leads/scorecard/route";
 
@@ -39,6 +42,7 @@ function payload(overrides: Record<string, unknown> = {}) {
 }
 
 beforeEach(() => {
+  statusMock.mockReset();
   readSharedMock.mockReset();
   submitScorecardLeadToFunnelrMock.mockReset();
   readSharedMock.mockResolvedValue({ result: { meta: { company: "Veltkamp Dosing" } } });
@@ -132,3 +136,18 @@ test("scorecard lead endpoint does not claim full success when required tag appl
   assert.equal(body.error, "Lead capture is temporarily unavailable.");
   assert.equal("tagsApplied" in body, false);
 });
+
+for (const ok of [true, false]) {
+  test(`status storage failures preserve the exact existing browser response (ok=${ok})`, async () => {
+    const result = ok ? { ok: true, tagsApplied: ["brand"], customFieldsUpdated: ["reportUrl"] } : { ok: false, error: "private error" };
+    submitScorecardLeadToFunnelrMock.mockResolvedValue(result);
+    const baseline = await POST(request(payload()));
+    const expected = ok ? '{"ok":true,"tagsApplied":["brand"],"customFieldsUpdated":["reportUrl"]}' : '{"ok":false,"error":"Lead capture is temporarily unavailable."}';
+    assert.equal(await baseline.text(), expected);
+    statusMock.mockRejectedValueOnce(new Error("KV unavailable"));
+    const failedSave = await POST(request(payload()));
+    assert.equal(await failedSave.text(), expected);
+    assert.equal(failedSave.status, baseline.status);
+    assert.deepEqual(Object.fromEntries(failedSave.headers), Object.fromEntries(baseline.headers));
+  });
+}

@@ -1,3 +1,9 @@
+import { FunnelrStatus } from "./FunnelrStatus";
+import {
+  readFunnelrStatus,
+  funnelrTimelineText,
+} from "@/lib/scorecard/admin/funnelr-status";
+import { isTestContact } from "@/lib/scorecard/admin/test-contacts";
 import Link from "next/link";
 import { SameContact } from "./SameContact";
 import { readAdminNote } from "@/lib/scorecard/admin/notes";
@@ -5,7 +11,10 @@ import { readAdminRunHistory } from "@/lib/scorecard/manual/rerun";
 import { prospectScores } from "@/lib/scorecard/result";
 import { readShared } from "@/lib/scorecard/share";
 import { loadLeadsView } from "@/lib/scorecard/admin/data";
-import { readRunHistory } from "@/lib/scorecard/admin/run-history";
+import {
+  readRunHistory,
+  reportRunCount,
+} from "@/lib/scorecard/admin/run-history";
 import { readRecentScanLog } from "@/lib/scorecard/diagnostics";
 import {
   OUTCOME_LABELS,
@@ -60,21 +69,36 @@ export async function LeadDetail({
   const logs = (await readRecentScanLog(500)).filter(
     (r) =>
       row &&
-      linkRunToLead(r, view.allRows)?.leadPath === row.leadPath &&
+      linkRunToLead(r, view.allRows, view.runLinks)?.leadPath ===
+        row.leadPath &&
       Date.parse(r.at) >= view.now - 30 * 86400000
   );
   const adminNote = !failed ? await readAdminNote(id) : null;
   const runSummary =
     report && reportSlug ? await readAdminRunHistory(reportSlug, report) : null;
+  const absoluteReportUrl = reportSlug
+    ? new URL(
+        `/audit/r/${reportSlug}`,
+        process.env.NEXT_PUBLIC_SITE_URL || "https://www.nexubis.io"
+      ).toString()
+    : undefined;
+  const funnelrStatus = await readFunnelrStatus(email, absoluteReportUrl).catch(
+    () => null
+  );
   const timeline = [
+    ...(funnelrStatus?.history || (funnelrStatus ? [funnelrStatus] : [])).map(
+      (entry) => ({ at: entry.at, text: funnelrTimelineText(entry) })
+    ),
     ...history.map((r, i) => ({
       at: r.at,
       text:
-        r.by === "manual" && r.kind === "first run"
-          ? "Manual audit made"
-          : r.kind === "first run"
-            ? "Report ready"
-            : `Audit re-run from ${r.by}: ${history[i + 1]?.score ?? "n/a"} -> ${r.score ?? "n/a"}`,
+        r.kind === "re-run (before history was kept)"
+          ? `Re-run (before history was kept): ${r.score ?? "n/a"}/100`
+          : r.by === "manual" && r.kind === "first run"
+            ? "Manual audit made"
+            : r.kind === "first run"
+              ? `First run by ${r.by}${r.score === null ? " (score not recorded)" : ""}`
+              : `Audit re-run from ${r.by}: ${history[i + 1]?.score ?? "n/a"} -> ${r.score ?? "n/a"}`,
     })),
     ...logs.map((r) => ({
       at: r.at,
@@ -107,13 +131,14 @@ export async function LeadDetail({
           <div className="sc-admin-badges">
             <LeadStatus status={row?.status || (manual ? "hand" : "ready")} />
             <Qualified
+              header
               decision={report?.qualifiedDecision || row?.qualifiedDecision}
             />
           </div>
           <h1>{name || company}</h1>
           <SameContact contacts={row?.sameContacts || []} />
           <p>
-            {company}{" "}
+            {company} &middot;{" "}
             <a
               href={/^https?:/.test(url) ? url : `https://${url}`}
               target="_blank"
@@ -121,7 +146,7 @@ export async function LeadDetail({
             >
               {row?.host || url}
             </a>{" "}
-            <a href={`mailto:${email}`}>{email}</a>
+            &middot; <a href={`mailto:${email}`}>{email}</a>
           </p>
         </div>
         <div className="sc-admin-ops">
@@ -155,6 +180,21 @@ export async function LeadDetail({
         <section className="sc-admin-card">
           <h2>Contact and source</h2>
           <dl className="sc-admin-facts">
+            <div>
+              <dt>Funnelr</dt>
+              <dd>
+                <FunnelrStatus
+                  status={funnelrStatus}
+                  leadPath={row?.leadPath || `/audit/admin/${id}`}
+                  name={name || company}
+                  website={url}
+                  email={email}
+                  test={isTestContact(email)}
+                  manual={row?.status === "hand" || Boolean(manual)}
+                  hasReport={Boolean(report)}
+                />
+              </dd>
+            </div>
             <div>
               <dt>First name</dt>
               <dd>{name || "not recorded"}</dd>
@@ -227,8 +267,8 @@ export async function LeadDetail({
                 <div>
                   <dt>Report runs</dt>
                   <dd>
-                    {Math.max(history.length, runSummary?.runCount || 1)} (up to
-                    50 recent runs kept)
+                    {reportRunCount(history, runSummary?.runCount || 1, report)}{" "}
+                    (up to 50 recent runs kept)
                   </dd>
                 </div>
                 <div>

@@ -1,3 +1,4 @@
+import { recordBrowserFunnelrResult } from "@/lib/scorecard/admin/funnelr-status";
 import { NextRequest, NextResponse } from "next/server";
 import { normalizeScorecardLeadInput, scorecardSlugFromReportUrl, submitScorecardLeadToFunnelr, type ScorecardLeadInput } from "@/lib/scorecard/lead-funnelr";
 import { readShared } from "@/lib/scorecard/share";
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
   };
 
   const result = await submitScorecardLeadToFunnelr(lead);
+  try { await recordBrowserFunnelrResult(lead, result); } catch { /* Admin status must never affect the browser response. */ }
   if (!result.ok) {
     console.error("[scorecard-lead] Funnelr integration failed:", result.error);
     return NextResponse.json({ ok: false, error: "Lead capture is temporarily unavailable." }, { status: 200 });

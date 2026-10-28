@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { SESSION_COOKIE, isValidSession } from "@/lib/scorecard/auth";
 import { LeadDetail } from "@/components/scorecard/admin/LeadDetail";
 export const dynamic = "force-dynamic";
+export const maxDuration = 300;
 export default async function FailedLeadPage({
   params,
 }: {

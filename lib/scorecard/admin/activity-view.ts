@@ -1,3 +1,4 @@
+import { runLinkId, type RunLinks } from "./run-links";
 import type { FunnelDayRow } from "@/lib/funnel/counter";
 import { adLabel, type FunnelSource } from "@/lib/funnel/steps";
 import type { ScanOutcome, ScanRunLog } from "../diagnostics";
@@ -36,9 +37,12 @@ export const runWhy = (run: ScanRunLog) => {
 };
 export function linkRunToLead(
   run: ScanRunLog,
-  rows: LeadRow[]
+  rows: LeadRow[],
+  links: RunLinks = {}
 ): LeadRow | undefined {
   if (!["success", "failed", "timeout"].includes(run.outcome)) return;
+  const explicit = links[runLinkId(run)];
+  if (explicit) return rows.find((row) => row.leadPath === explicit);
   if (run.slug) {
     const lead = rows.find(
       (row) => row.kind === "report" && row.id === run.slug
@@ -71,8 +75,12 @@ export function linkRunToLead(
     closest(candidates.filter((row) => inLeadWindow(run.at, row.firstSeen)))
   );
 }
-export function activityRun(run: ScanRunLog, rows: LeadRow[]) {
-  const lead = linkRunToLead(run, rows);
+export function activityRun(
+  run: ScanRunLog,
+  rows: LeadRow[],
+  links: RunLinks = {}
+) {
+  const lead = linkRunToLead(run, rows, links);
   return {
     ...run,
     lead,
@@ -91,12 +99,13 @@ export function buildActivityView(
   source: FunnelSource = "ad",
   showTests = false,
   now = Date.now(),
-  leads: LeadRow[] = []
+  leads: LeadRow[] = [],
+  links: RunLinks = {}
 ) {
   const today = dayOf(new Date(now).toISOString());
   const first = dayOf(new Date(now - (days - 1) * 86400000).toISOString());
   const allPeriodRuns = log
-    .map((run) => activityRun(run, leads))
+    .map((run) => activityRun(run, leads, links))
     .filter((r) => {
       const d = dayOf(r.at);
       return d >= first && d <= today && (showTests || !r.isTest);
@@ -140,3 +149,6 @@ export function buildActivityView(
     runs: periodRuns.sort((a, b) => b.at.localeCompare(a.at)),
   };
 }
+
+export const repeatViewsNote = (count: number) =>
+  `${count} repeat ${count === 1 ? "view" : "views"} not counted`;

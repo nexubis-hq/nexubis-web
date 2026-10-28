@@ -431,3 +431,25 @@ test("failed Last name mirror read-back returns a useful safe error after tags a
   assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.sourceScorecard}`));
   assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.triggerStartScorecardSales}`));
 });
+
+test("repair-only option preserves contact and report writes and skips only the sales trigger", async () => {
+  const c = client({ userId: 7, email: "mark@veltkamp-dosing.nl", currencyCode: "USD", isUnsubscribed: true });
+  const res = await submitScorecardLeadToFunnelr(lead(), { client: c, skipSalesTrigger: true });
+  assert.equal(res.ok, true);
+  assert.deepEqual(res.tagsApplied, [BRAND_NEXUBIS_TAG_NAME, SOURCE_SCORECARD_TAG_NAME]);
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.brand}`));
+  assert.ok(c.calls.includes(`add-tag:${NEXUBIS_TAG_IDS.sourceScorecard}`));
+  assert.ok(c.calls.includes("custom:1"));
+  assert.ok(c.calls.includes("custom-read:7"));
+  assert.ok(!c.calls.some((call) => call.includes(NEXUBIS_TAG_IDS.triggerStartScorecardSales)));
+  assertNoDirectRouting(c);
+});
+
+test("default and explicitly disabled repair option perform identical routing operations", async () => {
+  const normal = client(null);
+  const explicit = client(null);
+  const first = await submitScorecardLeadToFunnelr(lead(), { client: normal });
+  const second = await submitScorecardLeadToFunnelr(lead(), { client: explicit, skipSalesTrigger: false });
+  assert.deepEqual(first, second);
+  assert.deepEqual(normal.calls, explicit.calls);
+});

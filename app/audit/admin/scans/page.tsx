@@ -1,3 +1,5 @@
+import { RunLeadLink } from "@/components/scorecard/admin/RunLeadLink";
+import { runLinkId } from "@/lib/scorecard/admin/run-links";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -12,6 +14,7 @@ import {
   runSource,
   runLabel,
   isReplay,
+  repeatViewsNote,
 } from "@/lib/scorecard/admin/activity-view";
 import { loadLeadsView } from "@/lib/scorecard/admin/data";
 import { formatSast } from "@/components/scorecard/admin/date";
@@ -40,7 +43,8 @@ export default async function ActivityPage({
     source,
     showTests,
     leads.now,
-    leads.allRows
+    leads.allRows,
+    leads.runLinks
   );
   const periodLog = view.allPeriodRuns;
   const runs = periodLog.filter((r) =>
@@ -242,9 +246,7 @@ export default async function ActivityPage({
             </div>
           ))}
         </div>
-        <p className="sc-admin-dim">
-          {view.repeatViews} repeat views not counted
-        </p>
+        <p className="sc-admin-dim">{repeatViewsNote(view.repeatViews)}</p>
         <p className="sc-admin-dim">
           Tiles and funnel: {source === "ad" ? "from ads" : "other traffic"},
           last {days} days. Run filters below cover all traffic. Visited,
@@ -291,6 +293,18 @@ export default async function ActivityPage({
                       ) : (
                         "no lead"
                       )}
+                      {(r.outcome === "failed" || r.outcome === "timeout") &&
+                        (!lead || leads.runLinks?.[runLinkId(r)]) && (
+                          <RunLeadLink
+                            run={r}
+                            selected={leads.runLinks?.[runLinkId(r)]}
+                            leads={leads.allRows.filter(
+                              (lead) =>
+                                Date.parse(lead.firstSeen) >=
+                                leads.now - 30 * 86400000
+                            )}
+                          />
+                        )}
                     </td>
                     <td>{adLabel(r.ad) || "none recorded"}</td>
                     <td>{(r.ms / 1000).toFixed(1)}s</td>
