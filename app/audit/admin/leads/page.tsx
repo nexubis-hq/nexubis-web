@@ -1,3 +1,4 @@
+import { funnelrProblem } from "@/lib/scorecard/admin/funnelr-view";
 import Link from "next/link";
 import { SameContact } from "@/components/scorecard/admin/SameContact";
 import { cookies } from "next/headers";
@@ -141,9 +142,9 @@ export default async function LeadsPage({
                     </td>
                     <td>
                       <LeadStatus status={r.status} />
-                      {r.funnelrStatus && r.funnelrStatus.state !== "ok" && (
+                      {funnelrProblem(r.funnelrStatus) && (
                         <small className="sc-admin-subtext sc-admin-funnelr-problem">
-                          {r.funnelrStatus.state === "failed"
+                          {r.funnelrStatus?.state === "failed"
                             ? "Funnelr failed"
                             : "Not in Funnelr"}
                         </small>

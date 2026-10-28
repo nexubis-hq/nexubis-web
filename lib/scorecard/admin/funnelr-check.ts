@@ -5,13 +5,14 @@ import {
   NEXUBIS_LIST_IDS,
 } from "@/lib/funnelr/nexubis-tags";
 import {
+  scorecardSlugFromReportUrl,
   SCORECARD_REPORT_URL_FIELD_ID,
   SCORECARD_REPORT_URL_FIELD_KEY,
   SCORECARD_REPORT_URL_FIELD_NAME,
 } from "../lead-funnelr";
 
 export interface FunnelrCheck {
-  state: "ok" | "partial" | "missing";
+  state: "ok" | "partial" | "missing" | "other-report";
   missing: string[];
   triggerTag?: boolean;
   salesList?: boolean;
@@ -71,16 +72,37 @@ export async function checkFunnelrLead(
       field.formFieldName === SCORECARD_REPORT_URL_FIELD_NAME ||
       field.formFieldLabel === SCORECARD_REPORT_URL_FIELD_NAME
   );
+  const slugOf = (value: unknown): string | null => {
+    if (typeof value !== "string") return null;
+    try {
+      const url = new URL(value);
+      if (
+        !["http:", "https:"].includes(url.protocol) ||
+        url.hostname.replace(/^www\./, "") !== "nexubis.io"
+      )
+        return null;
+      return scorecardSlugFromReportUrl(value);
+    } catch {
+      return null;
+    }
+  };
+  const expectedSlug = slugOf(reportUrl);
+  const mirrorSlug = slugOf(contact.lastName);
+  const fieldSlug = slugOf(profile?.value ?? profile?.plainTextValue);
+  const otherReport = Boolean(
+    expectedSlug &&
+    [mirrorSlug, fieldSlug].some((slug) => slug && slug !== expectedSlug)
+  );
   const missing = [
     !brand && "Brand tag",
     !source && "Source tag",
-    (!reportUrl || contact.lastName !== reportUrl) &&
+    (!expectedSlug || mirrorSlug !== expectedSlug) &&
       "report link in Last name",
-    (!reportUrl || (profile?.value ?? profile?.plainTextValue) !== reportUrl) &&
+    (!expectedSlug || fieldSlug !== expectedSlug) &&
       "report link in Audit Report URL field",
   ].filter((item): item is string => Boolean(item));
   return {
-    state: missing.length ? "partial" : "ok",
+    state: otherReport ? "other-report" : missing.length ? "partial" : "ok",
     missing,
     triggerTag,
     salesList,

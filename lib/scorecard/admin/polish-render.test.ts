@@ -1,3 +1,4 @@
+import { FunnelrStatus as FunnelrStatusRow } from "@/components/scorecard/admin/FunnelrStatus";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, it, vi } from "vitest";
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -214,6 +215,31 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   const partialHtml = renderToStaticMarkup(await LeadDetail({ id: "live" }));
   expect(partialHtml).toContain("Partly in Funnelr: report link");
   expect(partialHtml).toContain("Retry sending to Funnelr");
+  state.status = { ...state.status!, state: "other-report" };
+  const otherHtml = renderToStaticMarkup(await LeadDetail({ id: "live" }));
+  expect(otherHtml).toContain("In Funnelr with another report");
+  expect(otherHtml).not.toContain("Retry sending to Funnelr");
+  const manualOtherHtml = renderToStaticMarkup(
+    FunnelrStatusRow({
+      status: state.status,
+      leadPath: "/audit/admin/live",
+      name: "Alex",
+      website: "example.com",
+      test: false,
+      manual: true,
+      hasReport: true,
+      email: "alex@example.com",
+    })
+  );
+  expect(manualOtherHtml).not.toContain("Send to Funnelr");
+  expect(manualOtherHtml).not.toContain("Retry sending to Funnelr");
+  state.view.rows[0].funnelrStatus = state.status;
+  const otherLeadsHtml = renderToStaticMarkup(
+    await LeadsPage({ searchParams: Promise.resolve({}) })
+  );
+  expect(otherLeadsHtml).not.toContain("Not in Funnelr");
+  expect(otherLeadsHtml).not.toContain("Funnelr failed");
+  state.view.rows[0].funnelrStatus = null;
   state.status = null;
   expect(detailHtml).toContain('href="/audit/admin/collective"');
   const activityHtml = renderToStaticMarkup(

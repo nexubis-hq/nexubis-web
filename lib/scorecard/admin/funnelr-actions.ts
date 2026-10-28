@@ -65,7 +65,11 @@ export async function performFunnelrAction(
       target.reportUrl || "",
       client
     );
-    if (mode === "check" || (before.state === "ok" && !startSales))
+    if (
+      mode === "check" ||
+      before.state === "other-report" ||
+      (before.state === "ok" && !startSales)
+    )
       result = before;
     else {
       const sent = await submitScorecardLeadToFunnelr(
@@ -88,7 +92,7 @@ export async function performFunnelrAction(
       );
       // A write can fail after taking effect; show the verified result when complete.
       result =
-        after.state === "ok" || sent.ok
+        after.state === "ok" || after.state === "other-report" || sent.ok
           ? after
           : { ...after, state: "failed", error: safeFunnelrError(sent.error) };
     }

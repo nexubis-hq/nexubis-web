@@ -13,7 +13,7 @@ export type FunnelrBy =
   | "admin-retry"
   | "admin-send";
 export interface FunnelrAttempt {
-  state: "ok" | "failed" | "partial" | "missing";
+  state: "ok" | "failed" | "partial" | "missing" | "other-report";
   at: string;
   by: FunnelrBy;
   error?: string;

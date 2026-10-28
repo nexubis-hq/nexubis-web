@@ -61,7 +61,7 @@ export function FunnelrStatus({
           website={website}
           test={test}
           hasReport={hasReport}
-          canSend={manual && hasReport}
+          canSend={manual && hasReport && status?.state !== "other-report"}
           canRetry={hasReport && funnelrProblem(status)}
         />
       )}

@@ -1,3 +1,4 @@
+import { SCORECARD_REPORT_URL_FIELD_ID } from "../lead-funnelr";
 import { createFunnelrClient } from "@/lib/funnelr/client";
 import { beforeEach, afterEach, expect, it, vi } from "vitest";
 import { funnelrFixture } from "./funnelr-test-fixture";
@@ -320,4 +321,65 @@ it("informational trigger and list read failures do not turn an otherwise valid 
   expect(
     (await checkFunnelrLead(target.email, target.reportUrl!, mock.client)).state
   ).toBe("ok");
+});
+
+it.each([
+  "https://nexubis.io/audit/r/abc23456",
+  "http://www.nexubis.io/audit/r/abc23456",
+  "http://nexubis.io/scorecard/r/abc23456",
+])(
+  "matches both stored report links by slug despite URL differences: %s",
+  async (reportUrl) => {
+    const mock = funnelrFixture({ reportUrl });
+    expect(
+      (await checkFunnelrLead(target.email, target.reportUrl!, mock.client))
+        .state
+    ).toBe("ok");
+    expect(mock.requests.every((request) => request.method === "GET")).toBe(
+      true
+    );
+  }
+);
+it.each(["mirror", "field", "both"])(
+  "a different slug in %s is other-report and never writes, even from an old Send form",
+  async (field) => {
+    const mock = funnelrFixture();
+    const otherUrl = "http://nexubis.io/audit/r/def23456";
+    if (field !== "field") mock.contact!.lastName = otherUrl;
+    if (field !== "mirror")
+      vi.spyOn(mock.client, "getContactCustomFields").mockResolvedValue([
+        { formFieldId: SCORECARD_REPORT_URL_FIELD_ID, value: otherUrl },
+      ]);
+    const checked = await checkFunnelrLead(
+      target.email,
+      target.reportUrl!,
+      mock.client
+    );
+    expect(checked.state).toBe("other-report");
+    expect(funnelrProblem({ ...checked, at: "", by: "admin-check" })).toBe(
+      false
+    );
+    expect(
+      (
+        await performFunnelrAction(
+          { ...target, manual: true },
+          "send",
+          "example",
+          true,
+          { client: mock.client }
+        )
+      ).state
+    ).toBe("other-report");
+    expect(mock.requests.every((request) => request.method === "GET")).toBe(
+      true
+    );
+  }
+);
+it("an unrelated domain with a report-shaped path is not a valid Nexubis report", async () => {
+  const mock = funnelrFixture({
+    reportUrl: "https://unrelated.example/audit/r/def23456",
+  });
+  expect(
+    (await checkFunnelrLead(target.email, target.reportUrl!, mock.client)).state
+  ).toBe("partial");
 });
