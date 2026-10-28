@@ -13,10 +13,14 @@ export async function AuditFeedback({
   error?: string;
   reason?: string;
 }) {
-  if (error && error !== "loom")
+  if (error)
     return (
       <div className="sc-admin-banner sc-admin-banner-error" role="alert">
-        {auditErrorMessage(error, reason)}
+        {error === "loom"
+          ? "That does not look like a Loom share URL."
+          : error === "confirm"
+            ? "The confirmation did not match. Nothing changed."
+            : auditErrorMessage(error, reason)}
       </div>
     );
   if (!successSlug) return null;

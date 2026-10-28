@@ -11,7 +11,13 @@ import type { VerdictBand } from "./scoring";
 export type LoomStatus = "none" | "selected" | "recorded" | "sent";
 export type WebhookStatus = "sent" | "failed" | "skipped";
 
+import type { AdSource } from "@/lib/funnel/steps";
+import type { QualifiedAuditDecision } from "./qualified-audit";
+
 export interface LeadRecord {
+  ad?: AdSource | null;
+  source?: "ad" | "other";
+  qualifiedDecision?: QualifiedAuditDecision;
   name: string;
   email: string;
   role: string;

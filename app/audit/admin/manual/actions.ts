@@ -1,5 +1,6 @@
 ﻿"use server";
 
+import { updateFailedLead } from "@/lib/scorecard/admin/failed-leads";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -29,6 +30,11 @@ export async function createNormalManualAudit(data: FormData): Promise<void> {
       contactName: field(data, "contactName"),
       contactEmail: field(data, "contactEmail"),
     });
+    if (field(data, "failedLead"))
+      await updateFailedLead(field(data, "failedLead"), {
+        linkedSlug: outcome.slug,
+      });
+    revalidatePath("/audit/admin/leads");
     destination = `/audit/admin/manual?created=${encodeURIComponent(outcome.slug)}`;
   } catch (err) {
     destination = errorDestination(err);
@@ -49,6 +55,11 @@ export async function createManualAudit(data: FormData): Promise<void> {
       contactName: field(data, "contactName"),
       contactEmail: field(data, "contactEmail"),
     });
+    if (field(data, "failedLead"))
+      await updateFailedLead(field(data, "failedLead"), {
+        linkedSlug: outcome.slug,
+      });
+    revalidatePath("/audit/admin/leads");
     destination = `/audit/admin/manual?created=${encodeURIComponent(outcome.slug)}`;
   } catch (err) {
     destination = errorDestination(err);
@@ -59,5 +70,5 @@ export async function createManualAudit(data: FormData): Promise<void> {
 
 // Compatibility for old forms; visible UI uses the shared action directly.
 export async function rerunManualAudit(data: FormData): Promise<void> {
-  return rerunAudit(field(data, "slug"), "manual");
+  return rerunAudit(field(data, "slug"), "manual", data);
 }

@@ -197,11 +197,23 @@ export async function promoteResult(prospectData: ProspectData, rawResult: Score
 // The run route awaits this before sending "done": ~1-2s at the end of a scan
 // that already ran for a minute, in exchange for never losing a lead to a
 // frozen serverless instance.
-export function buildLeadRecord(record: SharedScorecard, email: string, slug: string, firstName = ""): LeadRecord {
+export type LeadAdminContext = Pick<
+  LeadRecord,
+  "ad" | "source" | "qualifiedDecision"
+>;
+
+export function buildLeadRecord(
+  record: SharedScorecard,
+  email: string,
+  slug: string,
+  firstName = "",
+  adminContext: LeadAdminContext = {}
+): LeadRecord {
   const result = record.result;
   const overall = prospectScores(result)?.overall ?? 0;
   const now = new Date().toISOString();
   return {
+    ...adminContext,
     name: firstName.trim() || firstNameFromEmail(email.trim()) || "",
     email: email.trim(),
     role: "",
@@ -222,8 +234,15 @@ export function buildLeadRecord(record: SharedScorecard, email: string, slug: st
   };
 }
 
-export async function runLeadPlumbing(record: SharedScorecard, email: string, slug: string, origin: string, firstName = ""): Promise<LeadRecord> {
-  const lead = buildLeadRecord(record, email, slug, firstName);
+export async function runLeadPlumbing(
+  record: SharedScorecard,
+  email: string,
+  slug: string,
+  origin: string,
+  firstName = "",
+  adminContext: LeadAdminContext = {}
+): Promise<LeadRecord> {
+  const lead = buildLeadRecord(record, email, slug, firstName, adminContext);
   const absoluteReportUrl = `${origin}/audit/r/${slug}`;
   const adminUrl = `${origin}/audit/admin/${slug}`;
 
@@ -232,7 +251,10 @@ export async function runLeadPlumbing(record: SharedScorecard, email: string, sl
   try {
     await pushLead(lead);
   } catch (err) {
-    console.error("[scorecard-capture] lead persist failed:", err instanceof Error ? err.message : err);
+    console.error(
+      "[scorecard-capture] lead persist failed:",
+      err instanceof Error ? err.message : err
+    );
   }
 
   // 2. Team notification.

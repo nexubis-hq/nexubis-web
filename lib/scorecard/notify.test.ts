@@ -87,3 +87,13 @@ it("does not label missing competitors as a site-read failure", async () => {
   await notifyTeam(lead, report, admin, ["Auto-detect found no competitors to benchmark against"]);
   expect(vi.mocked(sendResendEmail).mock.calls[0][0].text).not.toContain("Site read: failed");
 });
+
+it("admin metadata leaves team and fallback email bytes and recipients unchanged",async()=>{
+ const {notifyTeam,sendFallbackEmail1}=await import("./notify");
+ await notifyTeam(lead,report,admin);await sendFallbackEmail1(lead,report);
+ const before=JSON.stringify(vi.mocked(sendResendEmail).mock.calls);
+ vi.mocked(sendResendEmail).mockClear();
+ const enriched={...lead,ad:{utm_source:"facebook"},source:"ad" as const,qualifiedDecision:{qualified:true,reason:"manufacturer"}};
+ await notifyTeam(enriched,report,admin);await sendFallbackEmail1(enriched,report);
+ expect(JSON.stringify(vi.mocked(sendResendEmail).mock.calls)).toBe(before);
+});

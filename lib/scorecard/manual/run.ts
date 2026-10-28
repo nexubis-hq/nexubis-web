@@ -1,4 +1,5 @@
-﻿import { randomUUID } from "node:crypto";
+import { appendRunHistory } from "../admin/run-history";
+import { randomUUID } from "node:crypto";
 import { validateUrl } from "../fetch-site";
 import { detectProductContext, pickCompetitorsFromSearch } from "../anthropic";
 import {
@@ -217,6 +218,7 @@ async function execute(
     const { prospect, result, qualifiedDecision, pastedText } = prepared;
     const now = new Date().toISOString();
     const slug = stored?.slug ?? (await uniqueSlug());
+    const previousReport = stored ? await readShared(slug) : null;
     if (stored) {
       if (!(await readShared(slug))) throw new ManualAuditError("failed");
       const updated = await patchShared(slug, {
@@ -259,6 +261,15 @@ async function execute(
       await getKv().lpush(INDEX_KEY, slug);
       await getKv().ltrim(INDEX_KEY, 0, 199);
     }
+    const historyReport = await readShared(slug);
+    if (historyReport)
+      await appendRunHistory(
+        slug,
+        historyReport,
+        "manual",
+        stored ? "re-run" : "first run",
+        previousReport ?? undefined
+      );
     return { slug, reportUrl: `/audit/r/${slug}` };
   } finally {
     if (timer) clearTimeout(timer);

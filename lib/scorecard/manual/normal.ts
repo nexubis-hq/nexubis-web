@@ -1,3 +1,4 @@
+import { appendRunHistory } from "../admin/run-history";
 import { detectProspectContext, applyDetection } from "../detect";
 import { validateUrl } from "../fetch-site";
 import { prospectFromRunInput } from "../run";
@@ -7,6 +8,7 @@ import { qualifiedAuditDecision } from "../qualified-audit";
 import { prospectScores } from "../result";
 import { getKv } from "../kv";
 import {
+  readShared,
   writeShared,
   uniqueSlug,
   patchShared,
@@ -112,6 +114,7 @@ async function execute(
   const prepared = await prepareNormalAuditWithDeadline(input);
   const { prospect, result, qualifiedDecision } = prepared;
   const slug = stored?.slug ?? (await uniqueSlug());
+  const previousReport = stored ? await readShared(slug) : null;
   const now = new Date().toISOString();
   if (stored) {
     const updated = await patchShared(slug, {
@@ -154,6 +157,15 @@ async function execute(
     await getKv().lpush("scorecard-manual-audits", slug);
     await getKv().ltrim("scorecard-manual-audits", 0, 199);
   }
+  const historyReport = await readShared(slug);
+  if (historyReport)
+    await appendRunHistory(
+      slug,
+      historyReport,
+      "manual",
+      stored ? "re-run" : "first run",
+      previousReport ?? undefined
+    );
   return { slug, reportUrl: `/audit/r/${slug}` };
 }
 

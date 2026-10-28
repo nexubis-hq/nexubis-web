@@ -165,3 +165,11 @@ test("lead updates preserve the slug and bump updatedAt", async () => {
   assert.equal(updated.loomStatus, "selected");
   assert.equal(updated.reportSlug, "slugupd1");
 });
+
+test("optional admin attribution is persisted by lead plumbing",async()=>{
+ const record=await makeSharedRecord();
+ const extra={ad:{utm_source:"facebook"},source:"ad" as const,qualifiedDecision:{qualified:true,reason:"manufacturer"}};
+ const lead=await runLeadPlumbing(record,captureEmail,"adminmeta","https://www.nexubis.io","Mark",extra);
+ assert.deepEqual({ad:lead.ad,source:lead.source,qualifiedDecision:lead.qualifiedDecision},extra);
+ assert.deepEqual((await readLead("adminmeta"))?.ad,extra.ad);
+});

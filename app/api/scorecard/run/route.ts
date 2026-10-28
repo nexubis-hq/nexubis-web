@@ -9,6 +9,8 @@
 //   {"type":"detected","oneLiner":"..."}   (what the site says they make)
 //   {"type":"done","reportUrl":"/audit/r/...","slug":"..."}
 //   {"type":"error","error":"...","reason":"invalid|limited|failed"}
+import { saveFailedLead } from "@/lib/scorecard/admin/failed-leads";
+import { appendRunHistory } from "@/lib/scorecard/admin/run-history";
 import { NextRequest } from "next/server";
 import { prospectFromRunInput, runInputIsValid, runIdFor, type RunInput } from "@/lib/scorecard/run";
 import { detectProspectContext, applyDetection } from "@/lib/scorecard/detect";
@@ -151,10 +153,17 @@ export async function POST(req: NextRequest) {
   let detectedFit: string | null = null;
   let qualifiedDecision: QualifiedAuditDecision | undefined;
   let outcomeLogged = false;
+  let logSlug: string | undefined;
+  let logReason: string | undefined;
+  let logSiteRead: string | undefined;
+  const logEmail = parsed?.capture.email.trim().toLowerCase();
+  const parsedEmail = logEmail && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(logEmail) ? logEmail : undefined;
   const logOutcome = async (outcome: ScanOutcome) => {
     if (outcomeLogged) return;
     outcomeLogged = true;
-    await recordScanOutcome({ outcome, ms: Date.now() - startedAt, host: targetHostForLog, fit: detectedFit, qualifiedDecision, ad: parsed?.adSource ?? null, at: new Date().toISOString() });
+    try {
+      await recordScanOutcome({ email: parsedEmail, slug: logSlug, reason: logReason?.slice(0, 300), siteRead: logSiteRead, source: parsed?.funnelSource, outcome, ms: Date.now() - startedAt, host: targetHostForLog, fit: detectedFit, qualifiedDecision, ad: parsed?.adSource ?? null, at: new Date().toISOString() });
+    } catch (error) { console.error("[scorecard-run] outcome log failed:", error); }
   };
 
   const stream = new ReadableStream<Uint8Array>({
@@ -170,6 +179,7 @@ export async function POST(req: NextRequest) {
         }
       }, 10_000);
       const fail = async (error: string, reason: ScanOutcome) => {
+        if (!logReason) logReason = error;
         send({ type: "error", error, reason });
         controller.close();
         await logOutcome(reason);
@@ -221,6 +231,7 @@ export async function POST(req: NextRequest) {
         // existing report back instantly and fires nothing twice.
         const existing = await readExistingCapture(email, runId);
         if (existing) {
+          logSlug = existing;
           send({ type: "done", reportUrl: `/audit/r/${existing}`, slug: existing });
           controller.close();
           await logOutcome("success");
@@ -248,6 +259,7 @@ export async function POST(req: NextRequest) {
                 // best-effort; the message still works without the link
               }
             }
+            logReason = LIMIT_MESSAGES[decision.reason] ?? LIMIT_MESSAGES.global;
             send({
               type: "error",
               error: LIMIT_MESSAGES[decision.reason] ?? LIMIT_MESSAGES.global,
@@ -276,6 +288,10 @@ export async function POST(req: NextRequest) {
               const detection = await detectProspectContext(prospect);
               qualifiedDecision = qualifiedAuditDecision(detection);
               detectionFlags = detection.flags;
+              logSiteRead = detectionFlags.flatMap((flag) => {
+                const match = flag.match(/^Auto-detect (?:could not read the site|of product and competitors failed) \(([\s\S]*)\)$/);
+                return match ? [match[1]] : [];
+              }).join("; ").slice(0, 300) || undefined;
               detectedFit = detection.industryFit;
               // Reserve the report's audit ID as soon as the existing read is
               // available. Only this fresh-run stream signals qualification;
@@ -310,7 +326,7 @@ export async function POST(req: NextRequest) {
               const promoted = await promoteResult(enriched, result, email, firstName, auditId, qualifiedDecision);
               await markCaptured(email, runId, promoted.slug);
               try {
-                await runLeadPlumbing(promoted.record, email, promoted.slug, originOf(req), firstName);
+                await runLeadPlumbing(promoted.record, email, promoted.slug, originOf(req), firstName, { ad: parsed.adSource, source: parsed.funnelSource, qualifiedDecision });
               } catch (plumbErr) {
                 console.error("[scorecard-run] lead plumbing failed:", plumbErr instanceof Error ? plumbErr.message : plumbErr);
               }
@@ -327,18 +343,29 @@ export async function POST(req: NextRequest) {
             // best-effort
           }
 
+          logSlug = outcome.slug;
           send({ type: "done", reportUrl: outcome.reportUrl, slug: outcome.slug });
           controller.close();
           await logOutcome("success");
+          // Log after the terminal event, outside generation and lead plumbing.
+          try { await appendRunHistory(outcome.slug, outcome.record, "visitor", "first run"); }
+          catch (error) { console.error("[scorecard-run] run history failed:", error); }
         } catch (err) {
           // Failed or timed out AFTER a valid email capture: the lead goes to
           // the team for a manual run, and the visitor hears exactly that.
           const detail = err instanceof DeadlineError ? "generation exceeded the deadline" : err instanceof Error ? err.message : String(err);
           console.error("[scorecard-run] failed after capture:", detail);
           await notifyFailedScan(email, prospect.url, detail, detectionFlags).catch(() => {});
+          logReason = detail;
           await fail(FAILED_SCAN_MESSAGE, err instanceof DeadlineError ? "timeout" : "failed");
+          try {
+            await saveFailedLead({ at: new Date().toISOString(), firstName, email, url: prospect.url, host: targetHostForLog,
+              outcome: err instanceof DeadlineError ? "timeout" : "failed", reason: detail.slice(0, 300), siteRead: logSiteRead ?? "",
+              ad: parsed.adSource, source: parsed.funnelSource, qualifiedDecision });
+          } catch (error) { console.error("[scorecard-run] failed lead log failed:", error); }
         }
       } catch (err) {
+        logReason = err instanceof Error ? err.message : String(err);
         console.error("[scorecard-run] failed:", err instanceof Error ? err.message : err);
         await fail("The check could not finish this time. Nothing is broken on your side; give it another try in a few minutes.", "failed");
       } finally {
