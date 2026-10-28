@@ -1,8 +1,10 @@
-import { runLinkId, type RunLinks } from "./run-links";
+import { type RunLinks } from "./run-links";
 import type { FunnelDayRow } from "@/lib/funnel/counter";
 import { adLabel, type FunnelSource } from "@/lib/funnel/steps";
 import type { ScanOutcome, ScanRunLog } from "../diagnostics";
-import { inLeadWindow, normalHost, type LeadRow } from "./leads-view";
+import type { LeadRow } from "./leads-view";
+import { isReplay, linkRunToLead } from "./run-matching";
+export { isReplay, linkRunToLead } from "./run-matching";
 import { isTestContact } from "./test-contacts";
 export const OUTCOME_LABELS: Record<ScanOutcome, string> = {
   success: "Report ready",
@@ -12,8 +14,6 @@ export const OUTCOME_LABELS: Record<ScanOutcome, string> = {
   limited: "Rate limit hit",
   "out-of-scope": "Rejected (old rule)",
 };
-export const isReplay = (run: ScanRunLog) =>
-  run.outcome === "success" && (run.replay ?? run.ms < 2000);
 export const runLabel = (run: ScanRunLog) =>
   isReplay(run) ? "Same report shown again" : OUTCOME_LABELS[run.outcome];
 export const runWhy = (run: ScanRunLog) => {
@@ -35,46 +35,6 @@ export const runWhy = (run: ScanRunLog) => {
       : "")
   );
 };
-export function linkRunToLead(
-  run: ScanRunLog,
-  rows: LeadRow[],
-  links: RunLinks = {}
-): LeadRow | undefined {
-  if (!["success", "failed", "timeout"].includes(run.outcome)) return;
-  const explicit = links[runLinkId(run)];
-  if (explicit) return rows.find((row) => row.leadPath === explicit);
-  if (run.slug) {
-    const lead = rows.find(
-      (row) => row.kind === "report" && row.id === run.slug
-    );
-    if (lead) return lead;
-  }
-  const host = normalHost(run.host || "");
-  if (!host) return;
-  // An explicit email must never inherit a different person's test status or link.
-  const candidates = rows.filter(
-    (row) =>
-      row.host === host &&
-      (!run.email?.trim() ||
-        row.email.trim().toLowerCase() === run.email.trim().toLowerCase())
-  );
-  const closest = (matches: LeadRow[]) =>
-    matches.sort(
-      (a, b) =>
-        Math.abs(Date.parse(a.firstSeen) - Date.parse(run.at)) -
-        Math.abs(Date.parse(b.firstSeen) - Date.parse(run.at))
-    )[0];
-  return (
-    closest(
-      candidates.filter(
-        (row) =>
-          row.kind === "failed" &&
-          Math.abs(Date.parse(row.firstSeen) - Date.parse(run.at)) <= 2 * 60000
-      )
-    ) ||
-    closest(candidates.filter((row) => inLeadWindow(run.at, row.firstSeen)))
-  );
-}
 export function activityRun(
   run: ScanRunLog,
   rows: LeadRow[],

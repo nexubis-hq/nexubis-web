@@ -1,6 +1,23 @@
 "use client";
+import { useRef, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 export function LeadsFilters({ testCount }: { testCount: number }) {
+  const panel = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const outside = (event: PointerEvent) => {
+      if (panel.current && !panel.current.contains(event.target as Node))
+        panel.current.open = false;
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && panel.current) panel.current.open = false;
+    };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", escape);
+    };
+  }, []);
   const router = useRouter();
   const path = usePathname();
   const params = useSearchParams();
@@ -11,7 +28,7 @@ export function LeadsFilters({ testCount }: { testCount: number }) {
     router.push(`${path}?${next}`);
   };
   return (
-    <details className="sc-admin-filterpanel">
+    <details ref={panel} className="sc-admin-filterpanel">
       <summary className="btn btn-secondary">Filters</summary>
       <div className="sc-admin-filterfields">
         {(
@@ -23,6 +40,7 @@ export function LeadsFilters({ testCount }: { testCount: number }) {
                 ["all", "All"],
                 ["action", "Needs action"],
                 ["funnelr", "Funnelr problem"],
+                ["meeting", "Meeting booked"],
                 ["ready", "Report ready"],
                 ["failed", "Scan failed"],
                 ["hand", "Made by hand"],
