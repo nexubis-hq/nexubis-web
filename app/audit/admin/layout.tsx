@@ -10,10 +10,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <main className="sc-admin">
-      <nav className="sc-topbar" aria-label="Admin">
+      <nav className="sc-topbar sc-admin-topbar" aria-label="Admin">
         <Link href="/audit/admin/leads" aria-label="Audit admin home">
           <NexubisLogo className="sc-topbar-logo" />
         </Link>

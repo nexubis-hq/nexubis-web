@@ -6,12 +6,17 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { SESSION_COOKIE, expectedSessionToken, isValidSession, passwordMatches, adminConfigured } from "@/lib/scorecard/auth";
+import {
+  SESSION_COOKIE,
+  expectedSessionToken,
+  isValidSession,
+  passwordMatches,
+  adminConfigured,
+} from "@/lib/scorecard/auth";
 import { updateLead, type LoomStatus } from "@/lib/scorecard/leads";
-import { patchShared, readShared } from "@/lib/scorecard/share";
-import { generateScorecard } from "@/lib/scorecard/generate";
-import { detectProspectContext, applyDetection } from "@/lib/scorecard/detect";
-import { qualifiedAuditDecision } from "@/lib/scorecard/qualified-audit";
+import { patchShared } from "@/lib/scorecard/share";
+import { rerunStoredAudit } from "@/lib/scorecard/manual/rerun";
+import { auditErrorQuery } from "@/lib/scorecard/manual/feedback";
 
 const SESSION_TTL_S = 12 * 60 * 60;
 
@@ -75,7 +80,10 @@ export async function attachLoom(formData: FormData): Promise<void> {
   const raw = String(formData.get("loomUrl") ?? "").trim();
   if (!slug) return;
   const loomUrl = raw.length === 0 ? null : raw;
-  if (loomUrl && !/^https:\/\/(www\.)?loom\.com\/(share|embed)\/[a-zA-Z0-9]+/.test(loomUrl)) {
+  if (
+    loomUrl &&
+    !/^https:\/\/(www\.)?loom\.com\/(share|embed)\/[a-zA-Z0-9]+/.test(loomUrl)
+  ) {
     redirect(`/audit/admin/${slug}?error=loom`);
   }
   await patchShared(slug, { loomUrl });
@@ -84,29 +92,31 @@ export async function attachLoom(formData: FormData): Promise<void> {
   revalidatePath(`/audit/r/${slug}`);
 }
 
-// Re-read and regenerate in place. No capture, notification or event plumbing
-// runs here; the existing report link and contact details stay intact.
-export async function regenerateReport(formData: FormData): Promise<void> {
+// Both admin pages call this action. Return destinations are a fixed enum,
+// never a caller-controlled URL.
+export async function rerunAudit(
+  slug: string,
+  destination: "manual" | "report" = "report"
+): Promise<void> {
   await requireSession();
-  const slug = String(formData.get("slug") ?? "");
-  if (!slug) return;
-  const shared = await readShared(slug);
-  if (!shared) return;
-  const detection = await detectProspectContext(shared.prospectData, { fresh: true });
-  const prospectData = {
-    ...applyDetection(shared.prospectData, detection),
-    fingerprint: detection.fingerprint ?? undefined,
-  };
-  const qualifiedDecision = qualifiedAuditDecision(detection);
-  const { result } = await generateScorecard(prospectData, { fresh: true });
-  // Keep the unlocked contact fields; the regenerated result starts blank.
-  const merged = {
-    ...result,
-    flags: [...new Set([...result.flags, ...detection.flags])],
-    meta: { ...result.meta, contactName: shared.result.meta.contactName, role: shared.result.meta.role },
-    routing: { ...result.routing, roleSeniority: shared.result.routing.roleSeniority },
-  };
-  await patchShared(slug, { prospectData, result: merged, qualifiedDecision });
+  const base =
+    destination === "manual"
+      ? "/audit/admin/manual"
+      : `/audit/admin/${encodeURIComponent(slug)}`;
+  let location: string;
+  try {
+    await rerunStoredAudit(slug);
+    location = `${base}?updated=${encodeURIComponent(slug)}`;
+  } catch (err) {
+    location = `${base}?${auditErrorQuery(err)}`;
+  }
+  revalidatePath("/audit/admin/manual");
   revalidatePath(`/audit/admin/${slug}`);
   revalidatePath(`/audit/r/${slug}`);
+  redirect(location);
+}
+
+// Compatibility for already-rendered forms: no second implementation.
+export async function regenerateReport(formData: FormData): Promise<void> {
+  return rerunAudit(String(formData.get("slug") ?? ""));
 }

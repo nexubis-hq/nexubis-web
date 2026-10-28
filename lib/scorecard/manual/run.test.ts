@@ -433,3 +433,20 @@ it("runs the real generator with manual evidence, preserving unassessable checks
     expect(fn).toHaveBeenCalledTimes(1);
   assertNoSideEffects();
 });
+
+it("the shared admin re-run entry point keeps a legacy paste record on the paste-only path", async () => {
+  const { slug } = await runManualAudit(input);
+  const { rerunStoredAudit } = await import("./rerun");
+  await rerunStoredAudit(slug);
+  for (const fn of [fetchSite, captureFirstImpression, runPageSpeed]) {
+    expect(fn).toHaveBeenCalledTimes(2);
+    for (const call of vi.mocked(fn).mock.calls)
+      expect(call[0]).toBe("https://rival.example");
+  }
+  expect(await readManualAudit(slug)).toMatchObject({
+    runCount: 2,
+    lastRunAt: expect.any(String),
+    pastedText: cleanPastedText(paste),
+  });
+  assertNoSideEffects();
+});

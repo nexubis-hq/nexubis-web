@@ -6,6 +6,8 @@ import { listLeads, type LeadRecord } from "@/lib/scorecard/leads";
 import { categoryLabel, type CategoryKey } from "@/lib/scorecard/rubric";
 import { setLoomStatus } from "../actions";
 
+import { formatSast } from "@/components/scorecard/admin/date";
+
 export const dynamic = "force-dynamic";
 
 // The weekly Loom selection surface. Filters by verdict band and role; the
@@ -14,7 +16,13 @@ export const dynamic = "force-dynamic";
 // Funnelr stays the CRM source of truth; this is the working view.
 
 const VERDICTS = ["wide", "visible", "narrow"] as const;
-const ROLES = ["Marketing manager", "Marketing director", "Brand or comms manager", "CEO or MD", "Other"] as const;
+const ROLES = [
+  "Marketing manager",
+  "Marketing director",
+  "Brand or comms manager",
+  "CEO or MD",
+  "Other",
+] as const;
 
 function fitScore(lead: LeadRecord): number {
   let score = 0;
@@ -37,10 +45,13 @@ export default async function LeadsPage({
   const loomView = view === "loom";
 
   let leads = await listLeads();
-  if (verdict && (VERDICTS as readonly string[]).includes(verdict)) leads = leads.filter((l) => l.verdict === verdict);
+  if (verdict && (VERDICTS as readonly string[]).includes(verdict))
+    leads = leads.filter((l) => l.verdict === verdict);
   if (role) leads = leads.filter((l) => l.role === role);
   if (loomView) {
-    leads = leads.filter((l) => l.routing.loomCandidate).sort((a, b) => fitScore(b) - fitScore(a));
+    leads = leads
+      .filter((l) => l.routing.loomCandidate)
+      .sort((a, b) => fitScore(b) - fitScore(a));
   }
 
   const filterHref = (params: Record<string, string | undefined>) => {
@@ -56,40 +67,74 @@ export default async function LeadsPage({
     <section className="section">
       <div className="site-container">
         <header className="sc-admin-head">
-          <h1>Leads</h1>
+          <div>
+            <h1>Leads</h1>
+            <p className="sc-admin-description">
+              Review audit leads, prioritise walkthroughs and keep track of
+              follow-up.
+            </p>
+          </div>
           <div className="sc-admin-filters">
             <span>Verdict:</span>
-            <Link href={filterHref({ verdict: undefined })} className={!verdict ? "is-active" : undefined}>
+            <Link
+              href={filterHref({ verdict: undefined })}
+              className={!verdict ? "is-active" : undefined}
+            >
               all
             </Link>
             {VERDICTS.map((v) => (
-              <Link key={v} href={filterHref({ verdict: v })} className={verdict === v ? "is-active" : undefined}>
+              <Link
+                key={v}
+                href={filterHref({ verdict: v })}
+                className={verdict === v ? "is-active" : undefined}
+              >
                 {v}
               </Link>
             ))}
             <span>Role:</span>
-            <Link href={filterHref({ role: undefined })} className={!role ? "is-active" : undefined}>
+            <Link
+              href={filterHref({ role: undefined })}
+              className={!role ? "is-active" : undefined}
+            >
               all
             </Link>
             {ROLES.map((r) => (
-              <Link key={r} href={filterHref({ role: r })} className={role === r ? "is-active" : undefined}>
+              <Link
+                key={r}
+                href={filterHref({ role: r })}
+                className={role === r ? "is-active" : undefined}
+              >
                 {r}
               </Link>
             ))}
             <span>View:</span>
-            <Link href={filterHref({ view: undefined })} className={!loomView ? "is-active" : undefined}>
+            <Link
+              href={filterHref({ view: undefined })}
+              className={!loomView ? "is-active" : undefined}
+            >
               newest
             </Link>
-            <Link href={filterHref({ view: "loom" })} className={loomView ? "is-active" : undefined}>
+            <Link
+              href={filterHref({ view: "loom" })}
+              className={loomView ? "is-active" : undefined}
+            >
               Loom candidates
             </Link>
           </div>
         </header>
 
         {leads.length === 0 ? (
-          <p className="sc-admin-empty">No leads {verdict || role || loomView ? "match these filters" : "yet"}.</p>
+          <p className="sc-admin-empty">
+            No leads{" "}
+            {verdict || role || loomView ? "match these filters" : "yet"}.
+          </p>
         ) : (
-          <div className="sc-admin-tablewrap">
+          <div
+            className="sc-admin-card sc-admin-tablewrap"
+            role="region"
+            aria-label="Leads"
+            tabIndex={0}
+          >
             <table className="sc-admin-table">
               <thead>
                 <tr>
@@ -108,10 +153,19 @@ export default async function LeadsPage({
               </thead>
               <tbody>
                 {leads.map((l) => (
-                  <tr key={l.reportSlug} className={loomView && fitScore(l) >= 5 ? "sc-row-hot" : undefined}>
+                  <tr
+                    key={l.reportSlug}
+                    className={
+                      loomView && fitScore(l) >= 5 ? "sc-row-hot" : undefined
+                    }
+                  >
                     <td>
-                      <Link href={`/audit/admin/${l.reportSlug}`}>{l.company}</Link>
-                      {l.note ? <span className="sc-admin-notedot" title={l.note} /> : null}
+                      <Link href={`/audit/admin/${l.reportSlug}`}>
+                        {l.company}
+                      </Link>
+                      {l.note ? (
+                        <span className="sc-admin-notedot" title={l.note} />
+                      ) : null}
                     </td>
                     <td>
                       {l.name}
@@ -123,15 +177,36 @@ export default async function LeadsPage({
                     <td>{l.role}</td>
                     <td className="sc-admin-score">{l.credibilityScore}</td>
                     <td>
-                      <span className={`sc-admin-band sc-admin-band-${l.verdict}`}>{l.verdict}</span>
+                      <span
+                        className={`sc-admin-band sc-admin-band-${l.verdict}`}
+                      >
+                        {l.verdict}
+                      </span>
                     </td>
-                    <td>{l.firstFixCategory ? categoryLabel(l.firstFixCategory as CategoryKey) : "n/a"}</td>
-                    <td className="sc-admin-dim">{l.competitors.map((c) => c.name).join(", ")}</td>
                     <td>
-                      <span className={l.webhookStatus === "failed" ? "sc-admin-warn" : "sc-admin-dim"}>{l.webhookStatus}</span>
+                      {l.firstFixCategory
+                        ? categoryLabel(l.firstFixCategory as CategoryKey)
+                        : "n/a"}
+                    </td>
+                    <td className="sc-admin-dim">
+                      {l.competitors.map((c) => c.name).join(", ")}
                     </td>
                     <td>
-                      <form action={setLoomStatus} className="sc-admin-inlineform">
+                      <span
+                        className={
+                          l.webhookStatus === "failed"
+                            ? "sc-admin-warn"
+                            : "sc-admin-dim"
+                        }
+                      >
+                        {l.webhookStatus}
+                      </span>
+                    </td>
+                    <td>
+                      <form
+                        action={setLoomStatus}
+                        className="sc-admin-inlineform"
+                      >
                         <input type="hidden" name="slug" value={l.reportSlug} />
                         <select name="loomStatus" defaultValue={l.loomStatus}>
                           <option value="none">none</option>
@@ -142,7 +217,7 @@ export default async function LeadsPage({
                         <button type="submit">Save</button>
                       </form>
                     </td>
-                    <td className="sc-admin-dim">{l.createdAt.slice(0, 10)}</td>
+                    <td className="sc-admin-dim">{formatSast(l.createdAt)}</td>
                     <td>
                       <Link href={`/audit/r/${l.reportSlug}`}>report</Link>
                     </td>
