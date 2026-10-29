@@ -208,11 +208,14 @@ it.each([false, true])(
     expect(header).not.toContain("x.com");
     expect(header.match(/not found/g)).toHaveLength(found ? 1 : 2);
     expect(
-      html.includes(
-        "No LinkedIn page found. See Socials under Contact and source."
-      )
+      html.includes("No LinkedIn page found. See Socials under Contact.")
     ).toBe(!found);
     const row = html.slice(html.indexOf("<dt>Socials"), html.indexOf("</dl>"));
+    const $ = load(html);
+    expect($("dl dd").text()).toBe(
+      "Facebook \u2197  Instagram \u2197  X \u2197"
+    );
+    expect($("dl dd small")).toHaveLength(0);
     expect(row.indexOf("Facebook")).toBeLessThan(row.indexOf("Instagram"));
     expect(row.indexOf("Instagram")).toBeLessThan(row.indexOf(">X"));
   }

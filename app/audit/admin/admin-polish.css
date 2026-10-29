@@ -225,10 +225,17 @@
   min-width: 220px;
 }
 
-.sc-admin-socials {
+.sc-admin .sc-admin-detail-stack {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+  flex-direction: column;
+  gap: var(--s-2);
+  min-width: 0;
+}
+.sc-admin .sc-admin-socials {
+  white-space: pre-wrap;
+}
+.sc-admin .sc-admin-socials > span {
+  margin-right: 0;
 }
 .sc-admin-not-found {
   font-size: 0.7rem;

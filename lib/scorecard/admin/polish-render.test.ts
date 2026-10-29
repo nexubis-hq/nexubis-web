@@ -1,3 +1,4 @@
+import { load } from "cheerio";
 import type { LeadProfile } from "./profiles";
 import type { MeetingEvent } from "./meetings";
 import { FunnelrStatus as FunnelrStatusRow } from "@/components/scorecard/admin/FunnelrStatus";
@@ -216,7 +217,9 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
     detailHtml.indexOf("<header"),
     detailHtml.indexOf("</header>")
   );
-  expect(header).toContain("Not qualified");
+  expect(header).not.toContain("qualified");
+  expect(header).not.toContain("qualification explanation");
+  expect(header).toContain("Call not booked");
   expect(header).not.toContain(">No</span>");
   expect(header).not.toContain("Website:");
   expect(header).toContain("first seen 28 Oct (today)");
@@ -234,9 +237,24 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
     header.indexOf("Copy report link")
   );
   const contact = detailHtml.slice(
-    detailHtml.indexOf("<h2>Contact and source"),
+    detailHtml.indexOf("<h2>Contact"),
     detailHtml.indexOf("<h2>Audit")
   );
+  const $contact = load(contact);
+  expect(
+    $contact("dt")
+      .map((_, el) => $contact(el).text())
+      .get()
+  ).toEqual([
+    "First name",
+    "Last name",
+    "Role",
+    "Email",
+    "Company",
+    "Makes",
+    "Socials",
+  ]);
+  expect(detailHtml).not.toContain("Contact and source");
   expect(contact).not.toContain("<dt>Website");
   expect(contact).not.toContain("<dt>Funnelr");
   const follow = detailHtml.slice(
@@ -392,3 +410,176 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
       );
   }
 });
+
+it.each([
+  {
+    label: "upcoming",
+    events: [
+      {
+        event: "created",
+        startTime: "2026-10-29T08:05:00Z",
+        bookedAt: "2026-10-28T11:00:00Z",
+        uid: "call",
+      },
+    ],
+    expected: "Call booked 29 Oct 10:05",
+    green: true,
+  },
+  {
+    label: "past",
+    events: [
+      {
+        event: "created",
+        startTime: "2026-10-27T08:05:00Z",
+        bookedAt: "2026-10-26T11:00:00Z",
+        uid: "call",
+      },
+    ],
+    expected: "Call was 27 Oct",
+    green: false,
+  },
+  { label: "none", events: [], expected: "Call not booked", green: false },
+  {
+    label: "cancelled only",
+    events: [
+      {
+        event: "cancelled",
+        startTime: "2026-10-29T08:05:00Z",
+        bookedAt: "2026-10-28T11:00:00Z",
+        uid: "call",
+      },
+    ],
+    expected: "Call not booked",
+    green: false,
+  },
+  {
+    label: "cancelled booking with creation history",
+    events: [
+      {
+        event: "created",
+        startTime: "2026-10-29T08:05:00Z",
+        bookedAt: "2026-10-28T10:00:00Z",
+        uid: "call",
+      },
+      {
+        event: "cancelled",
+        startTime: "2026-10-29T08:05:00Z",
+        bookedAt: "2026-10-28T11:00:00Z",
+        uid: "call",
+      },
+    ],
+    expected: "Call not booked",
+    green: false,
+  },
+  {
+    label: "most recent active booking despite later cancellation",
+    events: [
+      {
+        event: "created",
+        startTime: "2026-10-30T08:05:00Z",
+        bookedAt: "2026-10-28T09:00:00Z",
+        uid: "older",
+      },
+      {
+        event: "rescheduled",
+        startTime: "2026-10-29T08:05:00Z",
+        bookedAt: "2026-10-28T10:00:00Z",
+        uid: "active",
+      },
+      {
+        event: "cancelled",
+        startTime: "2026-10-31T08:05:00Z",
+        bookedAt: "2026-10-28T11:00:00Z",
+        uid: "cancelled",
+      },
+    ],
+    expected: "Call booked 29 Oct 10:05",
+    green: true,
+  },
+])(
+  "renders $label call pill and keeps Qualified in Source after Audit",
+  async ({ events, expected, green }) => {
+    const lead = {
+      reportSlug: "source-layout",
+      name: "Alex",
+      email: "alex@example.com",
+      company: "Example",
+      url: "example.com",
+      createdAt: "2026-10-28T10:00:00Z",
+      ad: { utm_source: "ig", utm_content: "AD2_A_NL_NEW - CLEAN" },
+    } as LeadRecord;
+    const report = {
+      result: structuredClone(fixture) as unknown as SharedScorecard["result"],
+      loomUrl: null,
+      lastEditedAt: lead.createdAt,
+      prospectData: {
+        url: lead.url,
+        company: lead.company,
+        name: lead.name,
+        role: "",
+        productOneLiner: "",
+        competitors: [],
+      },
+      createdAt: lead.createdAt,
+      expiresAt: "2027-01-01T00:00:00Z",
+      qualifiedDecision: { qualified: false, reason: "Services company" },
+    } as SharedScorecard;
+    const now = Date.parse("2026-10-28T12:00:00Z");
+    state.view = {
+      ...buildLeadsView([lead], [], [], { "source-layout": report }, {}, now),
+      now,
+      leads: [lead],
+      manual: [],
+      failed: [],
+      reports: { "source-layout": report },
+      meetings: {
+        [lead.email]: events.map((event) => ({
+          ...event,
+          attendeeName: "Alex",
+        })) as MeetingEvent[],
+      },
+    };
+    state.profile = null;
+    state.status = null;
+    const $ = load(
+      renderToStaticMarkup(await LeadDetail({ id: lead.reportSlug }))
+    );
+    const badges = $("header .sc-admin-badges > .sc-admin-chip");
+    expect(badges.map((_, el) => $(el).text()).get()).toEqual([
+      "Report ready",
+      expected,
+    ]);
+    expect(badges.last().hasClass("sc-admin-chip-yes")).toBe(green);
+    expect(badges.last().hasClass("sc-admin-status-hand")).toBe(
+      expected.startsWith("Call was ")
+    );
+    if (expected === "Call not booked")
+      expect(badges.last().attr("class")).toBe("sc-admin-chip");
+    expect($("header").text()).not.toContain("qualified");
+    expect($("header .sc-admin-subtext")).toHaveLength(0);
+    const stack = $(".sc-admin-detail-stack");
+    expect(
+      stack
+        .children("section")
+        .map((_, el) => $(el).children("h2").text())
+        .get()
+    ).toEqual(["Audit", "Source"]);
+    expect(stack.prev("section").children("h2").text()).toBe("Contact");
+    expect(stack.next("section").children("h2").text()).toBe("Follow-up");
+    const source = stack.children("section").last();
+    expect(source.hasClass("sc-admin-card")).toBe(true);
+    expect(source.find("dl").hasClass("sc-admin-facts")).toBe(true);
+    expect(
+      source
+        .find("dt")
+        .map((_, el) => $(el).text())
+        .get()
+    ).toEqual(["Came from", "First seen (SAST)", "Qualified"]);
+    expect(source.find("dd").eq(0).text()).toContain("ig");
+    expect(source.find("dd").eq(1).text()).toContain("12:00");
+    expect(source.find("dd").eq(2).find(".sc-admin-chip").text()).toBe("No");
+    expect(source.find("dd").eq(2).find(".sc-admin-subtext").text()).toBe(
+      "Services company"
+    );
+  }
+);
