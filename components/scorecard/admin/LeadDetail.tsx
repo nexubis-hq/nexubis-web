@@ -1,3 +1,4 @@
+import { CallPill } from "./CallPill";
 import { ContactMenu } from "./EditContact";
 import {
   LinkedinForm,
@@ -134,23 +135,6 @@ export async function LeadDetail({
   };
   const meetingEvents = view.meetings?.[email.trim().toLowerCase()] || [];
   const meeting = meetingSummary(meetingEvents);
-  const callUpcoming =
-    meeting.active && Date.parse(meeting.current!.startTime) > view.now;
-  const callDate = meeting.active
-    ? new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Africa/Johannesburg",
-        day: "numeric",
-        month: "short",
-        ...(callUpcoming
-          ? { hour: "2-digit", minute: "2-digit", hourCycle: "h23" as const }
-          : {}),
-      })
-        .format(new Date(meeting.current!.startTime))
-        .replace(",", "")
-    : "";
-  const callLabel = meeting.active
-    ? `${callUpcoming ? "Call booked" : "Call was"} ${callDate}`
-    : "Call not booked";
   const absoluteReportUrl = reportSlug
     ? new URL(
         `/audit/r/${reportSlug}`,
@@ -195,11 +179,7 @@ export async function LeadDetail({
         <div>
           <div className="sc-admin-badges">
             <LeadStatus status={row?.status || (manual ? "hand" : "ready")} />
-            <span
-              className={`sc-admin-chip${callUpcoming ? " sc-admin-chip-yes" : meeting.active ? " sc-admin-status-hand" : ""}`}
-            >
-              {callLabel}
-            </span>
+            <CallPill meeting={meeting} now={view.now} />
           </div>
           <h1>{name || company}</h1>
           {role && <p className="sc-admin-dim">{role}</p>}

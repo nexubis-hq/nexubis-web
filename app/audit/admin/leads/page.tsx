@@ -8,7 +8,9 @@ import { loadLeadsView } from "@/lib/scorecard/admin/data";
 import { ordinal } from "@/lib/scorecard/admin/leads-view";
 import { LeadsFilters } from "@/components/scorecard/admin/LeadsFilters";
 import { LeadTableRow } from "@/components/scorecard/admin/LeadTableRow";
-import { LeadStatus, Qualified } from "@/components/scorecard/admin/LeadStatus";
+import { CallPill } from "@/components/scorecard/admin/CallPill";
+import { meetingSummary } from "@/lib/scorecard/admin/meetings";
+import { LeadStatus } from "@/components/scorecard/admin/LeadStatus";
 import { formatSast } from "@/components/scorecard/admin/date";
 export const dynamic = "force-dynamic";
 export default async function LeadsPage({
@@ -19,10 +21,11 @@ export default async function LeadsPage({
   const jar = await cookies();
   if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/audit/admin");
   const q = await searchParams;
-  const { rows, summary, period, testCount } = await loadLeadsView({
-    ...q,
-    showTests: q.showTests === "1",
-  });
+  const { rows, summary, period, testCount, meetings, now } =
+    await loadLeadsView({
+      ...q,
+      showTests: q.showTests === "1",
+    });
   const href = (patch: Record<string, string | undefined>) => {
     const params = new URLSearchParams();
     for (const [k, v] of Object.entries({ ...q, ...patch }))
@@ -101,7 +104,7 @@ export default async function LeadsPage({
                     "Company",
                     "Contact",
                     "Status",
-                    "Qualified",
+                    "Call",
                     "Score",
                     "From ad",
                     "Next",
@@ -167,7 +170,12 @@ export default async function LeadsPage({
                       </span>
                     </td>
                     <td>
-                      <Qualified decision={r.qualifiedDecision} />
+                      <CallPill
+                        meeting={meetingSummary(
+                          meetings?.[r.email.trim().toLowerCase()] || []
+                        )}
+                        now={now}
+                      />
                     </td>
                     <td className="sc-admin-scorecell">
                       <strong className="sc-admin-bigscore">

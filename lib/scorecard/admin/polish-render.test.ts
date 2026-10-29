@@ -197,6 +197,23 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
     'href="/audit/admin/collective">Collective Consciousness</a>'
   );
   expect(leadsHtml).toContain('href="/audit/admin/live">Live District</a>');
+  const $leads = load(leadsHtml);
+  expect(
+    $leads("thead th")
+      .map((_, el) => $leads(el).text())
+      .get()
+  ).toEqual([
+    "When (SAST)",
+    "Company",
+    "Contact",
+    "Status",
+    "Call",
+    "Score",
+    "From ad",
+    "Next",
+  ]);
+  expect($leads("table").text()).not.toContain("qualification explanation");
+  expect($leads(".sc-admin-tiles").text()).toContain("Qualified manufacturers");
   expect(leadsHtml).toContain("wide gap");
   expect(leadsHtml).toContain("New companies, last 30 days");
   state.view.period = "7";
@@ -497,7 +514,7 @@ it.each([
     green: true,
   },
 ])(
-  "renders $label call pill and keeps Qualified in Source after Audit",
+  "renders $label call pills in the table and header and keeps Qualified in Source after Audit",
   async ({ events, expected, green }) => {
     const lead = {
       reportSlug: "source-layout",
@@ -541,6 +558,20 @@ it.each([
     };
     state.profile = null;
     state.status = null;
+    const $table = load(
+      renderToStaticMarkup(
+        await LeadsPage({ searchParams: Promise.resolve({}) })
+      )
+    );
+    const callCell = $table("tbody tr").first().children("td").eq(4);
+    expect($table("thead th").eq(4).text()).toBe("Call");
+    expect(callCell.text()).toBe(expected);
+    expect(callCell.find(".sc-admin-chip-yes").length > 0).toBe(green);
+    expect(callCell.find(".sc-admin-status-hand").length > 0).toBe(
+      expected.startsWith("Call was ")
+    );
+    expect(callCell.find(".sc-admin-subtext")).toHaveLength(0);
+    expect($table("table").text()).not.toContain("Services company");
     const $ = load(
       renderToStaticMarkup(await LeadDetail({ id: lead.reportSlug }))
     );
