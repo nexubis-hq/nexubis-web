@@ -2,6 +2,7 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { SESSION_COOKIE, isValidSession } from "@/lib/scorecard/auth";
+import { readAdminContact } from "@/lib/scorecard/admin/contact";
 import { loadLeadsView } from "@/lib/scorecard/admin/data";
 import {
   performFunnelrAction,
@@ -45,9 +46,10 @@ export async function funnelrLeadAction(
       throw new Error("Check Funnelr before retrying.");
     if (mode !== "check" && !report)
       throw new Error("A saved report is required before sending.");
+    const contact = await readAdminContact(path);
     await performFunnelrAction(
       {
-        firstName: row.firstName,
+        firstName: contact?.firstName ?? row.firstName,
         email: row.email,
         company: report?.result.meta.company || row.company,
         website: row.host,

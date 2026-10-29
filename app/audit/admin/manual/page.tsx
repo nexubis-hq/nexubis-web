@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+import { readAdminContact } from "@/lib/scorecard/admin/contact";
+import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SESSION_COOKIE, isValidSession } from "@/lib/scorecard/auth";
@@ -29,8 +30,21 @@ export default async function ManualAuditPage({
   const jar = await cookies();
   if (!isValidSession(jar.get(SESSION_COOKIE)?.value)) redirect("/audit/admin");
   const params = await searchParams;
-  const audits = (await listManualAudits()).sort((a, b) =>
+  const storedAudits = (await listManualAudits()).sort((a, b) =>
     (b.lastRunAt ?? b.updatedAt).localeCompare(a.lastRunAt ?? a.updatedAt)
+  );
+  const audits = await Promise.all(
+    storedAudits.map(async (audit) => {
+      const contact = await readAdminContact(`/audit/admin/${audit.slug}`);
+      return contact
+        ? {
+            ...audit,
+            contactName: [contact.firstName, contact.lastName]
+              .filter(Boolean)
+              .join(" "),
+          }
+        : audit;
+    })
   );
   return (
     <section className="section">

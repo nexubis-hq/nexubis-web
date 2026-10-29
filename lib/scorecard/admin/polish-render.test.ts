@@ -227,7 +227,7 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   expect(header.match(/live-district.com/g)).toHaveLength(2);
   expect(header).toContain("Live District \u00B7 first seen 28 Oct (today)");
   expect(header.match(/class="sc-admin-link-separator">\u00b7/g)).toHaveLength(
-    2
+    1
   );
   expect(header).toContain("More");
   expect(header.indexOf("More")).toBeLessThan(
@@ -305,10 +305,10 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   state.view.allRows.find((row) => row.id === "live")!.funnelrStatus = null;
   expect(detailHtml).toContain('href="/audit/admin/collective"');
   expect(detailHtml).toContain(String.fromCharCode(8592));
-  expect(detailHtml).toContain("Looking up LinkedIn\u2026");
-  expect(detailHtml).toContain("Search again");
+  expect(detailHtml).toContain("Finding LinkedIn\u2026");
+  expect(detailHtml).not.toContain("Search again");
   expect(detailHtml).not.toContain("Find LinkedIn");
-  expect(detailHtml).toContain("keywords=Alex%20Live%20District");
+  expect(detailHtml).not.toContain("keywords=Alex%20Live%20District");
   expect(detailHtml).toContain("No meeting booked yet");
   state.view.meetings = {
     [leads[0].email]: [
@@ -326,6 +326,7 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   expect(meetingHtml).toContain("Bookings Laine makes outside cal.com");
   expect(meetingHtml).toContain('target="_blank"');
   state.profile = {
+    lookupVersion: 2,
     linkedinProfile: "https://www.linkedin.com/in/alex/",
     companyLinkedin: "https://www.linkedin.com/company/live-district/",
   };
@@ -335,6 +336,7 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
     'href="https://www.linkedin.com/company/live-district/"'
   );
   expect(overrideHtml).not.toContain("Find on LinkedIn");
+  expect(overrideHtml).toContain("Search again");
   state.profile = null;
   state.view.meetings = {};
 

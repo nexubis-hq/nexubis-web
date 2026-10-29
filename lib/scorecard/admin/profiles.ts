@@ -4,7 +4,7 @@ import { linkedinUrl } from "./linkedin";
 export interface LinkedinLink {
   url: string;
   label?: string;
-  source: "audit" | "lookup" | "manual";
+  source: "audit" | "lookup" | "manual" | "website";
   status: "likely" | "confirmed" | "manual";
   savedAt: string;
 }
@@ -13,11 +13,13 @@ export interface LeadProfile {
   linkedinProfile: LinkedinLink | string | null;
   companyLinkedin: LinkedinLink | string | null;
   lookedUpAt?: string;
+  lookupVersion?: number;
 }
 export interface NormalizedProfile {
   linkedinProfile: LinkedinLink | null;
   companyLinkedin: LinkedinLink | null;
   lookedUpAt?: string;
+  lookupVersion?: number;
 }
 export const PROFILE_TTL = 180 * 86400;
 const key = (leadPath: string) => `scorecard-lead-profile:${leadPath}`;
@@ -33,6 +35,9 @@ export function normalizeProfile(
   return {
     linkedinProfile: normalize(profile?.linkedinProfile || null),
     companyLinkedin: normalize(profile?.companyLinkedin || null),
+    ...(profile?.lookupVersion !== undefined
+      ? { lookupVersion: profile.lookupVersion }
+      : {}),
     ...(profile?.lookedUpAt ? { lookedUpAt: profile.lookedUpAt } : {}),
   };
 }
@@ -86,6 +91,7 @@ export function mergeLookup(
     companyLinkedin: fill(profile.companyLinkedin, company),
     linkedinProfile: fill(profile.linkedinProfile, person),
     lookedUpAt: at,
+    lookupVersion: 2,
   };
 }
 export async function saveLeadProfile(

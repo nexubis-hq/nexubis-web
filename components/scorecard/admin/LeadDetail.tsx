@@ -1,11 +1,14 @@
-import { LinkedinForm } from "./LinkedinForm";
+import { EditContact } from "./EditContact";
+import {
+  LinkedinForm,
+  LinkedinLookupProvider,
+  LinkedinHeaderLinks,
+} from "./LinkedinForm";
 import { firstSeenLine, nextStep } from "@/lib/scorecard/admin/follow-up";
 import { normalizeProfile } from "@/lib/scorecard/admin/profiles";
 import { readLeadProfile } from "@/lib/scorecard/admin/profiles";
 import {
   storedCompanyLinkedin,
-  linkedinPeopleSearch,
-  linkedinCompanySearch,
   leadBrand,
   websiteUrl,
 } from "@/lib/scorecard/admin/linkedin";
@@ -63,7 +66,7 @@ export async function LeadDetail({
   const lead = view.leads.find((r) => r.reportSlug === id);
   const manual = view.manual.find((r) => r.slug === id);
   const rawCompany = row?.company ?? report?.result.meta.company ?? "";
-  const name =
+  const storedName =
     row?.firstName ||
     manual?.contactName ||
     report?.result.meta.contactName ||
@@ -76,7 +79,16 @@ export async function LeadDetail({
     report?.prospectData.url ||
     row?.host ||
     "";
-  const firstName = name.trim().split(/\s+/)[0] || "";
+  const firstName = row?.firstName || storedName.trim().split(/\s+/)[0] || "";
+  const lastName = row?.lastName || "";
+  const role =
+    row?.role ??
+    lead?.role ??
+    report?.prospectData.role ??
+    report?.result.meta.role ??
+    "";
+  const name = [firstName, lastName].filter(Boolean).join(" ");
+  const searchName = [name, role].filter(Boolean).join(" ");
   const company = leadBrand(rawCompany, firstName, url);
   const reportSlug =
     row?.reportPath?.split("/").pop() || (!failed && report ? id : undefined);
@@ -119,10 +131,6 @@ export async function LeadDetail({
           }
         : null),
   };
-  const companyLinkedin =
-    displayProfile.companyLinkedin?.url || linkedinCompanySearch(company);
-  const personLinkedin =
-    profile.linkedinProfile?.url || linkedinPeopleSearch(firstName, company);
   const meetingEvents = view.meetings?.[email.trim().toLowerCase()] || [];
   const meeting = meetingSummary(meetingEvents);
   const absoluteReportUrl = reportSlug
@@ -135,6 +143,7 @@ export async function LeadDetail({
     ? row.funnelrStatus || null
     : await readFunnelrStatus(email, absoluteReportUrl).catch(() => null);
   const timeline = [
+    ...(row?.contactEdits || []),
     ...(funnelrStatus?.history || (funnelrStatus ? [funnelrStatus] : [])).map(
       (entry) => ({ at: entry.at, text: funnelrTimelineText(entry) })
     ),
@@ -158,7 +167,11 @@ export async function LeadDetail({
   const manualHref = `/audit/admin/manual?${new URLSearchParams({ url, contactName: name, contactEmail: email, ...(failure ? { failedLead: failure.id } : {}) })}`;
   const result = report?.result;
   return (
-    <>
+    <LinkedinLookupProvider
+      key={row?.leadPath || id}
+      leadPath={row?.leadPath || ""}
+      profile={displayProfile}
+    >
       <Link href="/audit/admin/leads">&larr; Back to Leads</Link>
       <header className="sc-admin-head sc-admin-card">
         <div>
@@ -170,6 +183,7 @@ export async function LeadDetail({
             />
           </div>
           <h1>{name || company}</h1>
+          {role && <p className="sc-admin-dim">{role}</p>}
           <p>
             {firstSeenLine(
               company,
@@ -187,16 +201,7 @@ export async function LeadDetail({
               {row?.host || url} &#8599;
             </a>
             <span className="sc-admin-link-separator">&middot;</span>
-            <a href={companyLinkedin} target="_blank" rel="noreferrer">
-              <span className="sc-admin-in">in</span> {company}
-            </a>
-            <span className="sc-admin-link-separator">&middot;</span>
-            <a href={personLinkedin} target="_blank" rel="noreferrer">
-              <span className="sc-admin-in">in</span> {firstName || "Person"}
-            </a>
-            {profile.linkedinProfile?.status === "likely" && (
-              <span className="sc-admin-likely">likely</span>
-            )}
+            <LinkedinHeaderLinks company={company} name={searchName} />
           </p>
           <SameContact contacts={row?.sameContacts || []} />
         </div>
@@ -218,6 +223,14 @@ export async function LeadDetail({
           <details className="sc-admin-more">
             <summary className="btn btn-secondary">More &#9662;</summary>
             <div className="sc-admin-more-items">
+              {row && (
+                <EditContact
+                  leadPath={row.leadPath}
+                  firstName={firstName}
+                  lastName={lastName}
+                  role={role}
+                />
+              )}
               {reportSlug && <CopyLinkButton path={`/audit/r/${reportSlug}`} />}{" "}
               {!failed && reportSlug && (
                 <RerunAuditForm
@@ -238,7 +251,15 @@ export async function LeadDetail({
           <dl className="sc-admin-facts">
             <div>
               <dt>First name</dt>
-              <dd>{name || "not recorded"}</dd>
+              <dd>{firstName || "not recorded"}</dd>
+            </div>
+            <div>
+              <dt>Last name</dt>
+              <dd>{lastName || "not recorded"}</dd>
+            </div>
+            <div>
+              <dt>Role</dt>
+              <dd>{role || "not recorded"}</dd>
             </div>
             <div>
               <dt>Email</dt>
@@ -404,7 +425,7 @@ export async function LeadDetail({
                     leadPath={row.leadPath}
                     profile={displayProfile}
                     company={company}
-                    name={firstName}
+                    name={searchName}
                   />
                 )}
               </dd>
@@ -527,6 +548,6 @@ export async function LeadDetail({
           </details>
         </>
       )}
-    </>
+    </LinkedinLookupProvider>
   );
 }

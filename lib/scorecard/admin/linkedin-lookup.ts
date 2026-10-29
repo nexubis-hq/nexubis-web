@@ -1,7 +1,9 @@
+import { readLinkedinWebsite, type WebsiteLinkedin } from "./linkedin-website";
 import { searchWeb, hostFromUrl } from "../web-search";
 import type { SharedScorecard } from "../share";
 import {
   leadBrand,
+  emailName,
   linkedinUrl,
   personSearchWords,
   storedCompanyLinkedin,
@@ -17,9 +19,28 @@ export interface LinkedinLead {
   report?: SharedScorecard | null;
 }
 export async function lookupCompanyLinkedin(
-  lead: LinkedinLead
+  lead: LinkedinLead,
+  website?: WebsiteLinkedin[]
 ): Promise<LinkedinLink | null> {
   const company = leadBrand(lead.company, lead.firstName, lead.url);
+  const links = website ?? (await readLinkedinWebsite(lead.url));
+  const companies = links.filter((link) => linkedinUrl(link.url, "company"));
+  const brand = company.toLowerCase();
+  const found =
+    companies.find(
+      (link) =>
+        brand &&
+        `${new URL(link.url).pathname} ${link.text}`
+          .toLowerCase()
+          .includes(brand)
+    ) || companies[0];
+  if (found)
+    return {
+      url: linkedinUrl(found.url, "company")!,
+      source: "website",
+      status: "likely",
+      savedAt: new Date().toISOString(),
+    };
   const stored = storedCompanyLinkedin(lead.report, lead.company, true);
   if (stored)
     return {
@@ -46,12 +67,62 @@ export async function lookupCompanyLinkedin(
     : null;
 }
 export async function lookupPersonLinkedin(
-  lead: LinkedinLead
+  lead: LinkedinLead,
+  website?: WebsiteLinkedin[]
 ): Promise<LinkedinLink | null> {
   const firstName = lead.firstName.trim().split(/\s+/)[0];
-  if (!firstName || isTestContact(lead.email)) return null;
+  if (isTestContact(lead.email)) return null;
   const company = leadBrand(lead.company, firstName, lead.url);
   if (!company) return null;
+  const { lastName } = emailName(lead.email, firstName);
+  const links = website ?? (await readLinkedinWebsite(lead.url));
+  const matches = (name: string) =>
+    links.find(
+      (link) =>
+        linkedinUrl(link.url, "in") &&
+        `${link.text} ${link.surrounding}`
+          .toLowerCase()
+          .includes(name.toLowerCase())
+    );
+  const allowFirstName =
+    firstName.length >= 3 &&
+    ![company, lead.company].some((brand) =>
+      brand.toLowerCase().includes(firstName.toLowerCase())
+    );
+  const found =
+    (lastName ? matches(lastName) : undefined) ||
+    (allowFirstName ? matches(firstName) : undefined);
+  if (found)
+    return {
+      url: linkedinUrl(found.url, "in")!,
+      label: found.text,
+      source: "website",
+      status: "likely",
+      savedAt: new Date().toISOString(),
+    };
+  if (lastName) {
+    const result = await searchWeb(
+      `${lastName} ${company} site:linkedin.com/in`
+    );
+    const top = result?.organic[0];
+    const url = top && linkedinUrl(top.url, "in");
+    if (
+      top &&
+      url &&
+      top.title.toLowerCase().includes(lastName.toLowerCase()) &&
+      `${top.title} ${top.snippet}`
+        .toLowerCase()
+        .includes(company.toLowerCase())
+    )
+      return {
+        url,
+        label: top.title,
+        source: "lookup",
+        status: "likely",
+        savedAt: new Date().toISOString(),
+      };
+  }
+  if (!firstName) return null;
   const res = await searchWeb(
     `${personSearchWords(firstName, company)} site:linkedin.com/in`
   );

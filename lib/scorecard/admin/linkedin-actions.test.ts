@@ -11,6 +11,7 @@ import {
   writeLeadProfile,
   type LinkedinLink,
 } from "./profiles";
+import { readLinkedinWebsite } from "./linkedin-website";
 import { loadLeadsView } from "./data";
 import { runLeadPlumbing } from "../unlock";
 import { notifyFailedScan } from "../notify";
@@ -71,6 +72,9 @@ vi.mock("./linkedin-lookup", async (original) => ({
 vi.mock("../unlock", () => ({ runLeadPlumbing: vi.fn() }));
 vi.mock("../notify", () => ({ notifyFailedScan: vi.fn() }));
 vi.mock("@/lib/meta/capi", () => ({ sendCapiEvent: vi.fn() }));
+vi.mock("./linkedin-website", () => ({
+  readLinkedinWebsite: vi.fn(async () => []),
+}));
 const path = "/audit/admin/lead123";
 const company: LinkedinLink = {
   url: "https://www.linkedin.com/company/example/",
@@ -304,3 +308,63 @@ it("legacy manual writer keeps the 180 day TTL and compatible normalized shape",
     { ex: 180 * 86400 }
   );
 });
+
+it.each([undefined, 1])(
+  "W5 reruns old lookup version %s once, then makes no lookup call",
+  async (lookupVersion) => {
+    await writeLeadProfile(path, {
+      companyLinkedin: null,
+      linkedinProfile: null,
+      lookedUpAt: "old",
+      lookupVersion,
+    });
+    await lookupLinkedin(path);
+    expect(await readLeadProfile(path)).toMatchObject({ lookupVersion: 2 });
+    await lookupLinkedin(path);
+    expect(lookupCompanyLinkedin).toHaveBeenCalledOnce();
+    expect(lookupPersonLinkedin).toHaveBeenCalledOnce();
+    expect(readLinkedinWebsite).toHaveBeenCalledOnce();
+  }
+);
+it("W5 version 2 makes no call even without a timestamp or links", async () => {
+  await writeLeadProfile(path, {
+    companyLinkedin: null,
+    linkedinProfile: null,
+    lookupVersion: 2,
+  });
+  await lookupLinkedin(path);
+  expect(lookupCompanyLinkedin).not.toHaveBeenCalled();
+  expect(lookupPersonLinkedin).not.toHaveBeenCalled();
+  expect(loadLeadsView).not.toHaveBeenCalled();
+});
+it.each(["confirmed", "manual"] as const)(
+  "W5 version 1 rerun preserves %s links",
+  async (status) => {
+    const keptCompany = {
+      ...company,
+      status,
+      url: "https://www.linkedin.com/company/keep/",
+    };
+    const keptPerson = {
+      ...person,
+      status,
+      url: "https://www.linkedin.com/in/keep/",
+    };
+    await writeLeadProfile(path, {
+      companyLinkedin: keptCompany,
+      linkedinProfile: keptPerson,
+      lookupVersion: 1,
+      lookedUpAt: "old",
+    });
+    await lookupLinkedin(path);
+    await lookupLinkedin(path);
+    expect(await readLeadProfile(path)).toMatchObject({
+      companyLinkedin: keptCompany,
+      linkedinProfile: keptPerson,
+      lookupVersion: 2,
+    });
+    expect(lookupCompanyLinkedin).toHaveBeenCalledOnce();
+    expect(lookupPersonLinkedin).toHaveBeenCalledOnce();
+    expect(readLinkedinWebsite).toHaveBeenCalledOnce();
+  }
+);

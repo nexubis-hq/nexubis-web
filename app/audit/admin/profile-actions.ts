@@ -16,6 +16,7 @@ import {
   withProfileLock,
   writeLeadProfile,
 } from "@/lib/scorecard/admin/profiles";
+import { readLinkedinWebsite } from "@/lib/scorecard/admin/linkedin-website";
 async function signedIn() {
   const jar = await cookies();
   return isValidSession(jar.get(SESSION_COOKIE)?.value);
@@ -25,7 +26,8 @@ export async function lookupLinkedin(leadPath: string, again = false) {
   try {
     return await withProfileLock(leadPath, async () => {
       const profile = normalizeProfile(await readLeadProfile(leadPath));
-      if (profile.lookedUpAt && !again) return { message: "", profile };
+      if ((profile.lookupVersion ?? 0) >= 2 && !again)
+        return { message: "", profile };
       const view = await loadLeadsView({ period: "all", showTests: true });
       const row = view.allRows.find((row) => row.leadPath === leadPath);
       if (!row) return { message: "Lead not found.", error: true };
@@ -39,9 +41,10 @@ export async function lookupLinkedin(leadPath: string, again = false) {
         url: row.host || "",
         report,
       };
+      const website = await readLinkedinWebsite(lead.url);
       const [company, person] = await Promise.all([
-        boundedLookup(() => lookupCompanyLinkedin(lead)),
-        boundedLookup(() => lookupPersonLinkedin(lead)),
+        boundedLookup(() => lookupCompanyLinkedin(lead, website)),
+        boundedLookup(() => lookupPersonLinkedin(lead, website)),
       ]);
       const updated = mergeLookup(
         profile,

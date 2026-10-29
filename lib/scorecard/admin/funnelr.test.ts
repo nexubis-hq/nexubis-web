@@ -383,3 +383,56 @@ it("an unrelated domain with a report-shaped path is not a valid Nexubis report"
     (await checkFunnelrLead(target.email, target.reportUrl!, mock.client)).state
   ).toBe("partial");
 });
+
+it.each(["send", "retry"] as const)(
+  "E2 admin %s sends only the override first name and preserves the report URL Last name mirror",
+  async (mode) => {
+    const mock = funnelrFixture({ missing: true });
+    vi.mocked(createFunnelrClient).mockReturnValue(mock.client);
+    const path = "/audit/admin/abc23456";
+    state.values.set(`scorecard-admin-contact:${path}`, {
+      firstName: "Peter-Paul",
+      lastName: "Blom",
+      role: "Director",
+      edits: [],
+    });
+    state.view = {
+      allRows: [
+        {
+          firstName: "Alex",
+          email: target.email,
+          company: "Example",
+          host: "example.com",
+          status: "hand",
+          leadPath: path,
+          reportPath: "/audit/r/abc23456",
+        },
+      ],
+      reports: { abc23456: { result: { meta: { company: "Example" } } } },
+    } as unknown as Awaited<ReturnType<typeof loadLeadsView>>;
+    const before = JSON.stringify(state.view.reports);
+    if (mode === "retry")
+      await recordBrowserFunnelrResult(target, { ok: false });
+    const form = new FormData();
+    form.set("mode", mode);
+    form.set("leadPath", path);
+    form.set("confirm", "example");
+    const pending = funnelrLeadAction({ message: "" }, form);
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(await pending).not.toHaveProperty("error");
+    const payload = mock.requests.find(
+      (request) =>
+        request.method === "POST" && request.path === "/api/v1/user/users"
+    )?.body;
+    expect(payload).toMatchObject({
+      firstName: "Peter-Paul",
+      lastName: target.reportUrl,
+      company: "Example",
+      email: target.email,
+    });
+    expect(JSON.stringify(mock.requests)).not.toContain("Blom");
+    expect(JSON.stringify(mock.requests)).not.toContain("Director");
+    expect(mock.contact?.lastName).toBe(target.reportUrl);
+    expect(JSON.stringify(state.view.reports)).toBe(before);
+  }
+);

@@ -107,3 +107,34 @@ export function websiteUrl(value?: string | null): string | null {
     return null;
   }
 }
+
+const GENERIC_EMAIL = new Set(
+  "info sales contact hello office admin mail support service team marketing hr jobs vacatures verkoop inkoop receptie finance administratie noreply no-reply".split(
+    " "
+  )
+);
+export function emailName(
+  email: string,
+  firstName = ""
+): { initials?: string; lastName?: string } {
+  const local = email.split("@")[0].trim().toLowerCase();
+  if (!local || GENERIC_EMAIL.has(local)) return {};
+  const parts = local.split(/[._-]/).filter(Boolean);
+  const first = parts[0] || "";
+  const last = parts[parts.length - 1] || "";
+  return {
+    ...(/^[a-z]{1,3}$/.test(first) &&
+    parts.length > 1 &&
+    first !== "jan" &&
+    first !== firstName.toLowerCase()
+      ? { initials: first }
+      : {}),
+    ...(parts.length > 1 &&
+    /^[a-z]{3,}$/.test(last) &&
+    last !== first &&
+    last !== firstName.trim().split(/\s+/)[0].toLowerCase() &&
+    !GENERIC_EMAIL.has(last)
+      ? { lastName: last }
+      : {}),
+  };
+}

@@ -26,6 +26,7 @@ it("ZERO PUBLIC CHANGES: diff --stat and all changed/untracked files stay in adm
     "lib/scorecard/unlock.ts",
     "lib/scorecard/notify.ts",
     "lib/scorecard/lead-funnelr.ts",
+    "lib/scorecard/admin/funnelr-check.ts",
     "lib/meta/capi.ts",
     "app/api/scorecard/run/route.ts",
   ]) {
