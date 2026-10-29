@@ -147,3 +147,91 @@ it("W8 at most three searches across both lookups", async () => {
   ]);
   expect(searchWeb).toHaveBeenCalledTimes(3);
 });
+
+it("fix 2 ignores Jeka inside the Jekashop brand when an unrelated profile is nearby", async () => {
+  expect(
+    await lookupPersonLinkedin(
+      {
+        ...lead,
+        company: "Jeka",
+        firstName: "Jeka",
+        url: "https://jekashop.com",
+        email: "info@jekashop.com",
+      },
+      [
+        website(
+          "https://linkedin.com/in/unrelated",
+          "LinkedIn",
+          "Jekashop team: Sam Other"
+        ),
+      ]
+    )
+  ).toBeNull();
+  expect(searchWeb).toHaveBeenCalledExactlyOnceWith(
+    "Jeka Jekashop site:linkedin.com/in"
+  );
+});
+
+it("fix 2 pp.blom finds the profile next to Peter-Paul Blom despite the excluded first name", async () => {
+  expect(
+    await lookupPersonLinkedin(
+      { ...lead, firstName: "Jeka", company: "Jekashop" },
+      [
+        website(
+          "https://linkedin.com/in/unrelated",
+          "LinkedIn",
+          "Jekashop team: Sam Other"
+        ),
+        website(
+          "https://linkedin.com/in/peter-paul",
+          "LinkedIn",
+          "Peter-Paul Blom"
+        ),
+      ]
+    )
+  ).toMatchObject({
+    source: "website",
+    url: "https://www.linkedin.com/in/peter-paul/",
+  });
+  expect(searchWeb).not.toHaveBeenCalled();
+});
+
+it("fix 2 surname match wins over an earlier first-name match", async () => {
+  expect(
+    await lookupPersonLinkedin(lead, [
+      website("https://linkedin.com/in/jan-other", "Jan Other"),
+      website(
+        "https://linkedin.com/in/peter-paul",
+        "LinkedIn",
+        "Peter-Paul Blom"
+      ),
+    ])
+  ).toMatchObject({
+    source: "website",
+    url: "https://www.linkedin.com/in/peter-paul/",
+  });
+  expect(searchWeb).not.toHaveBeenCalled();
+});
+
+it.each([
+  ["Al", "Example"],
+  ["EXA", "Example"],
+  ["Sam", "Sam Company"],
+])(
+  "fix 2 ignores short or company-contained first name %s",
+  async (firstName, company) => {
+    expect(
+      await lookupPersonLinkedin(
+        { ...lead, firstName, company, email: "info@example.com" },
+        [
+          website(
+            "https://linkedin.com/in/unrelated",
+            "LinkedIn",
+            `${firstName} Other`
+          ),
+        ]
+      )
+    ).toBeNull();
+    expect(searchWeb).toHaveBeenCalledOnce(); // The original search remains the fallback.
+  }
+);

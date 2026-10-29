@@ -76,17 +76,22 @@ export async function lookupPersonLinkedin(
   if (!company) return null;
   const { lastName } = emailName(lead.email, firstName);
   const links = website ?? (await readLinkedinWebsite(lead.url));
-  const found = links.find(
-    (link) =>
-      linkedinUrl(link.url, "in") &&
-      [firstName, lastName].some(
-        (name) =>
-          name &&
-          `${link.text} ${link.surrounding}`
-            .toLowerCase()
-            .includes(name.toLowerCase())
-      )
-  );
+  const matches = (name: string) =>
+    links.find(
+      (link) =>
+        linkedinUrl(link.url, "in") &&
+        `${link.text} ${link.surrounding}`
+          .toLowerCase()
+          .includes(name.toLowerCase())
+    );
+  const allowFirstName =
+    firstName.length >= 3 &&
+    ![company, lead.company].some((brand) =>
+      brand.toLowerCase().includes(firstName.toLowerCase())
+    );
+  const found =
+    (lastName ? matches(lastName) : undefined) ||
+    (allowFirstName ? matches(firstName) : undefined);
   if (found)
     return {
       url: linkedinUrl(found.url, "in")!,

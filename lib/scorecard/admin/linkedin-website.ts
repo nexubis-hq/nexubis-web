@@ -10,15 +10,20 @@ const MAX_BYTES = 1_500_000;
 const PAGE_WORDS =
   /team|about|over-ons|ons-team|wie-zijn-wij|medewerkers|contact/i;
 
-// Raw HTML only. Redirects are checked before following so no other host is fetched.
-async function readHtml(url: URL, host: string): Promise<string | null> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 6000);
+const canonicalHost = (host: string) =>
+  host.toLowerCase().replace(/^www\./, "");
+// Redirects may switch between the bare host and www, but never another host.
+async function readHtml(
+  url: URL,
+  host: string,
+  signal: AbortSignal
+): Promise<{ html: string; url: URL } | null> {
   try {
     for (let redirects = 0; redirects <= 3; redirects++) {
+      if (signal.aborted) return null;
       const response = await fetch(url, {
         redirect: "manual",
-        signal: controller.signal,
+        signal,
         headers: {
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
@@ -30,7 +35,7 @@ async function readHtml(url: URL, host: string): Promise<string | null> {
         if (!location) return null;
         url = new URL(location, url);
         if (
-          url.host !== host ||
+          canonicalHost(url.host) !== canonicalHost(host) ||
           !/^https?:$/.test(url.protocol) ||
           url.username ||
           url.password
@@ -50,6 +55,10 @@ async function readHtml(url: URL, host: string): Promise<string | null> {
       const chunks: Uint8Array[] = [];
       let bytes = 0;
       while (true) {
+        if (signal.aborted) {
+          await reader.cancel();
+          return null;
+        }
         const { done, value } = await reader.read();
         if (done) break;
         bytes += value.byteLength;
@@ -64,26 +73,32 @@ async function readHtml(url: URL, host: string): Promise<string | null> {
         html
       )
         ? null
-        : html;
+        : { html, url };
     }
     return null;
   } catch {
     return null;
-  } finally {
-    clearTimeout(timer);
   }
 }
 
 export async function readLinkedinWebsite(
   website: string
 ): Promise<WebsiteLinkedin[]> {
-  try {
+  const links: WebsiteLinkedin[] = [];
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const budget = new Promise<WebsiteLinkedin[]>((resolve) => {
+    timer = setTimeout(() => {
+      controller.abort();
+      resolve([...links]);
+    }, 6000);
+  });
+  const read = async (): Promise<WebsiteLinkedin[]> => {
     const normalized = websiteUrl(website);
     if (!normalized) return [];
     const home = new URL("/", normalized);
-    const html = await readHtml(home, home.host);
-    if (!html) return [];
-    const links: WebsiteLinkedin[] = [];
+    const homepage = await readHtml(home, home.host, controller.signal);
+    if (!homepage || controller.signal.aborted) return links;
     const collect = (raw: string, page: URL) => {
       const $ = load(raw);
       $("script, style, noscript").remove();
@@ -117,14 +132,14 @@ export async function readLinkedinWebsite(
       });
       return $;
     };
-    const $ = collect(html, home);
+    const $ = collect(homepage.html, homepage.url);
     const pages = new Map<string, URL>();
     $("a[href]").each((_i, element) => {
       try {
-        const url = new URL($(element).attr("href")!, home);
+        const url = new URL($(element).attr("href")!, homepage.url);
         url.hash = "";
         if (
-          url.host === home.host &&
+          canonicalHost(url.host) === canonicalHost(home.host) &&
           /^https?:$/.test(url.protocol) &&
           !url.username &&
           !url.password &&
@@ -137,14 +152,20 @@ export async function readLinkedinWebsite(
       }
     });
     const extraPages = [...pages.values()].slice(0, 4);
-    const extraHtml = await Promise.all(
-      extraPages.map((page) => readHtml(page, home.host))
+    await Promise.all(
+      extraPages.map(async (page) => {
+        const extra = await readHtml(page, home.host, controller.signal);
+        if (extra && !controller.signal.aborted) collect(extra.html, extra.url);
+      })
     );
-    extraHtml.forEach((extra, i) => {
-      if (extra) collect(extra, extraPages[i]);
-    });
     return links;
+  };
+  try {
+    return await Promise.race([read(), budget]);
   } catch {
-    return [];
+    return links;
+  } finally {
+    clearTimeout(timer);
+    controller.abort();
   }
 }
