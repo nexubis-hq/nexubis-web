@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { SESSION_COOKIE, isValidSession } from "@/lib/scorecard/auth";
 import { loadLeadsView } from "@/lib/scorecard/admin/data";
-import { linkedinUrl } from "@/lib/scorecard/admin/linkedin";
+import { linkedinUrl, leadBrand } from "@/lib/scorecard/admin/linkedin";
 import {
   boundedLookup,
   lookupCompanyLinkedin,
@@ -16,7 +16,13 @@ import {
   withProfileLock,
   writeLeadProfile,
 } from "@/lib/scorecard/admin/profiles";
-import { readLinkedinWebsite } from "@/lib/scorecard/admin/linkedin-website";
+import { readCompanyWebsite } from "@/lib/scorecard/admin/linkedin-website";
+import {
+  parseLinkedinContact,
+  linkedinContactOverride,
+  readAdminContact,
+  writeAdminContact,
+} from "@/lib/scorecard/admin/contact";
 async function signedIn() {
   const jar = await cookies();
   return isValidSession(jar.get(SESSION_COOKIE)?.value);
@@ -26,7 +32,7 @@ export async function lookupLinkedin(leadPath: string, again = false) {
   try {
     return await withProfileLock(leadPath, async () => {
       const profile = normalizeProfile(await readLeadProfile(leadPath));
-      if ((profile.lookupVersion ?? 0) >= 2 && !again)
+      if ((profile.lookupVersion ?? 0) >= 3 && !again)
         return { message: "", profile };
       const view = await loadLeadsView({ period: "all", showTests: true });
       const row = view.allRows.find((row) => row.leadPath === leadPath);
@@ -41,16 +47,20 @@ export async function lookupLinkedin(leadPath: string, again = false) {
         url: row.host || "",
         report,
       };
-      const website = await readLinkedinWebsite(lead.url);
+      const website = await readCompanyWebsite(
+        lead.url,
+        leadBrand(lead.company, lead.firstName, lead.url)
+      );
       const [company, person] = await Promise.all([
-        boundedLookup(() => lookupCompanyLinkedin(lead, website)),
-        boundedLookup(() => lookupPersonLinkedin(lead, website)),
+        boundedLookup(() => lookupCompanyLinkedin(lead, website.linkedin)),
+        boundedLookup(() => lookupPersonLinkedin(lead, website.linkedin)),
       ]);
       const updated = mergeLookup(
         profile,
         company,
         person,
-        new Date().toISOString()
+        new Date().toISOString(),
+        website.companySocials
       );
       await writeLeadProfile(leadPath, updated);
       revalidatePath(leadPath);
@@ -87,6 +97,18 @@ export async function saveLinkedinProfile(
       if (form.get("operation") === "confirm") {
         if (kind !== "linkedinProfile" || !profile.linkedinProfile)
           throw new Error("Save a person link first.");
+        const parsed = parseLinkedinContact(
+          profile.linkedinProfile.label || ""
+        );
+        if (!parsed)
+          throw new Error(
+            "Couldn't read the name from LinkedIn. Use Edit contact."
+          );
+        const contact = linkedinContactOverride(
+          parsed,
+          await readAdminContact(path)
+        );
+        if (contact) await writeAdminContact(path, contact);
         profile.linkedinProfile = {
           ...profile.linkedinProfile,
           status: "confirmed",
@@ -117,5 +139,8 @@ export async function saveLinkedinProfile(
     };
   }
   revalidatePath(path);
+  revalidatePath("/audit/admin/leads");
+  revalidatePath("/audit/admin/scans");
+  revalidatePath("/audit/admin/manual");
   return { message: "LinkedIn link saved." };
 }

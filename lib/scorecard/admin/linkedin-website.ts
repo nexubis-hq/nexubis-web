@@ -1,3 +1,8 @@
+import {
+  companySocial,
+  selectCompanySocials,
+  type CompanySocial,
+} from "./company-socials";
 import { load } from "cheerio";
 import { websiteUrl } from "./linkedin";
 
@@ -84,27 +89,40 @@ async function readHtml(
 export async function readLinkedinWebsite(
   website: string
 ): Promise<WebsiteLinkedin[]> {
+  return (await readCompanyWebsite(website)).linkedin;
+}
+export async function readCompanyWebsite(
+  website: string,
+  brand = ""
+): Promise<{ linkedin: WebsiteLinkedin[]; companySocials: CompanySocial[] }> {
   const links: WebsiteLinkedin[] = [];
+  const socials: CompanySocial[] = [];
+  const result = () => ({
+    linkedin: [...links],
+    companySocials: selectCompanySocials(socials, brand),
+  });
   const controller = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;
-  const budget = new Promise<WebsiteLinkedin[]>((resolve) => {
+  const budget = new Promise<ReturnType<typeof result>>((resolve) => {
     timer = setTimeout(() => {
       controller.abort();
-      resolve([...links]);
+      resolve(result());
     }, 6000);
   });
-  const read = async (): Promise<WebsiteLinkedin[]> => {
+  const read = async (): Promise<ReturnType<typeof result>> => {
     const normalized = websiteUrl(website);
-    if (!normalized) return [];
+    if (!normalized) return result();
     const home = new URL("/", normalized);
     const homepage = await readHtml(home, home.host, controller.signal);
-    if (!homepage || controller.signal.aborted) return links;
+    if (!homepage || controller.signal.aborted) return result();
     const collect = (raw: string, page: URL) => {
       const $ = load(raw);
       $("script, style, noscript").remove();
       $("a[href]").each((_i, element) => {
         try {
           const url = new URL($(element).attr("href")!, page);
+          const social = companySocial(url.href);
+          if (social) socials.push(social);
           if (!/^(?:[a-z]{2}\.|www\.)?linkedin\.com$/i.test(url.hostname))
             return;
           const text = $(element).text().replace(/\s+/g, " ").trim();
@@ -158,12 +176,12 @@ export async function readLinkedinWebsite(
         if (extra && !controller.signal.aborted) collect(extra.html, extra.url);
       })
     );
-    return links;
+    return result();
   };
   try {
     return await Promise.race([read(), budget]);
   } catch {
-    return links;
+    return result();
   } finally {
     clearTimeout(timer);
     controller.abort();

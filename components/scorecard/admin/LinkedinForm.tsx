@@ -21,6 +21,10 @@ import {
   linkedinCompanySearch,
   linkedinPeopleSearch,
 } from "@/lib/scorecard/admin/linkedin";
+import {
+  SOCIAL_NETWORKS,
+  strongestSocial,
+} from "@/lib/scorecard/admin/company-socials";
 const LookupContext = createContext<{
   profile: NormalizedProfile;
   busy: boolean;
@@ -40,11 +44,11 @@ export function LinkedinLookupProvider({
   const router = useRouter();
   const started = useRef(false);
   const [busy, setBusy] = useState(
-    (initial.lookupVersion ?? 0) < 2 && Boolean(leadPath)
+    (initial.lookupVersion ?? 0) < 3 && Boolean(leadPath)
   );
   const [message, setMessage] = useState("");
   useEffect(() => {
-    if (!leadPath || (profile.lookupVersion ?? 0) >= 2 || started.current)
+    if (!leadPath || (profile.lookupVersion ?? 0) >= 3 || started.current)
       return;
     started.current = true;
     void lookupLinkedin(leadPath)
@@ -100,7 +104,13 @@ export function LinkedinHeaderLinks({
   name: string;
 }) {
   const state = useContext(LookupContext)!;
-  if (state.busy) return <LinkedinPending />;
+  const notFound =
+    !state.busy &&
+    (state.profile.lookupVersion ?? 0) >= 3 &&
+    !state.profile.companyLinkedin;
+  const social = notFound
+    ? strongestSocial(state.profile.companySocials || [])
+    : undefined;
   return (
     <>
       <a
@@ -112,21 +122,74 @@ export function LinkedinHeaderLinks({
       >
         <span className="sc-admin-in">in</span> {company}
       </a>
-      <span className="sc-admin-link-separator">&middot;</span>
-      <a
-        href={
-          state.profile.linkedinProfile?.url ||
-          linkedinPeopleSearch(name, company)
-        }
-        target="_blank"
-        rel="noreferrer"
-      >
-        <span className="sc-admin-in">in</span> {name || "Person"}
-      </a>
-      {state.profile.linkedinProfile?.status === "likely" && (
+      {state.profile.companyLinkedin?.status === "likely" && (
         <span className="sc-admin-likely">likely</span>
       )}
+      {notFound && <span className="sc-admin-not-found">not found</span>}
+      {state.busy ? (
+        <LinkedinPending />
+      ) : (
+        <>
+          {social && (
+            <>
+              <span className="sc-admin-link-separator">&middot;</span>
+              <a href={social.url} target="_blank" rel="noreferrer">
+                {
+                  SOCIAL_NETWORKS.find(
+                    ([network]) => network === social.network
+                  )![1]
+                }{" "}
+                &#8599;
+              </a>
+            </>
+          )}
+          <span className="sc-admin-link-separator">&middot;</span>
+          <a
+            href={
+              state.profile.linkedinProfile?.url ||
+              linkedinPeopleSearch(name, company)
+            }
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span className="sc-admin-in">in</span> {name || "Person"}
+          </a>
+          {!state.profile.linkedinProfile &&
+            !state.busy &&
+            (state.profile.lookupVersion ?? 0) >= 3 && (
+              <span className="sc-admin-not-found">not found</span>
+            )}
+          {state.profile.linkedinProfile?.status === "likely" && (
+            <span className="sc-admin-likely">likely</span>
+          )}
+        </>
+      )}
     </>
+  );
+}
+export function CompanySocialsRow() {
+  const state = useContext(LookupContext)!;
+  const socials = state.profile.companySocials || [];
+  return (
+    <div>
+      <dt>Socials</dt>
+      <dd className="sc-admin-socials">
+        {socials.length ? (
+          SOCIAL_NETWORKS.map(([network, label]) => {
+            const link = socials.find((social) => social.network === network);
+            return link ? (
+              <small key={network}>
+                <a href={link.url} target="_blank" rel="noreferrer">
+                  {label} &#8599;
+                </a>
+              </small>
+            ) : null;
+          })
+        ) : (
+          <span className="sc-admin-dim">None found</span>
+        )}
+      </dd>
+    </div>
   );
 }
 export function LinkedinForm({
@@ -174,6 +237,7 @@ function LinkedinFormContent({
         <>
           <LinkedinLine
             kind="company"
+            notFound={(profile.lookupVersion ?? 0) >= 3}
             label={company}
             link={profile.companyLinkedin}
             fallback={linkedinCompanySearch(company)}
@@ -183,6 +247,7 @@ function LinkedinFormContent({
           />
           <LinkedinLine
             kind="person"
+            notFound={(profile.lookupVersion ?? 0) >= 3}
             label={name || "Person"}
             link={profile.linkedinProfile}
             fallback={linkedinPeopleSearch(name, company)}
@@ -192,6 +257,13 @@ function LinkedinFormContent({
           />
         </>
       )}
+      {!busy &&
+        (profile.lookupVersion ?? 0) >= 3 &&
+        !profile.companyLinkedin && (
+          <p className="sc-admin-dim">
+            No LinkedIn page found. See Socials under Contact and source.
+          </p>
+        )}
       {message && (
         <p role="status" className="sc-admin-dim">
           {message}
@@ -215,6 +287,7 @@ function LinkedinLine({
   leadPath,
   again,
   busy,
+  notFound,
 }: {
   kind: "company" | "person";
   label: string;
@@ -223,6 +296,7 @@ function LinkedinLine({
   leadPath: string;
   again: () => void;
   busy: boolean;
+  notFound: boolean;
 }) {
   const [editing, setEditing] = useState(false);
   const menu = useRef<HTMLDetailsElement>(null);
@@ -247,7 +321,10 @@ function LinkedinLine({
         >
           {label} &#8599;
         </a>
-        {kind === "person" && link?.status === "likely" && (
+        {!link && notFound && (
+          <span className="sc-admin-not-found">not found</span>
+        )}
+        {link?.status === "likely" && (
           <span className="sc-admin-likely">likely</span>
         )}
         <details ref={menu} className="sc-admin-link-menu">

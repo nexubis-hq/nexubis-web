@@ -1,9 +1,18 @@
+import { funnelrLeadAction } from "@/app/audit/admin/funnelr-actions";
+import { performFunnelrAction } from "./funnelr-actions";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { saveAdminContact } from "@/app/audit/admin/contact-actions";
 import { loadLeadsView } from "./data";
-import { readAdminContact } from "./contact";
-import { lookupLinkedin } from "@/app/audit/admin/profile-actions";
+import {
+  readAdminContact,
+  writeAdminContact,
+  parseLinkedinContact,
+} from "./contact";
+import {
+  lookupLinkedin,
+  saveLinkedinProfile,
+} from "@/app/audit/admin/profile-actions";
 import { lookupPersonLinkedin } from "./linkedin-lookup";
 import { LeadDetail } from "@/components/scorecard/admin/LeadDetail";
 import LeadsPage from "@/app/audit/admin/leads/page";
@@ -22,6 +31,9 @@ const state = vi.hoisted(() => ({
   report: null as SharedScorecard | null,
 }));
 const path = "/audit/admin/abc23456";
+vi.mock("./funnelr-actions", () => ({
+  performFunnelrAction: vi.fn(async () => null),
+}));
 vi.mock("next/headers", () => ({
   cookies: async () => ({ get: () => ({ value: "fixture" }) }),
 }));
@@ -77,6 +89,7 @@ vi.mock("../share", () => ({ readShared: async () => state.report }));
 vi.mock("../diagnostics", () => ({ readRecentScanLog: async () => [] }));
 vi.mock("./linkedin-website", () => ({
   readLinkedinWebsite: vi.fn(async () => []),
+  readCompanyWebsite: vi.fn(async () => ({ linkedin: [], companySocials: [] })),
 }));
 vi.mock("./linkedin-lookup", async (original) => ({
   ...(await original<typeof import("./linkedin-lookup")>()),
@@ -116,7 +129,7 @@ beforeEach(() => {
   state.values.set(`scorecard-lead-profile:${path}`, {
     linkedinProfile: null,
     companyLinkedin: null,
-    lookupVersion: 2,
+    lookupVersion: 3,
   });
   vi.stubGlobal(
     "fetch",
@@ -134,10 +147,7 @@ it("E1-E4 saves a private override and renders it on the lead, list, Email butto
   const before = JSON.stringify(state.report);
   const initial = renderToStaticMarkup(await LeadDetail({ id: "abc23456" }));
   expect(initial).toContain("Edit contact");
-  expect(initial).toContain(
-    'required="" maxLength="60" name="firstName" value="Alex"'
-  );
-  expect(initial).toContain('maxLength="60" name="role" value="Founder"');
+  expect(initial).toContain('class="btn btn-secondary" aria-expanded="false"');
   expect(await saveAdminContact({ message: "" }, form())).toEqual({
     message: "Contact saved.",
   });
@@ -288,4 +298,154 @@ it("E2 overrides manual and failed rows independently using their private lead p
     lastName: "",
     role: "",
   });
+});
+
+it.each([
+  [
+    "Peter-Paul Blom - General Manager - JekaShop.com | LinkedIn",
+    { firstName: "Peter-Paul", lastName: "Blom", role: "General Manager" },
+  ],
+  [
+    "Jan de Vries \u2013 Owner \u2013 Example | LinkedIn",
+    { firstName: "Jan", lastName: "de Vries", role: "Owner" },
+  ],
+  ["Jan Jansen | LinkedIn", { firstName: "Jan", lastName: "Jansen", role: "" }],
+  ["Jan | LinkedIn", null],
+  ["", null],
+  ["<b>Jan</b> Jansen - Owner", null],
+  [`${"x".repeat(61)} Jansen - Owner`, null],
+] as const)("C1 parses saved LinkedIn title: %s", (label, expected) =>
+  expect(parseLinkedinContact(label)).toEqual(expected)
+);
+function confirmPerson() {
+  const data = new FormData();
+  data.set("leadPath", path);
+  data.set("kind", "person");
+  data.set("operation", "confirm");
+  return data;
+}
+function linkedinPerson(
+  label = "Peter-Paul Blom - General Manager - JekaShop.com | LinkedIn"
+) {
+  state.values.set(`scorecard-lead-profile:${path}`, {
+    lookupVersion: 3,
+    companyLinkedin: null,
+    linkedinProfile: {
+      url: "https://www.linkedin.com/in/pp-blom/",
+      label,
+      source: "lookup",
+      status: "likely",
+      savedAt: "",
+    },
+  });
+}
+it("C1 Right person fills the private contact, confirms the link and updates all admin readers without changing the report", async () => {
+  linkedinPerson();
+  const before = JSON.stringify(state.report);
+  expect(
+    await saveLinkedinProfile({ message: "" }, confirmPerson())
+  ).not.toHaveProperty("error");
+  expect(await readAdminContact(path)).toMatchObject({
+    firstName: "Peter-Paul",
+    lastName: "Blom",
+    role: "General Manager",
+    editedFields: [],
+    edits: [
+      {
+        text: "Contact filled from LinkedIn: Peter-Paul Blom, General Manager",
+        at: expect.any(String),
+      },
+    ],
+  });
+  expect(state.values.get(`scorecard-lead-profile:${path}`)).toMatchObject({
+    linkedinProfile: { status: "confirmed" },
+  });
+  const html = renderToStaticMarkup(await LeadDetail({ id: "abc23456" }));
+  expect(html).toContain("<h1>Peter-Paul Blom</h1>");
+  expect(html).toContain("Email Peter-Paul</a>");
+  expect(html).toContain(
+    "Contact filled from LinkedIn: Peter-Paul Blom, General Manager"
+  );
+  const list = renderToStaticMarkup(
+    await LeadsPage({ searchParams: Promise.resolve({ period: "all" }) })
+  );
+  expect(list).toContain("Peter-Paul Blom");
+  expect(JSON.stringify(state.report)).toBe(before);
+  const crmForm = new FormData();
+  crmForm.set("mode", "check");
+  crmForm.set("leadPath", path);
+  expect(await funnelrLeadAction({ message: "" }, crmForm)).not.toHaveProperty(
+    "error"
+  );
+  expect(performFunnelrAction).toHaveBeenCalledWith(
+    expect.objectContaining({ firstName: "Peter-Paul" }),
+    "check",
+    null,
+    false
+  );
+  expect(vi.mocked(performFunnelrAction).mock.calls[0][0]).not.toHaveProperty(
+    "lastName"
+  );
+  expect(vi.mocked(performFunnelrAction).mock.calls[0][0]).not.toHaveProperty(
+    "role"
+  );
+});
+it("C1 refuses an unreadable label without changing either private record", async () => {
+  linkedinPerson("Peter-Paul | LinkedIn");
+  const before = JSON.stringify([...state.values]);
+  expect(await saveLinkedinProfile({ message: "" }, confirmPerson())).toEqual({
+    error: true,
+    message: "Couldn't read the name from LinkedIn. Use Edit contact.",
+  });
+  expect(JSON.stringify([...state.values])).toBe(before);
+  expect(state.writes).not.toHaveBeenCalled();
+});
+it("C1 preserves every field set through Edit contact, including intentionally empty fields", async () => {
+  await saveAdminContact({ message: "" }, form("Manual", "", "Director"));
+  const before = await readAdminContact(path);
+  linkedinPerson();
+  expect(
+    await saveLinkedinProfile({ message: "" }, confirmPerson())
+  ).not.toHaveProperty("error");
+  expect(await readAdminContact(path)).toEqual(before);
+});
+it("C1 fills only fields without manual provenance and protects legacy Edit contact records", async () => {
+  linkedinPerson();
+  await writeAdminContact(path, {
+    firstName: "Manual",
+    lastName: "",
+    role: "",
+    edits: [],
+    editedFields: ["firstName"],
+  });
+  await saveLinkedinProfile({ message: "" }, confirmPerson());
+  expect(await readAdminContact(path)).toMatchObject({
+    firstName: "Manual",
+    lastName: "Blom",
+    role: "General Manager",
+    editedFields: ["firstName"],
+  });
+  const legacy = {
+    firstName: "Legacy",
+    lastName: "Name",
+    role: "Owner",
+    edits: [],
+  };
+  await writeAdminContact(path, legacy);
+  await saveLinkedinProfile({ message: "" }, confirmPerson());
+  expect(await readAdminContact(path)).toEqual(legacy);
+});
+it("C1 confirmation requires admin auth and uses the same profile lock as Edit contact", async () => {
+  linkedinPerson();
+  state.signedIn = false;
+  expect(
+    await saveLinkedinProfile({ message: "" }, confirmPerson())
+  ).toMatchObject({ error: true });
+  state.signedIn = true;
+  await withProfileLock(path, async () =>
+    expect(
+      await saveLinkedinProfile({ message: "" }, confirmPerson())
+    ).toMatchObject({ error: true })
+  );
+  expect(await readAdminContact(path)).toBeNull();
 });

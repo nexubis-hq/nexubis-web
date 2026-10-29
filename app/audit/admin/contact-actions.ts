@@ -32,6 +32,7 @@ export async function saveAdminContact(
         firstName,
         lastName,
         role,
+        editedFields: ["firstName", "lastName", "role"],
         edits: [
           {
             at: new Date().toISOString(),

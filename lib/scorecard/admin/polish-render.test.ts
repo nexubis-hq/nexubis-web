@@ -326,7 +326,7 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   expect(meetingHtml).toContain("Bookings Laine makes outside cal.com");
   expect(meetingHtml).toContain('target="_blank"');
   state.profile = {
-    lookupVersion: 2,
+    lookupVersion: 3,
     linkedinProfile: "https://www.linkedin.com/in/alex/",
     companyLinkedin: "https://www.linkedin.com/company/live-district/",
   };
