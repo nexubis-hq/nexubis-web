@@ -20,6 +20,9 @@ vi.mock("../web-search", async (original) => ({
   ...(await original<typeof import("../web-search")>()),
   searchWeb: vi.fn(),
 }));
+vi.mock("./linkedin-website", () => ({
+  readLinkedinWebsite: vi.fn(async () => []),
+}));
 const lead = {
   firstName: "Alex",
   company: "Example",

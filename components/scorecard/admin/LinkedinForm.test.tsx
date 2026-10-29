@@ -30,6 +30,7 @@ beforeEach(() => {
       companyLinkedin: null,
       linkedinProfile: null,
       lookedUpAt: "done",
+      lookupVersion: 2,
     },
   });
 });
@@ -53,7 +54,7 @@ it("LK3 renders immediately, looks up after rendering, then does not repeat an e
       })
   );
   const html = render({ companyLinkedin: null, linkedinProfile: null });
-  expect(html).toContain("Looking up LinkedIn\u2026");
+  expect(html).toContain("Finding LinkedIn\u2026");
   expect(lookupLinkedin).not.toHaveBeenCalled();
   state.effects[0]();
   state.effects[0](); // Strict Mode effect replay must not duplicate the request.
@@ -66,6 +67,7 @@ it("LK3 renders immediately, looks up after rendering, then does not repeat an e
       companyLinkedin: null,
       linkedinProfile: null,
       lookedUpAt: "done",
+      lookupVersion: 2,
     },
   });
   await vi.waitFor(() => expect(state.refresh).toHaveBeenCalledOnce());
@@ -76,21 +78,23 @@ it("LK3 makes no lookup, refresh, fetch or extra request when lookedUpAt is set,
     companyLinkedin: null,
     linkedinProfile: null,
     lookedUpAt: "2026-10-29T10:00:00Z",
+    lookupVersion: 2,
   });
   state.effects.forEach((effect) => effect());
   expect(lookupLinkedin).not.toHaveBeenCalled();
   expect(state.refresh).not.toHaveBeenCalled();
   expect(network).not.toHaveBeenCalled();
-  expect(html).not.toContain("Looking up LinkedIn\u2026");
+  expect(html).not.toContain("Finding LinkedIn\u2026");
   expect(html).not.toContain("sc-admin-likely");
   expect(html).toContain("companies/?keywords=Example");
   expect(html).toContain("people/?keywords=Alex%20Example");
 });
-it.each(["audit", "lookup", "manual"] as const)(
+it.each(["website", "audit", "lookup", "manual"] as const)(
   "LK6 shows %s attribution, inline menus and a likely person pill",
   (source) => {
     const html = render({
       lookedUpAt: "done",
+      lookupVersion: 2,
       companyLinkedin: {
         url: "https://linkedin.com/company/example",
         status: "likely",
@@ -106,11 +110,13 @@ it.each(["audit", "lookup", "manual"] as const)(
       },
     });
     expect(html).toContain(
-      source === "audit"
-        ? "found by the audit"
-        : source === "lookup"
-          ? "found automatically"
-          : "added by hand"
+      source === "website"
+        ? "from their website"
+        : source === "audit"
+          ? "found by the audit"
+          : source === "lookup"
+            ? "found automatically"
+            : "added by hand"
     );
     expect(html).toContain("sc-admin-likely");
     expect(html.match(/Search again/g)).toHaveLength(2);
@@ -125,6 +131,7 @@ it("L8 confirmed/manual person links have no likely pill", () => {
   for (const status of ["confirmed", "manual"] as const) {
     const html = render({
       lookedUpAt: "done",
+      lookupVersion: 2,
       companyLinkedin: null,
       linkedinProfile: {
         url: "https://linkedin.com/in/alex",

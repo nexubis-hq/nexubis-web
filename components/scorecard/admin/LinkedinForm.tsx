@@ -1,5 +1,13 @@
 "use client";
-import { useActionState, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { useRouter } from "next/navigation";
 import {
   lookupLinkedin,
@@ -13,6 +21,114 @@ import {
   linkedinCompanySearch,
   linkedinPeopleSearch,
 } from "@/lib/scorecard/admin/linkedin";
+const LookupContext = createContext<{
+  profile: NormalizedProfile;
+  busy: boolean;
+  message: string;
+  again: () => Promise<void>;
+} | null>(null);
+export function LinkedinLookupProvider({
+  leadPath,
+  profile: initial,
+  children,
+}: {
+  leadPath: string;
+  profile: NormalizedProfile;
+  children: ReactNode;
+}) {
+  const [profile, setProfile] = useState(initial);
+  const router = useRouter();
+  const started = useRef(false);
+  const [busy, setBusy] = useState(
+    (initial.lookupVersion ?? 0) < 2 && Boolean(leadPath)
+  );
+  const [message, setMessage] = useState("");
+  useEffect(() => {
+    if (!leadPath || (profile.lookupVersion ?? 0) >= 2 || started.current)
+      return;
+    started.current = true;
+    void lookupLinkedin(leadPath)
+      .then((result) => {
+        setMessage(result.message);
+        if (!result.error) {
+          if ("profile" in result) setProfile(result.profile);
+          router.refresh();
+        }
+      })
+      .catch(() => {
+        setMessage("LinkedIn lookup could not finish.");
+      })
+      .finally(() => setBusy(false));
+  }, [leadPath, profile, router]);
+  useEffect(() => {
+    setProfile(initial);
+  }, [initial]);
+  const again = async () => {
+    setBusy(true);
+    try {
+      const result = await lookupLinkedin(leadPath, true);
+      setMessage(result.message);
+      if (!result.error) {
+        if ("profile" in result) setProfile(result.profile);
+        router.refresh();
+      }
+    } catch {
+      setMessage("LinkedIn lookup could not finish.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <LookupContext.Provider value={{ profile, busy, message, again }}>
+      {children}
+    </LookupContext.Provider>
+  );
+}
+export function LinkedinPending() {
+  return (
+    <span role="status" className="sc-admin-linkedin-pending">
+      <span className="sc-admin-linkedin-spinner" aria-hidden="true" />
+      Finding LinkedIn{String.fromCharCode(0x2026)}
+    </span>
+  );
+}
+export function LinkedinHeaderLinks({
+  company,
+  name,
+}: {
+  company: string;
+  name: string;
+}) {
+  const state = useContext(LookupContext)!;
+  if (state.busy) return <LinkedinPending />;
+  return (
+    <>
+      <a
+        href={
+          state.profile.companyLinkedin?.url || linkedinCompanySearch(company)
+        }
+        target="_blank"
+        rel="noreferrer"
+      >
+        <span className="sc-admin-in">in</span> {company}
+      </a>
+      <span className="sc-admin-link-separator">&middot;</span>
+      <a
+        href={
+          state.profile.linkedinProfile?.url ||
+          linkedinPeopleSearch(name, company)
+        }
+        target="_blank"
+        rel="noreferrer"
+      >
+        <span className="sc-admin-in">in</span> {name || "Person"}
+      </a>
+      {state.profile.linkedinProfile?.status === "likely" && (
+        <span className="sc-admin-likely">likely</span>
+      )}
+    </>
+  );
+}
 export function LinkedinForm({
   leadPath,
   profile,
@@ -24,64 +140,68 @@ export function LinkedinForm({
   company: string;
   name: string;
 }) {
-  const router = useRouter();
-  const started = useRef(false);
-  const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
-  useEffect(() => {
-    if (profile.lookedUpAt || started.current) return;
-    started.current = true;
-    void lookupLinkedin(leadPath)
-      .then((result) => {
-        setMessage(result.message);
-        if (!result.error) router.refresh();
-      })
-      .catch(() => {
-        setMessage("LinkedIn lookup could not finish.");
-      });
-  }, [leadPath, profile, router]);
-  const again = async () => {
-    setBusy(true);
-    try {
-      const result = await lookupLinkedin(leadPath, true);
-      setMessage(result.message);
-      if (!result.error) router.refresh();
-    } catch {
-      setMessage("LinkedIn lookup could not finish.");
-    } finally {
-      setBusy(false);
-    }
-  };
+  const shared = useContext(LookupContext);
+  if (!shared)
+    return (
+      <LinkedinLookupProvider leadPath={leadPath} profile={profile}>
+        <LinkedinForm
+          leadPath={leadPath}
+          profile={profile}
+          company={company}
+          name={name}
+        />
+      </LinkedinLookupProvider>
+    );
+  return (
+    <LinkedinFormContent leadPath={leadPath} company={company} name={name} />
+  );
+}
+function LinkedinFormContent({
+  leadPath,
+  company,
+  name,
+}: {
+  leadPath: string;
+  company: string;
+  name: string;
+}) {
+  const { profile, busy, message, again } = useContext(LookupContext)!;
   return (
     <div className="sc-admin-linkedin">
-      <LinkedinLine
-        kind="company"
-        label={company}
-        link={profile.companyLinkedin}
-        fallback={linkedinCompanySearch(company)}
-        leadPath={leadPath}
-        again={again}
-        busy={busy}
-      />
-      <LinkedinLine
-        kind="person"
-        label={name || "Person"}
-        link={profile.linkedinProfile}
-        fallback={linkedinPeopleSearch(name, company)}
-        leadPath={leadPath}
-        again={again}
-        busy={busy}
-      />
-      <p role="status" className="sc-admin-dim">
-        {busy || (!profile.lookedUpAt && !message)
-          ? "Looking up LinkedIn\u2026"
-          : message}
-      </p>
+      {busy ? (
+        <LinkedinPending />
+      ) : (
+        <>
+          <LinkedinLine
+            kind="company"
+            label={company}
+            link={profile.companyLinkedin}
+            fallback={linkedinCompanySearch(company)}
+            leadPath={leadPath}
+            again={again}
+            busy={busy}
+          />
+          <LinkedinLine
+            kind="person"
+            label={name || "Person"}
+            link={profile.linkedinProfile}
+            fallback={linkedinPeopleSearch(name, company)}
+            leadPath={leadPath}
+            again={again}
+            busy={busy}
+          />
+        </>
+      )}
+      {message && (
+        <p role="status" className="sc-admin-dim">
+          {message}
+        </p>
+      )}
       <details className="sc-admin-about">
         <summary>about this</summary>
         <p>
-          The person was found by a search on first name + company, so check it
-          once. A confirmed or hand-pasted link is never overwritten.
+          Links can come from their website or a name + company search, so check
+          the person once. A confirmed or hand-pasted link is never overwritten.
         </p>
       </details>
     </div>
@@ -163,13 +283,15 @@ function LinkedinLine({
             </button>
           </div>
         </details>
-        {kind === "company" && link && (
+        {link && (
           <small className="sc-admin-link-source">
-            {link.source === "audit"
-              ? "found by the audit"
-              : link.source === "lookup"
-                ? "found automatically"
-                : "added by hand"}
+            {link.source === "website"
+              ? "from their website"
+              : link.source === "audit"
+                ? "found by the audit"
+                : link.source === "lookup"
+                  ? "found automatically"
+                  : "added by hand"}
           </small>
         )}
       </div>

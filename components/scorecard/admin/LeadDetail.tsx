@@ -1,11 +1,13 @@
-import { LinkedinForm } from "./LinkedinForm";
+import {
+  LinkedinForm,
+  LinkedinLookupProvider,
+  LinkedinHeaderLinks,
+} from "./LinkedinForm";
 import { firstSeenLine, nextStep } from "@/lib/scorecard/admin/follow-up";
 import { normalizeProfile } from "@/lib/scorecard/admin/profiles";
 import { readLeadProfile } from "@/lib/scorecard/admin/profiles";
 import {
   storedCompanyLinkedin,
-  linkedinPeopleSearch,
-  linkedinCompanySearch,
   leadBrand,
   websiteUrl,
 } from "@/lib/scorecard/admin/linkedin";
@@ -119,10 +121,6 @@ export async function LeadDetail({
           }
         : null),
   };
-  const companyLinkedin =
-    displayProfile.companyLinkedin?.url || linkedinCompanySearch(company);
-  const personLinkedin =
-    profile.linkedinProfile?.url || linkedinPeopleSearch(firstName, company);
   const meetingEvents = view.meetings?.[email.trim().toLowerCase()] || [];
   const meeting = meetingSummary(meetingEvents);
   const absoluteReportUrl = reportSlug
@@ -158,7 +156,11 @@ export async function LeadDetail({
   const manualHref = `/audit/admin/manual?${new URLSearchParams({ url, contactName: name, contactEmail: email, ...(failure ? { failedLead: failure.id } : {}) })}`;
   const result = report?.result;
   return (
-    <>
+    <LinkedinLookupProvider
+      key={row?.leadPath || id}
+      leadPath={row?.leadPath || ""}
+      profile={displayProfile}
+    >
       <Link href="/audit/admin/leads">&larr; Back to Leads</Link>
       <header className="sc-admin-head sc-admin-card">
         <div>
@@ -187,16 +189,7 @@ export async function LeadDetail({
               {row?.host || url} &#8599;
             </a>
             <span className="sc-admin-link-separator">&middot;</span>
-            <a href={companyLinkedin} target="_blank" rel="noreferrer">
-              <span className="sc-admin-in">in</span> {company}
-            </a>
-            <span className="sc-admin-link-separator">&middot;</span>
-            <a href={personLinkedin} target="_blank" rel="noreferrer">
-              <span className="sc-admin-in">in</span> {firstName || "Person"}
-            </a>
-            {profile.linkedinProfile?.status === "likely" && (
-              <span className="sc-admin-likely">likely</span>
-            )}
+            <LinkedinHeaderLinks company={company} name={firstName} />
           </p>
           <SameContact contacts={row?.sameContacts || []} />
         </div>
@@ -527,6 +520,6 @@ export async function LeadDetail({
           </details>
         </>
       )}
-    </>
+    </LinkedinLookupProvider>
   );
 }
