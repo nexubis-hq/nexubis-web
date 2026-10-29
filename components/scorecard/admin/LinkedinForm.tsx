@@ -21,10 +21,25 @@ import {
   linkedinCompanySearch,
   linkedinPeopleSearch,
 } from "@/lib/scorecard/admin/linkedin";
-import {
-  SOCIAL_NETWORKS,
-  strongestSocial,
-} from "@/lib/scorecard/admin/company-socials";
+import { SOCIAL_NETWORKS } from "@/lib/scorecard/admin/company-socials";
+export function personLinkName(
+  label: string | undefined,
+  contactName: string | undefined,
+  fallback: string,
+  role = ""
+): string {
+  if (contactName?.trim()) return contactName.trim();
+  let name = (label?.trim() && label.trim() !== "LinkedIn" ? label : fallback)
+    .replace(/\s*\|\s*LinkedIn\s*$/i, "")
+    .split(/\s+(?:-|\u2013)\s+/)[0]
+    .trim();
+  const roleIndex = role.trim()
+    ? name.toLowerCase().indexOf(role.trim().toLowerCase())
+    : -1;
+  if (roleIndex > 0 && /\s/.test(name[roleIndex - 1]))
+    name = name.slice(0, roleIndex).trim();
+  return name || "Person";
+}
 const LookupContext = createContext<{
   profile: NormalizedProfile;
   busy: boolean;
@@ -47,37 +62,47 @@ export function LinkedinLookupProvider({
     (initial.lookupVersion ?? 0) < 3 && Boolean(leadPath)
   );
   const [message, setMessage] = useState("");
+  const messageTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+  const showMessage = (value: string, error = false) => {
+    clearTimeout(messageTimer.current);
+    setMessage(value);
+    if (!error && value === "LinkedIn lookup complete.")
+      messageTimer.current = setTimeout(() => setMessage(""), 3000);
+  };
   useEffect(() => {
     if (!leadPath || (profile.lookupVersion ?? 0) >= 3 || started.current)
       return;
     started.current = true;
     void lookupLinkedin(leadPath)
       .then((result) => {
-        setMessage(result.message);
+        showMessage(result.message, Boolean(result.error));
         if (!result.error) {
           if ("profile" in result) setProfile(result.profile);
           router.refresh();
         }
       })
       .catch(() => {
-        setMessage("LinkedIn lookup could not finish.");
+        showMessage("LinkedIn lookup could not finish.", true);
       })
       .finally(() => setBusy(false));
   }, [leadPath, profile, router]);
   useEffect(() => {
     setProfile(initial);
   }, [initial]);
+  useEffect(() => () => clearTimeout(messageTimer.current), []);
   const again = async () => {
     setBusy(true);
     try {
       const result = await lookupLinkedin(leadPath, true);
-      setMessage(result.message);
+      showMessage(result.message, Boolean(result.error));
       if (!result.error) {
         if ("profile" in result) setProfile(result.profile);
         router.refresh();
       }
     } catch {
-      setMessage("LinkedIn lookup could not finish.");
+      showMessage("LinkedIn lookup could not finish.", true);
     } finally {
       setBusy(false);
     }
@@ -99,18 +124,19 @@ export function LinkedinPending() {
 export function LinkedinHeaderLinks({
   company,
   name,
+  contactName,
+  role,
 }: {
   company: string;
   name: string;
+  contactName?: string;
+  role?: string;
 }) {
   const state = useContext(LookupContext)!;
   const notFound =
     !state.busy &&
     (state.profile.lookupVersion ?? 0) >= 3 &&
     !state.profile.companyLinkedin;
-  const social = notFound
-    ? strongestSocial(state.profile.companySocials || [])
-    : undefined;
   return (
     <>
       <a
@@ -130,19 +156,6 @@ export function LinkedinHeaderLinks({
         <LinkedinPending />
       ) : (
         <>
-          {social && (
-            <>
-              <span className="sc-admin-link-separator">&middot;</span>
-              <a href={social.url} target="_blank" rel="noreferrer">
-                {
-                  SOCIAL_NETWORKS.find(
-                    ([network]) => network === social.network
-                  )![1]
-                }{" "}
-                &#8599;
-              </a>
-            </>
-          )}
           <span className="sc-admin-link-separator">&middot;</span>
           <a
             href={
@@ -152,7 +165,13 @@ export function LinkedinHeaderLinks({
             target="_blank"
             rel="noreferrer"
           >
-            <span className="sc-admin-in">in</span> {name || "Person"}
+            <span className="sc-admin-in">in</span>{" "}
+            {personLinkName(
+              state.profile.linkedinProfile?.label,
+              contactName,
+              name,
+              role
+            )}
           </a>
           {!state.profile.linkedinProfile &&
             !state.busy &&
@@ -197,11 +216,15 @@ export function LinkedinForm({
   profile,
   company,
   name,
+  contactName,
+  role,
 }: {
   leadPath: string;
   profile: NormalizedProfile;
   company: string;
   name: string;
+  contactName?: string;
+  role?: string;
 }) {
   const shared = useContext(LookupContext);
   if (!shared)
@@ -212,21 +235,33 @@ export function LinkedinForm({
           profile={profile}
           company={company}
           name={name}
+          contactName={contactName}
+          role={role}
         />
       </LinkedinLookupProvider>
     );
   return (
-    <LinkedinFormContent leadPath={leadPath} company={company} name={name} />
+    <LinkedinFormContent
+      leadPath={leadPath}
+      company={company}
+      name={name}
+      contactName={contactName}
+      role={role}
+    />
   );
 }
 function LinkedinFormContent({
   leadPath,
   company,
   name,
+  contactName,
+  role,
 }: {
   leadPath: string;
   company: string;
   name: string;
+  contactName?: string;
+  role?: string;
 }) {
   const { profile, busy, message, again } = useContext(LookupContext)!;
   return (
@@ -248,7 +283,12 @@ function LinkedinFormContent({
           <LinkedinLine
             kind="person"
             notFound={(profile.lookupVersion ?? 0) >= 3}
-            label={name || "Person"}
+            label={personLinkName(
+              profile.linkedinProfile?.label,
+              contactName,
+              name,
+              role
+            )}
             link={profile.linkedinProfile}
             fallback={linkedinPeopleSearch(name, company)}
             leadPath={leadPath}
@@ -272,8 +312,10 @@ function LinkedinFormContent({
       <details className="sc-admin-about">
         <summary>about this</summary>
         <p>
-          Links can come from their website or a name + company search, so check
-          the person once. A confirmed or hand-pasted link is never overwritten.
+          The person was found by a search on name + company, so check it once.
+          The company page can be wrong: open the person's LinkedIn profile,
+          click their current company, and paste that link with Edit link. A
+          confirmed or hand-pasted link is never overwritten.
         </p>
       </details>
     </div>
@@ -300,9 +342,30 @@ function LinkedinLine({
 }) {
   const [editing, setEditing] = useState(false);
   const menu = useRef<HTMLDetailsElement>(null);
-  const [state, action, pending] = useActionState(saveLinkedinProfile, {
-    message: "",
-  });
+  const [statusVisible, setStatusVisible] = useState(true);
+  const statusTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+  useEffect(() => () => clearTimeout(statusTimer.current), []);
+  const [state, action, pending] = useActionState(
+    async (previous: { message: string; error?: boolean }, form: FormData) => {
+      let result: { message: string; error?: boolean };
+      try {
+        result = await saveLinkedinProfile(previous, form);
+      } catch {
+        result = { message: "LinkedIn link could not be saved.", error: true };
+      }
+      clearTimeout(statusTimer.current);
+      setStatusVisible(true);
+      if (!result.error) {
+        setEditing(false);
+        if (menu.current) menu.current.open = false;
+        statusTimer.current = setTimeout(() => setStatusVisible(false), 3000);
+      }
+      return result;
+    },
+    { message: "" }
+  );
   const hidden = (
     <>
       <input type="hidden" name="leadPath" value={leadPath} />
@@ -401,7 +464,7 @@ function LinkedinLine({
           </button>
         </form>
       )}
-      {state.message && (
+      {state.message && statusVisible && (
         <p
           role="status"
           className={state.error ? "sc-admin-warn" : "sc-admin-dim"}

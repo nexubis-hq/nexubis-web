@@ -1,3 +1,4 @@
+import { load } from "cheerio";
 import { funnelrLeadAction } from "@/app/audit/admin/funnelr-actions";
 import { performFunnelrAction } from "./funnelr-actions";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
@@ -173,6 +174,24 @@ it("E1-E4 saves a private override and renders it on the lead, list, Email butto
   expect(detail).toContain("<dt>Last name</dt><dd>Blom</dd>");
   expect(detail).toContain("<dt>Role</dt><dd>Director</dd>");
   expect(detail).toContain("Email Peter-Paul</a>");
+  const $ = load(detail);
+  const headerLinks = $(".sc-admin-header-links a");
+  expect(
+    headerLinks.map((_i, element) => $(element).attr("href")).get()
+  ).toEqual([
+    "https://example.com/",
+    expect.stringContaining("linkedin.com/search/results/companies"),
+    expect.stringContaining("linkedin.com/search/results/people"),
+  ]);
+  expect(headerLinks.eq(0).hasClass("sc-admin-site-link")).toBe(true);
+  expect(headerLinks.eq(2).text().trim()).toBe("in Peter-Paul Blom");
+  expect(
+    $(".sc-admin-linkedin-line")
+      .last()
+      .find(".sc-admin-linkedin-title > a")
+      .text()
+      .trim()
+  ).toBe("Peter-Paul Blom \u2197");
   expect(detail).toContain("keywords=Peter-Paul%20Blom%20Director%20Bakon");
   expect(detail).toContain("Contact edited by admin: Alex to Peter-Paul");
   const list = renderToStaticMarkup(

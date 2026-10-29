@@ -215,7 +215,7 @@
 }
 
 .sc-admin-edit-contact {
-  padding: 4px 0;
+  padding: 0;
 }
 .sc-admin-edit-contact > summary {
   cursor: pointer;
@@ -236,4 +236,18 @@
   background: #eee;
   padding: 0.1rem 0.4rem;
   border-radius: 1rem;
+}
+
+.sc-admin .sc-admin-more-items > .btn,
+.sc-admin .sc-admin-more-items > .sc-admin-edit-contact > .btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  height: 42px;
+  min-height: 42px;
+  margin: 0;
+  padding: 10px 14px;
+  text-align: left;
 }

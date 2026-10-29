@@ -193,8 +193,6 @@ export async function LeadDetail({
             )}
           </p>
           <p className="sc-admin-header-links">
-            <LinkedinHeaderLinks company={company} name={searchName} />
-            <span className="sc-admin-link-separator">&middot;</span>
             <a
               className="sc-admin-site-link"
               href={websiteUrl(url) || undefined}
@@ -203,6 +201,13 @@ export async function LeadDetail({
             >
               {row?.host || url} &#8599;
             </a>
+            <span className="sc-admin-link-separator">&middot;</span>
+            <LinkedinHeaderLinks
+              company={company}
+              name={searchName}
+              contactName={row?.lastName !== undefined ? name : undefined}
+              role={role}
+            />
           </p>
           <SameContact contacts={row?.sameContacts || []} />
         </div>
@@ -423,6 +428,8 @@ export async function LeadDetail({
                     profile={displayProfile}
                     company={company}
                     name={searchName}
+                    contactName={row?.lastName !== undefined ? name : undefined}
+                    role={role}
                   />
                 )}
               </dd>

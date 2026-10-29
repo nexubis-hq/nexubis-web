@@ -1,3 +1,6 @@
+import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { CopyLinkButton } from "./CopyLinkButton";
+import { RerunAuditForm } from "./RerunAuditForm";
 import {
   createElement,
   cloneElement,
@@ -57,6 +60,7 @@ vi.mock("react", async (original) => {
     },
   };
 });
+vi.mock("@/app/audit/admin/actions", () => ({ rerunAudit: vi.fn() }));
 vi.mock("@/app/audit/admin/contact-actions", () => ({
   saveAdminContact: vi.fn(),
 }));
@@ -96,11 +100,18 @@ function render() {
         firstName: "Peter-Paul",
         lastName: "Blom",
         role: "Director",
-        children: createElement(
-          "button",
-          { className: "btn btn-secondary" },
-          "Copy report link"
-        ),
+        children: [
+          createElement(CopyLinkButton, {
+            key: "copy",
+            path: "/audit/r/example",
+          }),
+          createElement(RerunAuditForm, {
+            key: "rerun",
+            slug: "example",
+            url: "https://example.com",
+            company: "Example",
+          }),
+        ],
       })
     )
   );
@@ -142,4 +153,24 @@ it("C3 successful save closes the form and More menu, then dismisses the header 
   expect(render()).toContain("Contact saved");
   await vi.advanceTimersByTimeAsync(1);
   expect(render()).not.toContain("Contact saved");
+});
+
+it("D5 renders the three More actions with the same button style", () => {
+  const html = render();
+  expect(html).toContain("Edit contact");
+  expect(html).toContain("Copy report link");
+  expect(html).toContain("Re-run audit...");
+  expect(
+    (html.match(/<button[^>]*class="btn btn-secondary"/g) || []).length
+  ).toBe(3);
+  if (process.env.ADMIN_LAYOUT_FIXTURES === "1") {
+    mkdirSync(".shipstudio/admin-polish-6", { recursive: true });
+    const css =
+      readFileSync("app/globals.css", "utf8") +
+      readFileSync("app/audit/admin/admin-polish.css", "utf8");
+    writeFileSync(
+      ".shipstudio/admin-polish-6/menu.html",
+      `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>${css}</style></head><body><main class="sc-admin"><section class="section"><div class="site-container"><header class="sc-admin-head"><div><h1>Peter-Paul Blom</h1></div><div class="sc-admin-ops">${html}</div></header></div></section></main></body></html>`
+    );
+  }
 });
