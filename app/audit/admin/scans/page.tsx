@@ -1,3 +1,4 @@
+import { ActivityFilters } from "@/components/scorecard/admin/ActivityFilters";
 import { RunLeadLink } from "@/components/scorecard/admin/RunLeadLink";
 import Link from "next/link";
 import { cookies } from "next/headers";
@@ -89,51 +90,58 @@ export default async function ActivityPage({
             </p>
           </div>
         </header>
-        <div className="sc-admin-explainers">
-          {[
-            [
-              "Visited",
-              "Opened the audit page; for ads, compare with Meta link clicks.",
-            ],
-            [
-              "Started the form / Submitted",
-              "Clicked into the form / pressed Run with a valid email.",
-            ],
-            [
-              "Report ready",
-              "The scan finished and the person got their report.",
-            ],
-          ].map(([h, t]) => (
-            <div className="sc-admin-card" key={h}>
-              <h2>{h}</h2>
-              <p className="sc-admin-dim">{t}</p>
-            </div>
-          ))}
-        </div>
-        <div className="sc-admin-filters">
-          <span>Traffic</span>
-          {[
-            ["ad", "From ads"],
-            ["other", "Other"],
-          ].map(([v, t]) => (
-            <Link
-              key={v}
-              className={source === v ? "is-active" : ""}
-              href={href({ source: v })}
-            >
-              {t}
-            </Link>
-          ))}
-          <span>Period</span>
-          {[7, 14, 30].map((v) => (
-            <Link
-              key={v}
-              href={href({ period: String(v) })}
-              className={days === v ? "is-active" : ""}
-            >
-              {v} days
-            </Link>
-          ))}
+        <details className="sc-admin-card sc-admin-about">
+          <summary>How to read this</summary>
+          <div className="sc-admin-explainers">
+            {[
+              [
+                "Visited",
+                "Opened the audit page; for ads, compare with Meta link clicks.",
+              ],
+              [
+                "Started the form / Submitted",
+                "Clicked into the form / pressed Run with a valid email.",
+              ],
+              [
+                "Report ready",
+                "The scan finished and the person got their report.",
+              ],
+            ].map(([h, t]) => (
+              <div className="sc-admin-card" key={h}>
+                <h2>{h}</h2>
+                <p className="sc-admin-dim">{t}</p>
+              </div>
+            ))}
+          </div>
+        </details>
+        <div className="sc-admin-toolbar sc-admin-activity-filters">
+          <div className="sc-admin-active-filters">
+            {[
+              ...(source === "other" ? [["source", "Traffic: Other"]] : []),
+              ...(days !== 14 ? [["period", `Period: ${days} days`]] : []),
+              ...(q.runs === "problems" || q.runs === "ad"
+                ? [
+                    [
+                      "runs",
+                      q.runs === "problems"
+                        ? "Problems only"
+                        : "Runs: From ads",
+                    ],
+                  ]
+                : []),
+              ...(showTests ? [["showTests", "Show tests"]] : []),
+            ].map(([key, label]) => (
+              <Link
+                key={key}
+                className="sc-admin-active-filter"
+                href={href({ [key]: undefined })}
+                aria-label={`Clear ${label}`}
+              >
+                {label} <span aria-hidden="true">&times;</span>
+              </Link>
+            ))}
+          </div>
+          <ActivityFilters />
         </div>
         <section className="sc-admin-card">
           <h2>Audit funnel</h2>
@@ -204,27 +212,6 @@ export default async function ActivityPage({
         </section>
         <header className="sc-admin-toolbar">
           <h2>Audit runs</h2>
-          <div className="sc-admin-filters">
-            {[
-              ["all", "All"],
-              ["problems", "Problems only"],
-              ["ad", "From ads"],
-            ].map(([v, t]) => (
-              <Link
-                className={(q.runs || "all") === v ? "is-active" : ""}
-                href={href({ runs: v })}
-                key={v}
-              >
-                {t}
-              </Link>
-            ))}
-            <Link
-              href={href({ showTests: showTests ? undefined : "1" })}
-              aria-pressed={showTests}
-            >
-              Show tests {showTests ? "on" : "off"}
-            </Link>
-          </div>
         </header>
         <div className="sc-admin-tiles">
           {[
@@ -255,8 +242,8 @@ export default async function ActivityPage({
         <p className="sc-admin-dim">{repeatViewsNote(view.repeatViews)}</p>
         <p className="sc-admin-dim">
           Tiles and funnel: {source === "ad" ? "from ads" : "other traffic"},
-          last {days} days. Run filters below cover all traffic. Visited,
-          Started and Submitted are anonymous totals and include tests.
+          last {days} days. Run filters cover all traffic. Visited, Started and
+          Submitted are anonymous totals and include tests.
         </p>
         <div className="sc-admin-card sc-admin-tablewrap">
           <table className="sc-admin-table sc-admin-runs-table">

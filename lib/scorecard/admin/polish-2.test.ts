@@ -40,6 +40,12 @@ const state = vi.hoisted(() => ({
 }));
 vi.mock("../kv", () => ({
   getKv: () => ({
+    incr: async (key: string) => {
+      const next = Number(state.values.get(key) || 0) + 1;
+      state.values.set(key, next);
+      return next;
+    },
+    del: async (key: string) => Number(state.values.delete(key)),
     get: async (key: string) => state.values.get(key) || null,
     set: async (key: string, value: unknown, opts?: { ex: number }) => {
       state.values.set(key, value);
@@ -289,8 +295,18 @@ it("builds an encoded people search and validates admin profile overrides withou
     "https://linkedin.com/company/example"
   );
   expect(await readLeadProfile("/audit/admin/abc23456")).toEqual({
-    linkedinProfile: "https://www.linkedin.com/in/alex/",
-    companyLinkedin: "https://www.linkedin.com/company/example/",
+    linkedinProfile: {
+      url: "https://www.linkedin.com/in/alex/",
+      source: "manual",
+      status: "manual",
+      savedAt: expect.any(String),
+    },
+    companyLinkedin: {
+      url: "https://www.linkedin.com/company/example/",
+      source: "manual",
+      status: "manual",
+      savedAt: expect.any(String),
+    },
   });
   await expect(
     saveLeadProfile("/audit/admin/abc23456", "https://evil.example/in/alex", "")

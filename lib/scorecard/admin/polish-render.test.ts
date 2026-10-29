@@ -79,7 +79,10 @@ vi.mock("@/lib/scorecard/admin/funnelr-status", async (importOriginal) => ({
   ...(await importOriginal<typeof import("./funnelr-status")>()),
   readFunnelrStatus: async () => state.status,
 }));
-vi.mock("./profiles", () => ({ readLeadProfile: async () => state.profile }));
+vi.mock("./profiles", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./profiles")>()),
+  readLeadProfile: async () => state.profile,
+}));
 vi.mock("@/lib/scorecard/share", () => ({ readShared: async () => null }));
 vi.mock("@/app/audit/admin/actions", () => ({
   saveLeadNote: vi.fn(),
@@ -215,7 +218,41 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   );
   expect(header).toContain("Not qualified");
   expect(header).not.toContain(">No</span>");
-  expect(header).toContain("Website:");
+  expect(header).not.toContain("Website:");
+  expect(header).toContain("first seen 28 Oct (today)");
+  expect(header).not.toContain(
+    'mailto:alex.with.a.very.long.address@example-fixture.com">alex'
+  );
+  expect(header).toContain("sc-admin-header-links");
+  expect(header.match(/live-district.com/g)).toHaveLength(2);
+  expect(header).toContain("More");
+  expect(header.indexOf("More")).toBeLessThan(
+    header.indexOf("Copy report link")
+  );
+  const contact = detailHtml.slice(
+    detailHtml.indexOf("<h2>Contact and source"),
+    detailHtml.indexOf("<h2>Audit")
+  );
+  expect(contact).not.toContain("<dt>Website");
+  expect(contact).not.toContain("<dt>Funnelr");
+  const follow = detailHtml.slice(
+    detailHtml.indexOf("<h2>Follow-up"),
+    detailHtml.indexOf("<h2>Notes")
+  );
+  expect(follow.indexOf("Next step:")).toBeLessThan(
+    follow.indexOf("<dt>Meeting")
+  );
+  expect(follow.indexOf("<dt>Meeting")).toBeLessThan(
+    follow.indexOf("<dt>LinkedIn")
+  );
+  expect(follow.indexOf("<dt>LinkedIn")).toBeLessThan(
+    follow.indexOf("<dt>Funnelr")
+  );
+  expect(follow).toContain("<summary>details</summary>");
+  expect(detailHtml.indexOf("<h2>Notes")).toBeLessThan(
+    detailHtml.indexOf("<h2>Timeline")
+  );
+  expect(detailHtml).toContain('class="sc-admin-card sc-admin-fullwidth"');
   expect(header).toContain(String.fromCharCode(8599));
   expect(
     readFileSync("components/scorecard/admin/LeadDetail.tsx", "utf8")
@@ -264,7 +301,9 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   state.view.allRows.find((row) => row.id === "live")!.funnelrStatus = null;
   expect(detailHtml).toContain('href="/audit/admin/collective"');
   expect(detailHtml).toContain(String.fromCharCode(8592));
-  expect(detailHtml).toContain("Find on LinkedIn");
+  expect(detailHtml).toContain("Looking up LinkedIn");
+  expect(detailHtml).toContain("Search again");
+  expect(detailHtml).not.toContain("Find LinkedIn");
   expect(detailHtml).toContain("keywords=Alex%20Live%20District");
   expect(detailHtml).toContain("No meeting booked yet");
   state.view.meetings = {
@@ -307,10 +346,32 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   expect(activityHtml).toContain("Link to lead");
   expect(
     activityHtml.match(/href="\/audit\/admin\/scans\?runs=problems"/g)
-  ).toHaveLength(4);
+  ).toHaveLength(3);
   expect(
     activityHtml.match(/href="\/audit\/admin\/scans\?runs=all"/g)
-  ).toHaveLength(2);
+  ).toHaveLength(1);
+  expect(activityHtml).toContain("<summary>How to read this</summary>");
+  expect(activityHtml).not.toContain('open=""');
+  expect(activityHtml.match(/sc-admin-filterpanel/g)).toHaveLength(1);
+  expect(activityHtml).toContain("Traffic");
+  expect(activityHtml).toContain("Problems only");
+  const filteredActivity = renderToStaticMarkup(
+    await ActivityPage({
+      searchParams: Promise.resolve({
+        source: "other",
+        period: "7",
+        runs: "problems",
+        showTests: "1",
+      }),
+    })
+  );
+  expect(filteredActivity).toContain("Clear Traffic: Other");
+  expect(filteredActivity).toContain("Clear Period: 7 days");
+  expect(filteredActivity).toContain("Clear Problems only");
+  expect(filteredActivity).toContain("Clear Show tests");
+  expect(filteredActivity.indexOf("sc-admin-active-filter")).toBeLessThan(
+    filteredActivity.indexOf("sc-admin-filterpanel")
+  );
   expect(activityHtml).not.toContain("Lead from the last 30 days");
   if (process.env.ADMIN_POLISH_FIXTURES === "1") {
     mkdirSync(".shipstudio/admin-polish-fixtures", { recursive: true });
@@ -321,7 +382,7 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
     }))
       writeFileSync(
         `.shipstudio/admin-polish-fixtures/${name}.html`,
-        `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/styles.css"></head><body><main class="sc-admin">${body}</main></body></html>`
+        `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/admin-polish.css"></head><body><main class="sc-admin">${body}</main></body></html>`
       );
   }
 });
