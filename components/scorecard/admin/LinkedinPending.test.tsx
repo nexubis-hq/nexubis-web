@@ -1,6 +1,6 @@
 import { createElement, type ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import {
   LinkedinForm,
   LinkedinHeaderLinks,
@@ -48,6 +48,7 @@ beforeEach(() => {
   state.effects = [];
   vi.clearAllMocks();
 });
+afterEach(() => vi.useRealTimers());
 function render(profile: NormalizedProfile) {
   state.cursor = 0;
   return renderToStaticMarkup(
@@ -144,4 +145,33 @@ it("C2 a failed lookup shows its error without falsely marking fallback links no
   expect(failed).toContain("LinkedIn lookup could not finish.");
   expect(failed).not.toContain("sc-admin-not-found");
   expect(failed).not.toContain("No LinkedIn page found.");
+});
+
+it("D4 lookup success disappears after three seconds", async () => {
+  vi.useFakeTimers();
+  vi.mocked(lookupLinkedin).mockResolvedValue({
+    message: "LinkedIn lookup complete.",
+    profile: { lookupVersion: 3, companyLinkedin: null, linkedinProfile: null },
+  });
+  const initial = { companyLinkedin: null, linkedinProfile: null };
+  render(initial);
+  state.effects[0]();
+  await vi.advanceTimersByTimeAsync(0);
+  expect(render(initial)).toContain("LinkedIn lookup complete.");
+  await vi.advanceTimersByTimeAsync(2999);
+  expect(render(initial)).toContain("LinkedIn lookup complete.");
+  await vi.advanceTimersByTimeAsync(1);
+  expect(render(initial)).not.toContain("LinkedIn lookup complete.");
+});
+it("D4 lookup errors remain after three seconds", async () => {
+  vi.useFakeTimers();
+  vi.mocked(lookupLinkedin).mockResolvedValue({
+    message: "LinkedIn lookup could not finish.",
+    error: true,
+  });
+  const initial = { companyLinkedin: null, linkedinProfile: null };
+  render(initial);
+  state.effects[0]();
+  await vi.advanceTimersByTimeAsync(4000);
+  expect(render(initial)).toContain("LinkedIn lookup could not finish.");
 });

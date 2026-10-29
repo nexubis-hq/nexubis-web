@@ -1,3 +1,4 @@
+import { load } from "cheerio";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
@@ -6,6 +7,7 @@ import {
   LinkedinLookupProvider,
   LinkedinHeaderLinks,
   CompanySocialsRow,
+  personLinkName,
 } from "./LinkedinForm";
 import { lookupLinkedin } from "@/app/audit/admin/profile-actions";
 import type { NormalizedProfile } from "@/lib/scorecard/admin/profiles";
@@ -177,7 +179,7 @@ function renderSocials(profile: NormalizedProfile) {
   );
 }
 it.each([false, true])(
-  "C4 socials row, conditional header social and Follow-up guidance (company found=%s)",
+  "D1 socials stay in the Contact row and Follow-up guidance remains (company found=%s)",
   (found) => {
     const html = renderSocials({
       lookupVersion: 3,
@@ -201,7 +203,7 @@ it.each([false, true])(
       html.indexOf("</header>")
     );
     expect(header).toContain("linkedin.com");
-    expect(header.includes('href="https://facebook.com/example"')).toBe(!found);
+    expect(header).not.toContain("facebook.com");
     expect(header).not.toContain("instagram.com");
     expect(header).not.toContain("x.com");
     expect(header.match(/not found/g)).toHaveLength(found ? 1 : 2);
@@ -276,3 +278,116 @@ it.each(["likely", "confirmed", "manual", "missing"] as const)(
     }
   }
 );
+
+it.each([
+  [
+    "Peter-Paul Blom - General Manager - JekaShop.com | LinkedIn",
+    undefined,
+    "Jeka General Manager",
+    "General Manager",
+    "Peter-Paul Blom",
+  ],
+  [
+    "Peter-Paul Blom \u2013 General Manager \u2013 JekaShop.com | LinkedIn",
+    undefined,
+    "Jeka",
+    "General Manager",
+    "Peter-Paul Blom",
+  ],
+  [
+    "Peter-Paul Blom General Manager",
+    undefined,
+    "Jeka",
+    "General Manager",
+    "Peter-Paul Blom",
+  ],
+  [
+    "Peter-Paul Blom - General Manager",
+    "Jan de Vries",
+    "Jeka",
+    "General Manager",
+    "Jan de Vries",
+  ],
+  [
+    undefined,
+    "Peter-Paul Blom",
+    "Peter-Paul Blom General Manager",
+    "General Manager",
+    "Peter-Paul Blom",
+  ],
+  [undefined, undefined, "Jeka General Manager", "General Manager", "Jeka"],
+] as const)(
+  "D1-D2 display only the name from %s",
+  (label, contactName, name, role, expected) => {
+    expect(personLinkName(label, contactName, name, role)).toBe(expected);
+    const profile: NormalizedProfile = {
+      lookupVersion: 3,
+      companyLinkedin: null,
+      linkedinProfile: label
+        ? {
+            url: "https://linkedin.com/in/person",
+            label,
+            source: "lookup",
+            status: "likely",
+            savedAt: "",
+          }
+        : null,
+    };
+    const html = renderToStaticMarkup(
+      createElement(LinkedinLookupProvider, {
+        leadPath: "/audit/admin/example",
+        profile,
+        children: createElement(
+          "div",
+          {},
+          createElement(
+            "header",
+            {},
+            createElement(LinkedinHeaderLinks, {
+              company: "Example",
+              name,
+              contactName,
+              role,
+            })
+          ),
+          createElement(LinkedinForm, {
+            leadPath: "/audit/admin/example",
+            profile,
+            company: "Example",
+            name,
+            contactName,
+            role,
+          })
+        ),
+      })
+    );
+    const $ = load(html);
+    expect(
+      $("header a")
+        .last()
+        .text()
+        .replace(/^in\s+/, "")
+        .trim()
+    ).toBe(expected);
+    expect(
+      $(".sc-admin-linkedin-line")
+        .last()
+        .find(".sc-admin-linkedin-title > a")
+        .text()
+        .trim()
+    ).toBe(`${expected} \u2197`);
+  }
+);
+it("D6 shows the exact revised LinkedIn explanation", () => {
+  const $ = load(
+    render({ lookupVersion: 3, linkedinProfile: null, companyLinkedin: null })
+  );
+  expect(
+    $(".sc-admin-linkedin > .sc-admin-about p")
+      .text()
+      .replace(/\s+/g, " ")
+      .trim()
+  ).toBe(
+    "The person was found by a search on name + company, so check it once. The company page can be wrong: open the person's LinkedIn profile, click their current company, and paste that link with Edit link. A confirmed or hand-pasted link is never overwritten."
+  );
+});
