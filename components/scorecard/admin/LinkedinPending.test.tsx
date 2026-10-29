@@ -94,14 +94,14 @@ it("W6 both quiet spinners replace links while pending, then show returned links
   expect(pending.match(/Finding LinkedIn\u2026/g)).toHaveLength(2);
   expect(pending.match(/sc-admin-linkedin-spinner/g)).toHaveLength(2);
   expect(pending).toContain('href="https://example.com"');
-  expect(pending).not.toContain("linkedin.com");
+  expect(pending).toContain("linkedin.com/search/results/companies");
   state.effects[0]();
   state.effects[0]();
   expect(lookupLinkedin).toHaveBeenCalledOnce();
   finish({
     message: "LinkedIn lookup complete.",
     profile: {
-      lookupVersion: 2,
+      lookupVersion: 3,
       lookedUpAt: "new",
       companyLinkedin: {
         url: "https://www.linkedin.com/company/example/",
@@ -129,4 +129,19 @@ it("W6 both quiet spinners replace links while pending, then show returned links
   expect(complete).toContain("from their website");
   state.effects.at(-2)!();
   expect(lookupLinkedin).toHaveBeenCalledOnce();
+});
+
+it("C2 a failed lookup shows its error without falsely marking fallback links not found", async () => {
+  vi.mocked(lookupLinkedin).mockResolvedValue({
+    message: "LinkedIn lookup could not finish.",
+    error: true,
+  });
+  const initial = { companyLinkedin: null, linkedinProfile: null };
+  render(initial);
+  state.effects[0]();
+  await vi.waitFor(() => expect(state.values[2]).toBe(false));
+  const failed = render(initial);
+  expect(failed).toContain("LinkedIn lookup could not finish.");
+  expect(failed).not.toContain("sc-admin-not-found");
+  expect(failed).not.toContain("No LinkedIn page found.");
 });

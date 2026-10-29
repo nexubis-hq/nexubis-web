@@ -1,8 +1,9 @@
-import { EditContact } from "./EditContact";
+import { ContactMenu } from "./EditContact";
 import {
   LinkedinForm,
   LinkedinLookupProvider,
   LinkedinHeaderLinks,
+  CompanySocialsRow,
 } from "./LinkedinForm";
 import { firstSeenLine, nextStep } from "@/lib/scorecard/admin/follow-up";
 import { normalizeProfile } from "@/lib/scorecard/admin/profiles";
@@ -192,6 +193,8 @@ export async function LeadDetail({
             )}
           </p>
           <p className="sc-admin-header-links">
+            <LinkedinHeaderLinks company={company} name={searchName} />
+            <span className="sc-admin-link-separator">&middot;</span>
             <a
               className="sc-admin-site-link"
               href={websiteUrl(url) || undefined}
@@ -200,8 +203,6 @@ export async function LeadDetail({
             >
               {row?.host || url} &#8599;
             </a>
-            <span className="sc-admin-link-separator">&middot;</span>
-            <LinkedinHeaderLinks company={company} name={searchName} />
           </p>
           <SameContact contacts={row?.sameContacts || []} />
         </div>
@@ -220,29 +221,24 @@ export async function LeadDetail({
               Email {firstName || "contact"}
             </a>
           )}
-          <details className="sc-admin-more">
-            <summary className="btn btn-secondary">More &#9662;</summary>
-            <div className="sc-admin-more-items">
-              {row && (
-                <EditContact
-                  leadPath={row.leadPath}
-                  firstName={firstName}
-                  lastName={lastName}
-                  role={role}
-                />
-              )}
-              {reportSlug && <CopyLinkButton path={`/audit/r/${reportSlug}`} />}{" "}
-              {!failed && reportSlug && (
-                <RerunAuditForm
-                  slug={reportSlug}
-                  url={url}
-                  company={company}
-                  name={name}
-                  paste={Boolean(manual && manual.source !== "crawl")}
-                />
-              )}
-            </div>
-          </details>
+          <ContactMenu
+            editable={Boolean(row)}
+            leadPath={row?.leadPath || `/audit/admin/${id}`}
+            firstName={firstName}
+            lastName={lastName}
+            role={role}
+          >
+            {reportSlug && <CopyLinkButton path={`/audit/r/${reportSlug}`} />}{" "}
+            {!failed && reportSlug && (
+              <RerunAuditForm
+                slug={reportSlug}
+                url={url}
+                company={company}
+                name={name}
+                paste={Boolean(manual && manual.source !== "crawl")}
+              />
+            )}
+          </ContactMenu>
         </div>
       </header>
       <div className="sc-admin-grid sc-admin-detailgrid">
@@ -292,6 +288,7 @@ export async function LeadDetail({
                 />
               </dd>
             </div>
+            <CompanySocialsRow />
           </dl>
         </section>
         <section className="sc-admin-card">

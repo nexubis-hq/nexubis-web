@@ -1,7 +1,12 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { LinkedinForm } from "./LinkedinForm";
+import {
+  LinkedinForm,
+  LinkedinLookupProvider,
+  LinkedinHeaderLinks,
+  CompanySocialsRow,
+} from "./LinkedinForm";
 import { lookupLinkedin } from "@/app/audit/admin/profile-actions";
 import type { NormalizedProfile } from "@/lib/scorecard/admin/profiles";
 const state = vi.hoisted(() => ({
@@ -30,7 +35,7 @@ beforeEach(() => {
       companyLinkedin: null,
       linkedinProfile: null,
       lookedUpAt: "done",
-      lookupVersion: 2,
+      lookupVersion: 3,
     },
   });
 });
@@ -67,7 +72,7 @@ it("LK3 renders immediately, looks up after rendering, then does not repeat an e
       companyLinkedin: null,
       linkedinProfile: null,
       lookedUpAt: "done",
-      lookupVersion: 2,
+      lookupVersion: 3,
     },
   });
   await vi.waitFor(() => expect(state.refresh).toHaveBeenCalledOnce());
@@ -78,7 +83,7 @@ it("LK3 makes no lookup, refresh, fetch or extra request when lookedUpAt is set,
     companyLinkedin: null,
     linkedinProfile: null,
     lookedUpAt: "2026-10-29T10:00:00Z",
-    lookupVersion: 2,
+    lookupVersion: 3,
   });
   state.effects.forEach((effect) => effect());
   expect(lookupLinkedin).not.toHaveBeenCalled();
@@ -94,7 +99,7 @@ it.each(["website", "audit", "lookup", "manual"] as const)(
   (source) => {
     const html = render({
       lookedUpAt: "done",
-      lookupVersion: 2,
+      lookupVersion: 3,
       companyLinkedin: {
         url: "https://linkedin.com/company/example",
         status: "likely",
@@ -131,7 +136,7 @@ it("L8 confirmed/manual person links have no likely pill", () => {
   for (const status of ["confirmed", "manual"] as const) {
     const html = render({
       lookedUpAt: "done",
-      lookupVersion: 2,
+      lookupVersion: 3,
       companyLinkedin: null,
       linkedinProfile: {
         url: "https://linkedin.com/in/alex",
@@ -143,3 +148,131 @@ it("L8 confirmed/manual person links have no likely pill", () => {
     expect(html).not.toContain("sc-admin-likely");
   }
 });
+
+function renderSocials(profile: NormalizedProfile) {
+  return renderToStaticMarkup(
+    createElement(LinkedinLookupProvider, {
+      leadPath: "/audit/admin/example",
+      profile,
+      children: createElement(
+        "div",
+        {},
+        createElement(
+          "header",
+          {},
+          createElement(LinkedinHeaderLinks, {
+            company: "Example",
+            name: "Alex",
+          })
+        ),
+        createElement("dl", {}, createElement(CompanySocialsRow)),
+        createElement(LinkedinForm, {
+          leadPath: "/audit/admin/example",
+          profile,
+          company: "Example",
+          name: "Alex",
+        })
+      ),
+    })
+  );
+}
+it.each([false, true])(
+  "C4 socials row, conditional header social and Follow-up guidance (company found=%s)",
+  (found) => {
+    const html = renderSocials({
+      lookupVersion: 3,
+      linkedinProfile: null,
+      companyLinkedin: found
+        ? {
+            url: "https://linkedin.com/company/example",
+            source: "manual",
+            status: "manual",
+            savedAt: "",
+          }
+        : null,
+      companySocials: [
+        { network: "x", url: "https://x.com/example" },
+        { network: "instagram", url: "https://instagram.com/example" },
+        { network: "facebook", url: "https://facebook.com/example" },
+      ],
+    });
+    const header = html.slice(
+      html.indexOf("<header>"),
+      html.indexOf("</header>")
+    );
+    expect(header).toContain("linkedin.com");
+    expect(header.includes('href="https://facebook.com/example"')).toBe(!found);
+    expect(header).not.toContain("instagram.com");
+    expect(header).not.toContain("x.com");
+    expect(header.match(/not found/g)).toHaveLength(found ? 1 : 2);
+    expect(
+      html.includes(
+        "No LinkedIn page found. See Socials under Contact and source."
+      )
+    ).toBe(!found);
+    const row = html.slice(html.indexOf("<dt>Socials"), html.indexOf("</dl>"));
+    expect(row.indexOf("Facebook")).toBeLessThan(row.indexOf("Instagram"));
+    expect(row.indexOf("Instagram")).toBeLessThan(row.indexOf(">X"));
+  }
+);
+it("C4 empty socials row shows None found and adds no header social", () => {
+  const html = renderSocials({
+    lookupVersion: 3,
+    companyLinkedin: null,
+    linkedinProfile: null,
+    companySocials: [],
+  });
+  expect(html).toContain("<dt>Socials</dt>");
+  expect(html).toContain("None found");
+  expect(html).not.toContain("Facebook");
+});
+it("C4 company LinkedIn always remains visible while an older profile reruns", () => {
+  const html = renderSocials({
+    lookupVersion: 2,
+    companyLinkedin: null,
+    linkedinProfile: null,
+    companySocials: [
+      { network: "facebook", url: "https://facebook.com/example" },
+    ],
+  });
+  const header = html.slice(
+    html.indexOf("<header>"),
+    html.indexOf("</header>")
+  );
+  expect(header).toContain("linkedin.com/search/results/companies");
+  expect(header).toContain("Finding LinkedIn");
+  expect(header).not.toContain("facebook.com");
+  expect(html).not.toContain("No LinkedIn page found.");
+});
+
+it.each(["likely", "confirmed", "manual", "missing"] as const)(
+  "C2 company and person pills match saved status: %s",
+  (status) => {
+    const link =
+      status === "missing"
+        ? null
+        : {
+            url: "https://linkedin.com/company/example",
+            source: "lookup" as const,
+            status,
+            savedAt: "",
+          };
+    const html = renderSocials({
+      lookupVersion: 3,
+      companyLinkedin: link,
+      linkedinProfile: link
+        ? { ...link, url: "https://linkedin.com/in/alex" }
+        : null,
+    });
+    expect((html.match(/sc-admin-not-found/g) || []).length).toBe(
+      status === "missing" ? 4 : 0
+    );
+    expect((html.match(/sc-admin-likely/g) || []).length).toBe(
+      status === "likely" ? 4 : 0
+    );
+    if (status === "missing") {
+      expect(html).toContain("companies/?keywords=Example");
+      expect(html).toContain("people/?keywords=Alex%20Example");
+    }
+  }
+);

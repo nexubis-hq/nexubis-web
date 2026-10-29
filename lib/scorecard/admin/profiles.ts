@@ -1,3 +1,4 @@
+import type { CompanySocial } from "./company-socials";
 import { Redis } from "@upstash/redis";
 import { getKv } from "../kv";
 import { linkedinUrl } from "./linkedin";
@@ -14,12 +15,14 @@ export interface LeadProfile {
   companyLinkedin: LinkedinLink | string | null;
   lookedUpAt?: string;
   lookupVersion?: number;
+  companySocials?: CompanySocial[];
 }
 export interface NormalizedProfile {
   linkedinProfile: LinkedinLink | null;
   companyLinkedin: LinkedinLink | null;
   lookedUpAt?: string;
   lookupVersion?: number;
+  companySocials?: CompanySocial[];
 }
 export const PROFILE_TTL = 180 * 86400;
 const key = (leadPath: string) => `scorecard-lead-profile:${leadPath}`;
@@ -35,6 +38,9 @@ export function normalizeProfile(
   return {
     linkedinProfile: normalize(profile?.linkedinProfile || null),
     companyLinkedin: normalize(profile?.companyLinkedin || null),
+    ...(profile?.companySocials
+      ? { companySocials: profile.companySocials }
+      : {}),
     ...(profile?.lookupVersion !== undefined
       ? { lookupVersion: profile.lookupVersion }
       : {}),
@@ -83,7 +89,8 @@ export function mergeLookup(
   profile: NormalizedProfile,
   company: LinkedinLink | null,
   person: LinkedinLink | null,
-  at: string
+  at: string,
+  companySocials: CompanySocial[] = profile.companySocials || []
 ): NormalizedProfile {
   const fill = (old: LinkedinLink | null, next: LinkedinLink | null) =>
     !old || old.status === "likely" ? next || old : old;
@@ -91,7 +98,8 @@ export function mergeLookup(
     companyLinkedin: fill(profile.companyLinkedin, company),
     linkedinProfile: fill(profile.linkedinProfile, person),
     lookedUpAt: at,
-    lookupVersion: 2,
+    lookupVersion: 3,
+    companySocials,
   };
 }
 export async function saveLeadProfile(

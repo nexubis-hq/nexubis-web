@@ -224,3 +224,16 @@
   margin-top: 10px;
   min-width: 220px;
 }
+
+.sc-admin-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.sc-admin-not-found {
+  font-size: 0.7rem;
+  color: #777;
+  background: #eee;
+  padding: 0.1rem 0.4rem;
+  border-radius: 1rem;
+}

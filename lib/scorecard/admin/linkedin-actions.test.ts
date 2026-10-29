@@ -11,7 +11,7 @@ import {
   writeLeadProfile,
   type LinkedinLink,
 } from "./profiles";
-import { readLinkedinWebsite } from "./linkedin-website";
+import { readCompanyWebsite } from "./linkedin-website";
 import { loadLeadsView } from "./data";
 import { runLeadPlumbing } from "../unlock";
 import { notifyFailedScan } from "../notify";
@@ -73,7 +73,7 @@ vi.mock("../unlock", () => ({ runLeadPlumbing: vi.fn() }));
 vi.mock("../notify", () => ({ notifyFailedScan: vi.fn() }));
 vi.mock("@/lib/meta/capi", () => ({ sendCapiEvent: vi.fn() }));
 vi.mock("./linkedin-website", () => ({
-  readLinkedinWebsite: vi.fn(async () => []),
+  readCompanyWebsite: vi.fn(async () => ({ linkedin: [], companySocials: [] })),
 }));
 const path = "/audit/admin/lead123";
 const company: LinkedinLink = {
@@ -89,6 +89,10 @@ const person: LinkedinLink = {
 };
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.mocked(readCompanyWebsite).mockResolvedValue({
+    linkedin: [],
+    companySocials: [],
+  });
   state.values.clear();
   state.signedIn = true;
   state.failWrites = false;
@@ -309,7 +313,7 @@ it("legacy manual writer keeps the 180 day TTL and compatible normalized shape",
   );
 });
 
-it.each([undefined, 1])(
+it.each([undefined, 1, 2])(
   "W5 reruns old lookup version %s once, then makes no lookup call",
   async (lookupVersion) => {
     await writeLeadProfile(path, {
@@ -319,18 +323,18 @@ it.each([undefined, 1])(
       lookupVersion,
     });
     await lookupLinkedin(path);
-    expect(await readLeadProfile(path)).toMatchObject({ lookupVersion: 2 });
+    expect(await readLeadProfile(path)).toMatchObject({ lookupVersion: 3 });
     await lookupLinkedin(path);
     expect(lookupCompanyLinkedin).toHaveBeenCalledOnce();
     expect(lookupPersonLinkedin).toHaveBeenCalledOnce();
-    expect(readLinkedinWebsite).toHaveBeenCalledOnce();
+    expect(readCompanyWebsite).toHaveBeenCalledOnce();
   }
 );
-it("W5 version 2 makes no call even without a timestamp or links", async () => {
+it("W5 version 3 makes no call even without a timestamp or links", async () => {
   await writeLeadProfile(path, {
     companyLinkedin: null,
     linkedinProfile: null,
-    lookupVersion: 2,
+    lookupVersion: 3,
   });
   await lookupLinkedin(path);
   expect(lookupCompanyLinkedin).not.toHaveBeenCalled();
@@ -361,10 +365,49 @@ it.each(["confirmed", "manual"] as const)(
     expect(await readLeadProfile(path)).toMatchObject({
       companyLinkedin: keptCompany,
       linkedinProfile: keptPerson,
-      lookupVersion: 2,
+      lookupVersion: 3,
     });
     expect(lookupCompanyLinkedin).toHaveBeenCalledOnce();
     expect(lookupPersonLinkedin).toHaveBeenCalledOnce();
-    expect(readLinkedinWebsite).toHaveBeenCalledOnce();
+    expect(readCompanyWebsite).toHaveBeenCalledOnce();
+  }
+);
+
+it.each(["manual", "confirmed"] as const)(
+  "C4 version 2 reruns once, saves socials and preserves %s links",
+  async (status) => {
+    const keptCompany = { ...company, status };
+    const keptPerson = { ...person, status };
+    await writeLeadProfile(path, {
+      companyLinkedin: keptCompany,
+      linkedinProfile: keptPerson,
+      lookupVersion: 2,
+    });
+    const socials = [
+      { network: "facebook" as const, url: "https://facebook.com/example" },
+    ];
+    vi.mocked(readCompanyWebsite).mockResolvedValue({
+      linkedin: [],
+      companySocials: socials,
+    });
+    await lookupLinkedin(path);
+    await lookupLinkedin(path);
+    expect(await readLeadProfile(path)).toMatchObject({
+      companyLinkedin: keptCompany,
+      linkedinProfile: keptPerson,
+      lookupVersion: 3,
+      companySocials: socials,
+    });
+    expect(readCompanyWebsite).toHaveBeenCalledExactlyOnceWith(
+      "example.com",
+      "Example"
+    );
+    expect(lookupCompanyLinkedin).toHaveBeenCalledOnce();
+    expect(lookupPersonLinkedin).toHaveBeenCalledOnce();
+    await saveLinkedinProfile(
+      { message: "" },
+      form("person", "save", "https://linkedin.com/in/manual")
+    );
+    expect((await readLeadProfile(path))?.companySocials).toEqual(socials);
   }
 );
