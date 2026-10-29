@@ -134,6 +134,23 @@ export async function LeadDetail({
   };
   const meetingEvents = view.meetings?.[email.trim().toLowerCase()] || [];
   const meeting = meetingSummary(meetingEvents);
+  const callUpcoming =
+    meeting.active && Date.parse(meeting.current!.startTime) > view.now;
+  const callDate = meeting.active
+    ? new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Africa/Johannesburg",
+        day: "numeric",
+        month: "short",
+        ...(callUpcoming
+          ? { hour: "2-digit", minute: "2-digit", hourCycle: "h23" as const }
+          : {}),
+      })
+        .format(new Date(meeting.current!.startTime))
+        .replace(",", "")
+    : "";
+  const callLabel = meeting.active
+    ? `${callUpcoming ? "Call booked" : "Call was"} ${callDate}`
+    : "Call not booked";
   const absoluteReportUrl = reportSlug
     ? new URL(
         `/audit/r/${reportSlug}`,
@@ -178,10 +195,11 @@ export async function LeadDetail({
         <div>
           <div className="sc-admin-badges">
             <LeadStatus status={row?.status || (manual ? "hand" : "ready")} />
-            <Qualified
-              header
-              decision={report?.qualifiedDecision || row?.qualifiedDecision}
-            />
+            <span
+              className={`sc-admin-chip${callUpcoming ? " sc-admin-chip-yes" : meeting.active ? " sc-admin-status-hand" : ""}`}
+            >
+              {callLabel}
+            </span>
           </div>
           <h1>{name || company}</h1>
           {role && <p className="sc-admin-dim">{role}</p>}
@@ -248,7 +266,7 @@ export async function LeadDetail({
       </header>
       <div className="sc-admin-grid sc-admin-detailgrid">
         <section className="sc-admin-card">
-          <h2>Contact and source</h2>
+          <h2>Contact</h2>
           <dl className="sc-admin-facts">
             <div>
               <dt>First name</dt>
@@ -274,120 +292,135 @@ export async function LeadDetail({
               <dt>Makes</dt>
               <dd>{result?.meta.productOneLiner || "not recorded"}</dd>
             </div>
-            <div>
-              <dt>Came from</dt>
-              <dd>
-                {row?.adLabel || "not recorded"}{" "}
-                {(lead?.ad || failure?.ad)?.utm_source}
-              </dd>
-            </div>
-            <div>
-              <dt>First seen (SAST)</dt>
-              <dd>{formatSast(row?.firstSeen || report!.createdAt)}</dd>
-            </div>
-            <div>
-              <dt>Qualified</dt>
-              <dd>
-                <Qualified
-                  decision={report?.qualifiedDecision || row?.qualifiedDecision}
-                />
-              </dd>
-            </div>
             <CompanySocialsRow />
           </dl>
         </section>
-        <section className="sc-admin-card">
-          <h2>Audit</h2>
-          {failure && (
-            <>
-              <p>{failure.reason}</p>
-              <p className="sc-admin-dim">
-                {failure.siteRead || "Site-read reason not recorded"}
-              </p>
-            </>
-          )}
-          {report && (
-            <>
-              <p>
-                <strong className="sc-admin-bigscore">
-                  {row?.score ??
-                    (report ? prospectScores(report.result)?.overall : null) ??
-                    "n/a"}
-                </strong>{" "}
-                /100 {result!.verdict.band} gap
-              </p>
-              <dl className="sc-admin-facts">
-                <div>
-                  <dt>First fix</dt>
-                  <dd>{result!.firstFix?.categoryLabel || "n/a"}</dd>
-                </div>
-                <div>
-                  <dt>Competitors</dt>
-                  <dd>
-                    {result!.meta.competitors.length
-                      ? result!.meta.competitors.map((competitor, index) => {
-                          const href = websiteUrl(competitor.url);
-                          const linkedin = storedCompanyLinkedin(
-                            report,
-                            competitor.name
-                          );
-                          return (
-                            <span key={`${competitor.name}-${index}`}>
-                              {index > 0 && <>, </>}
-                              {href ? (
-                                <a href={href} target="_blank" rel="noreferrer">
-                                  {competitor.name} &#8599;
-                                </a>
-                              ) : (
-                                competitor.name
-                              )}
-                              {linkedin && (
-                                <>
-                                  {" "}
-                                  &middot;{" "}
+        <div className="sc-admin-detail-stack">
+          <section className="sc-admin-card">
+            <h2>Audit</h2>
+            {failure && (
+              <>
+                <p>{failure.reason}</p>
+                <p className="sc-admin-dim">
+                  {failure.siteRead || "Site-read reason not recorded"}
+                </p>
+              </>
+            )}
+            {report && (
+              <>
+                <p>
+                  <strong className="sc-admin-bigscore">
+                    {row?.score ??
+                      (report
+                        ? prospectScores(report.result)?.overall
+                        : null) ??
+                      "n/a"}
+                  </strong>{" "}
+                  /100 {result!.verdict.band} gap
+                </p>
+                <dl className="sc-admin-facts">
+                  <div>
+                    <dt>First fix</dt>
+                    <dd>{result!.firstFix?.categoryLabel || "n/a"}</dd>
+                  </div>
+                  <div>
+                    <dt>Competitors</dt>
+                    <dd>
+                      {result!.meta.competitors.length
+                        ? result!.meta.competitors.map((competitor, index) => {
+                            const href = websiteUrl(competitor.url);
+                            const linkedin = storedCompanyLinkedin(
+                              report,
+                              competitor.name
+                            );
+                            return (
+                              <span key={`${competitor.name}-${index}`}>
+                                {index > 0 && <>, </>}
+                                {href ? (
                                   <a
-                                    href={linkedin}
+                                    href={href}
                                     target="_blank"
                                     rel="noreferrer"
                                   >
-                                    LinkedIn &#8599;
+                                    {competitor.name} &#8599;
                                   </a>
-                                </>
-                              )}
-                            </span>
-                          );
-                        })
-                      : "none recorded"}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Report runs</dt>
-                  <dd>
-                    {reportRunCount(
-                      history,
-                      runSummary?.runCount || manual?.runCount || 1,
-                      report
-                    )}{" "}
-                    (up to 50 recent runs kept)
-                  </dd>
-                </div>
-                <div>
-                  <dt>Last run</dt>
-                  <dd>
-                    {formatSast(history[0]?.at || report.createdAt)} SAST (
-                    {history[0]?.by || "visitor"})
-                  </dd>
-                </div>
-                <div>
-                  <dt>Link live until</dt>
-                  <dd>
-                    {formatSast(report.expiresAt, false, view.now, true)} SAST
-                  </dd>
-                </div>
-              </dl>
-            </>
-          )}
-        </section>
+                                ) : (
+                                  competitor.name
+                                )}
+                                {linkedin && (
+                                  <>
+                                    {" "}
+                                    &middot;{" "}
+                                    <a
+                                      href={linkedin}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      LinkedIn &#8599;
+                                    </a>
+                                  </>
+                                )}
+                              </span>
+                            );
+                          })
+                        : "none recorded"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Report runs</dt>
+                    <dd>
+                      {reportRunCount(
+                        history,
+                        runSummary?.runCount || manual?.runCount || 1,
+                        report
+                      )}{" "}
+                      (up to 50 recent runs kept)
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Last run</dt>
+                    <dd>
+                      {formatSast(history[0]?.at || report.createdAt)} SAST (
+                      {history[0]?.by || "visitor"})
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Link live until</dt>
+                    <dd>
+                      {formatSast(report.expiresAt, false, view.now, true)} SAST
+                    </dd>
+                  </div>
+                </dl>
+              </>
+            )}
+          </section>
+          <section className="sc-admin-card">
+            <h2>Source</h2>
+            <dl className="sc-admin-facts">
+              <div>
+                <dt>Came from</dt>
+                <dd>
+                  {row?.adLabel || "not recorded"}{" "}
+                  {(lead?.ad || failure?.ad)?.utm_source}
+                </dd>
+              </div>
+              <div>
+                <dt>First seen (SAST)</dt>
+                <dd>{formatSast(row?.firstSeen || report!.createdAt)}</dd>
+              </div>
+              <div>
+                <dt>Qualified</dt>
+                <dd>
+                  <Qualified
+                    decision={
+                      report?.qualifiedDecision || row?.qualifiedDecision
+                    }
+                  />
+                </dd>
+              </div>
+            </dl>
+          </section>
+        </div>
         <section className="sc-admin-card sc-admin-follow-up">
           <h2>Follow-up</h2>
           <p className="sc-admin-next-step">

@@ -194,14 +194,17 @@ export function CompanySocialsRow() {
       <dt>Socials</dt>
       <dd className="sc-admin-socials">
         {socials.length ? (
-          SOCIAL_NETWORKS.map(([network, label]) => {
+          SOCIAL_NETWORKS.filter(([network]) =>
+            socials.some((social) => social.network === network)
+          ).map(([network, label], index) => {
             const link = socials.find((social) => social.network === network);
             return link ? (
-              <small key={network}>
+              <span key={network}>
+                {index > 0 && "  "}
                 <a href={link.url} target="_blank" rel="noreferrer">
                   {label} &#8599;
                 </a>
-              </small>
+              </span>
             ) : null;
           })
         ) : (
@@ -301,7 +304,7 @@ function LinkedinFormContent({
         (profile.lookupVersion ?? 0) >= 3 &&
         !profile.companyLinkedin && (
           <p className="sc-admin-dim">
-            No LinkedIn page found. See Socials under Contact and source.
+            No LinkedIn page found. See Socials under Contact.
           </p>
         )}
       {message && (
