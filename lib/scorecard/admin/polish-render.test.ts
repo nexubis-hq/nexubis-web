@@ -225,6 +225,10 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   );
   expect(header).toContain("sc-admin-header-links");
   expect(header.match(/live-district.com/g)).toHaveLength(2);
+  expect(header).toContain("Live District \u00B7 first seen 28 Oct (today)");
+  expect(header.match(/class="sc-admin-link-separator">\u00b7/g)).toHaveLength(
+    2
+  );
   expect(header).toContain("More");
   expect(header.indexOf("More")).toBeLessThan(
     header.indexOf("Copy report link")
@@ -301,7 +305,7 @@ it("renders fixture Leads, lead detail and Activity with reciprocal links, repla
   state.view.allRows.find((row) => row.id === "live")!.funnelrStatus = null;
   expect(detailHtml).toContain('href="/audit/admin/collective"');
   expect(detailHtml).toContain(String.fromCharCode(8592));
-  expect(detailHtml).toContain("Looking up LinkedIn");
+  expect(detailHtml).toContain("Looking up LinkedIn\u2026");
   expect(detailHtml).toContain("Search again");
   expect(detailHtml).not.toContain("Find LinkedIn");
   expect(detailHtml).toContain("keywords=Alex%20Live%20District");

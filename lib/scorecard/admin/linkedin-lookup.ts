@@ -38,7 +38,7 @@ export async function lookupCompanyLinkedin(
   });
   return hit
     ? {
-        url: hit.url,
+        url: linkedinUrl(hit.url, "company") || hit.url,
         source: "lookup",
         status: "likely",
         savedAt: new Date().toISOString(),

@@ -186,11 +186,11 @@ export async function LeadDetail({
             >
               {row?.host || url} &#8599;
             </a>
-            <span className="sc-admin-link-separator">|</span>
+            <span className="sc-admin-link-separator">&middot;</span>
             <a href={companyLinkedin} target="_blank" rel="noreferrer">
               <span className="sc-admin-in">in</span> {company}
             </a>
-            <span className="sc-admin-link-separator">|</span>
+            <span className="sc-admin-link-separator">&middot;</span>
             <a href={personLinkedin} target="_blank" rel="noreferrer">
               <span className="sc-admin-in">in</span> {firstName || "Person"}
             </a>

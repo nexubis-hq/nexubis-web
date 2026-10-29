@@ -1,3 +1,4 @@
+import { Redis } from "@upstash/redis";
 import { getKv } from "../kv";
 import { linkedinUrl } from "./linkedin";
 export interface LinkedinLink {
@@ -54,11 +55,20 @@ export async function withProfileLock<T>(
 ): Promise<T> {
   const kv = getKv();
   const lock = `${key(leadPath)}:lock`;
-  const count = await kv.incr(lock);
-  if (count !== 1)
-    throw new Error("LinkedIn update in progress. Try again shortly.");
+  const supportsNx = kv instanceof Redis;
+  // Production returns the actual Upstash Redis client, which supports NX.
+  // The development memory adapter ignores NX, so retain its legacy lock.
+  if (supportsNx) {
+    const acquired = await kv.set(lock, 1, { nx: true, ex: 30 });
+    if (acquired !== "OK")
+      throw new Error("LinkedIn update in progress. Try again shortly.");
+  } else {
+    const count = await kv.incr(lock);
+    if (count !== 1)
+      throw new Error("LinkedIn update in progress. Try again shortly.");
+  }
   try {
-    await kv.expire(lock, 30);
+    if (!supportsNx) await kv.expire(lock, 30);
     return await work();
   } finally {
     await kv.del(lock);

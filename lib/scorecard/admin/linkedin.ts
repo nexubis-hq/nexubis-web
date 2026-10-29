@@ -5,13 +5,18 @@ export function linkedinUrl(
 ): string | null {
   if (!value.trim()) return null;
   try {
-    const url = new URL(value.trim());
+    const input = /^https?:\/\//i.test(value.trim())
+      ? value.trim()
+      : `https://${value.trim()}`;
+    const url = new URL(input);
+    const authority = input.match(/^https?:\/\/([^/?#]*)/i)?.[1] || "";
     if (
-      !/^(www\.)?linkedin\.com$/i.test(url.hostname) ||
-      url.protocol !== "https:" ||
+      !/^(?:(?:www|[a-z]{2})\.)?linkedin\.com$/i.test(url.hostname) ||
+      !["https:", "http:"].includes(url.protocol) ||
       url.username ||
       url.password ||
-      url.port
+      url.port ||
+      authority.includes(":")
     )
       return null;
     const match = url.pathname.match(new RegExp(`^/${kind}/([^/]+)(?:/|$)`));

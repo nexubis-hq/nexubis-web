@@ -17,7 +17,7 @@ export function firstSeenLine(
 ): string {
   const day = (value: number) => Math.floor((value + 2 * 3600000) / 86400000);
   const days = Math.max(0, day(now) - day(Date.parse(at)));
-  return `${company}  first seen ${shortSast(at)} (${days === 0 ? "today" : `${days} ${days === 1 ? "day" : "days"} ago`})`;
+  return `${company} \u00B7 first seen ${shortSast(at)} (${days === 0 ? "today" : `${days} ${days === 1 ? "day" : "days"} ago`})`;
 }
 export function nextStep(
   name: string,

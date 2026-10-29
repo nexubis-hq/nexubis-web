@@ -74,7 +74,7 @@ export function LinkedinForm({
       />
       <p role="status" className="sc-admin-dim">
         {busy || (!profile.lookedUpAt && !message)
-          ? "Looking up LinkedIn"
+          ? "Looking up LinkedIn\u2026"
           : message}
       </p>
       <details className="sc-admin-about">

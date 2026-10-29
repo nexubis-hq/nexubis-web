@@ -53,7 +53,7 @@ it("LK3 renders immediately, looks up after rendering, then does not repeat an e
       })
   );
   const html = render({ companyLinkedin: null, linkedinProfile: null });
-  expect(html).toContain("Looking up LinkedIn");
+  expect(html).toContain("Looking up LinkedIn\u2026");
   expect(lookupLinkedin).not.toHaveBeenCalled();
   state.effects[0]();
   state.effects[0](); // Strict Mode effect replay must not duplicate the request.
@@ -81,7 +81,7 @@ it("LK3 makes no lookup, refresh, fetch or extra request when lookedUpAt is set,
   expect(lookupLinkedin).not.toHaveBeenCalled();
   expect(state.refresh).not.toHaveBeenCalled();
   expect(network).not.toHaveBeenCalled();
-  expect(html).not.toContain("Looking up LinkedIn");
+  expect(html).not.toContain("Looking up LinkedIn\u2026");
   expect(html).not.toContain("sc-admin-likely");
   expect(html).toContain("companies/?keywords=Example");
   expect(html).toContain("people/?keywords=Alex%20Example");

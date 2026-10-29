@@ -34,6 +34,17 @@ const result = (
 beforeEach(() => vi.mocked(searchWeb).mockReset());
 afterEach(() => vi.useRealTimers());
 it.each([
+  [
+    "country company hit",
+    [
+      result("https://nl.linkedin.com/company/example-nl"),
+      result("https://www.linkedin.com/company/second/"),
+    ],
+  ],
+  [
+    "raw fallback preserves audit hit",
+    [result("https://linkedin.com.evil.com/company/audit-selected/")],
+  ],
   ["clear match", [result("https://www.linkedin.com/company/example/")]],
   [
     "several results",
@@ -79,7 +90,9 @@ it.each([
       fact.evidence.match(
         /LinkedIn company page found: (.*?)\.(?: Snippet:|$)/
       )?.[1] || null;
-    expect(admin?.url || null).toBe(picked);
+    expect(admin?.url || null).toBe(
+      picked ? linkedinUrl(picked, "company") || picked : null
+    );
     expect(searchWeb).toHaveBeenLastCalledWith(
       '"Example" site:linkedin.com/company'
     );
@@ -102,6 +115,46 @@ it("uses existing report evidence with audit source and zero company searches", 
   });
   expect(searchWeb).not.toHaveBeenCalled();
   expect(JSON.stringify(report)).toBe(before);
+});
+it("normalizes the selected nl company hit without changing selection", async () => {
+  vi.mocked(searchWeb).mockResolvedValue({
+    query: "",
+    organic: [
+      result("https://nl.linkedin.com/company/example-nl"),
+      result("https://www.linkedin.com/company/second/"),
+    ],
+    knowledgeGraph: null,
+  });
+  expect(await lookupCompanyLinkedin(lead)).toMatchObject({
+    url: "https://www.linkedin.com/company/example-nl/",
+    source: "lookup",
+  });
+});
+it("saves a matching top nl person result in normalized form", async () => {
+  vi.mocked(searchWeb).mockResolvedValue({
+    query: "",
+    organic: [
+      result("https://nl.linkedin.com/in/jan-jansen", "Jan Jansen at Example"),
+    ],
+    knowledgeGraph: null,
+  });
+  expect(
+    await lookupPersonLinkedin({ ...lead, firstName: "Jan" })
+  ).toMatchObject({
+    url: "https://www.linkedin.com/in/jan-jansen/",
+    label: "Jan Jansen at Example",
+    source: "lookup",
+    status: "likely",
+  });
+});
+it.each([
+  "https://nl.linkedin.com/in/jan-jansen",
+  "nl.linkedin.com/in/jan-jansen",
+  "http://nl.linkedin.com/in/jan-jansen",
+])("normalizes a pasted country profile: %s", (input) => {
+  expect(linkedinUrl(input, "in")).toBe(
+    "https://www.linkedin.com/in/jan-jansen/"
+  );
 });
 it.each([
   [
@@ -207,7 +260,7 @@ it("L6 encodes fallback URLs and deduplicates words case insensitively", () => {
   );
 });
 it.each(["in", "company"] as const)(
-  "L8 accepts only HTTPS LinkedIn %s URLs for pasted links",
+  "L8 normalizes permitted LinkedIn %s hosts and schemes while rejecting spoofing",
   (kind) => {
     expect(linkedinUrl(`https://linkedin.com/${kind}/name/`, kind)).toBe(
       `https://www.linkedin.com/${kind}/name/`
@@ -219,6 +272,20 @@ it.each(["in", "company"] as const)(
       `http://linkedin.com/${kind}/name`,
       `linkedin.com/${kind}/name`,
       `https://nl.linkedin.com/${kind}/name`,
+      `nl.linkedin.com/${kind}/name`,
+      `http://za.linkedin.com/${kind}/name`,
+      `https://be.linkedin.com/${kind}/name`,
+    ])
+      expect(linkedinUrl(value, kind)).toBe(
+        `https://www.linkedin.com/${kind}/name/`
+      );
+    for (const value of [
+      `https://linkedin.com.evil.com/${kind}/name`,
+      `https://evil.com/linkedin.com/${kind}/name`,
+      `https://other.linkedin.com/${kind}/name`,
+      `https://linkedin.com:443/${kind}/name`,
+      `http://linkedin.com:80/${kind}/name`,
+      `https://linkedin.com:8443/${kind}/name`,
       `https://evil.test/${kind}/name`,
       `https://linkedin.com.evil.test/${kind}/name`,
       `https://user@linkedin.com/${kind}/name`,
@@ -273,12 +340,12 @@ it("F2 gives the four next steps, with SAST meeting times", () => {
 it("H1 counts calendar days in SAST: today, one day, several days", () => {
   const now = Date.parse("2026-10-29T22:05:00Z"); // 30 Oct in SAST
   expect(firstSeenLine("Example", "2026-10-29T22:01:00Z", now)).toBe(
-    "Example  first seen 30 Oct (today)"
+    "Example \u00B7 first seen 30 Oct (today)"
   );
   expect(firstSeenLine("Example", "2026-10-29T21:59:00Z", now)).toBe(
-    "Example  first seen 29 Oct (1 day ago)"
+    "Example \u00B7 first seen 29 Oct (1 day ago)"
   );
   expect(firstSeenLine("Example", "2026-10-26T23:00:00Z", now)).toBe(
-    "Example  first seen 27 Oct (3 days ago)"
+    "Example \u00B7 first seen 27 Oct (3 days ago)"
   );
 });

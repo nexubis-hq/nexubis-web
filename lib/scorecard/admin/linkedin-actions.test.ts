@@ -267,7 +267,7 @@ it("L8 confirms a person and validates individual manual saves without losing th
   expect(
     await saveLinkedinProfile(
       { message: "" },
-      form("company", "save", "http://linkedin.com/company/bad")
+      form("company", "save", "https://evil.com/linkedin.com/company/bad")
     )
   ).toMatchObject({ error: true });
   expect(await readLeadProfile(path)).toEqual(before);
