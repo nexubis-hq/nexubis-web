@@ -1,0 +1,189 @@
+.sc-admin .sc-admin-header-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+.sc-admin .sc-admin-header-links a {
+  text-decoration: none;
+}
+.sc-admin .sc-admin-header-links .sc-admin-site-link {
+  color: var(--primary, #df292b);
+}
+.sc-admin .sc-admin-in {
+  background: #0a66c2;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0 0.18rem;
+  border-radius: 2px;
+}
+.sc-admin .sc-admin-link-separator {
+  color: #b4b4b4;
+}
+.sc-admin .sc-admin-likely {
+  display: inline-block;
+  background: #fff0cc;
+  color: #885b00;
+  font-size: 0.7rem;
+  border-radius: 1rem;
+  padding: 0.1rem 0.4rem;
+}
+.sc-admin .sc-admin-more {
+  position: relative;
+}
+.sc-admin .sc-admin-more summary {
+  list-style: none;
+  cursor: pointer;
+}
+.sc-admin .sc-admin-more-items {
+  display: none;
+}
+.sc-admin .sc-admin-more[open] .sc-admin-more-items {
+  display: grid;
+  gap: 0.5rem;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  padding: 1rem;
+  box-shadow: 0 4px 16px #0002;
+  z-index: 10;
+  min-width: 15rem;
+  max-width: 85vw;
+}
+.sc-admin .sc-admin-more .sc-admin-confirm {
+  width: min(28rem, 75vw);
+}
+.sc-admin .sc-admin-fullwidth {
+  grid-column: 1 / -1;
+}
+.sc-admin .sc-admin-next-step {
+  background: #fff0f0;
+  border-radius: 0.5rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+}
+.sc-admin .sc-admin-about {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+}
+.sc-admin .sc-admin-about summary {
+  color: #777;
+  cursor: pointer;
+}
+.sc-admin .sc-admin-about p {
+  margin: 0.5rem 0;
+}
+.sc-admin .sc-admin-funnelr-muted {
+  color: #777;
+}
+.sc-admin .sc-admin-linkedin-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+.sc-admin .sc-admin-linkedin-title > small:first-child {
+  color: #777;
+  width: 3.5rem;
+}
+.sc-admin .sc-admin-linkedin-line + .sc-admin-linkedin-line {
+  margin-top: 0.6rem;
+}
+.sc-admin .sc-admin-link-source {
+  color: #888;
+}
+.sc-admin .sc-admin-link-menu {
+  position: relative;
+}
+.sc-admin .sc-admin-link-menu summary {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  list-style: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #777;
+}
+.sc-admin .sc-admin-link-menu summary:hover,
+.sc-admin .sc-admin-link-menu[open] summary {
+  background: #eee;
+}
+.sc-admin .sc-admin-link-menu > div {
+  display: none;
+}
+.sc-admin .sc-admin-link-menu[open] > div {
+  display: grid;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: 8;
+  background: #fff;
+  padding: 0.4rem;
+  min-width: 13rem;
+  box-shadow: 0 4px 16px #0002;
+}
+.sc-admin .sc-admin-link-menu button {
+  background: transparent;
+  color: inherit;
+  border: 0;
+  padding: 0.5rem;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+.sc-admin .sc-admin-link-menu button:hover {
+  background: #eee;
+}
+.sc-admin .sc-admin-link-menu .sc-admin-confirm-person {
+  color: #24804a;
+}
+.sc-admin .sc-admin-inline-edit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+.sc-admin .sc-admin-inline-edit input {
+  min-width: 0;
+  width: 100%;
+}
+.sc-admin .sc-admin-active-filters {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.sc-admin .sc-admin-active-filter {
+  background: #222;
+  color: #fff;
+  padding: 0.3rem 0.65rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+.sc-admin .sc-admin-activity-filters {
+  margin-bottom: 1rem;
+  align-items: center;
+}
+.sc-admin .sc-admin-filterfields select {
+  width: 100%;
+}
+@media (max-width: 700px) {
+  .sc-admin .sc-admin-head .sc-admin-more-items {
+    right: auto;
+    left: 0;
+  }
+  .sc-admin .sc-admin-link-source {
+    flex-basis: 100%;
+    padding-left: 3.95rem;
+  }
+  .sc-admin .sc-admin-link-menu[open] > div {
+    left: auto;
+    right: 0;
+  }
+}

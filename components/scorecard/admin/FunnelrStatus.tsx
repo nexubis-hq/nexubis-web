@@ -29,31 +29,34 @@ export function FunnelrStatus({
       <strong className={`sc-admin-funnelr-${status?.state || "unknown"}`}>
         {status?.pending ? "Check in progress" : funnelrStatusText(status)}
       </strong>
-      {status && (
-        <small className="sc-admin-subtext">
-          Last attempt: {formatSast(status.at)} SAST ({status.by})
-        </small>
-      )}
-      {status && (
-        <small className="sc-admin-subtext">
-          Sales trigger tag:{" "}
-          {status.triggerTag === undefined
-            ? "not checked"
-            : status.triggerTag
-              ? "present"
-              : "absent (may already have fired)"}
-        </small>
-      )}
-      {status && (
-        <small className="sc-admin-subtext">
-          Audit Leads - Sales list:{" "}
-          {status.salesList === undefined
-            ? "not checked"
-            : status.salesList
-              ? "member"
-              : "not currently a member"}
-        </small>
-      )}
+      <details className="sc-admin-about">
+        <summary>details</summary>
+        {status && (
+          <small className="sc-admin-subtext">
+            Last attempt: {formatSast(status.at)} SAST ({status.by})
+          </small>
+        )}
+        {status && (
+          <small className="sc-admin-subtext">
+            Sales trigger tag:{" "}
+            {status.triggerTag === undefined
+              ? "not checked"
+              : status.triggerTag
+                ? "present"
+                : "absent (may already have fired)"}
+          </small>
+        )}
+        {status && (
+          <small className="sc-admin-subtext">
+            Audit Leads - Sales list:{" "}
+            {status.salesList === undefined
+              ? "not checked"
+              : status.salesList
+                ? "member"
+                : "not currently a member"}
+          </small>
+        )}
+      </details>
       {email && (
         <FunnelrControls
           leadPath={leadPath}

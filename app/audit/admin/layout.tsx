@@ -1,3 +1,4 @@
+import "./admin-polish.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { NexubisLogo } from "@/components/NexubisLogo";

@@ -1,8 +1,12 @@
 import { LinkedinForm } from "./LinkedinForm";
+import { firstSeenLine, nextStep } from "@/lib/scorecard/admin/follow-up";
+import { normalizeProfile } from "@/lib/scorecard/admin/profiles";
 import { readLeadProfile } from "@/lib/scorecard/admin/profiles";
 import {
   storedCompanyLinkedin,
   linkedinPeopleSearch,
+  linkedinCompanySearch,
+  leadBrand,
   websiteUrl,
 } from "@/lib/scorecard/admin/linkedin";
 import { meetingSummary, meetingText } from "@/lib/scorecard/admin/meetings";
@@ -58,7 +62,7 @@ export async function LeadDetail({
   const failure = failed ? view.failed.find((r) => r.id === id) : undefined;
   const lead = view.leads.find((r) => r.reportSlug === id);
   const manual = view.manual.find((r) => r.slug === id);
-  const company = row?.company || report!.result.meta.company;
+  const rawCompany = row?.company ?? report?.result.meta.company ?? "";
   const name =
     row?.firstName ||
     manual?.contactName ||
@@ -66,7 +70,14 @@ export async function LeadDetail({
     "";
   const email = row?.email || manual?.contactEmail || "";
   const url =
-    failure?.url || lead?.url || manual?.url || report!.prospectData.url;
+    failure?.url ||
+    lead?.url ||
+    manual?.url ||
+    report?.prospectData.url ||
+    row?.host ||
+    "";
+  const firstName = name.trim().split(/\s+/)[0] || "";
+  const company = leadBrand(rawCompany, firstName, url);
   const reportSlug =
     row?.reportPath?.split("/").pop() || (!failed && report ? id : undefined);
   const storedHistory = reportSlug ? view.histories?.[reportSlug] : undefined;
@@ -91,13 +102,27 @@ export async function LeadDetail({
   );
   const adminNote = !failed ? await readAdminNote(id) : null;
   const runSummary = reportSlug ? view.adminRuns?.[reportSlug] : null;
-  const profile = row
-    ? await readLeadProfile(row.leadPath).catch(() => null)
-    : null;
-  const foundCompanyLinkedin = storedCompanyLinkedin(report, company, true);
-  const companyLinkedin = foundCompanyLinkedin || profile?.companyLinkedin;
+  const profile = normalizeProfile(
+    row ? await readLeadProfile(row.leadPath).catch(() => null) : null
+  );
+  const foundCompanyLinkedin = storedCompanyLinkedin(report, rawCompany, true);
+  const displayProfile = {
+    ...profile,
+    companyLinkedin:
+      profile.companyLinkedin ||
+      (foundCompanyLinkedin
+        ? {
+            url: foundCompanyLinkedin,
+            source: "audit" as const,
+            status: "likely" as const,
+            savedAt: "",
+          }
+        : null),
+  };
+  const companyLinkedin =
+    displayProfile.companyLinkedin?.url || linkedinCompanySearch(company);
   const personLinkedin =
-    profile?.linkedinProfile || linkedinPeopleSearch(name, company);
+    profile.linkedinProfile?.url || linkedinPeopleSearch(firstName, company);
   const meetingEvents = view.meetings?.[email.trim().toLowerCase()] || [];
   const meeting = meetingSummary(meetingEvents);
   const absoluteReportUrl = reportSlug
@@ -145,37 +170,35 @@ export async function LeadDetail({
             />
           </div>
           <h1>{name || company}</h1>
-          <p className="sc-admin-website">
-            Website:{" "}
+          <p>
+            {firstSeenLine(
+              company,
+              row?.firstSeen || report!.createdAt,
+              view.now
+            )}
+          </p>
+          <p className="sc-admin-header-links">
             <a
+              className="sc-admin-site-link"
               href={websiteUrl(url) || undefined}
               target="_blank"
               rel="noreferrer"
             >
               {row?.host || url} &#8599;
             </a>
-            {companyLinkedin && (
-              <>
-                {" "}
-                &middot;{" "}
-                <a href={companyLinkedin} target="_blank" rel="noreferrer">
-                  LinkedIn &#8599;
-                </a>
-              </>
+            <span className="sc-admin-link-separator">&middot;</span>
+            <a href={companyLinkedin} target="_blank" rel="noreferrer">
+              <span className="sc-admin-in">in</span> {company}
+            </a>
+            <span className="sc-admin-link-separator">&middot;</span>
+            <a href={personLinkedin} target="_blank" rel="noreferrer">
+              <span className="sc-admin-in">in</span> {firstName || "Person"}
+            </a>
+            {profile.linkedinProfile?.status === "likely" && (
+              <span className="sc-admin-likely">likely</span>
             )}
           </p>
           <SameContact contacts={row?.sameContacts || []} />
-          <p>
-            {company} &middot;{" "}
-            <a
-              href={/^https?:/.test(url) ? url : `https://${url}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {row?.host || url}
-            </a>{" "}
-            &middot; <a href={`mailto:${email}`}>{email}</a>
-          </p>
         </div>
         <div className="sc-admin-ops">
           {reportSlug ? (
@@ -189,19 +212,24 @@ export async function LeadDetail({
           )}
           {email && (
             <a className="btn btn-secondary" href={`mailto:${email}`}>
-              Email {name || "contact"}
+              Email {firstName || "contact"}
             </a>
           )}
-          {reportSlug && <CopyLinkButton path={`/audit/r/${reportSlug}`} />}{" "}
-          {!failed && reportSlug && (
-            <RerunAuditForm
-              slug={reportSlug}
-              url={url}
-              company={company}
-              name={name}
-              paste={Boolean(manual && manual.source !== "crawl")}
-            />
-          )}
+          <details className="sc-admin-more">
+            <summary className="btn btn-secondary">More &#9662;</summary>
+            <div className="sc-admin-more-items">
+              {reportSlug && <CopyLinkButton path={`/audit/r/${reportSlug}`} />}{" "}
+              {!failed && reportSlug && (
+                <RerunAuditForm
+                  slug={reportSlug}
+                  url={url}
+                  company={company}
+                  name={name}
+                  paste={Boolean(manual && manual.source !== "crawl")}
+                />
+              )}
+            </div>
+          </details>
         </div>
       </header>
       <div className="sc-admin-grid sc-admin-detailgrid">
@@ -209,72 +237,8 @@ export async function LeadDetail({
           <h2>Contact and source</h2>
           <dl className="sc-admin-facts">
             <div>
-              <dt>Funnelr</dt>
-              <dd>
-                <FunnelrStatus
-                  status={funnelrStatus}
-                  leadPath={row?.leadPath || `/audit/admin/${id}`}
-                  name={name || company}
-                  website={url}
-                  email={email}
-                  test={isTestContact(email)}
-                  manual={row?.status === "hand" || Boolean(manual)}
-                  hasReport={Boolean(report)}
-                />
-              </dd>
-            </div>
-            <div>
               <dt>First name</dt>
-              <dd>
-                {name || "not recorded"}{" "}
-                <a
-                  className="sc-admin-inline-link"
-                  href={personLinkedin}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {profile?.linkedinProfile
-                    ? "LinkedIn profile"
-                    : "Find on LinkedIn"}{" "}
-                  &#8599;
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt>Meeting</dt>
-              <dd>
-                <strong
-                  className={
-                    meeting.active ? "sc-admin-meeting-active" : "sc-admin-dim"
-                  }
-                >
-                  {meetingText(meeting.current, view.now)}
-                </strong>
-                <small className="sc-admin-subtext">
-                  Bookings Laine makes outside cal.com don&apos;t show here yet.
-                </small>
-              </dd>
-            </div>
-            <div>
-              <dt>Website</dt>
-              <dd>
-                <a
-                  href={websiteUrl(url) || undefined}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {row?.host || url} &#8599;
-                </a>
-                {companyLinkedin && (
-                  <>
-                    {" "}
-                    &middot;{" "}
-                    <a href={companyLinkedin} target="_blank" rel="noreferrer">
-                      LinkedIn &#8599;
-                    </a>
-                  </>
-                )}
-              </dd>
+              <dd>{name || "not recorded"}</dd>
             </div>
             <div>
               <dt>Email</dt>
@@ -308,14 +272,6 @@ export async function LeadDetail({
               </dd>
             </div>
           </dl>
-          {row && (
-            <LinkedinForm
-              leadPath={row.leadPath}
-              person={profile?.linkedinProfile}
-              company={profile?.companyLinkedin}
-              showCompany={!foundCompanyLinkedin}
-            />
-          )}
         </section>
         <section className="sc-admin-card">
           <h2>Audit</h2>
@@ -409,16 +365,66 @@ export async function LeadDetail({
             </>
           )}
         </section>
-        <section className="sc-admin-card">
-          <h2>Timeline</h2>
-          <ol className="sc-admin-timeline">
-            {timeline.map((r, i) => (
-              <li key={i}>
-                <time>{formatSast(r.at)} SAST</time>
-                <p>{r.text}</p>
-              </li>
-            ))}
-          </ol>
+        <section className="sc-admin-card sc-admin-follow-up">
+          <h2>Follow-up</h2>
+          <p className="sc-admin-next-step">
+            <strong>Next step:</strong>{" "}
+            {nextStep(
+              firstName,
+              funnelrStatus?.state === "ok",
+              meeting.current,
+              view.now
+            )}
+          </p>
+          <dl className="sc-admin-facts">
+            <div>
+              <dt>Meeting</dt>
+              <dd>
+                <strong
+                  className={
+                    meeting.active ? "sc-admin-meeting-active" : "sc-admin-dim"
+                  }
+                >
+                  {meetingText(meeting.current, view.now)}
+                </strong>
+                <details className="sc-admin-about">
+                  <summary>about this</summary>
+                  <p>
+                    Shows cal.com bookings. Bookings Laine makes outside cal.com
+                    don&apos;t show here yet.
+                  </p>
+                </details>
+              </dd>
+            </div>
+            <div>
+              <dt>LinkedIn</dt>
+              <dd>
+                {row && (
+                  <LinkedinForm
+                    leadPath={row.leadPath}
+                    profile={displayProfile}
+                    company={company}
+                    name={firstName}
+                  />
+                )}
+              </dd>
+            </div>
+            <div className="sc-admin-funnelr-muted">
+              <dt>Funnelr</dt>
+              <dd>
+                <FunnelrStatus
+                  status={funnelrStatus}
+                  leadPath={row?.leadPath || `/audit/admin/${id}`}
+                  name={name || company}
+                  website={url}
+                  email={email}
+                  test={isTestContact(email)}
+                  manual={row?.status === "hand" || Boolean(manual)}
+                  hasReport={Boolean(report)}
+                />
+              </dd>
+            </div>
+          </dl>
         </section>
         <section className="sc-admin-card">
           <h2>Notes</h2>
@@ -441,6 +447,17 @@ export async function LeadDetail({
             </label>
             <button className="btn btn-secondary">Save note</button>
           </form>
+        </section>
+        <section className="sc-admin-card sc-admin-fullwidth">
+          <h2>Timeline</h2>
+          <ol className="sc-admin-timeline">
+            {timeline.map((r, i) => (
+              <li key={i}>
+                <time>{formatSast(r.at)} SAST</time>
+                <p>{r.text}</p>
+              </li>
+            ))}
+          </ol>
         </section>
       </div>
       {result && (

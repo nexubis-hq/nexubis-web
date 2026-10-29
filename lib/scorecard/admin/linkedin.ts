@@ -5,17 +5,18 @@ export function linkedinUrl(
 ): string | null {
   if (!value.trim()) return null;
   try {
-    const url = new URL(
-      /^https?:\/\//i.test(value.trim())
-        ? value.trim()
-        : `https://${value.trim()}`
-    );
+    const input = /^https?:\/\//i.test(value.trim())
+      ? value.trim()
+      : `https://${value.trim()}`;
+    const url = new URL(input);
+    const authority = input.match(/^https?:\/\/([^/?#]*)/i)?.[1] || "";
     if (
-      !/^([a-z]{2,3}\.)?linkedin\.com$/i.test(url.hostname) ||
+      !/^(?:(?:www|[a-z]{2})\.)?linkedin\.com$/i.test(url.hostname) ||
       !["https:", "http:"].includes(url.protocol) ||
       url.username ||
       url.password ||
-      url.port
+      url.port ||
+      authority.includes(":")
     )
       return null;
     const match = url.pathname.match(new RegExp(`^/${kind}/([^/]+)(?:/|$)`));
@@ -25,7 +26,37 @@ export function linkedinUrl(
   }
 }
 export const linkedinPeopleSearch = (name: string, company: string) =>
-  `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(`${name} ${company}`.trim())}`;
+  `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(personSearchWords(name, company))}`;
+export function personSearchWords(name: string, company: string): string {
+  return [
+    ...new Map(
+      `${name} ${company}`
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((word) => [word.toLowerCase(), word])
+    ).values(),
+  ].join(" ");
+}
+export const linkedinCompanySearch = (company: string) =>
+  `https://www.linkedin.com/search/results/companies/?keywords=${encodeURIComponent(company)}`;
+export function leadBrand(
+  company: string,
+  firstName: string,
+  website: string
+): string {
+  if (
+    company.trim() &&
+    company.trim().toLowerCase() !==
+      firstName.trim().split(/\s+/)[0].toLowerCase()
+  )
+    return company.trim();
+  const host = websiteUrl(website);
+  const brand = host
+    ? new URL(host).hostname.replace(/^www\./i, "").split(".")[0]
+    : "";
+  return brand ? brand[0].toUpperCase() + brand.slice(1) : "";
+}
 export function storedCompanyLinkedin(
   shared: SharedScorecard | null | undefined,
   company: string,
