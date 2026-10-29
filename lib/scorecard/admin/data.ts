@@ -1,3 +1,4 @@
+import { readAdminContact } from "./contact";
 import { cache } from "react";
 import { getKv } from "../kv";
 import { readRunLinks } from "./run-links";
@@ -35,6 +36,10 @@ const loadAdminData = cache(async () => {
       ...failed.flatMap((r) => (r.linkedSlug ? [r.linkedSlug] : [])),
     ]),
   ];
+  const contactPaths = [
+    ...slugs.map((slug) => `/audit/admin/${slug}`),
+    ...failed.map((lead) => `/audit/admin/failed/${lead.id}`),
+  ];
   const emails = [
     ...new Set(
       [
@@ -57,35 +62,43 @@ const loadAdminData = cache(async () => {
     })),
   ];
   const kv = getKv();
-  const [reportPairs, runLinks, statusPairs, meetingPairs, runPairs] =
-    await Promise.all([
-      batches(slugs, async (slug) => [slug, await readShared(slug)] as const),
-      readRunLinks(scanLog),
-      batches(
-        statusReads,
-        async (item) =>
-          [
-            item.id,
-            await readFunnelrStatus(item.email, item.reportUrl).catch(
-              () => null
-            ),
-          ] as const
-      ),
-      batches(
-        emails,
-        async (email) =>
-          [email, await readMeetings(email).catch(() => [])] as const
-      ),
-      batches(slugs, async (slug) => {
-        const [history, summary] = await Promise.all([
-          kv.lrange<RunHistoryEntry>(`scorecard-run-history:${slug}`, 0, 49),
-          kv.get<{ runCount: number; lastRunAt: string }>(
-            `scorecard-admin-run:${slug}`
-          ),
-        ]);
-        return [slug, history, summary] as const;
-      }),
-    ]);
+  const [
+    reportPairs,
+    runLinks,
+    statusPairs,
+    meetingPairs,
+    runPairs,
+    contactPairs,
+  ] = await Promise.all([
+    batches(slugs, async (slug) => [slug, await readShared(slug)] as const),
+    readRunLinks(scanLog),
+    batches(
+      statusReads,
+      async (item) =>
+        [
+          item.id,
+          await readFunnelrStatus(item.email, item.reportUrl).catch(() => null),
+        ] as const
+    ),
+    batches(
+      emails,
+      async (email) =>
+        [email, await readMeetings(email).catch(() => [])] as const
+    ),
+    batches(slugs, async (slug) => {
+      const [history, summary] = await Promise.all([
+        kv.lrange<RunHistoryEntry>(`scorecard-run-history:${slug}`, 0, 49),
+        kv.get<{ runCount: number; lastRunAt: string }>(
+          `scorecard-admin-run:${slug}`
+        ),
+      ]);
+      return [slug, history, summary] as const;
+    }),
+    batches(
+      contactPaths,
+      async (path) => [path, await readAdminContact(path)] as const
+    ),
+  ]);
   return {
     now: Date.now(),
     leads,
@@ -94,6 +107,7 @@ const loadAdminData = cache(async () => {
     scanLog,
     runLinks,
     reports: Object.fromEntries(reportPairs),
+    contacts: Object.fromEntries(contactPairs),
     statuses: Object.fromEntries(statusPairs),
     meetings: Object.fromEntries(meetingPairs),
     histories: Object.fromEntries(

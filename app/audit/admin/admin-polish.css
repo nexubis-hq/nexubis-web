@@ -213,3 +213,14 @@
     animation: none;
   }
 }
+
+.sc-admin-edit-contact {
+  padding: 4px 0;
+}
+.sc-admin-edit-contact > summary {
+  cursor: pointer;
+}
+.sc-admin-edit-contact .sc-admin-form {
+  margin-top: 10px;
+  min-width: 220px;
+}

@@ -134,7 +134,10 @@ export default async function LeadsPage({
                       )}
                     </td>
                     <td>
-                      {r.firstName}
+                      {[r.firstName, r.lastName].filter(Boolean).join(" ")}
+                      {r.role && (
+                        <span className="sc-admin-subtext">{r.role}</span>
+                      )}
                       <a
                         className="sc-admin-subtext"
                         href={`mailto:${r.email}`}

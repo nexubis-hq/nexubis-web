@@ -1,3 +1,4 @@
+import type { AdminContact } from "./contact";
 import { normalHost, inLeadWindow } from "./hosts";
 import { linkRunToLead, isReplay } from "./run-matching";
 import { formatSast } from "./dates";
@@ -26,6 +27,9 @@ export interface LeadRow {
   company: string;
   host: string;
   firstName: string;
+  lastName?: string;
+  role?: string;
+  contactEdits?: AdminContact["edits"];
   email: string;
   status: "ready" | "failed" | "hand";
   statusReason: string;
@@ -61,6 +65,7 @@ export function buildLeadsView(
   now = Date.now(),
   scanLog: ScanRunLog[] = [],
   admin: {
+    contacts?: Record<string, AdminContact | null>;
     runLinks?: RunLinks;
     statuses?: Record<string, FunnelrStatus | null>;
     meetings?: Record<string, MeetingEvent[]>;
@@ -79,7 +84,8 @@ export function buildLeadsView(
     kind: "report" | "manual",
     decision?: QualifiedAuditDecision,
     ad?: LeadRecord["ad"],
-    source?: FunnelSource
+    source?: FunnelSource,
+    role?: string
   ): LeadRow => {
     const shared = reports[slug];
     return {
@@ -89,6 +95,8 @@ export function buildLeadsView(
       company: shared?.result.meta.company || company,
       host: normalHost(url),
       firstName,
+      role:
+        role || shared?.prospectData?.role || shared?.result.meta.role || "",
       email,
       status: kind === "manual" ? "hand" : "ready",
       statusReason: "",
@@ -116,7 +124,8 @@ export function buildLeadsView(
         "report",
         l.qualifiedDecision,
         l.ad,
-        l.source
+        l.source,
+        l.role
       )
     );
   for (const m of manual)
@@ -168,6 +177,13 @@ export function buildLeadsView(
     });
   }
   for (const row of rows) {
+    const contact = admin.contacts?.[row.leadPath];
+    if (contact) {
+      row.firstName = contact.firstName;
+      row.lastName = contact.lastName;
+      row.role = contact.role;
+      row.contactEdits = contact.edits;
+    }
     const slug = row.reportPath?.split("/").pop();
     row.funnelrStatus =
       admin.statuses?.[slug || ""] ||
