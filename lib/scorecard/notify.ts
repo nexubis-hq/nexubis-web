@@ -8,6 +8,8 @@
 import { TEAM_EMAIL, shouldSendEmail1 } from "./env";
 import { EMAIL_1 } from "./copy";
 import type { LeadRecord } from "./leads";
+import { formatQualifiedAuditDecision } from "./qualified-audit";
+import { adLabel } from "@/lib/funnel/steps";
 import { sendResendEmail } from "@/lib/resend";
 
 const FROM = process.env.SCORECARD_EMAIL_FROM || "Nexubis <hello@nexubis.io>";
@@ -69,6 +71,9 @@ export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, ad
     `Product: ${lead.productOneLiner}`,
     `Competitors: ${lead.competitors.map((c) => c.name).join(", ")}`,
     ...siteReadFailureLines(detectionFlags),
+    `Came from: ${lead.source ?? "not recorded"}`,
+    `Ad: ${adLabel(lead.ad) ?? "n/a"}`,
+    `Qualified: ${formatQualifiedAuditDecision(lead.qualifiedDecision)}`,
     ``,
     `Gap Score: ${lead.credibilityScore}/100 (${lead.verdict} gap)`,
     `First fix: ${lead.firstFixCategory ?? "n/a"}`,

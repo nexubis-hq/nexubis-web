@@ -40,7 +40,8 @@ it.each([
     text: [
       "New audit lead.", "", "Company: Test Company (https://example.com)",
       "Contact: Shannah, CEO, shannah+alerttest@nexubis.io", "Product: Test product",
-      "Competitors: Rival", "", "Gap Score: 47/100 (wide gap)", "First fix: n/a",
+      "Competitors: Rival", "Came from: not recorded", "Ad: n/a", "Qualified: not recorded",
+      "", "Gap Score: 47/100 (wide gap)", "First fix: n/a",
       "Routing: ceo / other-industrial / unknown", "Follow-up: Personal follow-up",
       "Loom candidate: no", "", "", `Report: ${report}`, `Admin: ${admin}`,
     ].join("\n"),
@@ -88,12 +89,54 @@ it("does not label missing competitors as a site-read failure", async () => {
   expect(vi.mocked(sendResendEmail).mock.calls[0][0].text).not.toContain("Site read: failed");
 });
 
-it("admin metadata leaves team and fallback email bytes and recipients unchanged",async()=>{
+it("admin metadata changes only the reporting lines in the team alert",async()=>{
  const {notifyTeam,sendFallbackEmail1}=await import("./notify");
  await notifyTeam(lead,report,admin);await sendFallbackEmail1(lead,report);
- const before=JSON.stringify(vi.mocked(sendResendEmail).mock.calls);
+ const before=vi.mocked(sendResendEmail).mock.calls.map(([args])=>({...args}));
  vi.mocked(sendResendEmail).mockClear();
  const enriched={...lead,ad:{utm_source:"facebook"},source:"ad" as const,qualifiedDecision:{qualified:true,reason:"manufacturer"}};
  await notifyTeam(enriched,report,admin);await sendFallbackEmail1(enriched,report);
- expect(JSON.stringify(vi.mocked(sendResendEmail).mock.calls)).toBe(before);
+ const after=vi.mocked(sendResendEmail).mock.calls.map(([args])=>({...args}));
+ const withoutReportingLines=(text:string)=>text.split("\n").filter((line)=>! /^(Came from|Ad|Qualified):/.test(line)).join("\n");
+ expect({...after[0],text:withoutReportingLines(after[0].text)}).toEqual({...before[0],text:withoutReportingLines(before[0].text)});
+ expect(after[1]).toEqual(before[1]);
+});
+
+it("includes ad attribution and a qualified audit decision after site-read failures", async () => {
+  const { notifyTeam } = await import("./notify");
+  await notifyTeam({
+    ...lead, source: "ad", ad: { utm_content: "IMG3_B", utm_source: "ig" },
+    qualifiedDecision: { qualified: true, reason: "manufacturer with named products" },
+  }, report, admin, ["Auto-detect could not read the site (timeout)"]);
+  const { text } = vi.mocked(sendResendEmail).mock.calls[0][0];
+  expect(text).toContain("Competitors: Rival\nSite read: failed (timeout)\nCame from: ad\nAd: IMG3_B | ig\nQualified: yes (manufacturer with named products)");
+});
+
+it("prints reporting fallbacks when source, ad and decision are missing", async () => {
+  const { notifyTeam } = await import("./notify");
+  await notifyTeam(lead, report, admin);
+  const { text } = vi.mocked(sendResendEmail).mock.calls[0][0];
+  expect(text).toContain("Came from: not recorded");
+  expect(text).toContain("Ad: n/a");
+  expect(text).toContain("Qualified: not recorded");
+});
+
+it("includes other traffic and an unqualified decision", async () => {
+  const { notifyTeam } = await import("./notify");
+  await notifyTeam({
+    ...lead, source: "other", qualifiedDecision: { qualified: false, reason: "no named product families" },
+  }, report, admin);
+  const { text } = vi.mocked(sendResendEmail).mock.calls[0][0];
+  expect(text).toContain("Came from: other");
+  expect(text).toContain("Qualified: no (no named product families)");
+});
+
+it.each([
+  [{}, "n/a"],
+  [{ utm_content: "IMG3_B" }, "IMG3_B"],
+  [{ utm_source: "ig" }, "ig"],
+])("formats partial or empty ad data %j", async (ad, expected) => {
+  const { notifyTeam } = await import("./notify");
+  await notifyTeam({ ...lead, ad }, report, admin);
+  expect(vi.mocked(sendResendEmail).mock.calls[0][0].text.split("\n")).toContain(`Ad: ${expected}`);
 });
