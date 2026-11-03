@@ -15,6 +15,7 @@ import {
   DEFAULT_NURTURE_AFTER_DAYS,
   type NurtureLead,
 } from "@/lib/funnelr/nurture-scheduler";
+import { flushSequenceOutbox, sequenceMode } from "@/lib/sequences/client";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300; // Funnelr is slow (20-100s+ per call); process sequentially.
@@ -44,6 +45,12 @@ export async function GET(req: NextRequest) {
   }
   if (!authorized(req)) {
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+  }
+  // Runs daily whatever the mode, so a queued booking or reply is never stuck for long.
+  const outbox = await flushSequenceOutbox().catch(() => null);
+  // The sequence app does the nurture handoff now. Funnelr must not start it too.
+  if (sequenceMode() === "app") {
+    return NextResponse.json({ ok: true, skipped: "sequence-app", outbox });
   }
   if (!process.env.FUNNELR_API_KEY) {
     return NextResponse.json({ ok: true, skipped: "no-api-key" });

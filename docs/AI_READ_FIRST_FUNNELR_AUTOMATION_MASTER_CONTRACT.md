@@ -8,6 +8,16 @@ Any future change to Funnelr tags, lists, sequences, custom fields, automation c
 
 Do not create competing Funnelr automation explanation files. Update this master contract in the same change as any Funnelr automation, routing, or integration update.
 
+## Funnelr is being replaced
+
+Funnelr is being replaced by the sequence app (repo `nexubis-hq/nexubis-sequences`). `SEQUENCE_MODE` on this site decides who owns new leads:
+
+- `funnelr` (default): nothing changes and the app is not called.
+- `shadow`: Funnelr does the work. The app records the same events and sends real email only to test addresses.
+- `app`: the app owns new leads. Leads reach it from the server in `runLeadPlumbing`, and `/api/leads/scorecard` stops writing to Funnelr. Booking, reply and contact form signals still reach Funnelr while its existing leads finish, as long as `FUNNELR_API_KEY` is set. The nurture cron skips Funnelr. The contact form no longer depends on the key.
+
+The website talks to the app through `lib/sequences/client.ts`. Undelivered events are queued in KV and replayed by the daily cron. This contract stays the source of truth for Funnelr itself until the account is cancelled.
+
 ## Purpose
 
 The Nexubis Scorecard integration captures qualified Scorecard leads, stores the permanent report URL on the Funnelr contact, and requests campaign routing through temporary trigger tags. The Nexubis Contact form captures general enquiries by applying only Brand and Contact Form Source tags; Funnelr then applies or recognises the durable Contacted Pipeline state and owns campaign exit cleanup. The LekkeWeb website already applies its Brand tag to website contacts, and Funnelr owns LekkeWeb master-list visibility, manual intake routing, campaign membership, sequence enrolment, exit handling, and history safeguards.

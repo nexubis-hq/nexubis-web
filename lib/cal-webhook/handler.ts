@@ -3,6 +3,7 @@ import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { createFunnelrClient, type FunnelrTag, type FunnelrUser } from "@/lib/funnelr/client";
 import { NEXUBIS_TAG_IDS, NEXUBIS_TAGS } from "@/lib/funnelr/nexubis-tags";
 import { getKv } from "@/lib/scorecard/kv";
+import { sendSequenceEvent, sequenceMode } from "@/lib/sequences/client";
 
 const CALL_BOOKED_TAG_NAME = NEXUBIS_TAGS.pipelineCallBooked;
 const CALL_BOOKED_TAG_ID = NEXUBIS_TAG_IDS.pipelineCallBooked;
@@ -221,6 +222,21 @@ export async function handleCalWebhook(
       uid: cleanString(event.payload?.uid), attendeeName: [name.firstName, name.lastName].filter(Boolean).join(" "),
     });
   } catch { /* Admin booking history must never affect booking processing. */ }
+
+  const eventName = attendeeName(event);
+  await sendSequenceEvent(
+    event.triggerEvent === "BOOKING_CREATED"
+      ? "booking_created"
+      : event.triggerEvent === "BOOKING_RESCHEDULED"
+        ? "booking_rescheduled"
+        : "booking_cancelled",
+    { email, firstName: eventName.firstName, lastName: eventName.lastName, source: "cal" },
+    `cal-${event.triggerEvent}-${cleanString(event.payload?.uid) || email}`,
+  );
+  // Once Funnelr is cancelled there is nothing left to tag.
+  if (sequenceMode() === "app" && !process.env.FUNNELR_API_KEY && !options.client) {
+    return jsonResult(200, { ok: true, action: "sequence_app_only" });
+  }
 
   const client = options.client ?? createFunnelrClient();
   const dedupeKey = event.payload?.uid ? calWebhookDedupeKey(event.payload.uid, event.triggerEvent) : null;

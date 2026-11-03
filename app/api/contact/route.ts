@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { submitContactLeadToFunnelr } from "@/lib/contact/funnelr";
 import { notifyContactSubmission } from "@/lib/contact/notify";
+import { sendSequenceEvent, sequenceMode } from "@/lib/sequences/client";
 
 const ALLOWED_PACKAGES = ["Momentum", "Scale", "Partner", "I'm not sure"] as const;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -108,7 +109,8 @@ function isRateLimited(key: string, now = Date.now()): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  if (!process.env.FUNNELR_API_KEY) {
+  const mode = sequenceMode();
+  if (mode !== "app" && !process.env.FUNNELR_API_KEY) {
     return json(503, { ok: false, error: "Contact form is not configured yet." });
   }
 
@@ -117,6 +119,36 @@ export async function POST(req: NextRequest) {
 
   if (isRateLimited(rateLimitKey(req, parsed.email))) {
     return json(429, { ok: false, error: "Too many attempts. Try again later." });
+  }
+
+  const sequenceEvent = {
+    email: parsed.email,
+    firstName: parsed.name.split(/\s+/)[0],
+    company: parsed.companyName,
+    website: parsed.websiteLink,
+    source: "contact_form",
+  };
+  const sequenceKey = `contact-${parsed.email}-${Date.now()}`;
+
+  if (mode === "app") {
+    // The team alert goes first and nothing here depends on Funnelr, so the form
+    // keeps working when the Funnelr key is removed.
+    const notificationSent = await notifyContactSubmission({
+      name: parsed.name,
+      email: parsed.email,
+      companyName: parsed.companyName,
+      websiteLink: parsed.websiteLink,
+      package: parsed.package,
+      additionalNotes: parsed.additionalNotes,
+    });
+    const stopped = await sendSequenceEvent("contact_form", sequenceEvent, sequenceKey);
+    if (process.env.FUNNELR_API_KEY) {
+      await submitContactLeadToFunnelr({ name: parsed.name, email: parsed.email }).catch(() => null);
+    }
+    if (!notificationSent && !stopped.ok) {
+      return json(502, { ok: false, error: "Message delivery is temporarily unavailable. Try again later." });
+    }
+    return json(200, { ok: true, notificationSent });
   }
 
   const funnelr = await submitContactLeadToFunnelr({
@@ -141,5 +173,6 @@ export async function POST(req: NextRequest) {
     console.error(`[contact-form] internal notification failed after Funnelr capture for contact ${funnelr.contactId}.`);
   }
 
+  await sendSequenceEvent("contact_form", sequenceEvent, sequenceKey);
   return json(200, { ok: true, notificationSent });
 }

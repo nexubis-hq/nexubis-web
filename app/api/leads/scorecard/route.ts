@@ -2,6 +2,7 @@ import { recordBrowserFunnelrResult } from "@/lib/scorecard/admin/funnelr-status
 import { NextRequest, NextResponse } from "next/server";
 import { normalizeScorecardLeadInput, scorecardSlugFromReportUrl, submitScorecardLeadToFunnelr, type ScorecardLeadInput } from "@/lib/scorecard/lead-funnelr";
 import { readShared } from "@/lib/scorecard/share";
+import { sequenceMode } from "@/lib/sequences/client";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -15,6 +16,9 @@ function originOf(req: NextRequest): string {
 }
 
 export async function POST(req: NextRequest) {
+  // The server already sent this lead to the sequence app. Funnelr takes no new leads.
+  if (sequenceMode() === "app") return NextResponse.json({ ok: true, skipped: "sequence-app" });
+
   const body = await req.json().catch(() => null);
   const validation = normalizeScorecardLeadInput(body);
   if ("error" in validation) {

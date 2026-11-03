@@ -78,6 +78,7 @@ Everything about the Online Credibility Audit is hidden until you turn it on. Wh
 
 ## Recent Changes
 
+- 2026-11-03: **Getting ready to replace Funnelr.** Added a switch (`SEQUENCE_MODE`) that moves email sequences to the new sequence app. It defaults to `funnelr`, so nothing changes until it is set. In `app` mode audit leads reach the sequence app from the server, so a closed browser tab can no longer lose a lead, the contact form keeps working without a Funnelr key, and Laine sees sequence status with Check, Start and Stop on each lead page in the admin. Needs `SEQUENCES_URL` and `SEQUENCES_API_KEY`.
 - 2026-10-28: Rebuilt audit admin around Leads, individual lead pages, Activity and Manual audit. Added private failed-scan records and report run history, live scores, test-contact filters and typed confirmation before re-running. Public run additions are best-effort logging only.
 
 - 2026-09-28: Added consent-free, anonymous Audit funnel totals for every live-site visitor: arrivals, first form touch and genuine submissions, split between ad and other traffic in South African daily time. It does not collect cookies, device data, IPs, names, emails, or send anything to Meta. The Scans admin page shows the last 14 days and each scan’s clean UTM ad label where present. Funnelr’s lead path is unchanged.

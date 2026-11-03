@@ -1,3 +1,4 @@
+import { sequenceMode } from "@/lib/sequences/client";
 import { funnelrProblem } from "@/lib/scorecard/admin/funnelr-view";
 import Link from "next/link";
 import { SameContact } from "@/components/scorecard/admin/SameContact";
@@ -155,7 +156,7 @@ export default async function LeadsPage({
                           Meeting booked
                         </small>
                       )}
-                      {funnelrProblem(r.funnelrStatus) && (
+                      {sequenceMode() !== "app" && funnelrProblem(r.funnelrStatus) && (
                         <small className="sc-admin-subtext sc-admin-funnelr-problem">
                           {r.funnelrStatus?.state === "failed"
                             ? "Funnelr failed"

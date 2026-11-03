@@ -14,6 +14,7 @@ import { notifyTeam, sendFallbackEmail1 } from "./notify";
 import { prospectScores, type ScorecardResult } from "./result";
 import type { ProspectData } from "./types";
 import type { QualifiedAuditDecision } from "./qualified-audit";
+import { sendSequenceEvent } from "@/lib/sequences/client";
 
 export interface LeadCaptureInput {
   firstName: string;
@@ -193,7 +194,7 @@ export async function promoteResult(prospectData: ProspectData, rawResult: Score
 // 1. Persist the lead in KV (queryable: powers admin + the Loom selection).
 // 2. Resend internal notification to the team.
 // 3. Fallback Email 1 to the lead, only while SCORECARD_SEND_EMAIL1=true.
-//    (Funnelr capture stays browser-fired from the flow, as before.)
+//    (Funnelr capture stays browser-fired from the flow until SEQUENCE_MODE=app.)
 // The run route awaits this before sending "done": ~1-2s at the end of a scan
 // that already ran for a minute, in exchange for never losing a lead to a
 // frozen serverless instance.
@@ -256,6 +257,21 @@ export async function runLeadPlumbing(
       err instanceof Error ? err.message : err
     );
   }
+
+  // The sequence app hears about the lead from the server, so a closed browser
+  // tab cannot lose it. Does nothing while SEQUENCE_MODE is funnelr.
+  await sendSequenceEvent(
+    "audit_finished",
+    {
+      email: lead.email,
+      firstName: lead.name,
+      company: lead.company,
+      website: lead.url,
+      reportUrl: absoluteReportUrl,
+      source: "audit",
+    },
+    `audit-${slug}`,
+  );
 
   // 2. Team notification.
   await notifyTeam(lead, absoluteReportUrl, adminUrl, record.result.flags);

@@ -10,8 +10,8 @@ export interface ContactNotificationInput {
   websiteLink: string;
   package: string;
   additionalNotes: string;
-  funnelrContactId: number;
-  contactCreated: boolean;
+  funnelrContactId?: number | null;
+  contactCreated?: boolean;
   submittedAt?: Date;
 }
 
@@ -43,8 +43,12 @@ export function formatContactNotification(input: ContactNotificationInput) {
     ["Additional Notes", input.additionalNotes || "Not supplied"],
     ["Submission date and time", submittedAt],
     ["Source", "Nexubis Contact Form"],
-    ["Funnelr contact ID", String(input.funnelrContactId)],
-    ["Funnelr contact state", input.contactCreated ? "Created" : "Updated"],
+    ...(typeof input.funnelrContactId === "number"
+      ? [
+          ["Funnelr contact ID", String(input.funnelrContactId)],
+          ["Funnelr contact state", input.contactCreated ? "Created" : "Updated"],
+        ]
+      : []),
   ];
 
   const text = [

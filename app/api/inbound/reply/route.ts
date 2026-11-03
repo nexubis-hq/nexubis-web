@@ -10,6 +10,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createFunnelrClient } from "@/lib/funnelr/client";
 import { applyRepliedTag, extractEmail } from "@/lib/funnelr/reply-tagger";
+import { sendSequenceEvent } from "@/lib/sequences/client";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120; // Funnelr is slow.
@@ -37,6 +38,9 @@ export async function POST(req: NextRequest) {
   if (!senderEmail) {
     return NextResponse.json({ ok: false, error: "no sender email found" }, { status: 400 });
   }
+
+  // The app ignores anyone who is not one of its contacts, so staff addresses are safe here.
+  await sendSequenceEvent("reply", { email: senderEmail, source: "reply_inbox" }, `reply-${senderEmail}-${Date.now()}`);
 
   if (!process.env.FUNNELR_API_KEY) {
     return NextResponse.json({ ok: true, applied: false, skipped: "no-api-key" });

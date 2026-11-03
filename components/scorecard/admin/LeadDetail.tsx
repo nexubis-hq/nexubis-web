@@ -17,6 +17,8 @@ import {
 import { meetingSummary, meetingText } from "@/lib/scorecard/admin/meetings";
 import { auditTimeline } from "@/lib/scorecard/admin/timeline";
 import { FunnelrStatus } from "./FunnelrStatus";
+import { SequencePanel } from "./SequencePanel";
+import { readSequenceStatus, sequenceMode } from "@/lib/sequences/client";
 import {
   readFunnelrStatus,
   funnelrTimelineText,
@@ -144,6 +146,9 @@ export async function LeadDetail({
   const funnelrStatus = row
     ? row.funnelrStatus || null
     : await readFunnelrStatus(email, absoluteReportUrl).catch(() => null);
+  const mode = sequenceMode();
+  const sequenceStatus =
+    mode === "funnelr" ? null : await readSequenceStatus(email);
   const timeline = [
     ...(row?.contactEdits || []),
     ...(funnelrStatus?.history || (funnelrStatus ? [funnelrStatus] : [])).map(
@@ -447,21 +452,39 @@ export async function LeadDetail({
                 )}
               </dd>
             </div>
-            <div className="sc-admin-funnelr-muted">
-              <dt>Funnelr</dt>
-              <dd>
-                <FunnelrStatus
-                  status={funnelrStatus}
-                  leadPath={row?.leadPath || `/audit/admin/${id}`}
-                  name={name || company}
-                  website={url}
-                  email={email}
-                  test={isTestContact(email)}
-                  manual={row?.status === "hand" || Boolean(manual)}
-                  hasReport={Boolean(report)}
-                />
-              </dd>
-            </div>
+            {mode !== "funnelr" && (
+              <div>
+                <dt>Sequence</dt>
+                <dd>
+                  <SequencePanel
+                    status={sequenceStatus}
+                    mode={mode}
+                    leadPath={row?.leadPath || `/audit/admin/${id}`}
+                    name={name || company}
+                    website={url}
+                    test={isTestContact(email)}
+                    hasReport={Boolean(report)}
+                  />
+                </dd>
+              </div>
+            )}
+            {mode !== "app" && (
+              <div className="sc-admin-funnelr-muted">
+                <dt>Funnelr</dt>
+                <dd>
+                  <FunnelrStatus
+                    status={funnelrStatus}
+                    leadPath={row?.leadPath || `/audit/admin/${id}`}
+                    name={name || company}
+                    website={url}
+                    email={email}
+                    test={isTestContact(email)}
+                    manual={row?.status === "hand" || Boolean(manual)}
+                    hasReport={Boolean(report)}
+                  />
+                </dd>
+              </div>
+            )}
           </dl>
         </section>
         <section className="sc-admin-card">
