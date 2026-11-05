@@ -72,11 +72,11 @@ const SITE_DIRECTIVES: Record<string, string[]> = {
 // looser script policy. Still no framing by other sites.
 const STUDIO_DIRECTIVES: Record<string, string[]> = {
   "default-src": ["'self'"],
-  "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://*.sanity.io", "https://sanity-cdn.com"],
+  "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://*.sanity.io", "https://sanity-cdn.com", "https://*.sanity-cdn.com"],
   "style-src": ["'self'", "'unsafe-inline'"],
   "img-src": ["'self'", "data:", "blob:", "https://*.sanity.io", "https://lh3.googleusercontent.com", "https://avatars.githubusercontent.com"],
   "font-src": ["'self'", "data:"],
-  "connect-src": ["'self'", "https://*.sanity.io", "wss://*.sanity.io", "https://sanity-cdn.com"],
+  "connect-src": ["'self'", "https://*.sanity.io", "wss://*.sanity.io", "https://sanity-cdn.com", "https://*.sanity-cdn.com"],
   "frame-src": ["'self'", "https://*.sanity.io"],
   "object-src": ["'none'"],
   "base-uri": ["'self'"],
@@ -84,10 +84,23 @@ const STUDIO_DIRECTIVES: Record<string, string[]> = {
   "frame-ancestors": ["'none'"],
 };
 
+// Vercel's comment/feedback toolbar, injected on preview deployments only.
+const VERCEL_TOOLBAR: Record<string, string[]> = {
+  "script-src": ["https://vercel.live"],
+  "frame-src": ["https://vercel.live"],
+};
+
+function isPreviewDeployment(): boolean {
+  return process.env.VERCEL_ENV === "preview";
+}
+
 function serialize(directives: Record<string, string[]>, dev: boolean): string {
+  const preview = isPreviewDeployment();
   const parts = Object.entries(directives).map(([name, values]) => {
+    let list = values;
     // Next.js dev mode (hot reload) needs eval; production never gets it.
-    const list = dev && name === "script-src" && !values.includes("'unsafe-eval'") ? [...values, "'unsafe-eval'"] : values;
+    if (dev && name === "script-src" && !list.includes("'unsafe-eval'")) list = [...list, "'unsafe-eval'"];
+    if (preview && VERCEL_TOOLBAR[name]) list = [...list, ...VERCEL_TOOLBAR[name]];
     return `${name} ${list.join(" ")}`;
   });
   parts.push(`report-uri ${CSP_REPORT_PATH}`);

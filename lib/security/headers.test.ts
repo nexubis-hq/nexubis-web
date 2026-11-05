@@ -27,3 +27,21 @@ test("the studio keeps its own policy but still cannot be framed", () => {
   assert.equal(rules[rules.length - 1].source, "/studio/:path*");
   assert.match(studioPolicy(), /frame-ancestors 'none'/);
 });
+
+test("the Vercel preview toolbar is allowed on preview deployments only", () => {
+  const prev = process.env.VERCEL_ENV;
+  try {
+    process.env.VERCEL_ENV = "production";
+    assert.doesNotMatch(sitePolicy(), /vercel\.live/);
+    process.env.VERCEL_ENV = "preview";
+    assert.match(sitePolicy(), /script-src [^;]*https:\/\/vercel\.live/);
+    assert.match(sitePolicy(), /frame-src [^;]*https:\/\/vercel\.live/);
+  } finally {
+    if (prev === undefined) delete process.env.VERCEL_ENV;
+    else process.env.VERCEL_ENV = prev;
+  }
+});
+
+test("the studio allows Sanity's CDN subdomains", () => {
+  assert.match(studioPolicy(), /script-src [^;]*https:\/\/\*\.sanity-cdn\.com/);
+});
