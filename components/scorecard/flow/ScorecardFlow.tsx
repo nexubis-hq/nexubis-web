@@ -313,7 +313,7 @@ export function ScorecardFlow() {
                   <ScorecardPreviewRadar />
                 )}
               </div>
-              <form className="sc-landing-form" onSubmit={submit}>
+              <form className="sc-landing-form" method="post" onSubmit={submit}>
                 <label className={`sc-field${urlValid ? " sc-field-valid" : ""}`}>
                   <span className="sc-field-label">{FORM_FIELDS.website.label}</span>
                   <span className="sc-input-wrap">

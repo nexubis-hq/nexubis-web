@@ -78,6 +78,8 @@ Everything about the Online Credibility Audit is hidden until you turn it on. Wh
 
 ## Recent Changes
 
+- 2026-11-05: The contact form and the audit form now always send by POST, so names and emails can never end up in the page address (this could happen if someone submitted before the page finished loading). The audit results stream is now marked "never store" for browsers and caches.
+
 - 2026-11-05: Security headers on every page and file (settings live in `lib/security/headers.ts`). Adds a Content Security Policy that only allows the outside services we use (Meta Pixel, Clarity, Cal.com, Cloudflare Turnstile, Sanity images, our R2 videos, YouTube and Loom embeds). It starts in "report-only" mode: nothing is blocked yet, and anything it would block is logged in Vercel's logs under "csp-report". When those logs stay clean, change `CSP_ENFORCE` to `true` to switch it on. Also added: no framing of our pages by other sites, nosniff, HSTS on every response, cross-site reading limited to our own domain, and the "X-Powered-By: Next.js" header removed.
 
 - 2026-11-05: Security hardening for the audit admin area. A gatekeeper (`proxy.ts`) now sits in front of every `/audit/admin` page: signed-out visitors are bounced to the login screen before any admin page is built (the redirect no longer carries page content), and any form post that does not come from our own site is refused. Sign-out now reliably clears the login cookie. The login cookie stays HttpOnly and SameSite=Lax.

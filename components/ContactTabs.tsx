@@ -214,7 +214,7 @@ function ContactForm() {
 
   return (
     <div className="contact-form-card">
-      <form className="contact-form" onSubmit={submit}>
+      <form className="contact-form" method="post" onSubmit={submit}>
         <div className="contact-field">
           <label htmlFor="contact-name">
             Name<span>*</span>
