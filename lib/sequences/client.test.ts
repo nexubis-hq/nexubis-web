@@ -26,11 +26,28 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-test("funnelr mode never calls the app", async () => {
+test("funnelr mode never starts a sequence in the app", async () => {
   vi.stubEnv("SEQUENCE_MODE", "");
   expect(sequenceMode()).toBe("funnelr");
-  await sendSequenceEvent("reply", { email: "a@x.com" }, "k");
+  await sendSequenceEvent("audit_finished", { email: "a@x.com" }, "k1");
+  await sendSequenceEvent("admin_start", { email: "a@x.com" }, "k2");
   expect(fetchMock).not.toHaveBeenCalled();
+});
+
+test("after a rollback to funnelr, stops still reach the app", async () => {
+  vi.stubEnv("SEQUENCE_MODE", "funnelr");
+  fetchMock.mockImplementation(async () => new Response('{"outcome":"stopped"}'));
+  for (const type of ["reply", "contact_form", "booking_created", "booking_rescheduled", "booking_cancelled", "admin_stop"] as const) {
+    expect((await sendSequenceEvent(type, { email: "a@x.com" }, `k-${type}`)).ok).toBe(true);
+  }
+  expect(fetchMock).toHaveBeenCalledTimes(6);
+});
+
+test("without SEQUENCES_URL nothing is sent or queued", async () => {
+  vi.stubEnv("SEQUENCES_URL", "");
+  expect(await sendSequenceEvent("reply", { email: "a@x.com" }, "k")).toEqual({ ok: true, outcome: "not-in-use" });
+  expect(fetchMock).not.toHaveBeenCalled();
+  expect(store.length).toBe(0);
 });
 
 test("sends the brand key and the idempotency key", async () => {

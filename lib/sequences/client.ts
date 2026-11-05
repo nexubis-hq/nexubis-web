@@ -6,6 +6,10 @@
 //   app                the app owns new leads. Stop signals still reach Funnelr
 //                      while its existing leads finish
 //
+// Stop signals (contact form, booking, reply, admin stop) reach the app in every
+// mode once SEQUENCES_URL is set. That keeps a rollback to funnelr safe: leads
+// the app already owns still stop when they book, reply or write in.
+//
 // An event that cannot be delivered is queued and replayed, because a lost
 // booking or reply would mean a lead keeps getting emails.
 import { getKv } from "@/lib/scorecard/kv";
@@ -89,13 +93,16 @@ async function attempt(event: QueuedEvent): Promise<SequenceResult> {
   return { ok: false };
 }
 
+const STARTS: SequenceEventType[] = ["audit_finished", "admin_start"];
+
 /** Never throws. The same idemKey is safe to send twice: the app ignores the repeat. */
 export async function sendSequenceEvent(
   type: SequenceEventType,
   body: SequenceEventBody,
   idemKey: string,
 ): Promise<SequenceResult> {
-  if (sequenceMode() === "funnelr") return { ok: true, outcome: "not-in-use" };
+  if (!config()) return { ok: true, outcome: "not-in-use" };
+  if (sequenceMode() === "funnelr" && STARTS.includes(type)) return { ok: true, outcome: "not-in-use" };
   const event: QueuedEvent = { type, body, idemKey };
   const result = await attempt(event);
   if (result.ok) return result;
@@ -111,7 +118,7 @@ export async function sendSequenceEvent(
 
 /** Replays queued events oldest first. Runs from the daily cron and can be run by hand. */
 export async function flushSequenceOutbox(): Promise<{ sent: number; left: number }> {
-  if (sequenceMode() === "funnelr") return { sent: 0, left: 0 };
+  if (!config()) return { sent: 0, left: 0 };
   const kv = getKv();
   const raw = await kv.lrange<string | QueuedEvent>(OUTBOX, 0, -1);
   if (!raw.length) return { sent: 0, left: 0 };
