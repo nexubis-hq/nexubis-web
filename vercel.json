@@ -4,11 +4,5 @@
   "crons": [
     { "path": "/api/cron/nurture-handoff", "schedule": "0 6 * * *" },
     { "path": "/api/cron/dependency-health", "schedule": "0 7 * * *" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [{ "key": "Strict-Transport-Security", "value": "max-age=63072000" }]
-    }
   ]
 }
