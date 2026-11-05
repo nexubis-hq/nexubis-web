@@ -48,7 +48,8 @@ export async function adminLogin(formData: FormData): Promise<void> {
 
 export async function adminLogout(): Promise<void> {
   const jar = await cookies();
-  jar.delete(SESSION_COOKIE);
+  // Must name the same path the cookie was set on, or the browser keeps it.
+  jar.delete({ name: SESSION_COOKIE, path: "/audit/admin" });
   redirect("/audit/admin");
 }
 

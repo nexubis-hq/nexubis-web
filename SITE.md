@@ -78,6 +78,8 @@ Everything about the Online Credibility Audit is hidden until you turn it on. Wh
 
 ## Recent Changes
 
+- 2026-11-05: Security hardening for the audit admin area. A gatekeeper (`proxy.ts`) now sits in front of every `/audit/admin` page: signed-out visitors are bounced to the login screen before any admin page is built (the redirect no longer carries page content), and any form post that does not come from our own site is refused. Sign-out now reliably clears the login cookie. The login cookie stays HttpOnly and SameSite=Lax.
+
 - 2026-10-28: Rebuilt audit admin around Leads, individual lead pages, Activity and Manual audit. Added private failed-scan records and report run history, live scores, test-contact filters and typed confirmation before re-running. Public run additions are best-effort logging only.
 
 - 2026-09-28: Added consent-free, anonymous Audit funnel totals for every live-site visitor: arrivals, first form touch and genuine submissions, split between ad and other traffic in South African daily time. It does not collect cookies, device data, IPs, names, emails, or send anything to Meta. The Scans admin page shows the last 14 days and each scan’s clean UTM ad label where present. Funnelr’s lead path is unchanged.
