@@ -3,7 +3,14 @@
 // Server actions behind the admin area. Every action re-checks the session
 // cookie itself: actions are reachable endpoints regardless of what page
 // rendered them.
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { getKv } from "@/lib/scorecard/kv";
+import {
+  clearFailures,
+  clientIpFrom,
+  isLockedOut,
+  recordFailure,
+} from "@/lib/scorecard/admin/login-limit";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
@@ -31,10 +38,16 @@ async function requireSession(): Promise<void> {
 }
 
 export async function adminLogin(formData: FormData): Promise<void> {
+  const kv = getKv();
+  const ip = clientIpFrom(await headers());
+  // Checked before the password, so a locked-out IP learns nothing.
+  if (await isLockedOut(kv, ip)) redirect("/audit/admin?error=locked");
   const password = String(formData.get("password") ?? "");
   if (!adminConfigured() || !passwordMatches(password)) {
+    await recordFailure(kv, ip);
     redirect("/audit/admin?error=1");
   }
+  await clearFailures(kv, ip);
   const jar = await cookies();
   jar.set(SESSION_COOKIE, expectedSessionToken(), {
     httpOnly: true,

@@ -31,7 +31,11 @@ export default async function AdminIndex({
             Configure them in the environment first.
           </p>
         ) : null}
-        {error ? (
+        {error === "locked" ? (
+          <p className="sc-form-error">
+            Too many wrong passwords. Try again in 15 minutes.
+          </p>
+        ) : error ? (
           <p className="sc-form-error">That password did not match.</p>
         ) : null}
         <form action={adminLogin} className="sc-admin-login-form">

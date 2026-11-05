@@ -78,6 +78,8 @@ Everything about the Online Credibility Audit is hidden until you turn it on. Wh
 
 ## Recent Changes
 
+- 2026-11-05: The admin login now locks a visitor out for 15 minutes after 5 wrong passwords, so nobody can guess the password by trying thousands of times. The right password resets the count. Settings are in `lib/scorecard/admin/login-limit.ts`.
+
 - 2026-11-05: The contact form and the audit form now always send by POST, so names and emails can never end up in the page address (this could happen if someone submitted before the page finished loading). The audit results stream is now marked "never store" for browsers and caches.
 
 - 2026-11-05: Security headers on every page and file (settings live in `lib/security/headers.ts`). Adds a Content Security Policy that only allows the outside services we use (Meta Pixel, Clarity, Cal.com, Cloudflare Turnstile, Sanity images, our R2 videos, YouTube and Loom embeds). It starts in "report-only" mode: nothing is blocked yet, and anything it would block is logged in Vercel's logs under "csp-report". When those logs stay clean, change `CSP_ENFORCE` to `true` to switch it on. Also added: no framing of our pages by other sites, nosniff, HSTS on every response, cross-site reading limited to our own domain, and the "X-Powered-By: Next.js" header removed.
