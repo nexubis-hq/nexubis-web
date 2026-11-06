@@ -76,7 +76,11 @@ async function post(event: QueuedEvent): Promise<SequenceResult> {
     body: JSON.stringify({ type: event.type, ...event.body }),
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
-  if (!res.ok) return { ok: false };
+  if (!res.ok) {
+    // The status says why: 401 means the key does not match the app's brand key.
+    console.error(`[sequences] ${event.type} refused by the app: HTTP ${res.status}`);
+    return { ok: false };
+  }
   const data = (await res.json().catch(() => ({}))) as { outcome?: string };
   return { ok: true, outcome: data.outcome };
 }
@@ -86,8 +90,9 @@ async function attempt(event: QueuedEvent): Promise<SequenceResult> {
     try {
       const result = await post(event);
       if (result.ok) return result;
-    } catch {
+    } catch (err) {
       // Network trouble: try once more, then queue.
+      console.error(`[sequences] ${event.type} could not reach the app: ${String(err).slice(0, 120)}`);
     }
   }
   return { ok: false };
