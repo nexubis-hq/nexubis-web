@@ -1,3 +1,4 @@
+import { quietTestRecipients } from "@/lib/quiet-test-alerts";
 import { sendResendEmail } from "@/lib/resend";
 
 const SUBJECT = "New onboarding message from a client on contact-form";
@@ -82,7 +83,7 @@ export async function notifyContactSubmission(input: ContactNotificationInput): 
   const email = formatContactNotification(input);
   return sendResendEmail({
     from: contactNotificationFrom(),
-    to: contactNotificationRecipients(),
+    to: quietTestRecipients(input.email) ?? contactNotificationRecipients(),
     subject: email.subject,
     text: email.text,
     html: email.html,

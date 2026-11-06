@@ -5,6 +5,7 @@
 //
 // Credential policy: sends must come from a verified nexubis.io identity,
 // never the LekkeWeb sender.
+import { quietTestRecipients } from "@/lib/quiet-test-alerts";
 import { TEAM_EMAIL, shouldSendEmail1 } from "./env";
 import { EMAIL_1 } from "./copy";
 import type { LeadRecord } from "./leads";
@@ -85,7 +86,7 @@ export async function notifyTeam(lead: LeadRecord, absoluteReportUrl: string, ad
     `Report: ${absoluteReportUrl}`,
     `Admin: ${adminUrl}`,
   ].filter((l) => l !== null);
-  const to = auditAlertRecipients();
+  const to = quietTestRecipients(lead.email) ?? auditAlertRecipients();
   return sendEmail({ to, subject, text: lines.join("\n"), replyTo: lead.email });
 }
 
