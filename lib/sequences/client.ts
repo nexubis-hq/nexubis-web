@@ -78,7 +78,8 @@ async function post(event: QueuedEvent): Promise<SequenceResult> {
   });
   if (!res.ok) {
     // The status says why: 401 means the key does not match the app's brand key.
-    console.error(`[sequences] ${event.type} refused by the app: HTTP ${res.status}`);
+    const detail = (await res.text().catch(() => "")).slice(0, 120);
+    console.error(`[sequences] ${event.type} refused by the app: HTTP ${res.status} ${detail} (sent key length ${target.key.length})`);
     return { ok: false };
   }
   const data = (await res.json().catch(() => ({}))) as { outcome?: string };
