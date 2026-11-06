@@ -10,7 +10,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createFunnelrClient } from "@/lib/funnelr/client";
 import { applyRepliedTag, extractEmail } from "@/lib/funnelr/reply-tagger";
-import { sendSequenceEvent } from "@/lib/sequences/client";
+import { sendSequenceEvent, sequenceContactReplied } from "@/lib/sequences/client";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120; // Funnelr is slow.
@@ -40,14 +40,21 @@ export async function POST(req: NextRequest) {
   }
 
   // The app ignores anyone who is not one of its contacts, so staff addresses are safe here.
-  await sendSequenceEvent("reply", { email: senderEmail, source: "reply_inbox" }, `reply-${senderEmail}-${Date.now()}`);
+  const app = await sendSequenceEvent("reply", { email: senderEmail, source: "reply_inbox" }, `reply-${senderEmail}-${Date.now()}`);
+  const appKnowsContact = sequenceContactReplied(app);
+
+  // The logins@ inbox script forwards a reply to Laine when this answers "applied".
+  // Leads that exist only in the sequence app (everyone after the switch) must
+  // count too, or their replies would never reach Laine.
+  const appAnswer = { ok: true, applied: true, reason: "applied" as const, source: "sequence-app" };
 
   if (!process.env.FUNNELR_API_KEY) {
-    return NextResponse.json({ ok: true, applied: false, skipped: "no-api-key" });
+    return NextResponse.json(appKnowsContact ? appAnswer : { ok: true, applied: false, reason: "not-a-contact", skipped: "no-api-key" });
   }
 
   const dryRun = process.env.REPLY_TAGGING_ENABLED !== "true" || req.nextUrl.searchParams.get("dryRun") === "1";
   const result = await applyRepliedTag(senderEmail, { client: createFunnelrClient(), dryRun });
+  if (appKnowsContact && !result.applied && result.reason !== "internal") return NextResponse.json(appAnswer);
 
   return NextResponse.json(
     { ok: result.ok, applied: result.applied, reason: result.reason, ...(result.error ? { error: result.error } : {}) },

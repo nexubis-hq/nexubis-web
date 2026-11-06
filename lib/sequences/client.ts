@@ -122,6 +122,11 @@ export async function sendSequenceEvent(
   }
 }
 
+/** True when the app accepted a reply for someone it knows (it answers "stopped"). */
+export function sequenceContactReplied(result: SequenceResult): boolean {
+  return result.ok && result.outcome === "stopped";
+}
+
 /** Replays queued events oldest first. Runs from the daily cron and can be run by hand. */
 export async function flushSequenceOutbox(): Promise<{ sent: number; left: number }> {
   if (!config()) return { sent: 0, left: 0 };
