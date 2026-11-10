@@ -58,7 +58,7 @@ const manual = {
   createdAt: at,
   qualifiedDecision: { qualified: false, reason: "services" },
 } as ManualAuditRecord;
-it.each(["ME@nexubis.io", "SHANNAHDT9+test@gmail.com", "shannahdt9@gmail.com"])(
+it.each(["ME@nexubis.io", "SHANNAHDT9+test@gmail.com", "shannahdt9@gmail.com", "shannahdt20@gmail.com"])(
   "recognises test %s",
   (email) => expect(isTestContact(email)).toBe(true)
 );

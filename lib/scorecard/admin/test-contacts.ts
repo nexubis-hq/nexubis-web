@@ -1,4 +1,4 @@
-export const TEST_CONTACT_RULES = ["@nexubis.io", "shannahdt9"] as const;
+export const TEST_CONTACT_RULES = ["@nexubis.io", "shannahdt9", "shannahdt20"] as const;
 export function isTestContact(email?: string | null): boolean {
   const value = (email ?? "").trim().toLowerCase();
   const [local, domain] = value.split("@");

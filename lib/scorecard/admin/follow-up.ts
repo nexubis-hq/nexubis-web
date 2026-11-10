@@ -1,5 +1,7 @@
 import { sequenceMode } from "@/lib/sequences/client";
 import type { MeetingEvent } from "./meetings";
+import type { SequenceStatus } from "@/lib/sequences/client";
+import { sequenceNextStep } from "./sequence-view";
 export function shortSast(at: string, time = false): string {
   const date = new Date(at);
   const day = new Intl.DateTimeFormat("en-GB", {
@@ -24,14 +26,17 @@ export function nextStep(
   name: string,
   inFunnelr: boolean,
   meeting?: MeetingEvent,
-  now = Date.now()
+  now = Date.now(),
+  sequence?: SequenceStatus | null
 ): string {
   if (meeting && meeting.event !== "cancelled")
     return Date.parse(meeting.startTime) >= now
       ? `Meeting on ${shortSast(meeting.startTime, true)}. Look at LinkedIn and the report before the call.`
       : `Meeting was on ${shortSast(meeting.startTime)}. Add a note on how it went.`;
   if (sequenceMode() === "app")
-    return "See the sequence status below. Waiting for a reply or a booking.";
+    return sequence === undefined
+      ? "See Automated emails below. Waiting for a reply or a booking."
+      : sequenceNextStep(sequence);
   return inFunnelr
     ? "Funnelr sequence running. Waiting for a reply or a booking."
     : `Send ${name || "contact"} to Funnelr (Email 1 re-sends the report link).`;

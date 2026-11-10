@@ -414,7 +414,8 @@ export async function LeadDetail({
               firstName,
               funnelrStatus?.state === "ok",
               meeting.current,
-              view.now
+              view.now,
+              mode === "app" ? sequenceStatus : undefined
             )}
           </p>
           <dl className="sc-admin-facts">
@@ -452,22 +453,6 @@ export async function LeadDetail({
                 )}
               </dd>
             </div>
-            {mode !== "funnelr" && (
-              <div>
-                <dt>Sequence</dt>
-                <dd>
-                  <SequencePanel
-                    status={sequenceStatus}
-                    mode={mode}
-                    leadPath={row?.leadPath || `/audit/admin/${id}`}
-                    name={name || company}
-                    website={url}
-                    test={isTestContact(email)}
-                    hasReport={Boolean(report)}
-                  />
-                </dd>
-              </div>
-            )}
             {mode !== "app" && (
               <div className="sc-admin-funnelr-muted">
                 <dt>Funnelr</dt>
@@ -509,6 +494,20 @@ export async function LeadDetail({
             <button className="btn btn-secondary">Save note</button>
           </form>
         </section>
+        {mode !== "funnelr" && (
+          <section className="sc-admin-card sc-admin-fullwidth sc-admin-emails">
+            <h2>Automated emails</h2>
+            <SequencePanel
+              status={sequenceStatus}
+              mode={mode}
+              leadPath={row?.leadPath || `/audit/admin/${id}`}
+              name={name || company}
+              website={url}
+              test={isTestContact(email)}
+              hasReport={Boolean(report)}
+            />
+          </section>
+        )}
         <section className="sc-admin-card sc-admin-fullwidth">
           <h2>Timeline</h2>
           <ol className="sc-admin-timeline">

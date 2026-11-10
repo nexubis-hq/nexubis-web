@@ -28,3 +28,17 @@ test("a blocked address and an unknown lead", () => {
   expect(canStart({ ...base, found: false })).toBe(true);
   expect(sequenceHeadline(null)).toBe("Sequence app not reachable");
 });
+
+test("next step tells Laine what the automated emails are doing", async () => {
+  const { sequenceNextStep } = await import("./sequence-view");
+  expect(sequenceNextStep(null)).toContain("can't be reached");
+  expect(sequenceNextStep({ ...base, suppressed: true })).toContain("Don't email them");
+  expect(sequenceNextStep({ ...base, stopReason: "replied" })).toContain("They replied");
+  expect(sequenceNextStep({ ...base, stopReason: "admin" })).toContain("stopped by hand");
+  expect(sequenceNextStep({ ...base, found: false })).toContain("Start the sequence below");
+  expect(sequenceNextStep({ ...base, enrolments: [{ ...sales, nextDueAt: "2026-11-13T12:33:00Z" }] })).toBe(
+    "Automated emails running, next one on Fri 13 Nov. Waiting for a reply or a booking.",
+  );
+  expect(sequenceNextStep({ ...base, enrolments: [{ ...sales, status: "running_in_funnelr" }] })).toContain("Funnelr");
+  expect(sequenceNextStep({ ...base, enrolments: [{ ...sales, status: "done", step: 6 }] })).toContain("All automated emails sent");
+});
